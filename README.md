@@ -1,2 +1,3 @@
 # Game-Sample
-使用C++/SDL2开发的Windows平台游戏实例。
+使用C++/SDL2开发的Windows游戏样带。
+#### 测试中

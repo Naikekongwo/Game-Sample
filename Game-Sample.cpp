@@ -1,9 +1,10 @@
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
-
 int main()
 {
-    return 0;
+    return EXIT_SUCCESS;
+    // 成功退出。
 }
