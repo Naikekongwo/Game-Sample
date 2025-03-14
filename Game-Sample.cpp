@@ -1,21 +1,23 @@
 #include <iostream>
-#include "Graphics.h"
 #include <stdexcept>
+
+#include "opencore.h"
 
 using namespace std;
 
 
-int main(int argc,char** args)
+int WinMain(int argc, char** args)
 {
-    SDL_Adapter sdlAdaper;
+    openCore core;
     try
     {
-        sdlAdaper.run();
+        core.Start();
     }
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
-        EXIT_FAILURE;
+        system("pause");
     }
+    
     return EXIT_SUCCESS;
 }

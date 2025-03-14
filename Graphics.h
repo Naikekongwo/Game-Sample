@@ -3,17 +3,34 @@
 
 #include <SDL2/SDL.h>
 
-class SDL_Adapter {
+SDL_Rect GetCenteredPos(int w, int h, SDL_Rect &srcRect);
+
+class graphics
+{
     public:
-    bool run();
+    ~graphics()
+    {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+    }
+
     bool Init();
-    bool Load();
-    void CleanUp();
+
+    SDL_Window* getWindow()
+    {
+        return this->window;
+    }
+
+    SDL_Renderer* getRenderer()
+    {
+        return this->renderer;
+    }
+
 
     private:
     SDL_Window* window;
-    SDL_Surface* winSurface;
-    SDL_Surface* studioLOGO;
+    SDL_Renderer* renderer;
 };
 
 

@@ -1,13 +1,12 @@
-# 屏蔽临时编译生成的exe文件
-Game-Sample.exe
-
-# 屏蔽用于作为草稿的源文件
+# 屏蔽草稿代码
 Sample.cpp
+
+# 屏蔽临时编译生成的exe文件
+*.exe
 
 # 屏蔽每个人的.vscode配置文件夹
 .vscode/
 
-
-# 临时排除项目
-visual/RW_*
-visual/TP_*
+# 屏蔽原画
+assets/raw_*.*
+assets/TEMP_*.*
