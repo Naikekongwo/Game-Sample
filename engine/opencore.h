@@ -1,8 +1,8 @@
 #ifndef _OPENCORE_H_
 #define _OPENCORE_H_
 
-#include "graphics.h"
-#include "stage/stage_controller.h"
+#include "graphics/graphics.h"
+#include "../stage/stage_controller.h"
 #include "Timer.h"
 
 class openCore

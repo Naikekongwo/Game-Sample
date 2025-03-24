@@ -1,7 +1,8 @@
 #include "game_preload.h"
 
 #include "../macro.h"
-#include "../graphics.h"
+#include "../engine/graphics/graphics.h"
+#include "../engine/graphics/modules.h"
 
 
 game_preload::game_preload(stage_controller* controller, Timer* time)
@@ -11,6 +12,8 @@ game_preload::game_preload(stage_controller* controller, Timer* time)
     this->time = time;
     
     SDL_Surface* tempSurface;
+
+    assets.pushTexture(LoadTextureFromBMP(scontroller->getRenderer(),GAME_PRELOAD_ENGINE_PATH));
 
     tempSurface = SDL_LoadBMP(GAME_PRELOAD_ENGINE_PATH);
     assets.push_back(SDL_CreateTextureFromSurface(scontroller->getRenderer(),tempSurface));

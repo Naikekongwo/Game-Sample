@@ -3,12 +3,14 @@
 
 #include "stage_controller.h"
 
+#include "../engine/graphics/atlas.h"
+
 class game_preload : public stage
 {
     private:
     stage_controller* scontroller;
     Timer* time;
-    std::vector<SDL_Texture*> assets;
+    texture_collections assets;
     
     public:
     game_preload(stage_controller* controller, Timer* time);

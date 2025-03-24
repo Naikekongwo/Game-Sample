@@ -3,8 +3,6 @@
 
 #include <SDL2/SDL.h>
 
-SDL_Rect GetCenteredPos(int w, int h, SDL_Rect &srcRect);
-
 class graphics
 {
     public:

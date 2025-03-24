@@ -80,8 +80,5 @@ class StateManager
     
 };
 ```
-
-
-
-
 ----
+`gameState() 游戏状态` **至关重要的实现完整游戏运转的**

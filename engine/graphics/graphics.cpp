@@ -1,13 +1,7 @@
 #include "graphics.h"
-#include "macro.h"
+#include "../../macro.h"
 
 #include <iostream>
-
-SDL_Rect GetCenteredPos(int w, int h, SDL_Rect &srcRect)
-{
-    SDL_Rect temp = {srcRect.w/2-(w/2),srcRect.h/2-(h/2),w,h};
-    return temp;
-}
 
 bool graphics::Init()
 {

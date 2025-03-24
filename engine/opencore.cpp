@@ -1,6 +1,6 @@
 #include "opencore.h"
 #include "Timer.h"
-#include "stage/game_preload.h"
+#include "../stage/game_preload.h"
 
 bool openCore::Start()
 {
