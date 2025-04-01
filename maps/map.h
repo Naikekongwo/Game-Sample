@@ -101,4 +101,9 @@ class mywin{
 };
 recmapset_top read_map(const std::string &murl);
 int write_map(const std::string &murl,recmapset_top rt);
+
+
+
+// 到此一游
+
 #endif
