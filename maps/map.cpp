@@ -1,4 +1,5 @@
 #include "map.h"
+
 recmap::recmap(int x = 0, int y = 0, int h = 0, int w = 0, int l = 0, int tk = 0) : recarea(x, y, h, w), layer(l), timekeeper(tk), time(0), turn(0), prg(new std::vector<recgraphic>) {};
 int recmap::get_layer() const { return layer; }
 int recmap::set_layer(int l)

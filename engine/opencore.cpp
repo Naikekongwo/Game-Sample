@@ -1,6 +1,5 @@
 #include "opencore.h"
 #include "Timer.h"
-#include "../stage/game_preload.h"
 
 bool openCore::Start()
 {
@@ -22,13 +21,9 @@ bool openCore::MainLoop()
 
     Timer timer;
 
-    stage_controller stageController;
+    stageController sController(graphic->getRenderer(), graphic->getWindow(), &timer);
 
-    stageController.setRenderer(graphic->getRenderer());
-
-    stage* prestage = new game_preload(&stageController,&timer);
-
-    stageController.pushState(prestage);
+    sController.pushStage(new game_preload(&sController)); // 添加游戏预加载场景
 
     while(!should_close)
     {
@@ -40,18 +35,19 @@ bool openCore::MainLoop()
                 should_close = true;
                 break;
             default:
-                stageController.handleEvents(event);
+                sController.handleEvent(event); // 处理事件
                 break;
             }
 
-            SDL_Delay(1000/15);
+            SDL_Delay(1000/FRAME_RATE);
 
             SDL_RenderClear(graphic->getRenderer());
 
-            stageController.onUpdate();
             timer.onUpdate();
+            sController.onUpdate(); // 更新场景
 
-            stageController.onDraw();
+            sController.onRender(); // 渲染场景
+
             SDL_RenderPresent(graphic->getRenderer());
         }
     }

@@ -1,23 +1,38 @@
-#ifndef _GAME_PRELOAD_H_
-#define _GAME_PRELOAD_H_
+#ifndef _GAME_PRELOAD_H
+#define _GAME_PRELOAD_H
 
-#include "stage_controller.h"
+#include "../macro.h"
 
+#include "stage.h"
 #include "../engine/graphics/atlas.h"
+#include "../engine/graphics/modules.h"
 
-class game_preload : public stage
+#include "main_menu.h"
+
+class game_preload: public stage
 {
     private:
-    stage_controller* scontroller;
-    Timer* time;
-    texture_collections assets;
-    
-    public:
-    game_preload(stage_controller* controller, Timer* time);
+    stageController* sController;
+    SDL_Renderer* renderer;
+    SDL_Window* window;
 
-    void handleEvents(SDL_Event &event) override;
-    void onUpdate() override;
-    void onDraw(SDL_Renderer* renderer) override;
+    Timer* timer; // 该计时器为只读计时器，不应该在内部被修改
+
+    Atlas* atlas; // 纹理图集
+
+    int currentIndex = 0; // 当前索引
+
+
+    public:
+    game_preload(stageController* sCon); // 构造函数
+    ~game_preload();
+
+
+    bool onUpdate() override; // 更新函数
+    bool onRender() override; // 渲染函数
+    bool handleEvent(SDL_Event &event) override; // 事件函数
+
+    Timer* getTime() {return timer;} // 获取定时器
 };
 
-#endif //_GAME_PRELOAD_H_
+#endif // _GAME_PRELOAD_H

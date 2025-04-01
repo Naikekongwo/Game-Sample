@@ -2,34 +2,22 @@
 #define _MODULES_H_
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 
-#include "atlas.h"
+#include "../../macro.h"
 
-SDL_Rect GetCenteredPos(int w, int h, SDL_Rect &srcRect)
-{
-    SDL_Rect temp = {srcRect.w/2-(w/2),srcRect.h/2-(h/2),w,h};
-    return temp;
-}
+enum ALIGN_POS {
+    ALIGN_LEFT   = 1 << 0,  // 000001
+    ALIGN_CENTER = 1 << 1,  // 000010
+    ALIGN_RIGHT  = 1 << 2,  // 000100
+    ALIGN_TOP    = 1 << 3,  // 001000
+    ALIGN_BOTTOM = 1 << 4,  // 010000
+    ALIGN_MIDDLE = 1 << 5   // 100000
+};
 
-// 读入材质并转化为 TextureData
-textureData* LoadTextureFromBMP(SDL_Renderer* renderer, std::string FilePath)
-{
-    SDL_Surface* temp = SDL_LoadBMP(FilePath.c_str());
-    if(!temp) return nullptr;
 
-    SDL_Texture* tTexture = SDL_CreateTextureFromSurface(renderer,temp);
-    
-    SDL_FreeSurface(temp);
-
-    int width,height;
-
-    SDL_QueryTexture(tTexture,NULL,NULL,&width,&height);
-
-    textureData* newData = new textureData(tTexture,width,height);
-    
-    return newData ;
-}
-
+void SoftInvertColors(SDL_Surface* surface); // 软件反色
+void AlignRect(SDL_Texture* texture, SDL_Rect &rect, int aPos); // 控制 rect 和窗口的对齐方式
 
 #endif //_MODULES_H_

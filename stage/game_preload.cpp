@@ -1,56 +1,70 @@
 #include "game_preload.h"
 
-#include "../macro.h"
-#include "../engine/graphics/graphics.h"
-#include "../engine/graphics/modules.h"
+#include <cmath>
 
-
-game_preload::game_preload(stage_controller* controller, Timer* time)
+game_preload::game_preload(stageController* sCon)
 {
-    scontroller = controller;
+    // 构造函数
+    this->sController = sCon;
+    this->renderer = sCon->getRenderer(); // 获取渲染器
+    this->window = sCon->getWindow(); // 获取窗口
+    this->timer = sCon->getTime(); // 获取定时器
 
-    this->time = time;
-    
-    SDL_Surface* tempSurface;
+    // 初始化资源
+    atlas = new Atlas(); // 创建纹理图集
 
-    assets.pushTexture(LoadTextureFromBMP(scontroller->getRenderer(),GAME_PRELOAD_ENGINE_PATH));
+    SDL_Surface* surface = IMG_Load(GAME_PRELOAD_ICON_CORE_PATH); // 加载背景图片
+    SoftInvertColors(surface);
+    SDL_Surface* surface_temp = SDL_CreateRGBSurface(0, 500, 500, 32, 0, 0, 0, 0); // 创建新的表面
+    SDL_Rect dstRect = {0,0,500,500};
+    SDL_BlitScaled(surface, NULL, surface_temp, &dstRect); // 缩放图片
 
-    tempSurface = SDL_LoadBMP(GAME_PRELOAD_ENGINE_PATH);
-    assets.push_back(SDL_CreateTextureFromSurface(scontroller->getRenderer(),tempSurface));
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface_temp);
 
-    tempSurface = SDL_LoadBMP(GAME_PRELOAD_ICON_PATH);
-    assets.push_back(SDL_CreateTextureFromSurface(scontroller->getRenderer(),tempSurface));
+    atlas->pushElement(new AtlasElement(texture));
 
-    SDL_FreeSurface(tempSurface);
+    SDL_FreeSurface(surface_temp); // 释放表面
+    SDL_FreeSurface(surface); // 释放表面
 }
 
 
-void game_preload::onUpdate()
-{
-    if(!assets.empty())
+bool game_preload::onUpdate()
+{   
+    if(timer->getTime() == FRAME_RATE-1)
     {
-        float alpha = (-5 * (time->getTime() * time->getTime()) + 300 * (time->getTime())) / 9;
-
-        SDL_SetTextureAlphaMod(assets.back(),(alpha>=255)?255:alpha);
-
-
-        int width,height;
-        
-        SDL_GetRendererOutputSize(scontroller->getRenderer(),&width,&height);
-
-        SDL_Rect srcRect = {0,0,width,height};
-        SDL_Rect dstRect = GetCenteredPos(500,500,srcRect);
-        SDL_RenderCopy(scontroller->getRenderer(),assets.back(),NULL,&dstRect);
-        if(time->getTime() == FRAME_RATE-1) assets.erase(assets.end()-1);
+        sController->changeState(new main_stage(sController)); // 切换到主菜单场景
+        return false; // 返回false表示不再更新
     }
+    return true;
 }
 
-void game_preload::handleEvents(SDL_Event &event)
+bool game_preload::onRender()
 {
+    SDL_Rect dstRect;
 
+    SDL_Texture* tn = atlas->getElement(currentIndex)->getTexture();
+
+    AlignRect(tn, dstRect, ALIGN_CENTER | ALIGN_MIDDLE); // 对齐矩形
+
+    SDL_RenderCopy(renderer, tn , NULL, &dstRect); // 渲染纹理
+
+    return true;
 }
 
-void game_preload::onDraw(SDL_Renderer* renderer)
+bool game_preload::handleEvent(SDL_Event &event)
 {
-
+    if(event.type == SDL_QUIT) // 处理退出事件
+    {
+        return false;
+    }
+    return true;
 }
+
+
+game_preload::~game_preload()
+{
+    // 析构函数
+    delete atlas; // 释放纹理图集
+    atlas = nullptr;
+}
+    

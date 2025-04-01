@@ -1,6 +1,8 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+// Timer.h 计时器
+
 #include "../macro.h"
 #include "Timer.h"
 

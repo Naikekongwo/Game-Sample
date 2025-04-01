@@ -10,3 +10,8 @@ Sample.cpp
 # 屏蔽原画
 assets/raw_*.*
 assets/TEMP_*.*
+*.psd
+
+
+# 屏蔽所有编译文件
+*.o
