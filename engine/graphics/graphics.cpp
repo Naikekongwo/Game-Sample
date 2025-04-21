@@ -11,8 +11,8 @@ bool graphics::Init()
 
     if(SDL_CreateWindowAndRenderer(1280,720,SDL_RENDERER_ACCELERATED,&window,&renderer) != 0) return false;
 
-    // SDL_Surface* iconSurface = SDL_LoadBMP(ICON_PATH);
-    SDL_Surface* iconSurface = IMG_Load(ICON_PATH);
+    // SDL_Surface* iconSurface = SDL_LoadBMP(RES_GAME_ICON);
+    SDL_Surface* iconSurface = IMG_Load(RES_GAME_ICON);
     if(!iconSurface) return false;
 
     SDL_SetWindowIcon(window, iconSurface);

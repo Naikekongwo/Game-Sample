@@ -13,7 +13,7 @@ game_preload::game_preload(stageController* sCon)
     // 初始化资源
     atlas = new Atlas(); // 创建纹理图集
 
-    SDL_Surface* surface = IMG_Load(GAME_PRELOAD_ICON_CORE_PATH); // 加载背景图片
+    SDL_Surface* surface = IMG_Load(RES_PRELOAD_CORE_ICON); // 加载背景图片
     SoftInvertColors(surface);
     SDL_Surface* surface_temp = SDL_CreateRGBSurface(0, 500, 500, 32, 0, 0, 0, 0); // 创建新的表面
     SDL_Rect dstRect = {0,0,500,500};

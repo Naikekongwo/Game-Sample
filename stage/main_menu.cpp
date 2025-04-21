@@ -12,7 +12,7 @@ main_stage::main_stage(stageController* sCon)
     // 初始化资源
     atlas = new Atlas(); // 创建纹理图集
 
-    SDL_Texture* background = IMG_LoadTexture(renderer, MAIN_MENU_BACKGROUND_PATH); // 加载背景图片
+    SDL_Texture* background = IMG_LoadTexture(renderer, RES_MAINMENU_BACKGROUND); // 加载背景图片
     
     atlas->pushElement(new AtlasElement(background)); // 添加背景图片到纹理图集
 }

@@ -8,8 +8,8 @@ Sample.cpp
 .vscode/
 
 # 屏蔽原画
-assets/raw_*.*
-assets/TEMP_*.*
+raw_*.*
+TEMP_*.*
 *.psd
 
 
