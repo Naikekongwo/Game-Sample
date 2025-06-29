@@ -27,11 +27,11 @@ bool main_stage::onRender()
     int width, height;
     SDL_GetWindowSize(window, &width, &height); // 获取窗口大小
 
-    SDL_Rect dstRect = {width*sin((M_PI/6000)*timer->getTime()),0,width,height};
+    SDL_Rect dstRect = {width*sin((M_PI/120)*timer->getTime()),0,width,height};
 
     SDL_RenderCopy(renderer, atlas->getElement(0)->getTexture(), NULL, &dstRect); // 渲染纹理
     
-    dstRect = {width*sin((M_PI/6000)*timer->getTime())-width,0,width,height};
+    dstRect = {width*sin((M_PI/120)*timer->getTime())-width,0,width,height};
     
 
     SDL_RenderCopy(renderer, atlas->getElement(0)->getTexture(), NULL, &dstRect); // 渲染纹理

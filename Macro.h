@@ -4,7 +4,7 @@
 // #define WD_WIDTH 1280
 // #define WD_HEIGHT 720
 
-#define GAME_TITLE "Game-Sample 游戏样带"
+#define GAME_TITLE "无水之境"
 #define FRAME_RATE 60
 
 
