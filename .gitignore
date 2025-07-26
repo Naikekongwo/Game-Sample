@@ -1,17 +1,8 @@
-# 屏蔽草稿代码
-Sample.cpp
-
-# 屏蔽临时编译生成的exe文件
-*.exe
-
-# 屏蔽每个人的.vscode配置文件夹
+# 屏蔽 .vscode/目录
 .vscode/
 
-# 屏蔽原画
-raw_*.*
-TEMP_*.*
-*.psd
+# 屏蔽 CMAKE 的生成目录
+build/
 
-
-# 屏蔽所有编译文件
-*.o
+# 屏蔽所有RAW文件
+assets/assets/raw/
