@@ -8,6 +8,16 @@ using namespace std;
 
 int WinMain(int argc, char** args)
 {
-    cout<<"Hello World!"<<endl;
+    OpenEngine engine;
+    
+    try
+    {
+        engine.Run();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
     return EXIT_SUCCESS;
 }

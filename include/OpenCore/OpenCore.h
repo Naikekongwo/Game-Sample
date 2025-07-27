@@ -9,7 +9,7 @@
 class OpenEngine
 {
     public:
-    bool Start();
+    bool Run();
     bool MainLoop();
     void CleanUp();
 

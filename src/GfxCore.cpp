@@ -3,23 +3,35 @@
 #include "OpenCore/GfxCore.h"
 
 
-GFXinstance::~GFXinstance() {
-    if (renderer) {
-        SDL_DestroyRenderer(renderer);
-    }
-    if (window) {
-        SDL_DestroyWindow(window);
-    }
+GFXinstance::~GFXinstance()
+{
+    // 图形核心的析构函数
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-bool GFXinstance::Init() {
-    if(SDL_Init(SDL_INIT_EVERYTHING) < 0) { return false;}
-    // 初始化 SDL 失败返回 false
+bool GFXinstance::Init()
+{
+    // 图形核心的初始化方法
 
-    if(SDL_CreateWindowAndRenderer(1280, 720, 0 , &window, &renderer) != 0) {return false;}
-    // 初始化窗口和渲染器则返回 false
+    // 初始化SDL 失败即返回假
+    if(SDL_Init(SDL_INIT_EVERYTHING) < 0) { return false; }
 
+    // 创建窗口和渲染器 失败即返回假
+    if(SDL_CreateWindowAndRenderer(GFX_WINDOW_WIDTH,GFX_WINDOW_HEIGHT, SDL_RENDERER_ACCELERATED, &window, &renderer) != 0) { return false; }
 
+    // 图标加载方法【NON STANDARD!!!临时使用】
+    SDL_Surface *iconSurface = stbi_loadSurface(RES_GAME_ICON);
+    if(!iconSurface) { return false;} // 图标加载失败推出
+
+    // 窗口属性设置
+    SDL_SetWindowIcon(window, iconSurface);
+    SDL_SetWindowTitle(window, APP_NAME);
+
+    // 释放资源
+    FreeStbiSurface(iconSurface);
+
+    // 初始化成功
     return true;
-};
+}

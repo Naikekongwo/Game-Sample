@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 源文件
 file(GLOB_RECURSE SOURCE_FILES
-    "${CMAKE_SOURCE_DIR}/project/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_SOURCE_DIR}/project/*.cpp"
 )
 include_directories("${CMAKE_SOURCE_DIR}/include")
 
@@ -16,8 +16,12 @@ include_directories("${CMAKE_SOURCE_DIR}/include")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # SDL2 库链接
-set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_image)
+set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_image SDL2_mixer)
 target_link_libraries(Eclipsea PRIVATE ${SDL2_LIBRARIES})
+
+# 加上图标（即resources连接）
+set(RESOURCE_OBJECT "${CMAKE_SOURCE_DIR}/resources/resource.o")
+target_link_libraries(${PROJECT_NAME} PRIVATE ${RESOURCE_OBJECT})
 
 
 # 拷贝 assets 文件夹

@@ -4,13 +4,17 @@
 // GfxCore.h
 // 图形核心
 
+
+#include <STB-IMAGE/stb_image.h>
+
 #include "Macros.h"
 #include <SDL2/SDL.h>
 
+// STB库加载图片到 SDL_Surface 【不推荐使用，性能差】
+SDL_Surface* stbi_loadSurface(const char* filename);
 
-#include <STB-IMAGE/stb_image.h>
-#define STB_IMAGE_IMPLEMENTATION
-
+// 销毁STB库加载的Surface
+void FreeStbiSurface(SDL_Surface* surface);
 
 class GFXinstance
 {
