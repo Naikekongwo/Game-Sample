@@ -8,6 +8,9 @@ bool OpenEngine::Run()
     // 初始化图形核心，若失败则退出
     if(!gfxInstance->Init()) { return false; }
 
+
+    timer = new Timer();
+
     // 主循环
     if(!MainLoop()) { return false; }
 
@@ -34,13 +37,11 @@ bool OpenEngine::MainLoop()
             }
         }
 
-        SDL_SetRenderDrawColor(gfxInstance->getRenderer(), 0, 0, 0, 255);
-        SDL_RenderClear(gfxInstance->getRenderer());
-        SDL_RenderPresent(gfxInstance->getRenderer());
+        timer->Tick();
 
-        SDL_Delay(16); // 限制帧率，避免CPU飙高
+        SDL_Delay(timer->getDelayTime()); // 限制帧率，避免CPU飙高
 
-        // 渲染逻辑（如果有的话）
+        SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
     }
 
     return true;
@@ -52,5 +53,11 @@ void OpenEngine::CleanUp()
     {
         delete gfxInstance;
         gfxInstance = nullptr;
+    }
+
+    if(timer)
+    {
+        delete timer;
+        timer = nullptr;
     }
 }

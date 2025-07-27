@@ -9,6 +9,7 @@
 #### 第一阶段 Period One
 
 + 场景系统 `Shaoyang Liu`
++ 时间同步系统 `Shaoyang Liu`
 + 资源系统 `Qiyuan Liu`
 + 音效系统 `Teng Huang`
 

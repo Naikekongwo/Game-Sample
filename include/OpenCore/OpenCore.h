@@ -5,6 +5,7 @@
 // 引擎的核心
 
 #include "GfxCore.h"
+#include "Timer.h"
 
 class OpenEngine
 {
@@ -14,6 +15,7 @@ class OpenEngine
     void CleanUp();
 
     private:
+    Timer* timer;
     GFXinstance* gfxInstance;
 };
 

@@ -3,5 +3,9 @@
 
 // StageController.h
 // 场景控制器的头
+#include "Stage.h"
+
+class StageController {
+};
 
 #endif //_STAGECONTROLLER_H_
