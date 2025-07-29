@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 project(Eclipsea CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_EXTENSIONS OFF)
 
 # 源文件
 file(GLOB_RECURSE SOURCE_FILES
@@ -16,7 +17,7 @@ include_directories("${CMAKE_SOURCE_DIR}/include")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 # SDL2 库链接
-set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_image SDL2_mixer)
+set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_mixer)
 target_link_libraries(Eclipsea PRIVATE ${SDL2_LIBRARIES})
 
 # 加上图标（即resources连接）

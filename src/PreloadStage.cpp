@@ -3,6 +3,16 @@
 
 
 #include "Stage/PreloadStage.h"
+#include "OpenCore/Macros.h"
+
+PreloadStage::PreloadStage(SDL_Renderer* render, ResourceManager *resMana, SoundEffectManager *sfxMana)
+{
+    renderer = renderer;
+    resourceManager = resMana;
+    sfxManager = sfxMana;
+
+    resourceManager->LoadMusicAsync(0, TEST_MUSIC); // 加载背景音乐
+}
 
 bool PreloadStage::handlEvents(SDL_Event* event)
 {
@@ -14,9 +24,9 @@ void PreloadStage::onUpdate()
 {
     if(StartUp==0)
     {
-        musicd.loadBGM("assets/audio/test.mp3");
-        musicd.setVolume(64);
-        musicd.playBGM();
+        sfxManager->loadBGMR(0);
+        sfxManager->setVolume(64);
+        sfxManager->playBGM();
         StartUp = 1; // 标记为已播放
     }
 }

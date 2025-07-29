@@ -4,34 +4,28 @@
 
 #include "Stage/StageController.h"
 
-StageController::~StageController()
-{
-    // 资源回收机制
-    // 如果当前场景仍未得到销毁，即销毁
-    if(currentStage) {
-        delete currentStage;
-        currentStage = nullptr;
-    }
-}
 
 
-void StageController::changeStage(Stage* newStage)
+void StageController::changeStage(std::unique_ptr<Stage> newStage)
 {
-    delete currentStage; // 删除旧的场景
-    currentStage = newStage; // 切换到新的场景
+    // [SHAOYANG] 2025/7/29
+    // 已经全部换用unique_ptr来管理对象
+    currentStage = std::move(newStage);
 }
 
 bool StageController::handlEvents(SDL_Event* event)
 {
-    return currentStage->handlEvents(event);
+    return (currentStage)?currentStage->handlEvents(event):false;
 }
 
 void StageController::onUpdate()
 {
-    currentStage->onUpdate();
+    if(currentStage)
+        currentStage->onUpdate();
 }
 
 void StageController::onRender()
 {
-    currentStage->onRender();
+    if(currentStage)
+        currentStage->onRender();
 }

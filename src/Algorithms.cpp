@@ -1,3 +1,6 @@
+// Algorithms.cpp
+// 图形算法的实现
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "OpenCore/GfxCore.h"
 

@@ -4,11 +4,11 @@
 // Stage.h
 // 场景的基类
 
+#include "OpenCore/SoundEffect.h"
 #include <SDL2/SDL.h>
 
 class Stage{
     public:
-    Stage(SDL_Renderer* render) : renderer(render) {};
     ~Stage() = default;
 
     // 虚函数部分
@@ -24,8 +24,9 @@ class Stage{
 
 
     protected:
-    SDL_Renderer* renderer = nullptr;
-
+    SDL_Renderer* renderer = nullptr; //渲染器
+    ResourceManager* resourceManager = nullptr; // 资源管理器
+    SoundEffectManager* sfxManager = nullptr; // 音效管理器
 };
 
 #endif //_STAGE_H_

@@ -6,14 +6,14 @@
 
 #include "StageController.h"
 
-#include "OpenCore/Music.h"
+#include "OpenCore/SoundEffect.h"
 
 class PreloadStage : public Stage
 {
-    public:
-    PreloadStage(SDL_Renderer* render) : Stage(render) {};
+public:
+    PreloadStage(SDL_Renderer* render, ResourceManager *resMana, SoundEffectManager *sfxMana);
 
-    bool handlEvents(SDL_Event* event) override;
+    bool handlEvents(SDL_Event *event) override;
 
     void onUpdate() override;
 
@@ -21,12 +21,9 @@ class PreloadStage : public Stage
 
     // 以上则为事件处理、事件更新、渲染的逻辑重写
 
-    private:
+private:
     int StartUp = 0;
     // 0为未播放
-
-    MusicSystem musicd;
 };
-
 
 #endif //_PRELOADSTAGE_H_

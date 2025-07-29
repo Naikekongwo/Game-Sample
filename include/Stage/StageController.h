@@ -7,16 +7,16 @@
 
 #include "PreloadStage.h"
 
+#include <memory>
 #include <iostream>
 #include <vector>
 
 class StageController {
     public:
-    StageController() = default;
-    ~StageController();
+    ~StageController() = default;
 
     // 切换场景
-    void changeStage(Stage* newStage);
+    void changeStage(std::unique_ptr<Stage> newStage);
 
     // 处理事件的公共接口
     bool handlEvents(SDL_Event* event);
@@ -28,7 +28,7 @@ class StageController {
     void onRender();
     
     private:
-    Stage* currentStage = nullptr;
+    std::unique_ptr<Stage> currentStage; // 当前场景
 };
 
 #endif //_STAGECONTROLLER_H_
