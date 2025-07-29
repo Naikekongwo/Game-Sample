@@ -1,4 +1,4 @@
-#include "Music.h"
+#include "OpenCore/Music.h"
 
 // 构造函数：初始化音频系统和设置默认音量
 MusicSystem::MusicSystem() {

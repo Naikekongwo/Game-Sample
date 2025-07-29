@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.h"
-
+#include "Stage/StageController.h"
 
 bool OpenEngine::Run()
 {
@@ -25,6 +25,12 @@ bool OpenEngine::MainLoop()
 {
     bool should_close = false;
     SDL_Event event;
+
+    StageController sCon;
+
+    PreloadStage pStage(gfxInstance->getRenderer());
+    sCon.changeStage(&pStage);
+
     
     while(!should_close)
     {
@@ -35,11 +41,18 @@ bool OpenEngine::MainLoop()
             {
                 should_close = true;
             }
+            else
+            {
+                sCon.handlEvents(&event);
+            }
         }
 
         timer->Tick();
 
         SDL_Delay(timer->getDelayTime()); // 限制帧率，避免CPU飙高
+
+        sCon.onUpdate();
+        sCon.onRender();
 
         SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
     }

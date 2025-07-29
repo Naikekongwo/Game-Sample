@@ -8,6 +8,8 @@
 // 资源宏定义
 #define RES_GAME_ICON "assets/icon.png"
 
+#define TEST_MUSIC "assets/audio/test.mp3"
+
 
 // 图形宏定义
 #define GFX_WINDOW_WIDTH 1280
