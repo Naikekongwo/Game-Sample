@@ -3,7 +3,6 @@
 
 // 构造函数：初始化音频系统和设置默认音量
 SoundEffectManager::SoundEffectManager(ResourceManager* res) {
-    SDL_Init(SDL_INIT_AUDIO);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     volume = MIX_MAX_VOLUME;
     resourceManager = res; // 保存资源管理器指针
@@ -17,7 +16,6 @@ SoundEffectManager::~SoundEffectManager() {
     }
     soundEffects.clear();
     Mix_CloseAudio();
-    SDL_Quit();
 }
 
 // 加载背景音乐文件

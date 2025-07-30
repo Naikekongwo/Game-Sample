@@ -9,27 +9,42 @@
 
 bool OpenEngine::Run()
 {
-    gfxInstance = new GFXinstance();
-
-    // 初始化图形核心，若失败则退出
-    if(!gfxInstance->Init()) { return false; }
-    // 初始化资源管理器
-    resManager = &ResourceManager::Get();
-    // 初始化音效管理器
-    sfxManager = new SoundEffectManager(resManager);
-    // 初始化场景管理器
-    sController = new StageController();
-    // 初始化时间管理器
-    timer = new Timer();
+    // 初始化函数
+    if(!Initialize()) { return false; }
 
     // 主循环
     if(!MainLoop()) { return false; }
 
-    // 回收资源
-    CleanUp();
-
     // 生命周期结束
     return true;
+}
+
+
+bool OpenEngine::Initialize()
+{
+    // 创建 GFX 实例
+    gfxInstance = std::make_unique<GFXinstance>();
+
+    // 初始化 GFX 实例 (若失败直接退出)
+    if(!gfxInstance->Init()) return false;
+
+    // 创建资源管理器实例
+    resManager = &ResourceManager::Get();
+
+    // 初始化资源管理器
+    resManager->SetRenderer(gfxInstance->getRenderer());
+
+    // 创建音效管理器实例
+    sfxManager = std::make_unique<SoundEffectManager>(resManager);
+
+    // 创建场景控制器实例
+    sController = std::make_unique<StageController>();
+
+    // 创建计时器实例
+    timer = std::make_unique<Timer>();
+
+    return true;
+    // 初始化成功
 }
 
 bool OpenEngine::MainLoop()
@@ -37,7 +52,7 @@ bool OpenEngine::MainLoop()
     bool should_close = false;
     SDL_Event event;
     
-    sController->changeStage(std::make_unique<PreloadStage>(gfxInstance->getRenderer(), resManager, sfxManager));
+    sController->changeStage(std::make_unique<PreloadStage>(gfxInstance->getRenderer(), resManager, sfxManager.get()));
 
     while(!should_close)
     {
@@ -55,25 +70,14 @@ bool OpenEngine::MainLoop()
         SDL_Delay(timer->getDelayTime()); // 限制帧率，避免CPU飙高
 
         sController->onUpdate();
+        SDL_RenderClear(gfxInstance->getRenderer());
         sController->onRender();
 
+        SDL_RenderPresent(gfxInstance->getRenderer());
+#if DEBUG
         SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
+#endif // DEBUG时会启用
     }
 
     return true;
-}
-
-void OpenEngine::CleanUp()
-{
-    if(gfxInstance)
-    {
-        delete gfxInstance;
-        gfxInstance = nullptr;
-    }
-
-    if(timer)
-    {
-        delete timer;
-        timer = nullptr;
-    }
 }

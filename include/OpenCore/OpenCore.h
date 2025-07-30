@@ -9,19 +9,22 @@
 #include "ResourceManager.h"
 #include "Timer.h"
 
+#include <memory>
+
 class OpenEngine
 {
     public:
     bool Run();
+    bool Initialize();
     bool MainLoop();
-    void CleanUp();
 
     private:
-    GFXinstance* gfxInstance;
-    ResourceManager* resManager;
-    SoundEffectManager* sfxManager;
-    StageController* sController;
-    Timer* timer;
+    std::unique_ptr<GFXinstance> gfxInstance;
+    std::unique_ptr<SoundEffectManager> sfxManager;
+    std::unique_ptr<StageController> sController;
+    std::unique_ptr<Timer> timer;
+
+    ResourceManager* resManager; // 这个不用智能指针
 };
 
 #endif //_OPENCORE_H_

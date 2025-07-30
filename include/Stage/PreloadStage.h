@@ -24,6 +24,8 @@ public:
 private:
     int StartUp = 0;
     // 0为未播放
+
+    std::future<void> texture1;
 };
 
 #endif //_PRELOADSTAGE_H_

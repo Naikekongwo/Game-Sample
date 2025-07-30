@@ -4,8 +4,13 @@
 void SDLDeleter::operator()(Mix_Music* music) const {
     if (music) Mix_FreeMusic(music);
 }
+
 void SDLDeleter::operator()(Mix_Chunk* chunk) const {
     if (chunk) Mix_FreeChunk(chunk);
+}
+
+void SDLDeleter::operator()(SDL_Texture* texture) const {
+    if (texture) SDL_DestroyTexture(texture);
 }
 
 ResourceManager::ResourceManager() {
@@ -59,6 +64,32 @@ Mix_Chunk* ResourceManager::GetSound(short id) {
     return (it != soundCache_.end()) ? it->second.get() : nullptr;
 }
 
+
+void ResourceManager::LoadTexture(short id, const std::string &path) {
+    // Placeholder for texture loading logic
+    // SDL_Texture* texture = LoadTextureFromFile(path);
+    // if (texture) textureCache_[id] = texture;
+    std::lock_guard<std::mutex> lock(textureMutex_);
+    if(textureCache_.count(id)) return;
+
+    TexturePtr texture(Algorithms::STB_SDL_LOAD(path, renderer));
+    if(!texture)
+    {
+        LogError("STB_SDL_LOAD failed for path: " + path);
+        return;
+    }
+
+    textureCache_[id] = texture.release();
+}
+
+SDL_Texture* ResourceManager::GetTexture(short id) {
+    std::lock_guard<std::mutex> lock(textureMutex_);
+    auto it = textureCache_.find(id);
+    return (it != textureCache_.end()) ? it->second : nullptr;
+}
+
+
+
 std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string& path) {
     return EnqueueTask([this, id, path] {
         LoadMusic(id, path);
@@ -71,6 +102,12 @@ std::future<void> ResourceManager::LoadSoundAsync(short id, const std::string& p
     });
 }
 
+std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string &path) {
+    return EnqueueTask([this, id, path] {
+        LoadTexture(id, path);
+    });
+}
+
 void ResourceManager::ClearAll() {
     StopQueue();
     {
@@ -80,6 +117,10 @@ void ResourceManager::ClearAll() {
     {
         std::lock_guard<std::mutex> lock(soundMutex_);
         soundCache_.clear();
+    }
+    {
+        std::lock_guard<std::mutex> lock(textureMutex_);
+        textureCache_.clear();
     }
     std::cout << "All resources cleared.\n";
 }
@@ -115,4 +156,8 @@ void ResourceManager::StopQueue() {
 
 void ResourceManager::LogError(const std::string& msg) {
     std::cerr << "[ResourceManager] ERROR: " << msg << "\n";
+}
+
+void ResourceManager::SetRenderer(SDL_Renderer* render) {
+    renderer = render;
 }

@@ -2,6 +2,11 @@
 #define _RESOURCE_MANAGER_H_
 
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL.h>
+
+#include "GfxCore.h"
+// 引用图形核心，方便使用其算法加载材质
+
 #include <memory>
 #include <unordered_map>
 #include <string>
@@ -14,14 +19,18 @@
 struct SDLDeleter {
     void operator()(Mix_Music* music) const;
     void operator()(Mix_Chunk* chunk) const;
+    void operator()(SDL_Texture* texture) const;
 };
 
 using MusicPtr = std::unique_ptr<Mix_Music, SDLDeleter>;
 using SoundPtr = std::unique_ptr<Mix_Chunk, SDLDeleter>;
+using TexturePtr = std::unique_ptr<SDL_Texture, SDLDeleter>;
 
 class ResourceManager {
 public:
     static ResourceManager& Get();
+
+    void SetRenderer(SDL_Renderer* renderer);
 
     void LoadMusic(short id, const std::string& path);
     Mix_Music* GetMusic(short id);
@@ -29,14 +38,20 @@ public:
     void LoadSound(short id, const std::string& path);
     Mix_Chunk* GetSound(short id);
 
+    void LoadTexture(short id, const std::string &path);
+    SDL_Texture* GetTexture(short id);
+
     std::future<void> LoadMusicAsync(short id, const std::string& path);
     std::future<void> LoadSoundAsync(short id, const std::string& path);
+    std::future<void> LoadTextureAsync(short id, const std::string &path);
 
     void ClearAll();
 
 private:
     ResourceManager();
     ~ResourceManager();
+
+    SDL_Renderer* renderer; // 渲染器指针
 
     void LogError(const std::string& msg);
     void StartWorker();
@@ -50,6 +65,9 @@ private:
 
     std::mutex soundMutex_;
     std::unordered_map<short, SoundPtr> soundCache_;
+
+    std::mutex textureMutex_;
+    std::unordered_map<short, SDL_Texture*> textureCache_;
 
     std::thread worker_;
     std::mutex queueMutex_;
