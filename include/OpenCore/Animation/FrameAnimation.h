@@ -9,7 +9,7 @@
 class FrameAnimation : public IAnimation
 {
     public:
-    FrameAnimation(float StartTime, int totalFrames, int FPS, bool isLooping);
+    FrameAnimation(int totalFrames, int FPS, bool isLooping);
     // 构造方法
 
     void onUpdate(float totalTime, AnimationState& state) override;
@@ -18,15 +18,13 @@ class FrameAnimation : public IAnimation
     bool isFinished() const override;
     // 检查动画是否完成
 
-    void reset(float totalTime) override;
+    void reset(float totalTime, AnimationState& state) override;
     // 重置动画状态
 
     bool isLoop() override { return isLooping; }
     // 检查动画是否循环
 
     private:
-    float AnimationStartTime = 0.0f;
-
     int currentFrame; // 当前帧索引
     int totalFrames; // 总帧数
     int FPS; // 帧率

@@ -10,9 +10,6 @@ PreloadStage::PreloadStage(SDL_Renderer* render, ResourceManager *resMana, Sound
     sfxManager = sfxMana;
     this->timer = timer;
 
-    anistate = std::make_unique<AnimationState>();
-    headAnimation = std::make_unique<FrameAnimation>(timer->getTotalTime(), 3, 3, true);
-
     LoadResources();
 }
 
@@ -69,21 +66,44 @@ void PreloadStage::onUpdate()
         stageState = 2;
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
+        std::unique_ptr<Sprite> heads = std::make_unique<Sprite>(1);
+        // 创建人头精灵
+        heads->setRect(512, 232, 256, 256);
+        // 设置渲染区域
+        heads->setTextureScale(256,256);
+        // 设置单帧尺寸
+
+        std::shared_ptr<FrameAnimation> headAnim = std::make_shared<FrameAnimation>(3, 3, true);
+        // 创建帧动画
+        
+        heads->setAnimation(headAnim);
+        
+        heads->resetAnime(timer->getTotalTime());
+
+        sprites.push_back(std::move(heads));
+
     }
 
     if (stageState == 2)
     {
         // 更新状态
-        headAnimation->onUpdate(timer->getTotalTime(), *anistate);
-        
+       for(auto &sprite: sprites)
+       {
+        //遍历精灵表
+        sprite->onUpdate(timer->getTotalTime());
+       }
     }
 }
 
 void PreloadStage::onRender()
 {
-    if (stageState == 2) {
-        SDL_Texture* headTexture = resourceManager->GetTexture(1);
-        SDL_Rect srcRect = { anistate->frameIndex * 256, 0,256, 256};
-        SDL_RenderCopy(renderer, headTexture, &srcRect, NULL);
+    if (stageState == 2)
+    {
+        // 更新状态
+       for(auto &sprite: sprites)
+       {
+        //遍历精灵表
+        sprite->onRender(renderer);
+       }
     }
 }

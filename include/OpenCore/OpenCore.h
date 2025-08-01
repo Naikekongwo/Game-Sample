@@ -4,7 +4,7 @@
 // OpenCore.h
 // 引擎的核心
 
-#include "GfxCore.h"
+#include "Graphics/GfxCore.h"
 #include "Macros.h"
 #include "ResourceManager.h"
 #include "SoundEffect.h"

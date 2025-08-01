@@ -6,9 +6,16 @@
 
 #include "StageController.h"
 
+#include "OpenCore/Graphics/Sprite.h"
+
+
+// 前向声明区域
 struct AnimationState;
 struct TextureLoadTask;
 class FrameAnimation;
+
+// 精灵的前向声明
+class Sprite;
 
 class PreloadStage : public Stage
 {
@@ -30,9 +37,7 @@ private:
     // 0为未播放
 
     std::vector<TextureLoadTask> textureTasks;
-    
-    std::unique_ptr<AnimationState> anistate;
-    std::unique_ptr<FrameAnimation> headAnimation;
+    std::vector<std::unique_ptr<Sprite>> sprites;    
 };
 
 #endif //_PRELOADSTAGE_H_

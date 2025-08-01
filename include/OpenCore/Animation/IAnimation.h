@@ -14,6 +14,7 @@ struct AnimationState
     float transparency = 1.0f; // 透明度
     float scaleX = 1.0f;       // X轴缩放
     float scaleY = 1.0f; // Y轴缩放
+    float AnimeStartTime = 0.0f; // 动画开始时间
 };
 
 class IAnimation
@@ -25,7 +26,7 @@ class IAnimation
     // virtual void onRender(SDL_Renderer* renderer) = 0;
     // 弃用！！！！ 不要在动画内部实现渲染方法！
     virtual bool isFinished() const = 0;
-    virtual void reset(float totalTime) = 0;
+    virtual void reset(float totalTime, AnimationState& state) = 0;
 
     virtual bool isLoop() = 0;
 };
