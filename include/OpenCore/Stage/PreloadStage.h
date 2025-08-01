@@ -5,14 +5,17 @@
 // 预加载页面
 
 #include "StageController.h"
-#include "OpenCore/SoundEffect.h"
 
-#include <future>
+struct AnimationState;
+struct TextureLoadTask;
+class FrameAnimation;
 
 class PreloadStage : public Stage
 {
 public:
-    PreloadStage(SDL_Renderer* render, ResourceManager *resMana, SoundEffectManager *sfxMana);
+    PreloadStage(SDL_Renderer* render, ResourceManager *resMana, SoundEffectManager *sfxMana, Timer* timer);
+
+    void LoadResources();
 
     bool handlEvents(SDL_Event *event) override;
 
@@ -23,10 +26,13 @@ public:
     // 以上则为事件处理、事件更新、渲染的逻辑重写
 
 private:
-    int StartUp = 0;
+    int stageState = 0;
     // 0为未播放
 
-    std::future<void> texture1;
+    std::vector<TextureLoadTask> textureTasks;
+    
+    std::unique_ptr<AnimationState> anistate;
+    std::unique_ptr<FrameAnimation> headAnimation;
 };
 
 #endif //_PRELOADSTAGE_H_

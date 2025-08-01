@@ -80,13 +80,13 @@ void ResourceManager::LoadTexture(short id, const std::string &path) {
         return;
     }
 
-    textureCache_[id] = texture.release();
+    textureCache_[id] = std::move(texture);
 }
 
 SDL_Texture* ResourceManager::GetTexture(short id) {
     std::lock_guard<std::mutex> lock(textureMutex_);
     auto it = textureCache_.find(id);
-    return (it != textureCache_.end()) ? it->second : nullptr;
+    return (it != textureCache_.end()) ? it->second.get() : nullptr;
 }
 
 

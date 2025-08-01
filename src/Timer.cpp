@@ -2,6 +2,11 @@
 
 #include "OpenCore/Timer.h"
 
+Timer::Timer(int TargetFrameRate)
+{
+    targetFPS = TargetFrameRate;
+    frameLimit = 1.0f / targetFPS; // 计算每帧的时间限制
+}
 
 void Timer::Tick()
 {
@@ -14,7 +19,9 @@ void Timer::Tick()
     if(lastTime.time_since_epoch().count() == 0) {
         // 如果是第一次调用，初始化 lastTime
         lastTime = currentTime;
+        startTime = currentTime;
         deltaTime = 0.0f;
+        totalTime = 0.0f;
     } else {
         // 计算上一帧到当前帧的时间差
         duration<float> frameDuration = currentTime - lastTime;
@@ -23,4 +30,8 @@ void Timer::Tick()
         // 更新 lastTime 为当前时间
         lastTime = currentTime;
     }
+
+    duration<float> totalDuration = currentTime - startTime;
+    totalTime = totalDuration.count();
 }
+

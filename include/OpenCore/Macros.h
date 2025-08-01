@@ -7,6 +7,7 @@
 
 // 资源宏定义
 #define RES_GAME_ICON "assets/icon.png"
+#define HEADS_ICON "assets/ui/heads.jpg"
 
 #define TEST_MUSIC "assets/audio/test.mp3"
 

@@ -41,7 +41,7 @@ bool OpenEngine::Initialize()
     sController = std::make_unique<StageController>();
 
     // 创建计时器实例
-    timer = std::make_unique<Timer>();
+    timer = std::make_unique<Timer>(30);
 
     return true;
     // 初始化成功
@@ -52,7 +52,7 @@ bool OpenEngine::MainLoop()
     bool should_close = false;
     SDL_Event event;
     
-    sController->changeStage(std::make_unique<PreloadStage>(gfxInstance->getRenderer(), resManager, sfxManager.get()));
+    sController->changeStage(std::make_unique<PreloadStage>(gfxInstance->getRenderer(), resManager, sfxManager.get(), timer.get()));
 
     while(!should_close)
     {
@@ -74,9 +74,7 @@ bool OpenEngine::MainLoop()
         sController->onRender();
 
         SDL_RenderPresent(gfxInstance->getRenderer());
-#if DEBUG
         SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
-#endif // DEBUG时会启用
     }
 
     return true;

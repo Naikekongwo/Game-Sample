@@ -7,6 +7,8 @@
 #include "OpenCore/SoundEffect.h"
 #include <SDL2/SDL.h>
 
+class Timer; // 前向定义
+
 class Stage{
     public:
     ~Stage() = default;
@@ -27,6 +29,7 @@ class Stage{
     SDL_Renderer* renderer = nullptr; //渲染器
     ResourceManager* resourceManager = nullptr; // 资源管理器
     SoundEffectManager* sfxManager = nullptr; // 音效管理器
+    Timer* timer = nullptr;
 };
 
 #endif //_STAGE_H_

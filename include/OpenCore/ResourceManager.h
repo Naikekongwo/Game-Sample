@@ -13,6 +13,16 @@
 #include <condition_variable>
 #include <thread>
 
+struct TextureLoadTask
+{
+    bool isFinished = false;
+    std::string path;
+    std::future<void> future;
+    short id;
+};
+
+
+
 struct SDLDeleter {
     void operator()(Mix_Music* music) const;
     void operator()(Mix_Chunk* chunk) const;
@@ -42,7 +52,7 @@ public:
     std::future<void> LoadSoundAsync(short id, const std::string& path);
     std::future<void> LoadTextureAsync(short id, const std::string &path);
 
-    void ClearAll();
+    void ClearAll();    
 
 private:
     ResourceManager();
@@ -64,7 +74,7 @@ private:
     std::unordered_map<short, SoundPtr> soundCache_;
 
     std::mutex textureMutex_;
-    std::unordered_map<short, SDL_Texture*> textureCache_;
+    std::unordered_map<short, TexturePtr> textureCache_;
 
     std::thread worker_;
     std::mutex queueMutex_;

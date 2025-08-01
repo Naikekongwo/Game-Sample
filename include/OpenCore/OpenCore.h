@@ -11,6 +11,8 @@
 #include "Timer.h"
 #include "Stage/StageController.h"
 
+#include "Animation/FrameAnimation.h"
+
 #include <memory>
 
 class OpenEngine
