@@ -5,8 +5,9 @@
 // 预加载页面
 
 #include "StageController.h"
-
 #include "OpenCore/SoundEffect.h"
+
+#include <future>
 
 class PreloadStage : public Stage
 {

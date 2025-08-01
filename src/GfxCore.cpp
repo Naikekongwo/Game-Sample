@@ -1,7 +1,7 @@
 // GfxCoe.cpp
 // 负责 GFX_CORE 的方法实现
 
-#include "OpenCore/GfxCore.h"
+#include "OpenCore/OpenCore.h"
 
 
 GFXinstance::~GFXinstance()

@@ -1,12 +1,15 @@
 #ifndef SOUNDEFFECT_H
 #define SOUNDEFFECT_H
 
-#include "OpenCore/ResourceManager.h"
-
 #include <string>
 #include <map>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+
+
+// 前向声明资源管理器类
+// 这样是为了引用资源管理器类造成的循环依赖问题
+class ResourceManager;
 
 class SoundEffectManager {
 public:

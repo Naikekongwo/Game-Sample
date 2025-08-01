@@ -1,4 +1,5 @@
 #include "OpenCore/ResourceManager.h"
+#include "OpenCore/GfxCore.h"
 #include <iostream>
 
 void SDLDeleter::operator()(Mix_Music* music) const {

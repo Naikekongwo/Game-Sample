@@ -1,9 +1,7 @@
 // PreloadStage.cpp
 // 预加载页面的实现
 
-
-#include "Stage/PreloadStage.h"
-#include "OpenCore/Macros.h"
+#include "OpenCore/OpenCore.h"
 
 PreloadStage::PreloadStage(SDL_Renderer* render, ResourceManager *resMana, SoundEffectManager *sfxMana)
 {

@@ -5,9 +5,11 @@
 // 引擎的核心
 
 #include "GfxCore.h"
-#include "../Stage/StageController.h"
+#include "Macros.h"
 #include "ResourceManager.h"
+#include "SoundEffect.h"
 #include "Timer.h"
+#include "Stage/StageController.h"
 
 #include <memory>
 

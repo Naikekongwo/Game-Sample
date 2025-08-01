@@ -30,7 +30,7 @@ set(ENVIRONMENT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/assets")
 set(ENVIRONMENT_DEST_DIR "${CMAKE_SOURCE_DIR}/build")
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "正在复制游戏资源文件到构建目录（../build）"
+    COMMAND ${CMAKE_COMMAND} -E echo "Copying game assets to build directory..."
     COMMAND ${CMAKE_COMMAND} -E make_directory "${ENVIRONMENT_DEST_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${ENVIRONMENT_SOURCE_DIR}" "${ENVIRONMENT_DEST_DIR}"
     COMMENT "Post-build: Copying environment directory contents to ../build"

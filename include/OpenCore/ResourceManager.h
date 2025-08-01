@@ -4,9 +4,6 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL.h>
 
-#include "GfxCore.h"
-// 引用图形核心，方便使用其算法加载材质
-
 #include <memory>
 #include <unordered_map>
 #include <string>

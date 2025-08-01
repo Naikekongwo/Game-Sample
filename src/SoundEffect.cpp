@@ -1,4 +1,5 @@
 #include "OpenCore/SoundEffect.h"
+#include "OpenCore/ResourceManager.h"
 
 
 // 构造函数：初始化音频系统和设置默认音量
