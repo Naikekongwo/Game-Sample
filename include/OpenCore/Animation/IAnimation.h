@@ -10,11 +10,12 @@
 // 例如透明度、尺寸、或者是位置等
 struct AnimationState
 {
-    int frameIndex = 0; // 当前帧索引
-    float transparency = 1.0f; // 透明度
-    float scaleX = 1.0f;       // X轴缩放
-    float scaleY = 1.0f; // Y轴缩放
-    float AnimeStartTime = 0.0f; // 动画开始时间
+    int frameIndex = 0;           // 当前帧索引
+    float transparency = 1.0f;    // 透明度
+    float scaleX = 1.0f;          // X轴缩放
+    float scaleY = 1.0f;          // Y轴缩放
+    float AnimeStartTime = 0.0f;  // 动画开始时间
+    float angle = 0.0f;           // 角度
 };
 
 class IAnimation

@@ -13,12 +13,22 @@ file(GLOB_RECURSE SOURCE_FILES
 )
 include_directories("${CMAKE_SOURCE_DIR}/include")
 
+# 动画类源文件
+set(ANIMATION_SOURCES
+    src/MoveAnimation.cpp
+    src/FadeAnimation.cpp
+    src/ScaleAnimation.cpp
+    src/RotateAnimation.cpp
+)
+
 # 可执行文件
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
 
 # SDL2 库链接
 set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_mixer)
 target_link_libraries(Eclipsea PRIVATE ${SDL2_LIBRARIES})
+
 
 # 加上图标（即resources连接）
 set(RESOURCE_OBJECT "${CMAKE_SOURCE_DIR}/resources/resource.o")
