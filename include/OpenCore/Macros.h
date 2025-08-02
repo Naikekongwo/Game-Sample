@@ -8,6 +8,8 @@
 // 资源宏定义
 #define RES_GAME_ICON "assets/icon.png"
 #define HEADS_ICON "assets/ui/heads.jpg"
+#define CHARA_TEXTURE "assets/character.png"
+#define LOADING_ICON "assets/ui/loading.jpg"
 
 #define TEST_MUSIC "assets/audio/test.mp3"
 

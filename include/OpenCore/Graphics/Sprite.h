@@ -26,17 +26,19 @@ class Sprite
 
     void onRender(SDL_Renderer* renderer);
 
-    void setRect(int x, int y, int w, int h);
-
     void resetAnime(float totalTime);
+
+    void setPosition(int x, int y);
+
+    void setScale(float scaleX, float scaleY);
+
+    void setAnchor(int anchor);
 
     private:
     // 纹理在资源管理器中的ID
     SDL_Texture* texture;
     // 是否为多帧贴图
     bool isMultiFrame = false;
-    // 渲染范围
-    SDL_Rect renderRect = {0,0,0,0};
     // 状态
     std::unique_ptr<AnimationState> anistate;
     // 动画对象的智能指针
@@ -45,6 +47,8 @@ class Sprite
     int width, height;
     // 动态贴图的布局
     int xCount, yCount;
+
+    void GetRect(SDL_Rect &rect);
 };
 
 #endif //_SPRITE_H_
