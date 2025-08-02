@@ -16,6 +16,8 @@ bool OpenEngine::Run()
     if(!MainLoop()) { return false; }
 
     // 生命周期结束
+    if(!CleanUp()) { return false; }
+
     return true;
 }
 
@@ -23,7 +25,7 @@ bool OpenEngine::Run()
 bool OpenEngine::Initialize()
 {
     // 创建 GFX 实例
-    gfxInstance = std::make_unique<GFXinstance>();
+    gfxInstance = std::make_unique<GraphicsInstance>();
 
     // 初始化 GFX 实例 (若失败直接退出)
     if(!gfxInstance->Init()) return false;
@@ -74,8 +76,20 @@ bool OpenEngine::MainLoop()
         sController->onRender();
 
         SDL_RenderPresent(gfxInstance->getRenderer());
-        SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
+        // SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
     }
 
+    return true;
+}
+
+
+bool OpenEngine::CleanUp()
+{
+    sController.reset();
+    timer.reset();
+    sfxManager.reset();
+    ResourceManager::Get().SetRenderer(nullptr);
+    gfxInstance.reset();
+    
     return true;
 }

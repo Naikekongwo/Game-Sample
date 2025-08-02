@@ -1,13 +1,7 @@
-#include "OpenCore/ResourceManager.h"
-#include "OpenCore/Graphics/GfxCore.h"
-#include <iostream>
+#include "OpenCOre/OpenCore.h"
 
 void SDLDeleter::operator()(Mix_Music* music) const {
     if (music) Mix_FreeMusic(music);
-}
-
-void SDLDeleter::operator()(Mix_Chunk* chunk) const {
-    if (chunk) Mix_FreeChunk(chunk);
 }
 
 void SDLDeleter::operator()(SDL_Texture* texture) const {
@@ -15,11 +9,25 @@ void SDLDeleter::operator()(SDL_Texture* texture) const {
 }
 
 ResourceManager::ResourceManager() {
-    Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
+    bool result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
+    
+    // 输出初始化结果
+    if(!result) SDL_Log("ResourceManager::ResourceManager() failed to initialize SDL_Mixer");
+    else SDL_Log("ResourceManager::ResourceManager() SDL_Mixer was initialized successfully.");
+
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 }
-ResourceManager::~ResourceManager() {
+
+ResourceManager::~ResourceManager() { 
     ClearAll();
+    Mix_HaltMusic();
+    Mix_CloseAudio();
     Mix_Quit();
+
+    const char* errr = Mix_GetError();
+    
+    if(errr && *errr)
+        SDL_Log("ResourceManager::~ResourceManager() failed to clear memory or quit the SDL_Mixer %s", errr);    
 }
 
 ResourceManager& ResourceManager::Get() {
@@ -27,82 +35,68 @@ ResourceManager& ResourceManager::Get() {
     return instance;
 }
 
+
+// LoadMusic 加载音乐的同步函数
 void ResourceManager::LoadMusic(short id, const std::string& path) {
     std::lock_guard<std::mutex> lock(musicMutex_);
     if (musicCache_.count(id)) return;
 
     MusicPtr music(Mix_LoadMUS(path.c_str()));
     if (!music) {
-        LogError("Mix_LoadMUS failed: " + std::string(Mix_GetError()));
+        SDL_Log("Mix_LoadMUS failed: %s", std::string(Mix_GetError()));
         return;
     }
 
+    // SDL_Log 输出相关日志
+    SDL_Log("ResourceManager::LoadMusic music id %d loaded successfully.", id);
     musicCache_[id] = std::move(music);
 }
 
+// GetMusic 从资源库中获取音乐
 Mix_Music* ResourceManager::GetMusic(short id) {
     std::lock_guard<std::mutex> lock(musicMutex_);
     auto it = musicCache_.find(id);
+
+    // 报错输出日志
+    if(it == musicCache_.end()) SDL_Log("ResourceManger::GetMusic failed to get music id %d", id);
     return (it != musicCache_.end()) ? it->second.get() : nullptr;
 }
 
-void ResourceManager::LoadSound(short id, const std::string& path) {
-    std::lock_guard<std::mutex> lock(soundMutex_);
-    if (soundCache_.count(id)) return;
-
-    SoundPtr sound(Mix_LoadWAV(path.c_str()));
-    if (!sound) {
-        LogError("Mix_LoadWAV failed: " + std::string(Mix_GetError()));
-        return;
-    }
-
-    soundCache_[id] = std::move(sound);
-}
-
-Mix_Chunk* ResourceManager::GetSound(short id) {
-    std::lock_guard<std::mutex> lock(soundMutex_);
-    auto it = soundCache_.find(id);
-    return (it != soundCache_.end()) ? it->second.get() : nullptr;
-}
-
-
+// LoadTexture 加载纹理的同步函数
 void ResourceManager::LoadTexture(short id, const std::string &path) {
-    // Placeholder for texture loading logic
-    // SDL_Texture* texture = LoadTextureFromFile(path);
-    // if (texture) textureCache_[id] = texture;
     std::lock_guard<std::mutex> lock(textureMutex_);
     if(textureCache_.count(id)) return;
 
     TexturePtr texture(Algorithms::STB_SDL_LOAD(path, renderer));
     if(!texture)
     {
-        LogError("STB_SDL_LOAD failed for path: " + path);
+        SDL_Log("ResourceManager::LoadTexture failed to load texture id: %d", id);
         return;
     }
 
+    // SDL_Log 输出相关日志
+    SDL_Log("ResourceManager::LoadTexture loaded texture id %d", id);
     textureCache_[id] = std::move(texture);
 }
 
+// GetTexture 从资源库中获取纹理
 SDL_Texture* ResourceManager::GetTexture(short id) {
     std::lock_guard<std::mutex> lock(textureMutex_);
     auto it = textureCache_.find(id);
+
+    if(it == textureCache_.end()) SDL_Log("ResourceManager::GetTexture failed to get texture id %d", id);
     return (it != textureCache_.end()) ? it->second.get() : nullptr;
 }
 
 
-
+// LoadMusicAsync 加载音乐的异步函数
 std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string& path) {
     return EnqueueTask([this, id, path] {
         LoadMusic(id, path);
     });
 }
 
-std::future<void> ResourceManager::LoadSoundAsync(short id, const std::string& path) {
-    return EnqueueTask([this, id, path] {
-        LoadSound(id, path);
-    });
-}
-
+// LoadTextureAsync 加载纹理的异步函数
 std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string &path) {
     return EnqueueTask([this, id, path] {
         LoadTexture(id, path);
@@ -110,21 +104,25 @@ std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string 
 }
 
 void ResourceManager::ClearAll() {
+    SDL_Log("ResourceManager::ClearAll() the clear process started.");
     StopQueue();
+    SDL_Log("ResourceManager::CLearAll() Stopped the task queue successfully.");
+
     {
         std::lock_guard<std::mutex> lock(musicMutex_);
+        SDL_Log("ResourceManager::CLearAll() Clearing music cache, count=%d", (int)musicCache_.size());
         musicCache_.clear();
-    }
-    {
-        std::lock_guard<std::mutex> lock(soundMutex_);
-        soundCache_.clear();
+        SDL_Log("ResourceManager::ClearAll() successfully cleared all the music.");
     }
     {
         std::lock_guard<std::mutex> lock(textureMutex_);
+        SDL_Log("ResourceManager::ClearAll() Clearing texture cache, count=%d", (int)textureCache_.size());
         textureCache_.clear();
+        SDL_Log("ResourceManager::ClearAll() Texture cache cleared");
     }
-    std::cout << "All resources cleared.\n";
+    SDL_Log("ResourceManager::ClearAll() the clear process has finished");
 }
+
 
 void ResourceManager::StartWorker() {
     worker_ = std::thread([this] {
@@ -155,9 +153,6 @@ void ResourceManager::StopQueue() {
     if (worker_.joinable()) worker_.join();
 }
 
-void ResourceManager::LogError(const std::string& msg) {
-    std::cerr << "[ResourceManager] ERROR: " << msg << "\n";
-}
 
 void ResourceManager::SetRenderer(SDL_Renderer* render) {
     renderer = render;

@@ -4,10 +4,12 @@
 // Stage.h
 // 场景的基类
 
-#include "OpenCore/SoundEffect.h"
 #include <SDL2/SDL.h>
 
-class Timer; // 前向定义
+class ResourceManager;
+class SoundEffectManager;
+class Timer; 
+// 前向定义
 
 class Stage{
     public:

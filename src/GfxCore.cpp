@@ -4,7 +4,7 @@
 #include "OpenCore/OpenCore.h"
 
 
-GFXinstance::~GFXinstance()
+GraphicsInstance::~GraphicsInstance()
 {
     // 图形核心的析构函数
     SDL_DestroyRenderer(renderer);
@@ -12,7 +12,7 @@ GFXinstance::~GFXinstance()
     SDL_Quit();
 }
 
-bool GFXinstance::Init()
+bool GraphicsInstance::Init()
 {
     // 图形核心的初始化方法
 

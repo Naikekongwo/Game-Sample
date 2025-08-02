@@ -1,21 +1,15 @@
-#ifndef _PRELOADSTAGE_H_
-#define _PRELOADSTAGE_H_
-
 // PreloadStage.h
 // 预加载页面
 
-#include "StageController.h"
+#ifndef _PRELOADSTAGE_H_
+#define _PRELOADSTAGE_H_
 
-#include "OpenCore/Graphics/Sprite.h"
+#include "StageController.h"
 
 
 // 前向声明区域
-struct AnimationState;
 struct TextureLoadTask;
-class FrameAnimation;
-
-// 精灵的前向声明
-class Sprite;
+class SpriteManager;
 
 class PreloadStage : public Stage
 {
@@ -37,7 +31,7 @@ private:
     // 0为未播放
 
     std::vector<TextureLoadTask> textureTasks;
-    std::vector<std::unique_ptr<Sprite>> sprites;    
+    std::unique_ptr<SpriteManager> spriteManager;
 };
 
 #endif //_PRELOADSTAGE_H_

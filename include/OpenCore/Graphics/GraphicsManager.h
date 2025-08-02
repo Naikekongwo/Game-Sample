@@ -16,10 +16,10 @@ namespace Algorithms {
 };
 
 
-class GFXinstance
+class GraphicsInstance
 {
     public:
-    ~GFXinstance();
+    ~GraphicsInstance();
     
     bool Init();
 

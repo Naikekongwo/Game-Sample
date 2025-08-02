@@ -2,7 +2,7 @@
 // 图形算法的实现
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "OpenCore/Graphics/GfxCore.h"
+#include "OpenCore/Graphics/GraphicsManager.h"
 
 SDL_Surface* stbi_loadSurface(const char* filename)
 {

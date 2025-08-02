@@ -10,6 +10,8 @@ PreloadStage::PreloadStage(SDL_Renderer* render, ResourceManager *resMana, Sound
     sfxManager = sfxMana;
     this->timer = timer;
 
+    spriteManager = std::make_unique<SpriteManager>();
+
     LoadResources();
 }
 
@@ -59,14 +61,15 @@ void PreloadStage::onUpdate()
     if (allReady && stageState == 0) {
         stageState = 1;
 
-        sfxManager->loadBGMR(0); // BGM
+        sfxManager->loadBGM(0); // BGM
         sfxManager->playBGM();
         sfxManager->setVolume(64); // 加载背景音乐
 
         stageState = 2;
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
-        std::unique_ptr<Sprite> heads = std::make_unique<Sprite>(1);
+        
+        Sprite* heads = spriteManager->CreateSprite(1, 1);
         // 创建人头精灵
         heads->setRect(512, 232, 256, 256);
         // 设置渲染区域
@@ -80,18 +83,12 @@ void PreloadStage::onUpdate()
         
         heads->resetAnime(timer->getTotalTime());
 
-        sprites.push_back(std::move(heads));
-
     }
 
     if (stageState == 2)
     {
         // 更新状态
-       for(auto &sprite: sprites)
-       {
-        //遍历精灵表
-        sprite->onUpdate(timer->getTotalTime());
-       }
+       spriteManager->onUpdate(timer->getTotalTime());
     }
 }
 
@@ -99,11 +96,6 @@ void PreloadStage::onRender()
 {
     if (stageState == 2)
     {
-        // 更新状态
-       for(auto &sprite: sprites)
-       {
-        //遍历精灵表
-        sprite->onRender(renderer);
-       }
+       spriteManager->onRender(renderer);
     }
 }

@@ -16,7 +16,7 @@ class OpenEngine
     bool MainLoop();
 
     private:
-    std::unique_ptr<GFXinstance> gfxInstance;
+    std::unique_ptr<GraphicsInstance> gfxInstance;
     std::unique_ptr<SoundEffectManager> sfxManager;
     std::unique_ptr<StageController> sController;
     std::unique_ptr<Timer> timer;
@@ -52,7 +52,7 @@ bool OpenEngine::Run()
 仔细研究我们的**OpenCore.h**文件，你会发现它的引用列表是这样的：
 
 ```C++
-#include "GfxCore.h"
+#include "GraphicsManager.h"
 #include "Macros.h"
 #include "ResourceManager.h"
 #include "SoundEffect.h"

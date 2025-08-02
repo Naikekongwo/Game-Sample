@@ -1,5 +1,7 @@
 // Sprite.cpp
 // 精灵类的实现
+#include <SDL2/SDL.h>
+
 #include "OpenCore/ResourceManager.h"
 #include "OpenCore/Graphics/Sprite.h"
 #include "OpenCore/Animation/FrameAnimation.h"
@@ -57,6 +59,9 @@ void Sprite::onUpdate(float globalTime)
 
 void Sprite::onRender(SDL_Renderer* renderer)
 {
+    Uint8 alpha = static_cast<Uint8>(anistate->transparency * 255.0f);
+    SDL_SetTextureAlphaMod(texture, alpha);
+    
     if(isMultiFrame)
     {
         int frameIndex = anistate->frameIndex;
