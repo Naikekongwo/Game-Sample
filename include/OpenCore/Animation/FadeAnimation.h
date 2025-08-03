@@ -13,6 +13,7 @@ public:
     bool isLoop() override { return isLooping; } // 是否循环
 
 private:
+    float startTime = 0.0f; // 起始时间
     float startAlpha, endAlpha, duration; // 起始、结束透明度和持续时间
     bool isLooping; // 是否循环
     bool finished;  // 是否结束

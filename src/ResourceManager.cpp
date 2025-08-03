@@ -1,5 +1,26 @@
 #include "OpenCOre/OpenCore.h"
 
+
+bool ResourceManager::Init(SDL_Renderer* render)
+{
+    if(!render) 
+    {
+        SDL_Log("ResourceManager::Init() encountered a null renderer.");
+        return false;
+    }
+    this->renderer = render;
+
+    bool result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
+    
+    // 输出初始化结果
+    if(!result) SDL_Log("ResourceManager::ResourceManager() failed to initialize SDL_Mixer");
+    else SDL_Log("ResourceManager::ResourceManager() SDL_Mixer was initialized successfully.");
+
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+
+    return true;
+}
+
 void SDLDeleter::operator()(Mix_Music* music) const {
     if (music) Mix_FreeMusic(music);
 }
@@ -8,21 +29,13 @@ void SDLDeleter::operator()(SDL_Texture* texture) const {
     if (texture) SDL_DestroyTexture(texture);
 }
 
-ResourceManager::ResourceManager() {
-    bool result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
-    
-    // 输出初始化结果
-    if(!result) SDL_Log("ResourceManager::ResourceManager() failed to initialize SDL_Mixer");
-    else SDL_Log("ResourceManager::ResourceManager() SDL_Mixer was initialized successfully.");
-
-    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-}
-
-ResourceManager::~ResourceManager() { 
+void ResourceManager::CleanUp() { 
     ClearAll();
     Mix_HaltMusic();
     Mix_CloseAudio();
     Mix_Quit();
+
+    renderer = nullptr;
 
     const char* errr = Mix_GetError();
     
@@ -30,7 +43,7 @@ ResourceManager::~ResourceManager() {
         SDL_Log("ResourceManager::~ResourceManager() failed to clear memory or quit the SDL_Mixer %s", errr);    
 }
 
-ResourceManager& ResourceManager::Get() {
+ResourceManager& ResourceManager::getInstance() {
     static ResourceManager instance;
     return instance;
 }
@@ -92,20 +105,27 @@ SDL_Texture* ResourceManager::GetTexture(short id) {
 // LoadMusicAsync 加载音乐的异步函数
 std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string& path) {
     return EnqueueTask([this, id, path] {
+        ActiveTask_++;
         LoadMusic(id, path);
+        ActiveTask_--;
     });
 }
 
 // LoadTextureAsync 加载纹理的异步函数
 std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string &path) {
     return EnqueueTask([this, id, path] {
+        ActiveTask_++;
         LoadTexture(id, path);
+        ActiveTask_--;
     });
 }
 
 void ResourceManager::ClearAll() {
     SDL_Log("ResourceManager::ClearAll() the clear process started.");
     StopQueue();
+    while (ActiveTask_.load() > 0) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
     SDL_Log("ResourceManager::CLearAll() Stopped the task queue successfully.");
 
     {
@@ -151,9 +171,4 @@ void ResourceManager::StopQueue() {
     }
     queueCV_.notify_all();
     if (worker_.joinable()) worker_.join();
-}
-
-
-void ResourceManager::SetRenderer(SDL_Renderer* render) {
-    renderer = render;
 }

@@ -12,7 +12,7 @@
 #include "SoundEffectManager.h"
 #include "Graphics/GraphicsManager.h"
 #include "Animation/AnimationManager.h"
-#include "Graphics/SpriteManager.h"
+#include "Graphics/ElementManager.h"
 #include "Stage/StageController.h"
 
 #include <memory>
@@ -20,18 +20,22 @@
 class OpenEngine
 {
     public:
+    // 单例的获取函数
+    static OpenEngine& getInstance();
+
     bool Run();
     bool Initialize();
     bool MainLoop();
     bool CleanUp();
 
     private:
-    std::unique_ptr<GraphicsInstance> gfxInstance;
-    std::unique_ptr<SoundEffectManager> sfxManager;
     std::unique_ptr<StageController> sController;
     std::unique_ptr<Timer> timer;
 
-    ResourceManager* resManager; // 这个不用智能指针
+    // 所有使用单例的类不使用智能指针
+    SoundEffectManager* sfxManager;
+    ResourceManager* resManager;
+    GraphicsManager* gfxInstance;
 };
 
 #endif //_OPENCORE_H_

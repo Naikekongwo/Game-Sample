@@ -7,6 +7,13 @@
 #include "OpenCore/OpenCore.h"
 
 
+// 单例
+OpenEngine& OpenEngine::getInstance()
+{
+    static OpenEngine instance;
+    return instance;
+}
+
 bool OpenEngine::Run()
 {
     // 初始化函数
@@ -25,25 +32,26 @@ bool OpenEngine::Run()
 bool OpenEngine::Initialize()
 {
     // 创建 GFX 实例
-    gfxInstance = std::make_unique<GraphicsInstance>();
+    gfxInstance = &GraphicsManager::getInstance();
+
+    
+    // 创建资源管理器实例
+    resManager = &ResourceManager::getInstance();
+
+    
+    // 创建音效管理器实例
+    sfxManager = &SoundEffectManager::getInstance();
+    // 创建场景控制器实例
+    sController = std::make_unique<StageController>();
+    // 创建计时器实例
+    timer = std::make_unique<Timer>(30);
 
     // 初始化 GFX 实例 (若失败直接退出)
     if(!gfxInstance->Init()) return false;
-
-    // 创建资源管理器实例
-    resManager = &ResourceManager::Get();
-
     // 初始化资源管理器
-    resManager->SetRenderer(gfxInstance->getRenderer());
-
-    // 创建音效管理器实例
-    sfxManager = std::make_unique<SoundEffectManager>(resManager);
-
-    // 创建场景控制器实例
-    sController = std::make_unique<StageController>();
-
-    // 创建计时器实例
-    timer = std::make_unique<Timer>(30);
+    resManager->Init(gfxInstance->getRenderer());
+    // 初始化音效管理器
+    sfxManager->Init(resManager);
 
     return true;
     // 初始化成功
@@ -54,7 +62,7 @@ bool OpenEngine::MainLoop()
     bool should_close = false;
     SDL_Event event;
     
-    sController->changeStage(std::make_unique<PreloadStage>(gfxInstance->getRenderer(), resManager, sfxManager.get(), timer.get()));
+    sController->changeStage(std::make_unique<PreloadStage>(gfxInstance->getRenderer(), resManager, sfxManager, timer.get()));
 
     while(!should_close)
     {
@@ -87,9 +95,11 @@ bool OpenEngine::CleanUp()
 {
     sController.reset();
     timer.reset();
-    sfxManager.reset();
-    ResourceManager::Get().SetRenderer(nullptr);
-    gfxInstance.reset();
+
+    sfxManager->CleanUp();
+    resManager->CleanUp();
+
+    gfxInstance->CleanUp();
     
     return true;
 }

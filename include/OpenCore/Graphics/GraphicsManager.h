@@ -16,12 +16,18 @@ namespace Algorithms {
 };
 
 
-class GraphicsInstance
+class GraphicsManager
 {
     public:
-    ~GraphicsInstance();
     
+    // 图形管理器目前已经作为单例存在
+    static GraphicsManager& getInstance();
+
+    // 初始化函数
     bool Init();
+
+    // 清理回收的函数
+    void CleanUp();
 
     SDL_Window *getWindow() const { return window; }
     SDL_Renderer *getRenderer() const { return renderer; }

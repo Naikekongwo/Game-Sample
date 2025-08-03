@@ -16,7 +16,7 @@ class OpenEngine
     bool MainLoop();
 
     private:
-    std::unique_ptr<GraphicsInstance> gfxInstance;
+    std::unique_ptr<GraphicsManager> gfxInstance;
     std::unique_ptr<SoundEffectManager> sfxManager;
     std::unique_ptr<StageController> sController;
     std::unique_ptr<Timer> timer;

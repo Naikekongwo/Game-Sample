@@ -31,7 +31,7 @@ private:
     // 0为未播放
 
     std::vector<TextureLoadTask> textureTasks;
-    std::unique_ptr<SpriteManager> spriteManager;
+    std::unique_ptr<ElementManager> Elements;
 };
 
 #endif //_PRELOADSTAGE_H_

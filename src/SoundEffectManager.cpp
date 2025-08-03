@@ -1,15 +1,29 @@
 #include "OpenCore/OpenCore.h"
 
-// 构造函数：初始化音频系统和设置默认音量
-SoundEffectManager::SoundEffectManager(ResourceManager* res) {
-    resourceManager = res; // 保存资源管理器指针
+SoundEffectManager& SoundEffectManager::getInstance()
+{
+    static SoundEffectManager instance;
+    return instance;
 }
 
-// 析构函数：停止播放
-// 注意，资源的销毁权利交至 resourceManager
-SoundEffectManager::~SoundEffectManager() {
+
+bool SoundEffectManager::Init(ResourceManager* resManager)
+{
+    if(!resManager)
+    {
+        SDL_Log("SFXManager::Init() failed to init, encountering a null resource manager.");
+        return false;
+    }
+
+    resourceManager = resManager;
+    return true;
+}
+
+void SoundEffectManager::CleanUp()
+{
     stopBGM();
 }
+
 
 // [SHAOYANG] 从资源系统中加载音乐
 bool SoundEffectManager::loadBGM(int id)

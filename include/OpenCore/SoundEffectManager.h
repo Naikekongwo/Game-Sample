@@ -13,10 +13,15 @@ class ResourceManager;
 
 class SoundEffectManager {
 public:
-    //构造函数
-    SoundEffectManager(ResourceManager *res);
-    ~SoundEffectManager();
-    //控制音乐播放
+
+    // 单例函数
+    static SoundEffectManager& getInstance();
+
+    // 手动的初始化函数
+    bool Init(ResourceManager* resManager);
+
+    // 手动的销毁函数
+    void CleanUp();
 
     void playBGM();//播放背景音乐
     void stopBGM();//停止背景音乐

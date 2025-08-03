@@ -10,6 +10,7 @@
 #define HEADS_ICON "assets/ui/heads.jpg"
 #define CHARA_TEXTURE "assets/character.png"
 #define LOADING_ICON "assets/ui/loading.jpg"
+#define GAMESTART_ICON "assets/ui/gameStartButton.png"
 
 #define TEST_MUSIC "assets/audio/test.mp3"
 

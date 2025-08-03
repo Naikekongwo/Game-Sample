@@ -25,6 +25,7 @@ class FrameAnimation : public IAnimation
     // 检查动画是否循环
 
     private:
+    float startTime = 0.0f; // 起始时间
     int currentFrame; // 当前帧索引
     int totalFrames; // 总帧数
     int FPS; // 帧率

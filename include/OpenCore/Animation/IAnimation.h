@@ -8,14 +8,24 @@
 // AnimationState 动画状态
 // 他会返回一系列的状态信息
 // 例如透明度、尺寸、或者是位置等
+enum class AnchorPoint : int {
+    TopLeft = 1, TopCenter, TopRight,
+    MiddleLeft, Center, MiddleRight,
+    BottomLeft, BottomCenter, BottomRight
+};
+
 struct AnimationState
 {
     int frameIndex = 0;           // 当前帧索引
     float transparency = 1.0f;    // 透明度
     float scaleX = 1.0f;          // X轴缩放
     float scaleY = 1.0f;          // Y轴缩放
-    float AnimeStartTime = 0.0f;  // 动画开始时间
+    // float AnimeStartTime = 0.0f;  // 动画开始时间 已经废弃，为了确保多个动画效果不强行同步，目前AnimationState已经移入动画内部管理
     float angle = 0.0f;           // 角度
+
+    AnchorPoint Anchor = AnchorPoint::Center; // 锚点 默认居中
+    int PositionX = 0; // X坐标
+    int PositionY = 0; // Y坐标
 };
 
 class IAnimation

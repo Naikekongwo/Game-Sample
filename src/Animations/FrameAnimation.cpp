@@ -1,4 +1,4 @@
-#include "OpenCore/Animation/FrameAnimation.h"
+#include "OpenCore/OpenCore.h"
 
 FrameAnimation::FrameAnimation(int totalFrames, int FPS, bool isLooping)
 {
@@ -11,7 +11,14 @@ FrameAnimation::FrameAnimation(int totalFrames, int FPS, bool isLooping)
 
 void FrameAnimation::onUpdate(float totalTime, AnimationState& state)
 {
-    float elapsedTime = totalTime - state.AnimeStartTime;
+    if(startTime == 0.0f)
+    {
+        startTime = totalTime;
+        reset(totalTime, state);
+    }
+    // 如果开始时间为0就重置
+    
+    float elapsedTime = totalTime - startTime;
     if (elapsedTime < 0.0f) elapsedTime = 0.0f;
 
     int frame = static_cast<int>(elapsedTime * FPS);
@@ -36,6 +43,6 @@ bool FrameAnimation::isFinished() const
 
 void FrameAnimation::reset(float totalTime, AnimationState& state)
 {
-    state.AnimeStartTime = totalTime;
+    startTime = totalTime;
     currentFrame = 0;
 }

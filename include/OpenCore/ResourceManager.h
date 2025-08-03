@@ -39,9 +39,11 @@ using TexturePtr = std::unique_ptr<SDL_Texture, SDLDeleter>;
 class ResourceManager {
 public:
     // 单例
-    static ResourceManager& Get();
+    static ResourceManager& getInstance();
 
-    void SetRenderer(SDL_Renderer* renderer);
+    bool Init(SDL_Renderer* render);
+
+    void CleanUp();
 
     void LoadMusic(short id, const std::string& path);
     Mix_Music* GetMusic(short id);
@@ -55,8 +57,6 @@ public:
     void ClearAll();    
 
 private:
-    ResourceManager();
-    ~ResourceManager();
 
     SDL_Renderer* renderer; // 渲染器指针
 
@@ -76,6 +76,7 @@ private:
     std::unordered_map<short, TexturePtr> textureCache_;
 
     std::thread worker_;
+    std::atomic<int> ActiveTask_{0};
     std::mutex queueMutex_;
     std::condition_variable queueCV_;
     std::queue<std::function<void()>> taskQueue_;

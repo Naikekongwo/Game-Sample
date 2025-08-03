@@ -17,6 +17,7 @@ public:
     bool isLoop() override { return isLooping; }
 
 private:
+    float startTime = 0.0f; // 起始时间
     int startX, startY, endX, endY; // 起始和结束坐标
     float duration;                 // 持续时间
     bool isLooping;                 // 是否循环
