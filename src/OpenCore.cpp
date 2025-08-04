@@ -77,6 +77,8 @@ bool OpenEngine::MainLoop()
 
         timer->Tick();
 
+        resManager->ProcessMainThreadTasks();
+
         SDL_Delay(timer->getDelayTime()); // 限制帧率，避免CPU飙高
 
         sController->onUpdate();
