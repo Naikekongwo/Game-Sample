@@ -18,13 +18,14 @@ class ElementManager
     // 基础方法
 
     void handlEvents(SDL_Event &event, float totalTime);
+
     void onUpdate(float totalTime);
 
     void onRender();
 
     bool PushElement(std::unique_ptr<IDrawableObject> element);
 
-    bool find(short id);
+    bool find(short id) const; // 查找是否存在元素的函数，使用const表示不会修改类状态
 
     private:
     // 储存子类的表

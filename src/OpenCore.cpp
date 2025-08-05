@@ -6,9 +6,8 @@
 
 #include "OpenCore/OpenCore.h"
 
-
 // 单例
-OpenEngine& OpenEngine::getInstance()
+OpenEngine &OpenEngine::getInstance()
 {
     static OpenEngine instance;
     return instance;
@@ -17,17 +16,25 @@ OpenEngine& OpenEngine::getInstance()
 bool OpenEngine::Run()
 {
     // 初始化函数
-    if(!Initialize()) { return false; }
+    if (!Initialize())
+    {
+        return false;
+    }
 
     // 主循环
-    if(!MainLoop()) { return false; }
+    if (!MainLoop())
+    {
+        return false;
+    }
 
     // 生命周期结束
-    if(!CleanUp()) { return false; }
+    if (!CleanUp())
+    {
+        return false;
+    }
 
     return true;
 }
-
 
 bool OpenEngine::Initialize()
 {
@@ -46,8 +53,9 @@ bool OpenEngine::Initialize()
     timer = std::make_unique<Timer>(30);
 
     // 初始化 GFX 实例 (若失败直接退出)
-    if(!GFXManager.Init()) return false;
-    
+    if (!GFXManager.Init())
+        return false;
+
     // 初始化资源管理器(其初始化时需要renderer，所以必须在GFX之后初始化)
     ResManager.Init();
     // 初始化音效管理器
@@ -63,50 +71,49 @@ bool OpenEngine::MainLoop()
 
     bool should_close = false;
     SDL_Event event;
-    
+
     sController->changeStage(std::make_unique<PreloadStage>(timer.get()));
 
-    while(!should_close)
+    while (!should_close)
     {
         // 事件处理
-        while(SDL_PollEvent(&event))
+        while (SDL_PollEvent(&event))
         {
-            switch(event.type)
+            switch (event.type)
             {
-                case SDL_QUIT:
-                    should_close = true;
-                    break;
-                case SDL_KEYDOWN:
-                    if(event.key.keysym.sym = SDLK_F11)
+            case SDL_QUIT:
+                should_close = true;
+                break;
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym = SDLK_F11)
+                {
+                    Uint32 flags = SDL_GetWindowFlags(GFXManager.getWindow());
+                    if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
                     {
-                        Uint32 flags = SDL_GetWindowFlags(GFXManager.getWindow());
-                        if(flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
-                        {
-                            SDL_SetWindowFullscreen(GFXManager.getWindow(), 0);
-                        }
-                        else
-                        {
-                            SDL_SetWindowFullscreen(GFXManager.getWindow(), SDL_WINDOW_FULLSCREEN);
-                        }
+                        SDL_SetWindowFullscreen(GFXManager.getWindow(), 0);
                     }
-                    break;
-                case SDL_WINDOWEVENT:
-                    switch(event.window.event)
+                    else
                     {
-                        case SDL_WINDOWEVENT_RESIZED:
-                        case SDL_WINDOWEVENT_SIZE_CHANGED:
-                        {
-                            GFXManager.setScale(event.window.data1, event.window.data2);
-                            break;
-                            // 注: data1 和 data2 分别是窗口的宽和高
-                        }
-                        break;
+                        SDL_SetWindowFullscreen(GFXManager.getWindow(), SDL_WINDOW_FULLSCREEN);
                     }
-                default:
-                    sController->handlEvents(&event);
+                }
+                break;
+            case SDL_WINDOWEVENT:
+                switch (event.window.event)
+                {
+                case SDL_WINDOWEVENT_RESIZED:
+                case SDL_WINDOWEVENT_SIZE_CHANGED:
+                {
+                    GFXManager.setScale(event.window.data1, event.window.data2);
                     break;
+                    // 注: data1 和 data2 分别是窗口的宽和高
+                }
+                break;
+                }
+            default:
+                sController->handlEvents(&event);
+                break;
             }
-
         }
 
         timer->Tick();
@@ -115,7 +122,7 @@ bool OpenEngine::MainLoop()
 
         sController->onUpdate();
 
-        SDL_Renderer* renderer = GFXManager.getRenderer();
+        SDL_Renderer *renderer = GFXManager.getRenderer();
 
         SDL_RenderClear(GFXManager.getRenderer());
         sController->onRender();
@@ -131,7 +138,6 @@ bool OpenEngine::MainLoop()
     return true;
 }
 
-
 bool OpenEngine::CleanUp()
 {
     using namespace OpenCoreManagers;
@@ -143,6 +149,6 @@ bool OpenEngine::CleanUp()
     ResManager.CleanUp();
 
     GFXManager.CleanUp();
-    
+
     return true;
 }

@@ -18,6 +18,7 @@
 
 #include <memory>
 
+// 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
 namespace OpenCoreManagers
 {
     inline ResourceManager& ResManager = ResourceManager::getInstance();

@@ -3,7 +3,7 @@
 
 #include "OpenCore/OpenCore.h"
 
-PreloadStage::PreloadStage(Timer* timer)
+PreloadStage::PreloadStage(Timer *timer)
 {
     this->timer = timer;
     Elements = std::make_unique<ElementManager>();
@@ -21,10 +21,10 @@ void PreloadStage::LoadResources()
         {3, LOADING_ICON},
         {4, GAMESTART_ICON},
         {5, OCEAN_BACK},
-        {6, "assets/ui/loading.png"}
-    };
+        {6, "assets/ui/loading.png"}};
 
-    for (const auto& [id, path] : assets) {
+    for (const auto &[id, path] : assets)
+    {
         TextureLoadTask task;
         task.id = id;
         task.path = path;
@@ -34,7 +34,7 @@ void PreloadStage::LoadResources()
     SDL_Log("PreloadStage: Resources loading started.");
 }
 
-bool PreloadStage::handlEvents(SDL_Event* event)
+bool PreloadStage::handlEvents(SDL_Event *event)
 {
 
     Elements->handlEvents(*event, timer->getTotalTime());
@@ -45,22 +45,31 @@ bool PreloadStage::handlEvents(SDL_Event* event)
 void PreloadStage::onUpdate()
 {
     bool allReady = true;
-    for (auto& task : textureTasks) {
-        if (!task.isFinished) {
-            if (task.future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
-                try {
+    for (auto &task : textureTasks)
+    {
+        if (!task.isFinished)
+        {
+            if (task.future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
+            {
+                try
+                {
                     task.future.get();
-                } catch (const std::exception& e) {
+                }
+                catch (const std::exception &e)
+                {
                     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Exception in async load: %s", e.what());
                 }
                 task.isFinished = true;
-            } else {
+            }
+            else
+            {
                 allReady = false;
             }
         }
     }
 
-    if (allReady && stageState == 0) {
+    if (allReady && stageState == 0)
+    {
         stageState = 1;
 
         OpenCoreManagers::SFXManager.loadBGM(0); // BGM
@@ -70,7 +79,7 @@ void PreloadStage::onUpdate()
         stageState = 2;
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
-        std::unique_ptr<Texture> imgTex = std::make_unique<Texture>(1,1, OpenCoreManagers::ResManager.GetTexture(6));
+        std::unique_ptr<Texture> imgTex = std::make_unique<Texture>(1, 1, OpenCoreManagers::ResManager.GetTexture(6));
         std::unique_ptr<ImageBoard> imgBd = std::make_unique<ImageBoard>(1, 0, std::move(imgTex));
         // 创建了控件
 
@@ -81,7 +90,7 @@ void PreloadStage::onUpdate()
         std::shared_ptr<FadeAnimation> fade0 = std::make_shared<FadeAnimation>(0.4f, 1.0f, 5.0f, false);
         imgBd->PushAnimation(1, fade0);
 
-        std::unique_ptr<Texture> imgTex1 = std::make_unique<Texture>(2,1, OpenCoreManagers::ResManager.GetTexture(5));
+        std::unique_ptr<Texture> imgTex1 = std::make_unique<Texture>(2, 1, OpenCoreManagers::ResManager.GetTexture(5));
         std::unique_ptr<ImageBoard> imgBd1 = std::make_unique<ImageBoard>(2, -1, std::move(imgTex1));
         // 创建了控件
 
@@ -99,7 +108,7 @@ void PreloadStage::onUpdate()
     if (stageState == 2)
     {
         // 更新状态
-       Elements->onUpdate(timer->getTotalTime());
+        Elements->onUpdate(timer->getTotalTime());
     }
 }
 
@@ -107,6 +116,6 @@ void PreloadStage::onRender()
 {
     if (stageState == 2)
     {
-       Elements->onRender();
+        Elements->onRender();
     }
 }

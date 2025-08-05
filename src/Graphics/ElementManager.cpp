@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.h"
 #include <algorithm>
 
-bool ElementManager::find(short id)
+bool ElementManager::find(short id) const
 {
     for( auto &element : Elements)
     {

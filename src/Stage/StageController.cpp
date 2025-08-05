@@ -4,8 +4,6 @@
 
 #include "OpenCore/OpenCore.h"
 
-
-
 void StageController::changeStage(std::unique_ptr<Stage> newStage)
 {
     // [SHAOYANG] 2025/7/29
@@ -13,19 +11,19 @@ void StageController::changeStage(std::unique_ptr<Stage> newStage)
     currentStage = std::move(newStage);
 }
 
-bool StageController::handlEvents(SDL_Event* event)
+bool StageController::handlEvents(SDL_Event *event)
 {
-    return (currentStage)?currentStage->handlEvents(event):false;
+    return (currentStage) ? currentStage->handlEvents(event) : false;
 }
 
 void StageController::onUpdate()
 {
-    if(currentStage)
+    if (currentStage)
         currentStage->onUpdate();
 }
 
 void StageController::onRender()
 {
-    if(currentStage)
+    if (currentStage)
         currentStage->onRender();
 }
