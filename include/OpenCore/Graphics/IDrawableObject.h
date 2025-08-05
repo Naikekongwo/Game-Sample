@@ -25,6 +25,9 @@ class IDrawableObject
     // 获取碰撞箱
     virtual SDL_Rect getBounds() = 0;
 
+    // 添加动画
+    virtual void PushAnimation(short id, std::shared_ptr<IAnimation> Anime) = 0;
+
     // 获取 ID 和 图层的方法
     short getID() const { return id; }
     short getLayer() const { return layer; }

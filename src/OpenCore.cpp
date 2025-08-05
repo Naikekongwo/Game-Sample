@@ -34,7 +34,6 @@ bool OpenEngine::Initialize()
     // 创建 GFX 实例
     gfxInstance = &GraphicsManager::getInstance();
 
-    
     // 创建资源管理器实例
     resManager = &ResourceManager::getInstance();
 
@@ -48,6 +47,7 @@ bool OpenEngine::Initialize()
 
     // 初始化 GFX 实例 (若失败直接退出)
     if(!gfxInstance->Init()) return false;
+    
     // 初始化资源管理器
     resManager->Init(gfxInstance->getRenderer());
     // 初始化音效管理器
@@ -69,23 +69,59 @@ bool OpenEngine::MainLoop()
         // 事件处理
         while(SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT) 
-                should_close = true;
-            else 
-                sController->handlEvents(&event);
+            switch(event.type)
+            {
+                case SDL_QUIT:
+                    should_close = true;
+                    break;
+                case SDL_KEYDOWN:
+                    if(event.key.keysym.sym = SDLK_F11)
+                    {
+                        Uint32 flags = SDL_GetWindowFlags(gfxInstance->getWindow());
+                        if(flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
+                        {
+                            SDL_SetWindowFullscreen(gfxInstance->getWindow(), 0);
+                        }
+                        else
+                        {
+                            SDL_SetWindowFullscreen(gfxInstance->getWindow(), SDL_WINDOW_FULLSCREEN);
+                        }
+                    }
+                    break;
+                case SDL_WINDOWEVENT:
+                    switch(event.window.event)
+                    {
+                        case SDL_WINDOWEVENT_RESIZED:
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        {
+                            gfxInstance->setScale(event.window.data1, event.window.data2);
+                            break;
+                            // 注: data1 和 data2 分别是窗口的宽和高
+                        }
+                        break;
+                    }
+                default:
+                    sController->handlEvents(&event);
+                    break;
+            }
+
         }
 
         timer->Tick();
 
         resManager->ProcessMainThreadTasks();
 
-        SDL_Delay(timer->getDelayTime()); // 限制帧率，避免CPU飙高
-
         sController->onUpdate();
+        SDL_Renderer* renderer = gfxInstance->getRenderer();
+
         SDL_RenderClear(gfxInstance->getRenderer());
         sController->onRender();
 
         SDL_RenderPresent(gfxInstance->getRenderer());
+
+        SDL_Delay(timer->getDelayTime());
+        // 限制帧间隔
+
         // SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
     }
 

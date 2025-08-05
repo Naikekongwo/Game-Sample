@@ -6,22 +6,17 @@
 
 #include <string>
 #include <SDL2/SDL.h>
-#include <STB-IMAGE/stb_image.h>
 
-SDL_Surface* stbi_loadSurface(const char* filename);// STB库加载图片到 SDL_Surface 【不推荐使用，性能差】
-    void FreeStbiSurface(SDL_Surface* surface);// 销毁STB库加载的Surface
+#include <memory>
 
-namespace Algorithms {
-    SDL_Texture* STB_SDL_LOAD(const std::string &path, SDL_Renderer* renderer);// 多功能加载函数
-};
-
+// 尺寸类的前向声明
+class ScaleManager;
 
 class GraphicsManager
 {
-    public:
-    
+public:
     // 图形管理器目前已经作为单例存在
-    static GraphicsManager& getInstance();
+    static GraphicsManager &getInstance();
 
     // 初始化函数
     bool Init();
@@ -32,9 +27,20 @@ class GraphicsManager
     SDL_Window *getWindow() const { return window; }
     SDL_Renderer *getRenderer() const { return renderer; }
 
-    private:
+    int RenderCopyEx(SDL_Texture *texture,
+                     const SDL_Rect *srcrect,
+                     const SDL_Rect *dstrect,
+                     const double angle,
+                     const SDL_Point *center,
+                     const SDL_RendererFlip flip);
+
+    void setScale(int w, int h);
+
+private:
     SDL_Window *window;
     SDL_Renderer *renderer;
+
+    std::unique_ptr<ScaleManager> ContentScale;
 };
 
 #endif //_GFXCORE_H_

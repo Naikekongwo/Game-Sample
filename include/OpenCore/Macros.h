@@ -11,13 +11,15 @@
 #define CHARA_TEXTURE "assets/character.png"
 #define LOADING_ICON "assets/ui/loading.jpg"
 #define GAMESTART_ICON "assets/ui/gameStartButton.png"
+#define OCEAN_BACK "assets/backgrounds/menu_ocean.png"
 
 #define TEST_MUSIC "assets/audio/test.mp3"
+#define OCEAN_WAVES "assets/audio/bgm_oceanwaves.mp3"
 
 
 // 图形宏定义
-#define GFX_WINDOW_WIDTH 1280
-#define GFX_WINDOW_HEIGHT 720
+#define BASE_WINDOW_WIDTH 1280
+#define BASE_WINDOW_HEIGHT 720
 
 // 主题
 #define APP_NAME "无水之境 Eclipsea"

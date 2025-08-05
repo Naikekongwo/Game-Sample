@@ -17,14 +17,16 @@ PreloadStage::PreloadStage(SDL_Renderer* render, ResourceManager *resMana, Sound
 
 void PreloadStage::LoadResources()
 {
-    resourceManager->LoadMusicAsync(0, TEST_MUSIC); // 加载背景音乐
+    resourceManager->LoadMusicAsync(0, OCEAN_WAVES); // 加载背景音乐
 
     std::vector<std::pair<short, std::string>> assets = {
         {0, RES_GAME_ICON},
         {1, HEADS_ICON},
         {2, CHARA_TEXTURE},
         {3, LOADING_ICON},
-        {4, GAMESTART_ICON}
+        {4, GAMESTART_ICON},
+        {5, OCEAN_BACK},
+        {6, "assets/ui/loading.png"}
     };
 
     for (const auto& [id, path] : assets) {
@@ -73,7 +75,7 @@ void PreloadStage::onUpdate()
         stageState = 2;
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
-        std::unique_ptr<Texture> imgTex = std::make_unique<Texture>(1,1, resourceManager->GetTexture(3));
+        std::unique_ptr<Texture> imgTex = std::make_unique<Texture>(1,1, resourceManager->GetTexture(6));
         std::unique_ptr<ImageBoard> imgBd = std::make_unique<ImageBoard>(1, 0, std::move(imgTex));
         // 创建了控件
 
@@ -81,7 +83,22 @@ void PreloadStage::onUpdate()
         imgBd->setAnchor(AnchorPoint::Center);
         imgBd->setPosition(640, 360);
 
+        std::shared_ptr<FadeAnimation> fade0 = std::make_shared<FadeAnimation>(0.4f, 1.0f, 5.0f, false);
+        imgBd->PushAnimation(1, fade0);
+
+        std::unique_ptr<Texture> imgTex1 = std::make_unique<Texture>(2,1, resourceManager->GetTexture(5));
+        std::unique_ptr<ImageBoard> imgBd1 = std::make_unique<ImageBoard>(2, -1, std::move(imgTex1));
+        // 创建了控件
+
+        imgBd1->setScale(1280, 720);
+        imgBd1->setAnchor(AnchorPoint::Center);
+        imgBd1->setPosition(640, 360);
+
+        std::shared_ptr<FadeAnimation> fade = std::make_shared<FadeAnimation>(0.0f, 1.0f, 10.0f, false);
+        imgBd1->PushAnimation(1, fade);
+
         Elements->PushElement(std::move(imgBd));
+        Elements->PushElement(std::move(imgBd1));
     }
 
     if (stageState == 2)

@@ -13,14 +13,6 @@ file(GLOB_RECURSE SOURCE_FILES
 )
 include_directories("${CMAKE_SOURCE_DIR}/include")
 
-# 动画类源文件
-set(ANIMATION_SOURCES
-    src/MoveAnimation.cpp
-    src/FadeAnimation.cpp
-    src/ScaleAnimation.cpp
-    src/RotateAnimation.cpp
-)
-
 # 可执行文件
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 

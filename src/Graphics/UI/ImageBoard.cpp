@@ -62,6 +62,11 @@ SDL_Rect ImageBoard::getBounds() {
     return SDL_Rect{ x, y, renderWidth, renderHeight };
 }
 
+void ImageBoard::PushAnimation(short id, std::shared_ptr<IAnimation> Anime)
+{
+    AnimeManager->pushAnimation(id, Anime);
+}
+
 
 void ImageBoard::onUpdate(float totalTime)
 {
@@ -80,8 +85,8 @@ void ImageBoard::onRender(SDL_Renderer* render)
     {
         // 多帧函数
         SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
-        SDL_RenderCopyEx(render, texture.get()->texture, &srcRect, &dstRect, AnimeState->angle, NULL,SDL_FLIP_NONE);
+        GraphicsManager::getInstance().RenderCopyEx(texture.get()->texture, &srcRect, &dstRect, AnimeState->angle, NULL,SDL_FLIP_NONE);
     }
     // 单帧贴图
-    SDL_RenderCopyEx(render, texture.get()->texture, NULL, &dstRect, AnimeState->angle, NULL,SDL_FLIP_NONE);
+    GraphicsManager::getInstance().RenderCopyEx(texture.get()->texture, NULL, &dstRect, AnimeState->angle, NULL,SDL_FLIP_NONE);
 }

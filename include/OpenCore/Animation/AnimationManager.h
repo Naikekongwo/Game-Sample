@@ -13,6 +13,8 @@
 
 #include <memory>
 
+// 枚举类
+enum class AnimationID { FrameAnime, FadeAnime, MoveAnimation, RotateAnimation, ScaleAnimation};
 
 struct Texture
 {
@@ -26,9 +28,9 @@ struct Texture
     // 材质
     SDL_Texture* texture;
 
-    Texture(int x, int y, SDL_Texture* tex);
+    Texture(int x, int y, SDL_Texture* tex) : xCount(x), yCount(y), texture(tex) {} ;
 
-    int Size() const { return xCount * yCount; }
+    int Size() const noexcept { return xCount * yCount; }
 
     SDL_Rect getSrcRect(int index);    
 };
@@ -43,6 +45,10 @@ class AnimationManager
     void eraseAnimation(int id);
 
     bool isEmpty() const { return Animations.empty(); }
+
+    void clear(); // 清空动画表
+
+    bool hasAnimation(); //判断是否存在
 
     private:
     // 内部动画表

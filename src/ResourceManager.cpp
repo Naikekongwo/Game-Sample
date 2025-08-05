@@ -1,5 +1,9 @@
 #include "OpenCore/OpenCore.h"
 // 初始化
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "STB-IMAGE/stb_image.h"
+
 bool ResourceManager::Init(SDL_Renderer* render) {
     if (!render) {
         SDL_Log("ResourceManager::Init() encountered a null renderer.");

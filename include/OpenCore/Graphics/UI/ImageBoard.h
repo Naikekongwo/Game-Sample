@@ -15,6 +15,7 @@ class ImageBoard : public UIElement
     void handlEvents(SDL_Event &event, float totalTime) override;
     void onRender(SDL_Renderer* render) override;
     void onUpdate(float totalTime) override;
+    void PushAnimation(short id, std::shared_ptr<IAnimation> Anime) override;
 
     SDL_Rect getBounds() override;
 };

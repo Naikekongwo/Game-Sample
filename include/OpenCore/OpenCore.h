@@ -11,6 +11,7 @@
 #include "ResourceManager.h"
 #include "SoundEffectManager.h"
 #include "Graphics/GraphicsManager.h"
+#include "Graphics/ScaleManager.h"
 #include "Animation/AnimationManager.h"
 #include "Graphics/ElementManager.h"
 #include "Stage/StageController.h"
