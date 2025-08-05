@@ -28,7 +28,7 @@ struct Texture
     // 材质
     SDL_Texture* texture;
 
-    Texture(int x, int y, SDL_Texture* tex) : xCount(x), yCount(y), texture(tex) {} ;
+    Texture(int x, int y, SDL_Texture* tex);
 
     int Size() const noexcept { return xCount * yCount; }
 
