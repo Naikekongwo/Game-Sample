@@ -13,7 +13,7 @@ class ImageBoard : public UIElement
 
     // 对于父类的实现
     void handlEvents(SDL_Event &event, float totalTime) override;
-    void onRender(SDL_Renderer* render) override;
+    void onRender() override;
     void onUpdate(float totalTime) override;
     void PushAnimation(short id, std::shared_ptr<IAnimation> Anime) override;
 

@@ -3,21 +3,16 @@
 
 #include "OpenCore/OpenCore.h"
 
-PreloadStage::PreloadStage(SDL_Renderer* render, ResourceManager *resMana, SoundEffectManager *sfxMana, Timer* timer)
+PreloadStage::PreloadStage(Timer* timer)
 {
-    renderer = render;
-    resourceManager = resMana;
-    sfxManager = sfxMana;
     this->timer = timer;
-
     Elements = std::make_unique<ElementManager>();
-
     LoadResources();
 }
 
 void PreloadStage::LoadResources()
 {
-    resourceManager->LoadMusicAsync(0, OCEAN_WAVES); // 加载背景音乐
+    OpenCoreManagers::ResManager.LoadMusicAsync(0, OCEAN_WAVES); // 加载背景音乐
 
     std::vector<std::pair<short, std::string>> assets = {
         {0, RES_GAME_ICON},
@@ -33,7 +28,7 @@ void PreloadStage::LoadResources()
         TextureLoadTask task;
         task.id = id;
         task.path = path;
-        task.future = resourceManager->LoadTextureAsync(id, path);
+        task.future = OpenCoreManagers::ResManager.LoadTextureAsync(id, path);
         textureTasks.push_back(std::move(task));
     }
     SDL_Log("PreloadStage: Resources loading started.");
@@ -68,14 +63,14 @@ void PreloadStage::onUpdate()
     if (allReady && stageState == 0) {
         stageState = 1;
 
-        sfxManager->loadBGM(0); // BGM
-        sfxManager->playBGM();
-        sfxManager->setVolume(64); // 加载背景音乐
+        OpenCoreManagers::SFXManager.loadBGM(0); // BGM
+        OpenCoreManagers::SFXManager.playBGM();
+        OpenCoreManagers::SFXManager.setVolume(64); // 加载背景音乐
 
         stageState = 2;
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
-        std::unique_ptr<Texture> imgTex = std::make_unique<Texture>(1,1, resourceManager->GetTexture(6));
+        std::unique_ptr<Texture> imgTex = std::make_unique<Texture>(1,1, OpenCoreManagers::ResManager.GetTexture(6));
         std::unique_ptr<ImageBoard> imgBd = std::make_unique<ImageBoard>(1, 0, std::move(imgTex));
         // 创建了控件
 
@@ -86,7 +81,7 @@ void PreloadStage::onUpdate()
         std::shared_ptr<FadeAnimation> fade0 = std::make_shared<FadeAnimation>(0.4f, 1.0f, 5.0f, false);
         imgBd->PushAnimation(1, fade0);
 
-        std::unique_ptr<Texture> imgTex1 = std::make_unique<Texture>(2,1, resourceManager->GetTexture(5));
+        std::unique_ptr<Texture> imgTex1 = std::make_unique<Texture>(2,1, OpenCoreManagers::ResManager.GetTexture(5));
         std::unique_ptr<ImageBoard> imgBd1 = std::make_unique<ImageBoard>(2, -1, std::move(imgTex1));
         // 创建了控件
 
@@ -112,6 +107,6 @@ void PreloadStage::onRender()
 {
     if (stageState == 2)
     {
-       Elements->onRender(renderer);
+       Elements->onRender();
     }
 }

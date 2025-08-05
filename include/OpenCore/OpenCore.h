@@ -18,6 +18,13 @@
 
 #include <memory>
 
+namespace OpenCoreManagers
+{
+    inline ResourceManager& ResManager = ResourceManager::getInstance();
+    inline GraphicsManager& GFXManager = GraphicsManager::getInstance();
+    inline SoundEffectManager& SFXManager = SoundEffectManager::getInstance();
+}
+
 class OpenEngine
 {
     public:
@@ -34,9 +41,11 @@ class OpenEngine
     std::unique_ptr<Timer> timer;
 
     // 所有使用单例的类不使用智能指针
-    SoundEffectManager* sfxManager;
-    ResourceManager* resManager;
-    GraphicsManager* gfxInstance;
+    // SoundEffectManager* sfxManager;
+    // ResourceManager* resManager;
+    // GraphicsManager* gfxInstance;
+
+    // 所有裸指针都已经废除，既然是单例那么就直接调用
 };
 
 #endif //_OPENCORE_H_

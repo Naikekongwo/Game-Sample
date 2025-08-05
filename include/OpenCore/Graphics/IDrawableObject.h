@@ -20,7 +20,7 @@ class IDrawableObject
     virtual void onUpdate(float totalTime) = 0;
 
     // 渲染函数
-    virtual void onRender(SDL_Renderer* render) = 0;
+    virtual void onRender() = 0;
 
     // 获取碰撞箱
     virtual SDL_Rect getBounds() = 0;

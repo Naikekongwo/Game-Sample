@@ -4,12 +4,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "STB-IMAGE/stb_image.h"
 
-bool ResourceManager::Init(SDL_Renderer* render) {
-    if (!render) {
+bool ResourceManager::Init() {
+    // 确保GraphicsManager 一定在其之前进行初始化
+    renderer = OpenCoreManagers::GFXManager.getRenderer();
+
+    if (!renderer) {
         SDL_Log("ResourceManager::Init() encountered a null renderer.");
         return false;
     }
-    this->renderer = render;
 
     int result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
     if (!result) {

@@ -20,7 +20,7 @@ class ElementManager
     void handlEvents(SDL_Event &event, float totalTime);
     void onUpdate(float totalTime);
 
-    void onRender(SDL_Renderer* render);
+    void onRender();
 
     bool PushElement(std::unique_ptr<IDrawableObject> element);
 

@@ -14,7 +14,7 @@ class SpriteManager;
 class PreloadStage : public Stage
 {
 public:
-    PreloadStage(SDL_Renderer* render, ResourceManager *resMana, SoundEffectManager *sfxMana, Timer* timer);
+    PreloadStage(Timer* timer);
 
     void LoadResources();
 

@@ -74,7 +74,7 @@ void ImageBoard::onUpdate(float totalTime)
     // 更新动画！
 }
 
-void ImageBoard::onRender(SDL_Renderer* render)
+void ImageBoard::onRender()
 {
     // 渲染函数
     SDL_SetTextureAlphaMod(texture.get()->texture, 255.0f * AnimeState->transparency);
