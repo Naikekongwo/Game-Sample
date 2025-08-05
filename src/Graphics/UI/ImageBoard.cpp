@@ -64,7 +64,8 @@ SDL_Rect ImageBoard::getBounds() {
 
 void ImageBoard::PushAnimation(short id, std::shared_ptr<IAnimation> Anime)
 {
-    AnimeManager->pushAnimation(id, Anime);
+    // 只传递动画指针
+    AnimeManager->pushAnimation(Anime);
 }
 
 

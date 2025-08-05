@@ -12,6 +12,7 @@
 #include "ScaleAnimation.h"
 
 #include <memory>
+#include <vector>
 
 // 枚举类
 enum class AnimationID { FrameAnime, FadeAnime, MoveAnimation, RotateAnimation, ScaleAnimation};
@@ -37,23 +38,22 @@ struct Texture
 
 class AnimationManager
 {
-    public:
+public:
     void onUpdate(float totalTime, AnimationState& state); // 刷新函数
 
-    void pushAnimation(int id, std::shared_ptr<IAnimation> anime);
-    
-    void eraseAnimation(int id);
+    void pushAnimation(std::shared_ptr<IAnimation> anime); // 只需传动画指针
+
+    void eraseAnimation(std::shared_ptr<IAnimation> anime); // 可选：按指针移除动画
 
     bool isEmpty() const { return Animations.empty(); }
 
     void clear(); // 清空动画表
 
-    bool hasAnimation(); //判断是否存在
+    bool hasAnimation() const { return !Animations.empty(); } // 判断是否存在
 
-    private:
-    // 内部动画表
-    std::unordered_map<int, std::shared_ptr<IAnimation>> Animations;
-    
+private:
+    // 改为vector存储
+    std::vector<std::shared_ptr<IAnimation>> Animations;
 };
 
 #endif //_ANIMATIONMANAGER_H_

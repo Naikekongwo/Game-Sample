@@ -1,4 +1,5 @@
 #include "OpenCore/OpenCore.h"
+#include <algorithm>
 
 Texture::Texture(int x, int y, SDL_Texture* tex) : xCount(x), yCount(y), texture(tex)
 {
@@ -39,37 +40,37 @@ SDL_Rect Texture::getSrcRect(int index)
 
 void AnimationManager::onUpdate(float totalTime, AnimationState& state)
 {
-    std::vector<short> eraseList;
+    std::vector<size_t> eraseList;
 
-    for( auto &[id, anime] : Animations)
+    for (size_t i = 0; i < Animations.size(); ++i)
     {
+        auto& anime = Animations[i];
         anime->onUpdate(totalTime, state);
 
-        if(!anime->isLoop() && anime->isFinished())
+        if (!anime->isLoop() && anime->isFinished())
         {
-            eraseList.push_back(id);
+            eraseList.push_back(i);
         }
     }
 
-    for( auto id : eraseList)
+    // 倒序删除已完成动画，避免下标错乱
+    for (auto it = eraseList.rbegin(); it != eraseList.rend(); ++it)
     {
-        Animations.erase(id);
+        Animations.erase(Animations.begin() + *it);
     }
 }
 
-void AnimationManager::pushAnimation(int id, std::shared_ptr<IAnimation> anime)
+void AnimationManager::pushAnimation(std::shared_ptr<IAnimation> anime)
 {
-    // 尝试加入表中
-    Animations.try_emplace(id, anime);
+    Animations.push_back(anime);
 }
 
-void AnimationManager::eraseAnimation(int id)
+void AnimationManager::eraseAnimation(std::shared_ptr<IAnimation> anime)
 {
-    auto it = Animations.find(id);
-    if(it != Animations.end())
-        Animations.erase(id);
+    auto it = std::find(Animations.begin(), Animations.end(), anime);
+    if (it != Animations.end())
+        Animations.erase(it);
 }
-
 
 void AnimationManager::clear()
 {

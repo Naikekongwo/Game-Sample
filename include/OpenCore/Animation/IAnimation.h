@@ -4,6 +4,8 @@
 #define _IANIMATION_H_
 
 #include <SDL2/SDL.h>
+#include <atomic>
+#include <string>
 
 // AnimationState 动画状态
 // 他会返回一系列的状态信息
@@ -30,16 +32,25 @@ struct AnimationState
 
 class IAnimation
 {
-    public:
+public:
+   
     virtual ~IAnimation() = default;
 
+
+    // 设置/获取动画名称
+    void setName(const std::string& n) { name = n; }
+    const std::string& getName() const { return name; }
+
     virtual void onUpdate(float totalTime, AnimationState& state) = 0;
-    // virtual void onRender(SDL_Renderer* renderer) = 0;
-    // 弃用！！！！ 不要在动画内部实现渲染方法！
     virtual bool isFinished() const = 0;
     virtual void reset(float totalTime, AnimationState& state) = 0;
-
     virtual bool isLoop() = 0;
+
+private:
+    std::string name;             // 动画名称
+ 
 };
+
+
 
 #endif //_IANIMATION_H_
