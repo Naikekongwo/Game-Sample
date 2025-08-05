@@ -28,9 +28,7 @@ class Stage{
 
 
     protected:
-    SDL_Renderer* renderer = nullptr; //渲染器
-    ResourceManager* resourceManager = nullptr; // 资源管理器
-    SoundEffectManager* sfxManager = nullptr; // 音效管理器
+    // 先前内置的渲染器、资源管理器和音效管理器全部都被弃用了
     Timer* timer = nullptr;
 };
 

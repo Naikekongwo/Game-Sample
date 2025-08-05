@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.h"
 #include <algorithm>
 
-bool ElementManager::find(short id)
+bool ElementManager::find(short id) const
 {
     for( auto &element : Elements)
     {
@@ -48,10 +48,10 @@ void ElementManager::handlEvents(SDL_Event &event, float totalTime)
     }
 }
 
-void ElementManager::onRender(SDL_Renderer* render)
+void ElementManager::onRender()
 {
     for( auto &element : Elements)
     {
-        element->onRender(render);
+        element->onRender();
     }
 }

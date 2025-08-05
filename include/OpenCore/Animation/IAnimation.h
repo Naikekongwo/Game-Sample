@@ -22,7 +22,6 @@ struct AnimationState
     float transparency = 1.0f;    // 透明度
     float scaleX = 1.0f;          // X轴缩放
     float scaleY = 1.0f;          // Y轴缩放
-    // float AnimeStartTime = 0.0f;  // 动画开始时间 已经废弃，为了确保多个动画效果不强行同步，目前AnimationState已经移入动画内部管理
     float angle = 0.0f;           // 角度
 
     AnchorPoint Anchor = AnchorPoint::Center; // 锚点 默认居中

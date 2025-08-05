@@ -34,7 +34,7 @@ class ResourceManager {
 public:
     static ResourceManager& getInstance();
 
-    bool Init(SDL_Renderer* render);
+    bool Init();
     void CleanUp();
 
     void LoadMusic(short id, const std::string& path);

@@ -3,7 +3,8 @@
 ScaleManager::ScaleManager(int baseW, int baseH)
     : baseWidth(baseW), baseHeight(baseH) {}
 
-void ScaleManager::UpdateTargetSize(int windowW, int windowH) {
+void ScaleManager::UpdateTargetSize(int windowW, int windowH)
+{
     windowWidth = windowW;
     windowHeight = windowH;
 
@@ -18,7 +19,8 @@ void ScaleManager::UpdateTargetSize(int windowW, int windowH) {
     SDL_Log("ScaleManager::UpdateTargetSize() Now we are using %d x %d", windowWidth, windowHeight);
 }
 
-SDL_Rect ScaleManager::ToScreen(const SDL_Rect& logical) const {
+SDL_Rect ScaleManager::ToScreen(const SDL_Rect &logical) const
+{
     SDL_Rect r;
     r.x = static_cast<int>(logical.x * scale + offsetX);
     r.y = static_cast<int>(logical.y * scale + offsetY);
@@ -27,15 +29,15 @@ SDL_Rect ScaleManager::ToScreen(const SDL_Rect& logical) const {
     return r;
 }
 
-SDL_FPoint ScaleManager::ToScreen(const SDL_FPoint& logical) const {
-    return SDL_FPoint {
+SDL_FPoint ScaleManager::ToScreen(const SDL_FPoint &logical) const
+{
+    return SDL_FPoint{
         logical.x * scale + offsetX,
-        logical.y * scale + offsetY
-    };
+        logical.y * scale + offsetY};
 }
 
-
-SDL_Point ScaleManager::ToLogical(const SDL_Point& screenPoint) const {
+SDL_Point ScaleManager::ToLogical(const SDL_Point &screenPoint) const
+{
     SDL_Point logical;
 
     // 减去偏移再除以缩放
