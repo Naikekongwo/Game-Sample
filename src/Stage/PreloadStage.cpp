@@ -98,8 +98,13 @@ void PreloadStage::onUpdate()
         imgBd1->setAnchor(AnchorPoint::Center);
         imgBd1->setPosition(640, 360);
 
-        std::shared_ptr<FadeAnimation> fade = std::make_shared<FadeAnimation>(0.0f, 1.0f, 10.0f, false);
-        imgBd1->PushAnimation(1, fade);
+        imgBd1->PushAnimation(1, std::make_shared<FadeAnimation>(0.0f, 1.0f, 10.0f, false));
+
+        imgBd1->PushAnimation(2, std::make_shared<TimerAnimation>(5.0f));
+
+        imgBd1->PushAnimation(3, std::make_shared<FadeAnimation>(1.0f,0.0f,5.0f, false));
+
+        imgBd1->setSequential(true);
 
         Elements->PushElement(std::move(imgBd));
         Elements->PushElement(std::move(imgBd1));

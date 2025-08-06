@@ -28,6 +28,9 @@ class IDrawableObject
     // 添加动画
     virtual void PushAnimation(short id, std::shared_ptr<IAnimation> Anime) = 0;
 
+    // 设置动画顺序
+    void setSequential(bool sequential) { AnimeManager->setSequence(sequential); }
+
     // 获取 ID 和 图层的方法
     short getID() const { return id; }
     short getLayer() const { return layer; }

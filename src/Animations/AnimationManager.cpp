@@ -51,6 +51,11 @@ void AnimationManager::onUpdate(float totalTime, AnimationState& state)
         {
             eraseList.push_back(i);
         }
+        else if (sequential)
+        {
+            // 顺序模式下，一旦遇到未完成动画就跳出，后续动画不执行
+            break;
+        }
     }
 
     // 倒序删除已完成动画，避免下标错乱
@@ -59,6 +64,7 @@ void AnimationManager::onUpdate(float totalTime, AnimationState& state)
         Animations.erase(Animations.begin() + *it);
     }
 }
+
 
 void AnimationManager::pushAnimation(std::shared_ptr<IAnimation> anime)
 {
@@ -75,4 +81,9 @@ void AnimationManager::eraseAnimation(std::shared_ptr<IAnimation> anime)
 void AnimationManager::clear()
 {
     Animations.clear();
+}
+
+void AnimationManager::setSequence(bool isSequential)
+{
+    this->sequential = isSequential;
 }

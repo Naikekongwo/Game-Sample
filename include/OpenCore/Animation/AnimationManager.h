@@ -10,6 +10,7 @@
 #include "MoveAnimation.h"
 #include "RotateAnimation.h"
 #include "ScaleAnimation.h"
+#include "TimerAnimation.h"
 
 #include <memory>
 #include <vector>
@@ -51,9 +52,14 @@ public:
 
     bool hasAnimation() const { return !Animations.empty(); } // 判断是否存在
 
+    void setSequence(bool isSequential);
+
 private:
     // 改为vector存储
     std::vector<std::shared_ptr<IAnimation>> Animations;
+
+    // 是否顺序执行 ： 默认为 false 即默认是并行执行
+    bool sequential = false;
 };
 
 #endif //_ANIMATIONMANAGER_H_
