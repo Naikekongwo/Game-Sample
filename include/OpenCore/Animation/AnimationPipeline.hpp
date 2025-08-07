@@ -7,7 +7,7 @@ class AnimationPipeline {
 public:
     // 构造函数(弃用)
     AnimationPipeline(AnimationManager* mgr) : manager(mgr) {}
-    // 移动目标管理器
+    // 添加渐变动画
     AnimationPipeline& Fade(float startAlpha, float endAlpha, float duration, bool isLooping = false) {
         animations.push_back(std::make_shared<FadeAnimation>(startAlpha, endAlpha, duration, isLooping));
         return *this;

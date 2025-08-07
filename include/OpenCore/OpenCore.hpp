@@ -14,6 +14,7 @@
 #include "Graphics/ScaleManager.hpp"
 #include "Animation/AnimationPipeline.hpp"
 #include "Animation/AnimationManager.hpp"
+#include "Graphics/DrawableConfigurator.hpp"
 #include "Graphics/ElementManager.hpp"
 #include "Stage/StageController.hpp"
 

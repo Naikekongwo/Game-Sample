@@ -7,9 +7,9 @@
 
 // 资源宏定义
 #define RES_GAME_ICON "assets/icon.png"
-#define HEADS_ICON "assets/ui/heads.jpg"
+#define HEADS_ICON "assets/icon_studio.png"
 #define CHARA_TEXTURE "assets/character.png"
-#define LOADING_ICON "assets/ui/loading.jpg"
+#define LOADING_ICON "assets/icon_opencore.png"
 #define GAMESTART_ICON "assets/ui/gameStartButton.png"
 #define OCEAN_BACK "assets/backgrounds/menu_ocean.png"
 

@@ -7,6 +7,16 @@
 
 #include <memory>
 
+
+class AnimationManager;
+class AnimationPipeline;
+class DrawableConfigurator;
+
+struct Texture;
+
+struct AnimationState;
+
+
 enum class AnchorPoint : int;
 
 class IDrawableObject
@@ -25,23 +35,29 @@ class IDrawableObject
     // 获取碰撞箱
     virtual SDL_Rect getBounds() = 0;
 
+    // 更改贴图
+    virtual void changeTexture(Texture* newTexture) = 0;
+
     // 设置动画顺序
-    void setSequential(bool sequential) { AnimeManager->setSequence(sequential); }
+    void setSequential(bool sequential);
 
     // 获取 ID 和 图层的方法
-    short getID() const { return id; }
+    std::string getID() const { return id; }
     short getLayer() const { return layer; }
+    bool isAnimeFinished() const;
 
+    // 属性设置的方法
     void setScale(int w, int h) { bWidth = w;bHeight = h;}
-    void setAnchor(AnchorPoint anchor) { AnimeState->Anchor = anchor; }
+    void setAnchor(AnchorPoint anchor);
+    void setPosition(int x, int y);
 
-    void setPosition(int x, int y) { AnimeState->PositionX = x; AnimeState->PositionY = y;}
-
-    AnimationPipeline Animate() { return AnimationPipeline(AnimeManager.get()); } // 声明链式动画接口
+    // 配置器方法
+    AnimationPipeline Animate();
+    DrawableConfigurator Configure();
 
     protected:
-    // 默认id
-    short id = 0;
+    // ID 已经弃用，改用string代替
+    std::string id;
     // 默认图层
     short layer = 0;
     // 动画管理器
@@ -51,7 +67,7 @@ class IDrawableObject
     // 元素基础大小
     int bWidth, bHeight;
     // 贴图
-    std::unique_ptr<Texture> texture;
+    Texture* texture;
 };
 
 #endif //_IDRAWABLE_H_

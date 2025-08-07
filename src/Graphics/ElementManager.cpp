@@ -1,21 +1,21 @@
 #include "OpenCore/OpenCore.hpp"
 #include <algorithm>
 
-bool ElementManager::find(short id) const
+IDrawableObject* ElementManager::find(std::string id) const
 {
     for( auto &element : Elements)
     {
         if(element->getID() == id)
-            return true;
+            return element.get();
             // 找到了
     }
-    return false;
+    return nullptr;
     // 未找到     
 }
 
 bool ElementManager::PushElement(std::unique_ptr<IDrawableObject> element)
 {
-    short id = element->getID();
+    std::string id = element->getID();
     // 此为当前的ID
     bool existence = find(id);
 

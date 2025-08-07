@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Animation/AnimationPipeline.hpp"
 
-ImageBoard::ImageBoard(short id, short layer, std::unique_ptr<Texture> texture)
+ImageBoard::ImageBoard(std::string id, short layer, Texture* texture)
 {
     // 创建一个专属的动画状态
     AnimeState = std::make_unique<AnimationState>();
@@ -21,7 +21,7 @@ ImageBoard::ImageBoard(short id, short layer, std::unique_ptr<Texture> texture)
         // 如果材质为空，那么我们直接强制返回
     }
 
-    this->texture = std::move(texture);
+    this->texture = texture;
 }
 
 void ImageBoard::handlEvents(SDL_Event &event, float totalTime)
@@ -100,7 +100,7 @@ void ImageBoard::onUpdate(float totalTime)
 void ImageBoard::onRender()
 {
     // 渲染函数
-    SDL_SetTextureAlphaMod(texture.get()->texture, 255.0f * AnimeState->transparency);
+    SDL_SetTextureAlphaMod(texture->texture, 255.0f * AnimeState->transparency);
 
     SDL_Rect dstRect = getBounds();
 
@@ -108,9 +108,22 @@ void ImageBoard::onRender()
     {
         // 多帧函数
         SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
-        GraphicsManager::getInstance().RenderCopyEx(texture.get()->texture, &srcRect, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+        GraphicsManager::getInstance().RenderCopyEx(texture->texture, &srcRect, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
         return;
     }
     // 单帧贴图
-    GraphicsManager::getInstance().RenderCopyEx(texture.get()->texture, NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+    GraphicsManager::getInstance().RenderCopyEx(texture->texture, NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+}
+
+void ImageBoard::changeTexture(Texture* newTexture)
+{
+    if(newTexture)
+    {
+        delete this->texture;
+        this->texture = newTexture;
+    }
+    else
+    {
+        SDL_Log("ImageBoard::changeTexture() encountered a empty texture");
+    }
 }
