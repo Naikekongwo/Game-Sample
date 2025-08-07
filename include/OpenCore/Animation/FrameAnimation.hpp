@@ -1,9 +1,9 @@
-// FrameAnimation.h
+// FrameAnimation.hpp
 // 帧动画的头文件
 #ifndef _FRAMEANIMATION_H_
 #define _FRAMEANIMATION_H_
 
-#include "IAnimation.h"
+#include "IAnimation.hpp"
 // 帧动画类继承自IAnimation
 
 class FrameAnimation : public IAnimation

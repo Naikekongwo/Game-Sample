@@ -1,10 +1,10 @@
-// PreloadStage.h
+// PreloadStage.hpp
 // 预加载页面
 
 #ifndef _PRELOADSTAGE_H_
 #define _PRELOADSTAGE_H_
 
-#include "StageController.h"
+#include "StageController.hpp"
 
 
 // 前向声明区域

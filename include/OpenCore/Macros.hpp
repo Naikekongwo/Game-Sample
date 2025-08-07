@@ -1,7 +1,7 @@
 #ifndef _MACROS_H_
 #define _MACROS_H_
 
-// Macros.h
+// Macros.hpp
 // 公共宏定义文件
 
 

@@ -1,4 +1,4 @@
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 // 构造函数实现
 MoveAnimation::MoveAnimation(int startX, int startY, int endX, int endY, float duration, bool isLooping)

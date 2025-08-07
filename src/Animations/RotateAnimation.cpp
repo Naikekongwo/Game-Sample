@@ -1,4 +1,4 @@
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 // 构造函数实现
 RotateAnimation::RotateAnimation(float startAngle, float endAngle, float duration, bool isLooping)

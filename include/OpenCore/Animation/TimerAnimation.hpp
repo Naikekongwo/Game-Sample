@@ -1,11 +1,11 @@
 #pragma once
-#include "IAnimation.h"
+#include "IAnimation.hpp"
 
 // 位置移动动画类
-class MoveAnimation : public IAnimation {
+class TimerAnimation : public IAnimation {
 public:
     // 构造函数，传入起始和结束坐标、持续时间、是否循环
-    MoveAnimation(int startX, int startY, int endX, int endY, float duration, bool isLooping);
+    TimerAnimation(float duration);
 
     // 更新动画状态
     void onUpdate(float totalTime, AnimationState& state) override;
@@ -18,8 +18,7 @@ public:
 
 private:
     float startTime = 0.0f; // 起始时间
-    int startX, startY, endX, endY; // 起始和结束坐标
     float duration;                 // 持续时间
-    bool isLooping;                 // 是否循环
+    bool isLooping = false;         // 是否循环 : Timer动画不可能循环（死循环了那就）
     bool finished;                  // 是否结束
 };

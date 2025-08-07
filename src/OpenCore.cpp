@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 // 单例
 OpenEngine &OpenEngine::getInstance()

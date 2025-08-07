@@ -1,16 +1,16 @@
-// AnimationManager.h
+// AnimationManager.hpp
 // 动画管理器的类
 
 #ifndef _ANIMATIONMANAGER_H_
 #define _ANIMATIONMANAGER_H_
 
-#include "IAnimation.h"
-#include "FrameAnimation.h"
-#include "FadeAnimation.h"
-#include "MoveAnimation.h"
-#include "RotateAnimation.h"
-#include "ScaleAnimation.h"
-#include "TimerAnimation.h"
+#include "IAnimation.hpp"
+#include "FrameAnimation.hpp"
+#include "FadeAnimation.hpp"
+#include "MoveAnimation.hpp"
+#include "RotateAnimation.hpp"
+#include "ScaleAnimation.hpp"
+#include "TimerAnimation.hpp"
 
 #include <memory>
 #include <vector>

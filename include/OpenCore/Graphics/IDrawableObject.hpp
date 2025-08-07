@@ -1,4 +1,4 @@
-// IDrawable.h
+// IDrawable.hpp
 // 可绘图类的基类
 #ifndef _IDRAWABLE_H_
 #define _IDRAWABLE_H_
@@ -25,9 +25,6 @@ class IDrawableObject
     // 获取碰撞箱
     virtual SDL_Rect getBounds() = 0;
 
-    // 添加动画
-    virtual void PushAnimation(short id, std::shared_ptr<IAnimation> Anime) = 0;
-
     // 设置动画顺序
     void setSequential(bool sequential) { AnimeManager->setSequence(sequential); }
 
@@ -39,6 +36,8 @@ class IDrawableObject
     void setAnchor(AnchorPoint anchor) { AnimeState->Anchor = anchor; }
 
     void setPosition(int x, int y) { AnimeState->PositionX = x; AnimeState->PositionY = y;}
+
+    AnimationPipeline Animate() { return AnimationPipeline(AnimeManager.get()); } // 声明链式动画接口
 
     protected:
     // 默认id

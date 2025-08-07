@@ -1,10 +1,10 @@
-// ImageBoard.h
+// ImageBoard.hpp
 // 图片类
 #ifndef _IMAGEBOARD_H_
 #define _IMAGEBOARD_H_
 
-#include "../UIElement.h"
-#include "OpenCore/Animation/AnimationPipeline.h"
+#include "../UIElement.hpp"
+#include "OpenCore/Animation/AnimationPipeline.hpp"
 
 class ImageBoard : public UIElement
 {
@@ -16,11 +16,9 @@ class ImageBoard : public UIElement
     void handlEvents(SDL_Event &event, float totalTime) override;
     void onRender() override;
     void onUpdate(float totalTime) override;
-    void PushAnimation(short id, std::shared_ptr<IAnimation> Anime) override;
 
     SDL_Rect getBounds() override;
 
-    AnimationPipeline Animate(); // 声明链式动画接口
 };
 
 #endif //_IMAGEBOARD_H_

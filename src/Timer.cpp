@@ -1,6 +1,6 @@
 // 时间类的具体实现
 
-#include "OpenCore/Timer.h"
+#include "OpenCore/Timer.hpp"
 
 Timer::Timer(int TargetFrameRate)
 {

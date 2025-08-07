@@ -1,9 +1,9 @@
-// Button.h
+// Button.hpp
 // 按钮类
 #ifndef _BUTTON_H_
 #define _BUTTON_H_
 
-#include "../UIElement.h"
+#include "../UIElement.hpp"
 
 
 

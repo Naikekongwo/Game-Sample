@@ -1,14 +1,14 @@
-// ElementManager.h
+// ElementManager.hpp
 // 元素管理器类
 #ifndef _ELEMENTMANANGER_H_
 #define _ELEMENTMANANGER_H_
 
-#include "IDrawableObject.h"
+#include "IDrawableObject.hpp"
 
 
 
-#include "UI/Button.h"
-#include "UI/ImageBoard.h"
+#include "UI/Button.hpp"
+#include "UI/ImageBoard.hpp"
 
 #include <vector>
 #include <memory>

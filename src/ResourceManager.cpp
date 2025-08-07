@@ -1,4 +1,4 @@
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 // 初始化
 
 #define STB_IMAGE_IMPLEMENTATION

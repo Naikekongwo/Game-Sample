@@ -1,13 +1,13 @@
 #pragma once
-#include "AnimationManager.h"
+#include "AnimationManager.hpp"
 #include <memory>
 #include <vector>
 
 class AnimationPipeline {
 public:
-    // 构造函数
+    // 构造函数(弃用)
     AnimationPipeline(AnimationManager* mgr) : manager(mgr) {}
-    // 添加不同类型的动画
+    // 移动目标管理器
     AnimationPipeline& Fade(float startAlpha, float endAlpha, float duration, bool isLooping = false) {
         animations.push_back(std::make_shared<FadeAnimation>(startAlpha, endAlpha, duration, isLooping));
         return *this;
@@ -42,6 +42,6 @@ public:
     }
 
 private:
-    AnimationManager* manager;  // 动画管理器指针
+    AnimationManager* manager = nullptr;  // 动画管理器指针
     std::vector<std::shared_ptr<IAnimation>> animations;    // 存储动画的容器
 };

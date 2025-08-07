@@ -1,7 +1,7 @@
 // PreloadStage.cpp
 // 预加载页面的实现
 
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 PreloadStage::PreloadStage(Timer *timer)
 {
@@ -79,6 +79,7 @@ void PreloadStage::onUpdate()
         stageState = 2;
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
+        
         std::unique_ptr<Texture> imgTex = std::make_unique<Texture>(1, 1, OpenCoreManagers::ResManager.GetTexture(6));
         std::unique_ptr<ImageBoard> imgBd = std::make_unique<ImageBoard>(1, 0, std::move(imgTex));
         // 创建了控件
@@ -87,8 +88,13 @@ void PreloadStage::onUpdate()
         imgBd->setAnchor(AnchorPoint::Center);
         imgBd->setPosition(960, 540);
 
-        imgBd->PushAnimation(1, std::make_shared<FadeAnimation>(0.4f, 1.0f, 5.0f, false));
-        imgBd->PushAnimation(2, std::make_shared<ScaleAnimation>(1.3f, 1.0f, 5.0f, false));
+        
+
+        imgBd->Animate().Fade(0.4f, 1.0f, 5.0f, false).Scale(1.3f, 1.0f, 5.0f, false).Commit();
+
+
+        // imgBd->PushAnimation(1, std::make_shared<FadeAnimation>(0.4f, 1.0f, 5.0f, false));
+        // imgBd->PushAnimation(2, std::make_shared<ScaleAnimation>(1.3f, 1.0f, 5.0f, false));
 
         std::unique_ptr<Texture> imgTex1 = std::make_unique<Texture>(2, 1, OpenCoreManagers::ResManager.GetTexture(5));
         std::unique_ptr<ImageBoard> imgBd1 = std::make_unique<ImageBoard>(2, -1, std::move(imgTex1));
@@ -98,11 +104,7 @@ void PreloadStage::onUpdate()
         imgBd1->setAnchor(AnchorPoint::Center);
         imgBd1->setPosition(960, 540);
 
-        imgBd1->PushAnimation(1, std::make_shared<FadeAnimation>(0.0f, 1.0f, 10.0f, false));
-
-        imgBd1->PushAnimation(2, std::make_shared<TimerAnimation>(5.0f));
-
-        imgBd1->PushAnimation(3, std::make_shared<FadeAnimation>(1.0f,0.0f,5.0f, false));
+        imgBd1->Animate().Fade(0.0f, 1.0f, 10.0f, false).Timer(5.0f).Fade(1.0f,0.0f,5.0f, false).Commit();
 
         imgBd1->setSequential(true);
 

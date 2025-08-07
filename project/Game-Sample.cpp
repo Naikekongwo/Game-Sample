@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 // 引入内核
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 using namespace std;
 

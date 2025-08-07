@@ -1,4 +1,4 @@
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 // 构造函数实现
 FadeAnimation::FadeAnimation(float startAlpha, float endAlpha, float duration, bool isLooping)

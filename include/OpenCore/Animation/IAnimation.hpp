@@ -1,4 +1,4 @@
-// IAnimation.h
+// IAnimation.hpp
 // 动画的基类头文件
 #ifndef _IANIMATION_H_
 #define _IANIMATION_H_

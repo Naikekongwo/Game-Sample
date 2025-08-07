@@ -1,4 +1,4 @@
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 #include <algorithm>
 
 Texture::Texture(int x, int y, SDL_Texture* tex) : xCount(x), yCount(y), texture(tex)

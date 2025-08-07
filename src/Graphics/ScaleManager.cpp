@@ -1,4 +1,4 @@
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 ScaleManager::ScaleManager(int baseW, int baseH)
     : baseWidth(baseW), baseHeight(baseH) {}

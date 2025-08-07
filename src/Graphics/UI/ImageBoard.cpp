@@ -1,5 +1,5 @@
-#include "OpenCore/OpenCore.h"
-#include "OpenCore/Animation/AnimationPipeline.h"
+#include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Animation/AnimationPipeline.hpp"
 
 ImageBoard::ImageBoard(short id, short layer, std::unique_ptr<Texture> texture)
 {
@@ -91,12 +91,6 @@ SDL_Rect ImageBoard::getBounds()
     return SDL_Rect{x, y, renderWidth, renderHeight};
 }
 
-void ImageBoard::PushAnimation(short id, std::shared_ptr<IAnimation> Anime)
-{
-    // 只传递动画指针
-    AnimeManager->pushAnimation(Anime);
-}
-
 void ImageBoard::onUpdate(float totalTime)
 {
     AnimeManager->onUpdate(totalTime, *AnimeState);
@@ -119,8 +113,4 @@ void ImageBoard::onRender()
     }
     // 单帧贴图
     GraphicsManager::getInstance().RenderCopyEx(texture.get()->texture, NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
-}
-
-AnimationPipeline ImageBoard::Animate() {
-    return AnimationPipeline(AnimeManager.get());
 }

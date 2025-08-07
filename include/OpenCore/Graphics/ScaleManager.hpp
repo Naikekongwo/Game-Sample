@@ -1,4 +1,4 @@
-// ScaleManager.h
+// ScaleManager.hpp
 // 全局尺寸控制类
 #ifndef _SCALEMANAGER_H_
 #define _SCALEMANAGER_H_

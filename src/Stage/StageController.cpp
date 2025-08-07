@@ -2,12 +2,10 @@
 // 场景控制器的具体实现
 // 以及场景类的部分实现
 
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 void StageController::changeStage(std::unique_ptr<Stage> newStage)
 {
-    // [SHAOYANG] 2025/7/29
-    // 已经全部换用unique_ptr来管理对象
     currentStage = std::move(newStage);
 }
 

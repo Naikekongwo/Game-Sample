@@ -1,4 +1,4 @@
-#include "OpenCore/OpenCore.h"
+#include "OpenCore/OpenCore.hpp"
 
 SoundEffectManager &SoundEffectManager::getInstance()
 {

@@ -1,10 +1,10 @@
 #ifndef _STAGECONTROLLER_H_
 #define _STAGECONTROLLER_H_
 
-// StageController.h
+// StageController.hpp
 // 场景控制器的头
-#include "Stage.h"
-#include "PreloadStage.h"
+#include "Stage.hpp"
+#include "PreloadStage.hpp"
 
 #include <memory>
 #include <iostream>

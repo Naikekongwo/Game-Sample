@@ -1,5 +1,5 @@
 #pragma once
-#include "IAnimation.h"
+#include "IAnimation.hpp"
 
 // 淡入淡出动画类
 class FadeAnimation : public IAnimation {

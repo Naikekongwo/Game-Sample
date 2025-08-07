@@ -1,20 +1,21 @@
 #ifndef _OPENCORE_H_
 #define _OPENCORE_H_
 
-// OpenCore.h
+// OpenCore.hpp
 // 引擎的核心
 
 
-#include "Timer.h"
-#include "Macros.h"
+#include "Timer.hpp"
+#include "Macros.hpp"
 
-#include "ResourceManager.h"
-#include "SoundEffectManager.h"
-#include "Graphics/GraphicsManager.h"
-#include "Graphics/ScaleManager.h"
-#include "Animation/AnimationManager.h"
-#include "Graphics/ElementManager.h"
-#include "Stage/StageController.h"
+#include "ResourceManager.hpp"
+#include "SoundEffectManager.hpp"
+#include "Graphics/GraphicsManager.hpp"
+#include "Graphics/ScaleManager.hpp"
+#include "Animation/AnimationPipeline.hpp"
+#include "Animation/AnimationManager.hpp"
+#include "Graphics/ElementManager.hpp"
+#include "Stage/StageController.hpp"
 
 #include <memory>
 

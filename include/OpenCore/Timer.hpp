@@ -1,7 +1,7 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
-// Timer.h
+// Timer.hpp
 // 定时器类
 
 #include <chrono>
