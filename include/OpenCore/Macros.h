@@ -18,8 +18,8 @@
 
 
 // 图形宏定义
-#define BASE_WINDOW_WIDTH 1280
-#define BASE_WINDOW_HEIGHT 720
+#define BASE_WINDOW_WIDTH 1920
+#define BASE_WINDOW_HEIGHT 1080
 
 // 主题
 #define APP_NAME "无水之境 Eclipsea"

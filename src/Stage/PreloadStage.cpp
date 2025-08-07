@@ -21,7 +21,7 @@ void PreloadStage::LoadResources()
         {3, LOADING_ICON},
         {4, GAMESTART_ICON},
         {5, OCEAN_BACK},
-        {6, "assets/ui/loading.png"}};
+        {6, "assets/ui/Preload_Title.png"}};
 
     for (const auto &[id, path] : assets)
     {
@@ -74,7 +74,7 @@ void PreloadStage::onUpdate()
 
         OpenCoreManagers::SFXManager.loadBGM(0); // BGM
         OpenCoreManagers::SFXManager.playBGM();
-        OpenCoreManagers::SFXManager.setVolume(64); // 加载背景音乐
+        OpenCoreManagers::SFXManager.setVolume(30); // 加载背景音乐
 
         stageState = 2;
 
@@ -83,20 +83,20 @@ void PreloadStage::onUpdate()
         std::unique_ptr<ImageBoard> imgBd = std::make_unique<ImageBoard>(1, 0, std::move(imgTex));
         // 创建了控件
 
-        imgBd->setScale(512, 256);
+        imgBd->setScale(1024, 256);
         imgBd->setAnchor(AnchorPoint::Center);
-        imgBd->setPosition(640, 360);
+        imgBd->setPosition(960, 540);
 
-        std::shared_ptr<FadeAnimation> fade0 = std::make_shared<FadeAnimation>(0.4f, 1.0f, 5.0f, false);
-        imgBd->PushAnimation(1, fade0);
+        imgBd->PushAnimation(1, std::make_shared<FadeAnimation>(0.4f, 1.0f, 5.0f, false));
+        imgBd->PushAnimation(2, std::make_shared<ScaleAnimation>(1.3f, 1.0f, 5.0f, false));
 
         std::unique_ptr<Texture> imgTex1 = std::make_unique<Texture>(2, 1, OpenCoreManagers::ResManager.GetTexture(5));
         std::unique_ptr<ImageBoard> imgBd1 = std::make_unique<ImageBoard>(2, -1, std::move(imgTex1));
         // 创建了控件
 
-        imgBd1->setScale(1280, 720);
+        imgBd1->setScale(1920, 1080);
         imgBd1->setAnchor(AnchorPoint::Center);
-        imgBd1->setPosition(640, 360);
+        imgBd1->setPosition(960, 540);
 
         imgBd1->PushAnimation(1, std::make_shared<FadeAnimation>(0.0f, 1.0f, 10.0f, false));
 

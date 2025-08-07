@@ -22,6 +22,7 @@ bool GraphicsManager::Init()
     }
 
     // 创建窗口和渲染器 失败即返回假
+    // 此处可能影响“跨平台性能”
     if (SDL_CreateWindowAndRenderer(1920, 1080, SDL_RENDERER_ACCELERATED, &window, &renderer) != 0)
     {
         return false;
@@ -36,13 +37,11 @@ bool GraphicsManager::Init()
     SDL_SetWindowTitle(window, APP_NAME);
     SDL_SetWindowResizable(window, SDL_TRUE);
 
+
     // 释放资源
     // FreeStbiSurface(iconSurface);
 
     ContentScale = std::make_unique<ScaleManager>(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT);
-
-    ContentScale->UpdateTargetSize(1920, 1080);
-
     // 初始化成功
     return true;
 }

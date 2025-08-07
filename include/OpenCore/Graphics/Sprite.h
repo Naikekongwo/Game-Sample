@@ -1,0 +1,13 @@
+// Sprite.h
+// 精灵类的基类
+#ifndef _SPRITE_H_
+#define _SPRITE_H_
+
+#include "IDrawableObject.h"
+
+class Sprite : public IDrawableObject
+{
+    public:
+};
+
+#endif //_SPRITE_H_
