@@ -4,6 +4,7 @@
 #define _IMAGEBOARD_H_
 
 #include "../UIElement.h"
+#include "OpenCore/Animation/AnimationPipeline.h"
 
 class ImageBoard : public UIElement
 {
@@ -18,6 +19,8 @@ class ImageBoard : public UIElement
     void PushAnimation(short id, std::shared_ptr<IAnimation> Anime) override;
 
     SDL_Rect getBounds() override;
+
+    AnimationPipeline Animate(); // 声明链式动画接口
 };
 
 #endif //_IMAGEBOARD_H_

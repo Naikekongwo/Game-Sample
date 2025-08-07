@@ -54,6 +54,15 @@ public:
 
     void setSequence(bool isSequential);
 
+    bool isFinished() const { 
+        // 所有动画都完成才算 finished
+        if (Animations.empty()) return true;
+        for (const auto& anime : Animations) {
+            if (!anime->isFinished()) return false;
+        }
+        return true;
+    }
+
 private:
     // 改为vector存储
     std::vector<std::shared_ptr<IAnimation>> Animations;

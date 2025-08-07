@@ -1,4 +1,5 @@
 #include "OpenCore/OpenCore.h"
+#include "OpenCore/Animation/AnimationPipeline.h"
 
 ImageBoard::ImageBoard(short id, short layer, std::unique_ptr<Texture> texture)
 {
@@ -118,4 +119,8 @@ void ImageBoard::onRender()
     }
     // 单帧贴图
     GraphicsManager::getInstance().RenderCopyEx(texture.get()->texture, NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+}
+
+AnimationPipeline ImageBoard::Animate() {
+    return AnimationPipeline(AnimeManager.get());
 }
