@@ -21,13 +21,11 @@ bool GraphicsManager::Init()
         return false;
     }
 
-    // PSP 应该如此创建
-    // window = SDL_CreateWindow(APP_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 480, 272, SDL_RENDERER_ACCELERATED);
-    // renderer = SDL_GetRenderer(window);
+    // PSP 平台的 window 和 renderer 初始化方法
+    // window = SDL_CreateWindow(APP_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 480, 272, SDL_WINDOW_SHOWN);
+    // renderer = SDL_CreateRenderer(window, -1 , SDL_RENDERER_ACCELERATED);
 
-
-    // 创建窗口和渲染器 失败即返回假
-    // 此处可能影响“跨平台性能”
+    // 其他平台的初始化方法
     if (SDL_CreateWindowAndRenderer(1920, 1080, SDL_RENDERER_ACCELERATED, &window, &renderer) != 0)
     {
         return false;

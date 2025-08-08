@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int WinMain(int argc, char** args)
+int main(int argc, char *argv[])
 {
     OpenEngine engine;
     

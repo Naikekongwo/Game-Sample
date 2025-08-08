@@ -22,7 +22,7 @@ bool ResourceManager::Init()
         return false;
     }
 
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) < 0)
     {
         SDL_Log("ResourceManager::ResourceManager() failed to open audio: %s", Mix_GetError());
         return false;
