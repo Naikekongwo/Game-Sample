@@ -21,6 +21,11 @@ bool GraphicsManager::Init()
         return false;
     }
 
+    // PSP 应该如此创建
+    // window = SDL_CreateWindow(APP_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 480, 272, SDL_RENDERER_ACCELERATED);
+    // renderer = SDL_GetRenderer(window);
+
+
     // 创建窗口和渲染器 失败即返回假
     // 此处可能影响“跨平台性能”
     if (SDL_CreateWindowAndRenderer(1920, 1080, SDL_RENDERER_ACCELERATED, &window, &renderer) != 0)
@@ -28,18 +33,8 @@ bool GraphicsManager::Init()
         return false;
     }
 
-    // 图标加载方法【NON STANDARD!!!临时使用】
-    // SDL_Surface *iconSurface = stbi_loadSurface(RES_GAME_ICON);
-    // if(!iconSurface) { return false;} // 图标加载失败推出
-
-    // 窗口属性设置
-    // SDL_SetWindowIcon(window, iconSurface);
     SDL_SetWindowTitle(window, APP_NAME);
     SDL_SetWindowResizable(window, SDL_TRUE);
-
-
-    // 释放资源
-    // FreeStbiSurface(iconSurface);
 
     ContentScale = std::make_unique<ScaleManager>(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT);
     // 初始化成功

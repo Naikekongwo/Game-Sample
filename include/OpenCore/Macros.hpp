@@ -20,8 +20,11 @@
 // 图形宏定义
 #define BASE_WINDOW_WIDTH 1920
 #define BASE_WINDOW_HEIGHT 1080
+// [PSP支持] 图形宏定义
+#define PSP_BASE_WINDOW_WIDTH 480
+#define PSP_BASE_WINDOW_HEIGHT 272
 
-// 主题
+// 版本信息
 #define APP_NAME "无水之境 Eclipsea"
 #define APP_VERSION_MAJOR 1
 #define APP_VERSION_MINOR 0
