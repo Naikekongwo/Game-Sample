@@ -14,6 +14,12 @@
 #include <condition_variable>
 #include <thread>
 #include <exception>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include "rapidjson/document.h"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/error/en.h"
 
 struct TextureLoadTask {
     bool isFinished = false;
@@ -34,7 +40,7 @@ class ResourceManager {
 public:
     static ResourceManager& getInstance();
 
-    bool Init();
+    bool Init(SDL_Renderer* render);
     void CleanUp();
 
     void LoadMusic(short id, const std::string& path);
@@ -61,6 +67,17 @@ private:
     // 主线程任务队列
     std::mutex mainThreadQueueMutex_;
     std::queue<std::function<void()>> mainThreadTaskQueue_;
+
+    //通过json进行整个场景的资源加载
+    void LoadResourcesFromJson(short id);
+
+    //释放加载资源
+    void FreeMusic(short id);
+    void FreeTexture(short id);
+    
+    //异步释放资源
+    std::future<void> FreeMusicAsync(short id);
+    std::future<void> FreeTextureAsync(short id);
 
     // 新增测试：加载表面和纹理转换,这个正常不应该在此类中实现
     SDL_Surface* LoadSurface(const std::string& path);
