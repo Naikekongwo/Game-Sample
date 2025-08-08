@@ -17,6 +17,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "rapidjson/error/en.h"
@@ -40,7 +41,7 @@ class ResourceManager {
 public:
     static ResourceManager& getInstance();
 
-    bool Init(SDL_Renderer* render);
+    bool Init();
     void CleanUp();
 
     void LoadMusic(short id, const std::string& path);

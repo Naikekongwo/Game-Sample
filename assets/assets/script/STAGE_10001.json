@@ -1,0 +1,22 @@
+{
+    "1001" : {
+        "path" : "assets/audio/bgm_oceanwaves.mp3",
+        "category" : "music"
+    },
+    "2001" : {
+        "path" : "assets/backgrounds/menu_ocean.png",
+        "category" : "texture"
+    },
+    "2002" : {
+        "path" : "assets/ui/Preload_Title.png",
+        "category" : "texture"
+    },
+    "2003" : {
+        "path": "assets/ui/icon_opencore.png",
+        "category" : "texture"
+    },
+    "2004" : {
+        "path" : "assets/ui/icon_openstudio.png",
+        "category" : "texture"
+    }
+}

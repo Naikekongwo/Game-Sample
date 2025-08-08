@@ -1,6 +1,4 @@
-#include "JsonManager.hpp"
-#include <fstream>
-#include <iostream>
+#include "OpenCore/OpenCore.hpp"
 #include <rapidjson/ostreamwrapper.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/prettywriter.h>

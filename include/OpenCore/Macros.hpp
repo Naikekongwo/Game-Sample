@@ -4,18 +4,8 @@
 // Macros.hpp
 // 公共宏定义文件
 
-
-// 资源宏定义
-#define RES_GAME_ICON "assets/icon.png"
-#define HEADS_ICON "assets/icon_studio.png"
-#define CHARA_TEXTURE "assets/character.png"
-#define LOADING_ICON "assets/icon_opencore.png"
-#define GAMESTART_ICON "assets/ui/gameStartButton.png"
-#define OCEAN_BACK "assets/backgrounds/menu_ocean.png"
-
-#define TEST_MUSIC "assets/audio/test.mp3"
-#define OCEAN_WAVES "assets/audio/bgm_oceanwaves.mp3"
-
+// 路径定义
+#define JSON_PATH "assets/script"
 
 // 图形宏定义
 #define BASE_WINDOW_WIDTH 1920

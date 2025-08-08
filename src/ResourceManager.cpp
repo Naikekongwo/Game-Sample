@@ -3,15 +3,14 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "STB-IMAGE/stb_image.h"
 
-bool ResourceManager::Init(SDL_Renderer* render) {
+bool ResourceManager::Init() {
     // 确保GraphicsManager 一定在其之前进行初始化
     renderer = OpenCoreManagers::GFXManager.getRenderer();
 
-    if (!render) {
+    if (!renderer) {
         SDL_Log("ResourceManager::Init() encountered a null renderer.");
         return false;
     }
-    this->renderer = render;
 
     int result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
     if (!result) {
@@ -295,7 +294,7 @@ void SDLDeleter::operator()(SDL_Texture* texture) const {
 //通过json进行整个场景的资源加载
 void ResourceManager::LoadResourcesFromJson(short id) {
     // 1. 构建文件名
-    std::string filename = "../json" + std::to_string(id) + ".json";
+    std::string filename = "assets/script/STAGE_" + std::to_string(id) + ".json";
     
     // 2. 检查文件是否存在
     FILE* file = fopen(filename.c_str(), "rb");

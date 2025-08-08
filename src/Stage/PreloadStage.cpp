@@ -12,25 +12,6 @@ PreloadStage::PreloadStage(Timer *timer)
 
 void PreloadStage::LoadResources()
 {
-    OpenCoreManagers::ResManager.LoadMusicAsync(0, OCEAN_WAVES); // 加载背景音乐
-
-    std::vector<std::pair<short, std::string>> assets = {
-        {0, RES_GAME_ICON},
-        {1, HEADS_ICON},
-        {2, CHARA_TEXTURE},
-        {3, LOADING_ICON},
-        {4, GAMESTART_ICON},
-        {5, OCEAN_BACK},
-        {6, "assets/ui/Preload_Title.png"}};
-
-    for (const auto &[id, path] : assets)
-    {
-        TextureLoadTask task;
-        task.id = id;
-        task.path = path;
-        task.future = OpenCoreManagers::ResManager.LoadTextureAsync(id, path);
-        textureTasks.push_back(std::move(task));
-    }
     SDL_Log("PreloadStage: Resources loading started.");
 }
 

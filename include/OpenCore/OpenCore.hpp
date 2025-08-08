@@ -8,6 +8,7 @@
 #include "Timer.hpp"
 #include "Macros.hpp"
 
+#include "JsonManager.hpp"
 #include "ResourceManager.hpp"
 #include "SoundEffectManager.hpp"
 #include "Graphics/GraphicsManager.hpp"
