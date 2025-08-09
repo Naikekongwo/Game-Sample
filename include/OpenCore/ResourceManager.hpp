@@ -56,6 +56,17 @@ public:
     void ClearAll();    
     void ProcessMainThreadTasks(); // 新增：主线程任务处理
 
+    //通过json进行整个场景的资源加载
+    void LoadResourcesFromJson(short id);
+
+    //释放加载资源
+    void FreeMusic(short id);
+    void FreeTexture(short id);
+    
+    //异步释放资源
+    std::future<void> FreeMusicAsync(short id);
+    std::future<void> FreeTextureAsync(short id);
+
 private:
     SDL_Renderer* renderer = nullptr;
 
@@ -68,17 +79,6 @@ private:
     // 主线程任务队列
     std::mutex mainThreadQueueMutex_;
     std::queue<std::function<void()>> mainThreadTaskQueue_;
-
-    //通过json进行整个场景的资源加载
-    void LoadResourcesFromJson(short id);
-
-    //释放加载资源
-    void FreeMusic(short id);
-    void FreeTexture(short id);
-    
-    //异步释放资源
-    std::future<void> FreeMusicAsync(short id);
-    std::future<void> FreeTextureAsync(short id);
 
     // 新增测试：加载表面和纹理转换,这个正常不应该在此类中实现
     SDL_Surface* LoadSurface(const std::string& path);
