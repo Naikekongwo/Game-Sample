@@ -292,6 +292,16 @@ void SDLDeleter::operator()(SDL_Texture* texture) const {
 }
 
 //通过json进行整个场景的资源加载
+//新增一些说明，大体上结构是这样的，首先有一个main.json,用于储存场景名称与id的对应关系，当然这个main.json在一定程度上是可有可无的
+//只是为了方便记忆，即使不用短id修改起来也很方便，只需要修改输入即可，文件的位置在第1步，自行修改即可。对于各个场景的json文件，大致结构如下
+//{
+//    "1001": {
+//        "path": "background.png",
+//        "category": "texture"
+//    }
+//}
+//第一行是资源的id，值是一个对象包含路径和种类，种类暂时为texture和music，如需增加chunk等，只需在7.4加入对应分支即可
+//如需单独加载某一类型，只需在7.4去掉其余分支即可
 void ResourceManager::LoadResourcesFromJson(short id) {
     // 1. 构建文件名
     std::string filename = "assets/script/STAGE_" + std::to_string(id) + ".json";
@@ -299,7 +309,7 @@ void ResourceManager::LoadResourcesFromJson(short id) {
     // 2. 检查文件是否存在
     FILE* file = fopen(filename.c_str(), "rb");
     if (!file) {
-        std::cerr << "Error: JSON file " << filename << " does not exist" << std::endl;
+        SDL_Log("Error: JSON file %s does not exist", filename.c_str());
         return;
     }
 
@@ -312,14 +322,13 @@ void ResourceManager::LoadResourcesFromJson(short id) {
 
     // 4. 检查解析错误
     if (doc.HasParseError()) {
-        std::cerr << "JSON parse error (" << filename << "): " 
-                  << rapidjson::GetParseError_En(doc.GetParseError()) << std::endl;
+        SDL_Log("JSON parse error (%s): %s", filename.c_str(), rapidjson::GetParseError_En(doc.GetParseError()));
         return;
     }
 
     // 5. 验证JSON根对象
     if (!doc.IsObject()) {
-        std::cerr << "Error: JSON root is not an object in " << filename << std::endl;
+        SDL_Log("Error: JSON root is not an object in %s", filename.c_str());
         return;
     }
 
@@ -333,7 +342,7 @@ void ResourceManager::LoadResourcesFromJson(short id) {
         try {
             resourceId = static_cast<short>(std::stoi(it->name.GetString()));
         } catch (...) {
-            std::cerr << "Invalid resource ID format: " << it->name.GetString() << std::endl;
+            SDL_Log("Invalid resource ID format: %s", it->name.GetString());
             continue;
         }
 
@@ -342,7 +351,7 @@ void ResourceManager::LoadResourcesFromJson(short id) {
         if (!resObj.IsObject() || 
             !resObj.HasMember("path") || !resObj["path"].IsString() ||
             !resObj.HasMember("category") || !resObj["category"].IsString()) {
-            std::cerr << "Invalid resource object for ID: " << resourceId << std::endl;
+            SDL_Log("Invalid resource object for ID: %d", resourceId);
             continue;
         }
 
@@ -356,7 +365,7 @@ void ResourceManager::LoadResourcesFromJson(short id) {
         } else if (category == "texture") {
             futures.push_back(LoadTextureAsync(resourceId, path));
         } else {
-            std::cerr << "Unknown category '" << category << "' for resource ID: " << resourceId << std::endl;
+            SDL_Log("Unknown category '%s' for resource ID: %d", category.c_str(), resourceId);
         }
     }
 
@@ -368,6 +377,7 @@ void ResourceManager::LoadResourcesFromJson(short id) {
             }
         }).detach();  // 分离线程避免阻塞主线程
     }
+    SDL_Log("ResourceManager: Resources loaded from JSON file %s was finished", filename.c_str());
 }
 
 //释放音乐
