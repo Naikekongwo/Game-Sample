@@ -12,6 +12,7 @@ PreloadStage::PreloadStage(Timer *timer)
 
 void PreloadStage::LoadResources()
 {
+    LoadingState = OpenCoreManagers::ResManager.LoadResourcesFromJson(10001);
     SDL_Log("PreloadStage: Resources loading started.");
 }
 
@@ -25,35 +26,17 @@ bool PreloadStage::handlEvents(SDL_Event *event)
 
 void PreloadStage::onUpdate()
 {
-    bool allReady = true;
-    for (auto &task : textureTasks)
-    {
-        if (!task.isFinished)
-        {
-            if (task.future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
-            {
-                try
-                {
-                    task.future.get();
-                }
-                catch (const std::exception &e)
-                {
-                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Exception in async load: %s", e.what());
-                }
-                task.isFinished = true;
-            }
-            else
-            {
-                allReady = false;
-            }
-        }
+    bool preload = false;
+
+    if (LoadingState.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+        preload = true;
     }
 
-    if (allReady && stageState == 0)
+    if (preload && stageState == 0)
     {
         stageState = 1;
 
-        OpenCoreManagers::SFXManager.loadBGM(0); // BGM
+        OpenCoreManagers::SFXManager.loadBGM(1001); // BGM
         OpenCoreManagers::SFXManager.playBGM();
         OpenCoreManagers::SFXManager.setVolume(30); // 加载背景音乐
 
@@ -61,7 +44,7 @@ void PreloadStage::onUpdate()
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
         
-        std::unique_ptr<ImageBoard> startTitle = std::make_unique<ImageBoard>("startTitle", 0, new Texture(1, 1, OpenCoreManagers::ResManager.GetTexture(6)));
+        std::unique_ptr<ImageBoard> startTitle = std::make_unique<ImageBoard>("startTitle", 0, new Texture(1, 1, OpenCoreManagers::ResManager.GetTexture(2002)));
         // 创建了加载界面的标题控件
 
         // 部署各项属性
@@ -69,7 +52,7 @@ void PreloadStage::onUpdate()
         // 配置动画属性
         startTitle->Animate().Fade(0.4f, 1.0f, 5.0f, false).Scale(1.3f, 1.1f, 5.0f, false).Commit();
 
-        std::unique_ptr<ImageBoard> oceanBackground = std::make_unique<ImageBoard>("background", -1, new Texture(2, 1, OpenCoreManagers::ResManager.GetTexture(5)));
+        std::unique_ptr<ImageBoard> oceanBackground = std::make_unique<ImageBoard>("background", -1, new Texture(2, 1, OpenCoreManagers::ResManager.GetTexture(2001)));
         // 创建了背景控件
         
         // 部署背景的各项属性
@@ -103,7 +86,7 @@ void PreloadStage::onUpdate()
 
                 if(stageState == 3)
                 {
-                    Title->changeTexture(new Texture(1,1, OpenCoreManagers::ResManager.GetTexture(3)));
+                    Title->changeTexture(new Texture(1,1, OpenCoreManagers::ResManager.GetTexture(2003)));
                     Title->Configure().Scale(1000,500);
                     Title->setSequential(true);
                     Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(3.0f).Commit();
@@ -113,7 +96,7 @@ void PreloadStage::onUpdate()
 
                 if(stageState == 4)
                 {
-                    Title->changeTexture(new Texture(1,1, OpenCoreManagers::ResManager.GetTexture(1)));
+                    Title->changeTexture(new Texture(1,1, OpenCoreManagers::ResManager.GetTexture(2004)));
                     Title->Configure().Scale(600,600);
                     Title->setSequential(true);
                     Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(3.0f).Commit();

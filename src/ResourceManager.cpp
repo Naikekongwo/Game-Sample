@@ -1,5 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
 // 初始化
+#define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
 #include "STB-IMAGE/stb_image.h"
 
@@ -302,7 +303,7 @@ void SDLDeleter::operator()(SDL_Texture* texture) const {
 //}
 //第一行是资源的id，值是一个对象包含路径和种类，种类暂时为texture和music，如需增加chunk等，只需在7.4加入对应分支即可
 //如需单独加载某一类型，只需在7.4去掉其余分支即可
-void ResourceManager::LoadResourcesFromJson(short id) {
+std::future<void> ResourceManager::LoadResourcesFromJson(short id) {
     // 1. 构建文件名
     std::string filename = "assets/script/STAGE_" + std::to_string(id) + ".json";
     
@@ -310,7 +311,10 @@ void ResourceManager::LoadResourcesFromJson(short id) {
     FILE* file = fopen(filename.c_str(), "rb");
     if (!file) {
         SDL_Log("Error: JSON file %s does not exist", filename.c_str());
-        return;
+        // 返回一个已经完成的 future（防止外部阻塞）
+        std::promise<void> p;
+        p.set_value();
+        return p.get_future();
     }
 
     // 3. 解析JSON文件
@@ -318,26 +322,29 @@ void ResourceManager::LoadResourcesFromJson(short id) {
     rapidjson::FileReadStream stream(file, readBuffer, sizeof(readBuffer));
     rapidjson::Document doc;
     doc.ParseStream(stream);
-    fclose(file);  // 关闭文件
+    fclose(file);
 
     // 4. 检查解析错误
     if (doc.HasParseError()) {
         SDL_Log("JSON parse error (%s): %s", filename.c_str(), rapidjson::GetParseError_En(doc.GetParseError()));
-        return;
+        std::promise<void> p;
+        p.set_value();
+        return p.get_future();
     }
 
     // 5. 验证JSON根对象
     if (!doc.IsObject()) {
         SDL_Log("Error: JSON root is not an object in %s", filename.c_str());
-        return;
+        std::promise<void> p;
+        p.set_value();
+        return p.get_future();
     }
 
     // 6. 存储异步任务future
     std::vector<std::future<void>> futures;
 
     // 7. 遍历所有资源对象
-    for (rapidjson::Value::ConstMemberIterator it = doc.MemberBegin(); it != doc.MemberEnd(); ++it) {
-        // 7.1 获取资源ID
+    for (auto it = doc.MemberBegin(); it != doc.MemberEnd(); ++it) {
         short resourceId;
         try {
             resourceId = static_cast<short>(std::stoi(it->name.GetString()));
@@ -346,7 +353,6 @@ void ResourceManager::LoadResourcesFromJson(short id) {
             continue;
         }
 
-        // 7.2 验证资源对象结构
         const rapidjson::Value& resObj = it->value;
         if (!resObj.IsObject() || 
             !resObj.HasMember("path") || !resObj["path"].IsString() ||
@@ -355,11 +361,9 @@ void ResourceManager::LoadResourcesFromJson(short id) {
             continue;
         }
 
-        // 7.3 提取路径和类别
         std::string path = resObj["path"].GetString();
         std::string category = resObj["category"].GetString();
 
-        // 7.4 根据类别调用加载函数
         if (category == "music") {
             futures.push_back(LoadMusicAsync(resourceId, path));
         } else if (category == "texture") {
@@ -369,15 +373,13 @@ void ResourceManager::LoadResourcesFromJson(short id) {
         }
     }
 
-    // 8. 异步等待所有加载任务完成
-    if (!futures.empty()) {
-        std::thread([futures = std::move(futures)]() mutable {
-            for (auto& future : futures) {
-                future.wait();  // 等待每个异步任务完成
-            }
-        }).detach();  // 分离线程避免阻塞主线程
-    }
-    SDL_Log("ResourceManager: Resources loaded from JSON file %s was finished", filename.c_str());
+    // 8. 返回一个 future 表示所有任务完成
+    return std::async(std::launch::async, [futures = std::move(futures), filename]() mutable {
+        for (auto& future : futures) {
+            future.wait();
+        }
+        SDL_Log("ResourceManager: Resources loaded from JSON file %s was finished", filename.c_str());
+    });
 }
 
 //释放音乐
@@ -414,10 +416,3 @@ std::future<void> ResourceManager::FreeTextureAsync(short id) {
         activeTasks_--;
     });
 }
-
-
-
-
-
-
-

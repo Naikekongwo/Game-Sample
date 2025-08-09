@@ -30,7 +30,7 @@ private:
     int stageState = 0;
     // 0为未播放
 
-    std::vector<TextureLoadTask> textureTasks;
+    std::future<void> LoadingState;
     std::unique_ptr<ElementManager> Elements;
 };
 

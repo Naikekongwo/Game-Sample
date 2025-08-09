@@ -22,13 +22,6 @@
 #include "rapidjson/filereadstream.h"
 #include "rapidjson/error/en.h"
 
-struct TextureLoadTask {
-    bool isFinished = false;
-    std::string path;
-    std::future<void> future;
-    short id;
-};
-
 struct SDLDeleter {
     void operator()(Mix_Music* music) const;
     void operator()(SDL_Texture* texture) const;
@@ -54,10 +47,11 @@ public:
     std::future<void> LoadTextureAsync(short id, const std::string &path);
 
     void ClearAll();    
-    void ProcessMainThreadTasks(); // 新增：主线程任务处理
+    // 新增：主线程任务处理
+    void ProcessMainThreadTasks(); 
 
     //通过json进行整个场景的资源加载
-    void LoadResourcesFromJson(short id);
+    std::future<void> LoadResourcesFromJson(short id);
 
     //释放加载资源
     void FreeMusic(short id);
@@ -112,6 +106,6 @@ std::future<void> ResourceManager::EnqueueTask(F&& f) {
 
     queueCV_.notify_one();
     return task->get_future();
-}
+};
 
 #endif //_RESOURCE_MANAGER_H_
