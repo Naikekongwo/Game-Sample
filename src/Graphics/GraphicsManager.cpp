@@ -35,6 +35,7 @@ bool GraphicsManager::Init()
     SDL_SetWindowResizable(window, SDL_TRUE);
 
     ContentScale = std::make_unique<ScaleManager>(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT);
+    // ContentScale->UpdateTargetSize(480, 272);
     // 初始化成功
     return true;
 }
