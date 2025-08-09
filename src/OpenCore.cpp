@@ -72,7 +72,7 @@ bool OpenEngine::MainLoop()
     bool should_close = false;
     SDL_Event event;
 
-    sController->changeStage(std::make_unique<PreloadStage>(timer.get()));
+    sController->changeStage(std::make_unique<PreloadStage>(timer.get(), sController.get()));
 
     while (!should_close)
     {

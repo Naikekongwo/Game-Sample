@@ -6,15 +6,13 @@
 
 #include "StageController.hpp"
 
-
-// 前向声明区域
-struct TextureLoadTask;
-class SpriteManager;
+class StageController;
+class ElementManager;
 
 class PreloadStage : public Stage
 {
 public:
-    PreloadStage(Timer* timer);
+    PreloadStage(Timer* timer, StageController* sController);
 
     void LoadResources();
 
@@ -32,6 +30,7 @@ private:
 
     std::future<void> LoadingState;
     std::unique_ptr<ElementManager> Elements;
+    StageController* sController;
 };
 
 #endif //_PRELOADSTAGE_H_

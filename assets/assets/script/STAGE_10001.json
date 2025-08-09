@@ -18,5 +18,13 @@
     "2004" : {
         "path" : "assets/ui/icon_studio.png",
         "category" : "texture"
+    },
+    "2005" : {
+        "path" : "assets/ui/preload_menu_connector.png",
+        "category" : "texture"
+    },
+    "2006" : {
+        "path" : "assets/backgrounds/main_background.png",
+        "category" : "texture"
     }
 }

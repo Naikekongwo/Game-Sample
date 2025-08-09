@@ -5,6 +5,7 @@
 // 场景控制器的头
 #include "Stage.hpp"
 #include "PreloadStage.hpp"
+#include "MainStage.hpp"
 
 #include <memory>
 #include <iostream>
