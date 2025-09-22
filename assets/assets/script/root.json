@@ -1,4 +1,6 @@
 {
     "10001" : "Pre-PreloadStage",
-    "10002" : "PreloadStage"
+    "10002" : "PreloadStage",
+    "10003" : "MainStage",
+    "10004" : "GameplayStage"
 }

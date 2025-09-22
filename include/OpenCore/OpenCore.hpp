@@ -4,6 +4,12 @@
 // OpenCore.hpp
 // 引擎的核心
 
+// 对于调试模式的宏定义
+#define DEBUG_OFF 0
+#define DEBUG_MAP 1213
+
+#define DEBUG_MODE DEBUG_MAP
+
 
 #include "Timer.hpp"
 #include "Macros.hpp"

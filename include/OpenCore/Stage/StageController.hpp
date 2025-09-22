@@ -6,6 +6,7 @@
 #include "Stage.hpp"
 #include "PreloadStage.hpp"
 #include "MainStage.hpp"
+#include "GameplayStage.hpp"
 
 #include <memory>
 #include <iostream>

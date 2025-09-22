@@ -127,8 +127,16 @@ void PreloadStage::onUpdate()
         if(connector && connector->isAnimeFinished())
         {
             // 进入生命周期末期销毁！
-            std::unique_ptr<MainStage> mainStage  = std::make_unique<MainStage>(timer, sController);
-            sController->changeStage(std::move(mainStage));
+            if(DEBUG_MODE == DEBUG_MAP)
+            {
+                std::unique_ptr<GameplayStage> gameplayStage  = std::make_unique<GameplayStage>(timer, sController);
+                sController->changeStage(std::move(gameplayStage));
+            }
+            else
+            {
+                std::unique_ptr<MainStage> mainStage  = std::make_unique<MainStage>(timer, sController);
+                sController->changeStage(std::move(mainStage));
+            }
         }
     }
 }

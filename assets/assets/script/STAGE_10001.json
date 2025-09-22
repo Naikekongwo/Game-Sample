@@ -26,5 +26,9 @@
     "2006" : {
         "path" : "assets/backgrounds/main_background.png",
         "category" : "texture"
+    },
+    "2007" : {
+        "path" : "assets/backgrounds/gameplay_background.png",
+        "category" : "texture"
     }
 }
