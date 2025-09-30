@@ -110,7 +110,39 @@ std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string& p
         activeTasks_--;
     });
 }
+//字体加载
+void ResourceManager::LoadFont(short id, const std::string& path,int size) {
+    std::lock_guard<std::mutex> lock(fontMutex_);
+    if (fontCache_.count(id)) return;
 
+    FontPtr font(TTF_OpenFont(path.c_str(), size));
+    if (!font) {
+        SDL_Log("TTF_OpenFont failed: %s", TTF_GetError());
+        return;
+    }
+
+    SDL_Log("ResourceManager::LoadFont font id %d loaded successfully.", id);
+    fontCache_[id] = std::move(font);
+}
+//异步字体加载
+std::future<void> ResourceManager::LoadFontAsync(short id, const std::string& path,int size) {
+    return EnqueueTask([this, id, path,size] {
+        activeTasks_++;
+        LoadFont(id, path,size);
+        activeTasks_--;
+    });
+}
+//获取字体
+TTF_Font* ResourceManager::GetFont(short id) {
+    std::lock_guard<std::mutex> lock(fontMutex_);
+    auto it = fontCache_.find(id);
+
+    if (it == fontCache_.end()) {
+        SDL_Log("ResourceManager::GetFont failed to get font id %d", id);
+        return nullptr;
+    }
+    return it->second.get();
+}
 // 异步加载纹理
 std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string &path) {
     // 创建promise用于通知任务完成
@@ -292,6 +324,10 @@ void SDLDeleter::operator()(SDL_Texture* texture) const {
     if (texture) SDL_DestroyTexture(texture);
 }
 
+void SDLDeleter::operator()(TTF_Font* font) const {
+    if (font) TTF_CloseFont(font);
+}
+
 //通过json进行整个场景的资源加载
 //新增一些说明，大体上结构是这样的，首先有一个main.json,用于储存场景名称与id的对应关系，当然这个main.json在一定程度上是可有可无的
 //只是为了方便记忆，即使不用短id修改起来也很方便，只需要修改输入即可，文件的位置在第1步，自行修改即可。对于各个场景的json文件，大致结构如下
@@ -368,6 +404,13 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id) {
             futures.push_back(LoadMusicAsync(resourceId, path));
         } else if (category == "texture") {
             futures.push_back(LoadTextureAsync(resourceId, path));
+        } else if (category == "font") {
+            if(!resObj.HasMember("size") || !resObj["size"].IsInt()) {
+                SDL_Log("Font resource missing or invalid font size for resource ID: %d", resourceId);
+                continue;
+            }
+            int size = resObj["size"].GetInt();
+            futures.push_back(LoadFontAsync(resourceId, path, size));
         } else {
             SDL_Log("Unknown category '%s' for resource ID: %d", category.c_str(), resourceId);
         }
@@ -399,6 +442,14 @@ void ResourceManager::FreeTexture(short id) {
         textureCache_.erase(id);
     }
 }
+//释放字体
+void ResourceManager::FreeFont(short id) {
+    std::lock_guard<std::mutex> lock(fontMutex_);
+    if (fontCache_.count(id)) {
+        TTF_CloseFont(fontCache_[id].get());
+        fontCache_.erase(id);
+    }
+}
 
 //异步释放资源
 std::future<void> ResourceManager::FreeMusicAsync(short id) {
@@ -415,4 +466,12 @@ std::future<void> ResourceManager::FreeTextureAsync(short id) {
         FreeTexture(id);
         activeTasks_--;
     });
+}
+
+std::future<void> ResourceManager::FreeFontAsync(short id) {
+    return EnqueueTask([this, id] {
+        activeTasks_++;
+        FreeFont(id);
+        activeTasks_--;
+    }); 
 }
