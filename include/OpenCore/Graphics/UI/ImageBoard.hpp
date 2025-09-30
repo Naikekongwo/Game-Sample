@@ -1,11 +1,12 @@
-// ImageBoard.hpp
-// 图片类
 #ifndef _IMAGEBOARD_H_
 #define _IMAGEBOARD_H_
 
+// ImageBoard.hpp
+// 图片类
+
 #include <string>
 
-#include "../UIElement.hpp"
+#include "UIElement.hpp"
 #include "OpenCore/Animation/AnimationPipeline.hpp"
 
 class ImageBoard : public UIElement
@@ -18,9 +19,6 @@ class ImageBoard : public UIElement
     void handlEvents(SDL_Event &event, float totalTime) override;
     void onRender() override;
     void onUpdate(float totalTime) override;
-    void changeTexture(Texture* newTexture) override;
-
-    SDL_Rect getBounds() override;
 
 };
 

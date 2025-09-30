@@ -4,6 +4,10 @@
 // 引入内核
 #include "OpenCore/OpenCore.hpp"
 
+
+#include <cmath>
+const int WIDTH = 1920, HEIGHT = 1080;
+
 using namespace std;
 
 // #define TESTBENCH_MODE // 打开测试模式的宏
@@ -12,7 +16,7 @@ using namespace std;
 #ifdef TESTBENCH_MODE
 int main(int argc, char *argv[])
 {
-    // 测试平台的代码写于此 
+    // 测试平台的代码写于此
     return EXIT_SUCCESS;
 }
 #else

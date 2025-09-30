@@ -1,8 +1,8 @@
-// DrawableConfigurator.h
-// 初始化控件的函数
-
 #ifndef _DRAWABLECONFIGURATOR_H_
 #define _DRAWABLECONFIGURATOR_H_
+
+// DrawableConfigurator.h
+// 初始化所有可绘制对象（控件）的部署器类
 
 enum class AnchorPoint : int;
 

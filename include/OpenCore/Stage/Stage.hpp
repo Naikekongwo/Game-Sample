@@ -9,6 +9,7 @@
 class ResourceManager;
 class SoundEffectManager;
 class Timer; 
+class StageController;
 // 前向定义
 
 class Stage{
@@ -30,6 +31,8 @@ class Stage{
     protected:
     // 先前内置的渲染器、资源管理器和音效管理器全部都被弃用了
     Timer* timer = nullptr;
+    // 场景控制器
+    StageController* sController;
 };
 
 #endif //_STAGE_H_

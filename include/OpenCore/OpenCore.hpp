@@ -6,9 +6,10 @@
 
 // 对于调试模式的宏定义
 #define DEBUG_OFF 0
+#define DEBUG_WATERWAVE 1
 #define DEBUG_MAP 1213
 
-#define DEBUG_MODE DEBUG_MAP
+#define DEBUG_MODE DEBUG_OFF
 
 
 #include "Timer.hpp"

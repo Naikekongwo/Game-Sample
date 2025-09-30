@@ -27,10 +27,8 @@ public:
 private:
     int stageState = 0;
     // 0为未播放
-
     std::future<void> LoadingState;
     std::unique_ptr<ElementManager> Elements;
-    StageController* sController;
 };
 
 #endif //_PRELOADSTAGE_H_

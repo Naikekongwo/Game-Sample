@@ -28,9 +28,9 @@ struct Texture
     int width,height;
 
     // 材质
-    SDL_Texture* texture;
+    std::shared_ptr<SDL_Texture> texture;
 
-    Texture(int x, int y, SDL_Texture* tex);
+    Texture(int x, int y, std::shared_ptr<SDL_Texture> tex);
 
     int Size() const noexcept { return xCount * yCount; }
 

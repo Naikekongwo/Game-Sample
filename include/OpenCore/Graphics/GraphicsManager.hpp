@@ -1,7 +1,7 @@
 #ifndef _GFXCORE_H_
 #define _GFXCORE_H_
 
-// GfxCore.hpp
+// GfxManager.hpp
 // 图形核心
 
 #include <string>

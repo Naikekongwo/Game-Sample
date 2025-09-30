@@ -1,11 +1,11 @@
 #include "OpenCore/OpenCore.hpp"
 #include <algorithm>
 
-Texture::Texture(int x, int y, SDL_Texture* tex) : xCount(x), yCount(y), texture(tex)
+Texture::Texture(int x, int y, std::shared_ptr<SDL_Texture> tex) : xCount(x), yCount(y), texture(tex)
 {
     if(!texture) SDL_Log("Texture::Texture() encountered empty texture in the initialization.");
 
-    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+    SDL_QueryTexture(texture.get(), NULL, NULL, &width, &height);
 
     if(xCount == 0 || yCount == 0)
     {

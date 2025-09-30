@@ -91,7 +91,7 @@ void ResourceManager::LoadTexture(short id, const std::string &path) {
 }
 
 // 获取纹理
-SDL_Texture* ResourceManager::GetTexture(short id) {
+std::shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id) {
     std::lock_guard<std::mutex> lock(textureMutex_);
     auto it = textureCache_.find(id);
 
@@ -99,7 +99,7 @@ SDL_Texture* ResourceManager::GetTexture(short id) {
         SDL_Log("ResourceManager::GetTexture failed to get texture id %d", id);
        return nullptr;
     }
-    return it->second.get();
+    return std::shared_ptr<SDL_Texture>(it->second.get(), [](SDL_Texture*){ /* do nothing, managed by unique_ptr */ });
 }
 
 // 异步加载音乐

@@ -1,7 +1,8 @@
-// Sprite.hpp
-// 精灵类的基类
 #ifndef _SPRITE_H_
 #define _SPRITE_H_
+
+// Sprite.hpp
+// 精灵类的基类
 
 #include "IDrawableObject.hpp"
 

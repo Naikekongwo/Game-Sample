@@ -41,7 +41,7 @@ public:
     Mix_Music* GetMusic(short id);
 
     void LoadTexture(short id, const std::string &path);
-    SDL_Texture* GetTexture(short id);
+    std::shared_ptr<SDL_Texture> GetTexture(short id);
 
     std::future<void> LoadMusicAsync(short id, const std::string& path);
     std::future<void> LoadTextureAsync(short id, const std::string &path);

@@ -1,12 +1,11 @@
-// IDrawable.hpp
-// 可绘图类的基类
 #ifndef _IDRAWABLE_H_
 #define _IDRAWABLE_H_
 
+// IDrawableObject.hpp
+// 可绘图类的基类
+
 #include <SDL2/SDL.h>
-
 #include <memory>
-
 
 class AnimationManager;
 class AnimationPipeline;
@@ -16,13 +15,11 @@ struct Texture;
 
 struct AnimationState;
 
-
 enum class AnchorPoint : int;
 
 class IDrawableObject
 {
-    public:
-
+public:
     // 处理事件的函数
     virtual void handlEvents(SDL_Event &event, float totalTime) = 0;
 
@@ -36,7 +33,7 @@ class IDrawableObject
     virtual SDL_Rect getBounds() = 0;
 
     // 更改贴图
-    virtual void changeTexture(Texture* newTexture) = 0;
+    void changeTexture(Texture *newTexture);
 
     // 设置动画顺序
     void setSequential(bool sequential);
@@ -47,7 +44,11 @@ class IDrawableObject
     bool isAnimeFinished() const;
 
     // 属性设置的方法
-    void setScale(int w, int h) { bWidth = w;bHeight = h;}
+    void setScale(int w, int h)
+    {
+        bWidth = w;
+        bHeight = h;
+    }
     void setAnchor(AnchorPoint anchor);
     void setPosition(int x, int y);
 
@@ -55,7 +56,7 @@ class IDrawableObject
     AnimationPipeline Animate();
     DrawableConfigurator Configure();
 
-    protected:
+protected:
     // ID 已经弃用，改用string代替
     std::string id;
     // 默认图层
@@ -67,7 +68,7 @@ class IDrawableObject
     // 元素基础大小
     int bWidth, bHeight;
     // 贴图
-    Texture* texture;
+    Texture *texture;
 };
 
 #endif //_IDRAWABLE_H_

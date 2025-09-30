@@ -28,7 +28,6 @@ class MainStage : public Stage
     private:
 
     std::unique_ptr<ElementManager> Elements;
-
 };
 
 #endif //_MAINSTAGE_H_
