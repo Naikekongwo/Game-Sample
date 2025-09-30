@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <memory>
 #include <unordered_map>
@@ -25,10 +26,12 @@
 struct SDLDeleter {
     void operator()(Mix_Music* music) const;
     void operator()(SDL_Texture* texture) const;
+    void operator()(TTF_Font* font) const;
 };
 
 using MusicPtr = std::unique_ptr<Mix_Music, SDLDeleter>;
 using TexturePtr = std::unique_ptr<SDL_Texture, SDLDeleter>;
+using FontPtr = std::unique_ptr<TTF_Font, SDLDeleter>;
 
 class ResourceManager {
 public:
@@ -43,8 +46,12 @@ public:
     void LoadTexture(short id, const std::string &path);
     SDL_Texture* GetTexture(short id);
 
+    void LoadFont(short id, const std::string &path, int size);
+    TTF_Font* GetFont(short id);
+
     std::future<void> LoadMusicAsync(short id, const std::string& path);
     std::future<void> LoadTextureAsync(short id, const std::string &path);
+    std::future<void> LoadFontAsync(short id, const std::string &path, int size);
 
     void ClearAll();    
     // 新增：主线程任务处理
@@ -56,10 +63,12 @@ public:
     //释放加载资源
     void FreeMusic(short id);
     void FreeTexture(short id);
+    void FreeFont(short id);
     
     //异步释放资源
     std::future<void> FreeMusicAsync(short id);
     std::future<void> FreeTextureAsync(short id);
+    std::future<void> FreeFontAsync(short id);
 
 private:
     SDL_Renderer* renderer = nullptr;
@@ -84,6 +93,9 @@ private:
 
     std::mutex textureMutex_;
     std::unordered_map<short, TexturePtr> textureCache_;
+
+    std::mutex fontMutex_;
+    std::unordered_map<short, FontPtr> fontCache_;
 
     // 工作线程
     std::thread worker_;
