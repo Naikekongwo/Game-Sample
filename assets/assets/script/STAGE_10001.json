@@ -34,5 +34,14 @@
     "2008" : {
         "path" : "assets/ui/gameStartButton.png",
         "category" : "texture"
+    },
+    "2009" : {
+        "path" : "assets/ui/purifier_background.png",
+        "category" : "texture"
+    },
+    "9001" : {
+        "path" : "assets/ui/font/OpenCoreFont.ttf",
+        "category" : "font",
+        "size" : 24
     }
 }

@@ -11,8 +11,8 @@ SDL_Rect UIElement::getBounds()
     const auto &state = *AnimeState;
 
     // 计算缩放后的实际宽高
-    int renderWidth = static_cast<int>(bWidth * state.scaleX);
-    int renderHeight = static_cast<int>(bHeight * state.scaleY);
+    int renderWidth = static_cast<int>(nativeWidth * state.scaleX);
+    int renderHeight = static_cast<int>(nativeHeight * state.scaleY);
 
     int x = state.PositionX;
     int y = state.PositionY;

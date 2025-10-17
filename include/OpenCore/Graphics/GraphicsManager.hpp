@@ -34,6 +34,12 @@ public:
                      const SDL_Point *center,
                      const SDL_RendererFlip flip);
 
+    int RenderTexture(SDL_Texture *target, SDL_Texture *source, SDL_Rect *dst, SDL_Rect *src);
+
+    int setOffScreenRender(SDL_Texture *texture) { return SDL_SetRenderTarget(renderer, texture); }
+    
+    SDL_Texture* createTexture(int w, int h);
+
     void setScale(int w, int h);
 
 private:

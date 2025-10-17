@@ -11,9 +11,13 @@ MainStage::MainStage(Timer* timer, StageController* sController)
 
 void MainStage::Init()
 {
-    std::unique_ptr<ImageBoard> background = std::make_unique<ImageBoard>("background", -1,new Texture(1,1,OpenCoreManagers::ResManager.GetTexture(2006)));
-    std::unique_ptr<Button> button1 = std::make_unique<Button>("StartButton", 1, new Texture(1,3,OpenCoreManagers::ResManager.GetTexture(2008)));
-    std::unique_ptr<ImageBoard> connector = std::make_unique<ImageBoard>("connector", 99, new Texture(1,1,OpenCoreManagers::ResManager.GetTexture(2005)));
+    auto background = UI<ImageBoard>("background", -1, 2006, 1, 1);
+    auto button1    = UI<Button>("StartButton", 1, 2008, 1, 3);
+    auto connector  = UI<ImageBoard>("connector", 99, 2005, 1, 1);
+    auto stageBg    = UI<StageBackground>("StageBackground", 0, 2009, 3, 3);
+    auto frameCounter = UI<FrameCounter>("frameCounter", 100, 0, 0, 0);
+
+    stageBg->setBakedTexture(true);
     // 创建了遮罩和背景的资源
 
     background->Configure().Anchor(AnchorPoint::Center).Posite(960, 540).Scale(1920,1080);
@@ -22,9 +26,16 @@ void MainStage::Init()
     connector->Configure().Scale(1920,1080).Anchor(AnchorPoint::TopLeft).Posite(0,0);
     connector->Animate().Move(0,0,1920,0,5.0f, false).Commit();
 
+    stageBg->Configure().Anchor(AnchorPoint::Center).Posite(960,540).Scale(1800,900);
+
+    stageBg->setNativeScale(60);
+
+
     Elements->PushElement(std::move(background));
+    Elements->PushElement(std::move(stageBg));
     Elements->PushElement(std::move(button1));
     Elements->PushElement(std::move(connector));
+    Elements->PushElement(std::move(frameCounter));
 }
 
 

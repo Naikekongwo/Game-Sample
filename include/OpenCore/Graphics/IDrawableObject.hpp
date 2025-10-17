@@ -46,8 +46,8 @@ public:
     // 属性设置的方法
     void setScale(int w, int h)
     {
-        bWidth = w;
-        bHeight = h;
+        nativeWidth = w;
+        nativeHeight = h;
     }
     void setAnchor(AnchorPoint anchor);
     void setPosition(int x, int y);
@@ -66,7 +66,7 @@ protected:
     // 动画状态
     std::unique_ptr<AnimationState> AnimeState;
     // 元素基础大小
-    int bWidth, bHeight;
+    int nativeWidth, nativeHeight;
     // 贴图
     Texture *texture;
 };

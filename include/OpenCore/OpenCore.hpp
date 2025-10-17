@@ -18,6 +18,15 @@
 #include "ResourceManager.hpp"
 #include "SoundEffectManager.hpp"
 #include "Graphics/GraphicsManager.hpp"
+
+// 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
+namespace OpenCoreManagers
+{
+    inline ResourceManager& ResManager = ResourceManager::getInstance();
+    inline GraphicsManager& GFXManager = GraphicsManager::getInstance();
+    inline SoundEffectManager& SFXManager = SoundEffectManager::getInstance();
+}
+
 #include "Graphics/ScaleManager.hpp"
 #include "Animation/AnimationPipeline.hpp"
 #include "Animation/AnimationManager.hpp"
@@ -27,13 +36,6 @@
 
 #include <memory>
 
-// 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
-namespace OpenCoreManagers
-{
-    inline ResourceManager& ResManager = ResourceManager::getInstance();
-    inline GraphicsManager& GFXManager = GraphicsManager::getInstance();
-    inline SoundEffectManager& SFXManager = SoundEffectManager::getInstance();
-}
 
 class OpenEngine
 {
