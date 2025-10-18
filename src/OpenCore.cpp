@@ -85,7 +85,7 @@ bool OpenEngine::MainLoop()
                 should_close = true;
                 break;
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym = SDLK_F11)
+                if (event.key.keysym.sym == SDLK_F11)
                 {
                     Uint32 flags = SDL_GetWindowFlags(GFXManager.getWindow());
                     if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
@@ -101,19 +101,21 @@ bool OpenEngine::MainLoop()
             case SDL_WINDOWEVENT:
                 switch (event.window.event)
                 {
-                case SDL_WINDOWEVENT_RESIZED:
-                case SDL_WINDOWEVENT_SIZE_CHANGED:
-                {
-                    GFXManager.setScale(event.window.data1, event.window.data2);
-                    break;
-                    // 注: data1 和 data2 分别是窗口的宽和高
+                    case SDL_WINDOWEVENT_RESIZED:
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    {
+                        GFXManager.setScale(event.window.data1, event.window.data2);
+                        break;
+                        // 注: data1 和 data2 分别是窗口的宽和高
+                    }
+                    default:
+                        break;
                 }
                 break;
-                }
             default:
-                sController->handlEvents(&event);
                 break;
             }
+            sController->handlEvents(&event);
         }
 
         timer->Tick();

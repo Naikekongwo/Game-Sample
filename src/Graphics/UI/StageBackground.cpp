@@ -29,36 +29,46 @@ void StageBackground::setNativeScale(int scale)
 
 void StageBackground::handlEvents(SDL_Event &event, float totalTime)
 {
+    if(event.type == SDL_WINDOWEVENT)
+    {
+        if(event.window.event == SDL_WINDOWEVENT_RESIZED ||
+           event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+        {
+            if(directRender)
+            {
+                setBakedTexture(true);
+            }
+        }
+    }
 }
 
 int StageBackground::setBakedTexture(bool isBaked)
 {
-    bakedTexture = isBaked;
-    preRenderTexture(nullptr);
+    directRender = isBaked;
 
+    SDL_Rect Borders = getBounds();
+
+    TextureBuffer.reset(GraphicsManager::getInstance().createTexture(Borders.w, Borders.h));
+    preRenderTexture(TextureBuffer.get());
     return 0;
 }
 
 bool StageBackground::preRenderTexture(SDL_Texture *target)
 {
     auto &GFX = GraphicsManager::getInstance();
-    SDL_Renderer *renderer = GFX.getRenderer();
+    if (!target) return false;
 
-    // 设置渲染目标
-    if (target)
-    {
-        SDL_SetRenderTarget(renderer, target);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
-    }
+    GFX.setOffScreenRender(target);
 
-    SDL_Rect bounds = getBounds();
+    int texW, texH;
+    SDL_QueryTexture(texture->texture.get(), nullptr, nullptr, &texW, &texH);
+
     SDL_Rect srcRect{};
     SDL_Rect dstRect{};
 
-    // 离屏时坐标系从 (0,0)
-    int baseX = (target ? 0 : bounds.x);
-    int baseY = (target ? 0 : bounds.y);
+    // 离屏纹理宽高
+    int targetW, targetH;
+    SDL_QueryTexture(target, nullptr, nullptr, &targetW, &targetH);
 
     for (int row = 0; row < 3; row++)
     {
@@ -66,37 +76,37 @@ bool StageBackground::preRenderTexture(SDL_Texture *target)
         {
             srcRect = texture->getSrcRect(row * 3 + col);
 
-            // X 方向（列）
+            // X方向
             if (col == 0)
             {
-                dstRect.x = baseX;
+                dstRect.x = 0;
                 dstRect.w = nativeScale;
             }
             else if (col == 1)
             {
-                dstRect.x = baseX + nativeScale;
-                dstRect.w = bounds.w - 2 * nativeScale;
+                dstRect.x = nativeScale;
+                dstRect.w = targetW - 2 * nativeScale;
             }
             else
             {
-                dstRect.x = baseX + bounds.w - nativeScale;
+                dstRect.x = targetW - nativeScale;
                 dstRect.w = nativeScale;
             }
 
-            // Y 方向（行）
+            // Y方向
             if (row == 0)
             {
-                dstRect.y = baseY;
+                dstRect.y = 0;
                 dstRect.h = nativeScale;
             }
             else if (row == 1)
             {
-                dstRect.y = baseY + nativeScale;
-                dstRect.h = bounds.h - 2 * nativeScale;
+                dstRect.y = nativeScale;
+                dstRect.h = targetH - 2 * nativeScale;
             }
             else
             {
-                dstRect.y = baseY + bounds.h - nativeScale;
+                dstRect.y = targetH - nativeScale;
                 dstRect.h = nativeScale;
             }
 
@@ -104,40 +114,13 @@ bool StageBackground::preRenderTexture(SDL_Texture *target)
         }
     }
 
-    if (target)
-        SDL_SetRenderTarget(renderer, nullptr);
-
+    GFX.setOffScreenRender(nullptr);
     return true;
 }
 
-void StageBackground::onRender()
-{
-    auto &GFX = GraphicsManager::getInstance();
-    SDL_Rect bounds = getBounds();
 
-    if (bakedTexture)
-    {
-        if (!baked_Texture)
-        {
-            // 创建并烘焙
-            baked_Texture = std::make_unique<Texture>(
-                1, 1, std::shared_ptr<SDL_Texture>(GFX.createTexture(bounds.w, bounds.h), [](SDL_Texture *t)
-                                                   { SDL_DestroyTexture(t); } // 自定义删除器
-                                                   ));
-
-            preRenderTexture(baked_Texture->texture.get());
-        }
-
-        // 每帧只绘制烘焙结果
-        GFX.RenderCopyEx(baked_Texture->texture.get(), nullptr, &bounds, 0.0, nullptr, SDL_FLIP_NONE);
-    }
-    else
-    {
-        // 即时绘制
-        preRenderTexture(nullptr);
-    }
-}
 
 void StageBackground::onUpdate(float totalTime)
 {
+
 }

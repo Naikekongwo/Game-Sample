@@ -17,7 +17,7 @@ void MainStage::Init()
     auto stageBg    = UI<StageBackground>("StageBackground", 0, 2009, 3, 3);
     auto frameCounter = UI<FrameCounter>("frameCounter", 100, 0, 0, 0);
 
-    stageBg->setBakedTexture(true);
+    stageBg->setBakedTexture(false);
     // 创建了遮罩和背景的资源
 
     background->Configure().Anchor(AnchorPoint::Center).Posite(960, 540).Scale(1920,1080);

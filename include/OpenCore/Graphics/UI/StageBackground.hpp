@@ -14,11 +14,8 @@ class StageBackground : public UIElement
     // 实现父类
 
     void handlEvents(SDL_Event &event, float totalTime) override;
-    void onRender() override;
     void onUpdate(float totalTime) override;
-
     int setBakedTexture(bool isBaked) override;
-
     bool preRenderTexture(SDL_Texture* texture) override;
 
     // 特殊函数

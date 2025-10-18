@@ -60,3 +60,32 @@ SDL_Rect UIElement::getBounds()
 
     return SDL_Rect{x, y, renderWidth, renderHeight};
 }
+
+void UIElement::onRender()
+{
+    auto& GFX = OpenCoreManagers::GFXManager.getInstance();
+
+
+    // 虽然这个渲染方法是虚函数
+    // 但是UIElement必须作为基类给出一个默认的实现
+
+    SDL_Rect Borders = getBounds();
+
+    if(directRender)
+    {
+        // 如果预烘焙是开启的
+        if(!TextureBuffer.get())
+        {
+            // 创建新的缓冲贴图
+            TextureBuffer.reset(GFX.createTexture(Borders.w, Borders.h));
+            
+            preRenderTexture(TextureBuffer.get()); 
+        }
+        GFX.RenderCopyEx(TextureBuffer.get(), nullptr, &Borders, 0.0f, nullptr, SDL_FLIP_NONE);
+    }
+    else
+    {
+        // directRender 关闭，使用实时渲染
+        preRenderTexture(nullptr);
+    }
+}

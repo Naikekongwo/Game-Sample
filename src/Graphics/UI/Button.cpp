@@ -10,6 +10,8 @@ Button::Button(std::string id, short layer, Texture* texture)
     this->id = id;
     this->layer = layer;
 
+    this->directRender = false;
+
     // 创建动画管理器
     AnimeManager = std::make_unique<AnimationManager>();
 

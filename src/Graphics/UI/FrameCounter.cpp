@@ -5,6 +5,10 @@ FrameCounter::FrameCounter(std::string id, short layer, Texture *texture)
 {
     this->id = id;
     this->layer = layer;
+
+    this->directRender = false;
+
+    
 }
 
 void FrameCounter::handlEvents(SDL_Event &event, float totalTime)

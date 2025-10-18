@@ -103,5 +103,29 @@ int GraphicsManager::RenderCopyEx(SDL_Texture *texture,
 
 SDL_Texture* GraphicsManager::createTexture(int w, int h)
 {
-    return SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, w, h);
+    SDL_Texture* texture = SDL_CreateTexture(
+        renderer,
+        SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_TARGET,
+        w, h
+    );
+    // 启用透明混合
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    return texture;
+}
+
+int GraphicsManager::setOffScreenRender(SDL_Texture* texture)
+{
+    if(SDL_SetRenderTarget(renderer, texture) != 0) {
+        SDL_Log("Failed to set render target: %s", SDL_GetError());
+        return -1;
+    }
+
+    if(texture) {
+        // 可选：只在需要清理时才清理
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+    }
+
+    return 0;
 }
