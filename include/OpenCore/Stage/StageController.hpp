@@ -11,13 +11,23 @@
 #include <memory>
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 
 class StageController {
     public:
     ~StageController() = default;
 
     // 切换场景
-    void changeStage(std::unique_ptr<Stage> newStage);
+    short changeStage(std::unique_ptr<Stage> newStage);
+
+    //通过id切换场景
+    bool changeStage(short id);
+
+    //在场景池中加入场景
+    short addStageToCache(std::unique_ptr<Stage> newStage,short id);
+
+    //删除对应id的场景
+    bool deleteStage(short id);
 
     // 处理事件的公共接口
     bool handlEvents(SDL_Event* event);
@@ -30,6 +40,8 @@ class StageController {
     
     private:
     std::unique_ptr<Stage> currentStage; // 当前场景
+    short currentId;
+    std::unordered_map<short,std::unique_ptr<Stage>> stageCache_;//场景池,且场景池中short不应为0和-1，0、-1用于做信号量
 };
 
 #endif //_STAGECONTROLLER_H_
