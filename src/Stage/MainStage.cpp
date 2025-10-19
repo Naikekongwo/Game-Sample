@@ -17,7 +17,11 @@ void MainStage::Init()
     auto stageBg    = UI<StageBackground>("StageBackground", 0, 2009, 3, 3);
     auto frameCounter = UI<FrameCounter>("frameCounter", 100, 0, 0, 0);
 
-    stageBg->setBakedTexture(false);
+    auto itemCollection = UI<ItemContainerCollection>("collection", 60, 2010, 2, 10);
+
+    itemCollection->Configure().Anchor(AnchorPoint::Center).Scale(1568,288).Posite(960, 784);
+
+    stageBg->setBakedTexture(true);
     // 创建了遮罩和背景的资源
 
     background->Configure().Anchor(AnchorPoint::Center).Posite(960, 540).Scale(1920,1080);
@@ -26,9 +30,10 @@ void MainStage::Init()
     connector->Configure().Scale(1920,1080).Anchor(AnchorPoint::TopLeft).Posite(0,0);
     connector->Animate().Move(0,0,1920,0,5.0f, false).Commit();
 
-    stageBg->Configure().Anchor(AnchorPoint::Center).Posite(960,540).Scale(1800,900);
+    stageBg->Configure().Anchor(AnchorPoint::Center).Posite(960,540).Scale(1600,960);
 
     stageBg->setNativeScale(60);
+
 
 
     Elements->PushElement(std::move(background));
@@ -36,6 +41,7 @@ void MainStage::Init()
     Elements->PushElement(std::move(button1));
     Elements->PushElement(std::move(connector));
     Elements->PushElement(std::move(frameCounter));
+    Elements->PushElement(std::move(itemCollection));
 }
 
 

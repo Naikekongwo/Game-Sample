@@ -6,12 +6,6 @@
 
 #include "../IDrawableObject.hpp"
 
-template <typename T>
-std::unique_ptr<T> UI(std::string id, short layer, short texID, short frameX, short frameY);
-
-// 引入工厂方法
-#include "UIFactory.inl"
-
 class UIElement : public IDrawableObject
 {
 public:

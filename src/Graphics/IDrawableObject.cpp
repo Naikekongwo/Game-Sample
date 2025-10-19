@@ -6,6 +6,18 @@ void IDrawableObject::setSequential(bool sequential)
     AnimeManager->setSequence(sequential);
 }
 
+// 默认的onUpdate方法，即更新动画状态
+void IDrawableObject::onUpdate(float totalTime)
+{
+    AnimeManager->onUpdate(totalTime, *AnimeState);
+}
+
+// 默认的handlEvents方法，执行空状态
+void IDrawableObject::handlEvents(SDL_Event &event, float totalTime)
+{
+    // 空置
+}
+
 // 设置控件的锚点（用于缩放和旋转）
 void IDrawableObject::setAnchor(AnchorPoint anchor)
 {
@@ -51,3 +63,12 @@ void IDrawableObject::changeTexture(Texture* newTexture)
     }
 }
 
+
+IDrawableObject::IDrawableObject()
+{
+    this->id = "null";
+    this->layer = 0;
+    
+    AnimeManager = std::make_unique<AnimationManager>();
+    AnimeState = std::make_unique<AnimationState>();
+}

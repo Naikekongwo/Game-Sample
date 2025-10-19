@@ -2,14 +2,9 @@
 
 StageBackground::StageBackground(std::string id, short layer, Texture *texture)
 {
-    AnimeState = std::make_unique<AnimationState>();
 
     this->id = id;
     this->layer = layer;
-
-    // 创建动画管理器
-
-    AnimeManager = std::make_unique<AnimationManager>();
 
     // 获取材质
     if (!texture)
@@ -46,10 +41,10 @@ int StageBackground::setBakedTexture(bool isBaked)
 {
     directRender = isBaked;
 
-    SDL_Rect Borders = getBounds();
+    // SDL_Rect Borders = getBounds();
 
-    TextureBuffer.reset(GraphicsManager::getInstance().createTexture(Borders.w, Borders.h));
-    preRenderTexture(TextureBuffer.get());
+    // TextureBuffer.reset(GraphicsManager::getInstance().createTexture(Borders.w, Borders.h));
+    // preRenderTexture(TextureBuffer.get());
     return 0;
 }
 
@@ -116,11 +111,4 @@ bool StageBackground::preRenderTexture(SDL_Texture *target)
 
     GFX.setOffScreenRender(nullptr);
     return true;
-}
-
-
-
-void StageBackground::onUpdate(float totalTime)
-{
-
 }

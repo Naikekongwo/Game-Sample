@@ -20,11 +20,15 @@ enum class AnchorPoint : int;
 class IDrawableObject
 {
 public:
+    // 默认的构造方法
+    IDrawableObject();
+
     // 处理事件的函数
-    virtual void handlEvents(SDL_Event &event, float totalTime) = 0;
+    virtual void handlEvents(SDL_Event &event, float totalTime);
 
     // 更新函数
-    virtual void onUpdate(float totalTime) = 0;
+    // 2025/10/19 给予默认的方法，进行动画更新
+    virtual void onUpdate(float totalTime);
 
     // 渲染函数
     virtual void onRender() = 0;

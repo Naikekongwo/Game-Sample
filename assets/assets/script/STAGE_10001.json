@@ -39,6 +39,18 @@
         "path" : "assets/ui/purifier_background.png",
         "category" : "texture"
     },
+    "2010" : {
+        "path" : "assets/ui/item_container.png",
+        "category" : "texture"
+    },
+    "2011" : {
+        "path" : "assets/items/bottle_empty.png",
+        "category" : "texture"
+    },
+    "2012" : {
+        "path" : "assets/items/bottle_full.png",
+        "category" : "texture"
+    },
     "9001" : {
         "path" : "assets/ui/font/OpenCoreFont.ttf",
         "category" : "font",

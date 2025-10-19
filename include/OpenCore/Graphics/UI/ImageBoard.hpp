@@ -16,9 +16,12 @@ class ImageBoard : public UIElement
     ImageBoard(std::string id, short layer, Texture* texture);
 
     // 对于父类的实现
-    void handlEvents(SDL_Event &event, float totalTime) override;
     void onRender() override;
-    void onUpdate(float totalTime) override;
+
+
+    // 事件处理和更新被废除,因为图片框无需考虑这两者
+    // void handlEvents(SDL_Event &event, float totalTime) override;
+    // void onUpdate(float totalTime) override;
 
 };
 

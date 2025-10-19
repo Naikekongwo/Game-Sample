@@ -3,17 +3,11 @@
 
 ImageBoard::ImageBoard(std::string id, short layer, Texture* texture)
 {
-    // 创建一个专属的动画状态
-    AnimeState = std::make_unique<AnimationState>();
-
     // 设置ID 层级属性
     this->id = id;
     this->layer = layer;
 
     this->directRender = false;
-
-    // 创建动画管理器
-    AnimeManager = std::make_unique<AnimationManager>();
 
     // 获取材质
     if (!texture)
@@ -26,17 +20,6 @@ ImageBoard::ImageBoard(std::string id, short layer, Texture* texture)
     this->texture = texture;
 }
 
-void ImageBoard::handlEvents(SDL_Event &event, float totalTime)
-{
-    // 图片框处理事件的类
-    // 图片框无需处理事件
-}
-
-void ImageBoard::onUpdate(float totalTime)
-{
-    AnimeManager->onUpdate(totalTime, *AnimeState);
-    // 更新动画！
-}
 
 void ImageBoard::onRender()
 {

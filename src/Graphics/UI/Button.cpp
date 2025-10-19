@@ -3,17 +3,12 @@
 
 Button::Button(std::string id, short layer, Texture* texture)
 {
-    // 创建一个专属的动画状态
-    AnimeState = std::make_unique<AnimationState>();
 
     // 设置ID 层级属性
     this->id = id;
     this->layer = layer;
 
     this->directRender = false;
-
-    // 创建动画管理器
-    AnimeManager = std::make_unique<AnimationManager>();
 
     // 获取材质
     if (!texture)
