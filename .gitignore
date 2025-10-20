@@ -1,6 +1,6 @@
 # 屏蔽 thirdparty 库
-include/rapidjson
-include/STB-IMAGE
+include/rapidjson/
+include/STB-IMAGE/
 
 # 屏蔽 .vscode/目录
 .vscode/
