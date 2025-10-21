@@ -265,26 +265,29 @@ void ResourceManager::StopWorker() {
 
 // 加载表面（线程安全）
 SDL_Surface* ResourceManager::LoadSurface(const std::string& path) {
-    int width, height, channels;
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 4);
-    if (!data) {
-        SDL_Log("stbi_load failed: %s", stbi_failure_reason());
-        return nullptr;
-    }
-
-    SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(
-        data, width, height, 32, width * 4,
-        0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000
-    );
-
+    SDL_Surface* surface = IMG_Load(path.c_str());
+    
     if (!surface) {
-        stbi_image_free(data);
+        SDL_Log("IMG_Load failed: %s", IMG_GetError());
+        return nullptr;
+    }
+    SDL_Surface* convertedSurface = SDL_ConvertSurfaceFormat(
+        surface, 
+        SDL_PIXELFORMAT_ABGR8888,  // 或其他需要的格式
+        0
+    );
+    
+    SDL_FreeSurface(surface); 
+    
+    if (!convertedSurface) {
+        SDL_Log("SDL_ConvertSurfaceFormat failed: %s", SDL_GetError());
         return nullptr;
     }
 
-    SDL_Log("ResourceManager::LoadSurface() surface loaded.");
-    return surface;
+    SDL_Log("ResourceManager::LoadSurface() surface loaded successfully.");
+    return convertedSurface;
 }
+
 
 // 转换表面为纹理（必须在主线程）
 void ResourceManager::ConvertSurfaceToTexture(short id, SDL_Surface* surface) {
