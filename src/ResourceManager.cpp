@@ -1,9 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
 // 初始化
-#define STBI_ONLY_PNG
-#define STB_IMAGE_IMPLEMENTATION
-#include "STB-IMAGE/stb_image.h"
-
+#include <SDL2_image.h>
 bool ResourceManager::Init() {
     // 确保GraphicsManager 一定在其之前进行初始化
     renderer = OpenCoreManagers::GFXManager.getRenderer();
