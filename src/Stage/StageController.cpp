@@ -66,9 +66,9 @@ bool StageController::handlEvents(SDL_Event *event)//这里基类的handleEvents
     if (currentStages.empty()) 
         return false;
     
-    // 依次寻找，找到第一个处理事件的 stage 后立即退出
-    for (auto& stage : currentStages) {
-        if (stage && stage->handlEvents(event)) {
+    // 从尾部向头部遍历：使用反向迭代器
+    for (auto rit = currentStages.rbegin(); rit != currentStages.rend(); ++rit) {
+        if (*rit && (*rit)->handlEvents(event)) {
             return true; // 找到后立即退出
         }
     }
