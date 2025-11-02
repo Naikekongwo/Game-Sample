@@ -3,83 +3,99 @@
 // 以及场景类的部分实现
 
 #include "OpenCore/OpenCore.hpp"
+#include <algorithm> // std::swap
 
-short StageController::changeStage(std::unique_ptr<Stage> newStage)
+void StageController::changeStage(std::unique_ptr<Stage> newStage)
 {   
-    if(currentStage!=nullptr){
-        stageCache_[currentId]=std::move(currentStage);
+    // 如果 currentStages 为空，则先加入三个空的智能指针
+    if (currentStages.empty()) {
+        currentStages.resize(3); // 创建三个空指针
     }
-    
-    short newId=1;
-    while(newId==0||newId==-1||stageCache_.find(newId)!=stageCache_.end()){
-        newId++;
-        if(newId==-1){//表示循环一周已满
-            SDL_Log("The stageCache_ has been full.");
-            return -1;//表示放入失败
-        }
-    }
-    currentStage = std::move(newStage);
-    currentId=newId;
-    return currentId;//告知id
-}
 
-bool StageController::changeStage(short id){
-    if(stageCache_.find(id)!=stageCache_.end()){
-        SDL_Log("The id was not existing.");
+    // 将 newStage 的所有权移交给 vector[0]
+    // 如果原来位置有对象，它会被自动释放
+    currentStages[0] = std::move(newStage);
+}
+void StageController::changeStage(std::unique_ptr<Stage> newStage,int index){
+    if (currentStages.empty()) {
+        currentStages.resize(3); 
+    }
+    currentStages[index] = std::move(newStage);
+}
+void StageController::addTempStage(std::unique_ptr<Stage> newStage){
+    if (currentStages.empty()) {
+        currentStages.resize(3); 
+    }
+    currentStages.push_back(std::move(newStage));
+}
+bool StageController::deleteStage(int index){
+     if (index != 0 && index != 1 && index != 2) {
         return false;
     }
-    if(currentStage!=nullptr){
-        stageCache_[currentId]=std::move(currentStage);
-    }
-    currentId=id;
-    currentStage=std::move(stageCache_[id]);
-    return true;
+    if (currentStages.size() <= index) {
+        return false; 
+    } 
+    // 释放指定位置的智能指针，但保留位置（设置为空指针）
+    currentStages[index].reset();
+    return true; // 操作成功
 }
-
-short StageController::addStageToCache(std::unique_ptr<Stage> newStage,short id){
-    if(stageCache_.find(id)!=stageCache_.end()||id==0||id==-1||id==currentId){
-        SDL_Log("The id is invalid");//id不合法
-        short newId=1;
-        while(newId==0||newId==-1||stageCache_.find(newId)!=stageCache_.end()||newId==currentId){
-            newId++;
-            if(newId==-1){//表示循环一周已满
-                SDL_Log("The stageCache_ has been full.");
-                return -1;//表示放入失败
-            }
-        }
-        stageCache_[newId]=std::move(newStage);
-        SDL_Log("the new id is %d.",newId);
-        return newId;//告知新id
-    }else{
-        stageCache_[id]=std::move(newStage);
-        return 0;//表示放入顺利
-    }
-    
-}
-
-bool StageController::deleteStage(short id){
-    if(stageCache_.find(id)==stageCache_.end()){
-        SDL_Log("The id is not existing.");
+bool StageController::deleteTempStage(){
+     if (currentStages.size() <= 3) {
         return false;
     }
-    stageCache_[id].reset();
-    stageCache_.erase(id);
+    if (currentStages.back()) {
+        currentStages.back().reset(); 
+    }
+    currentStages.pop_back();
     return true;
 }
+void StageController::swapStage(int index1,int index2){
+    if (index1 < 0 || index1 > 2 || index2 < 0 || index2 > 2 || index1 == index2) {
+        return;
+    }
+    if (index1 >= currentStages.size() || index2 >= currentStages.size()) {
+        return;
+    }    
+    std::swap(currentStages[index1], currentStages[index2]);
+}
 
-bool StageController::handlEvents(SDL_Event *event)
+
+
+bool StageController::handlEvents(SDL_Event *event)//这里基类的handleEvents需要修改不能返回空值而是bool值
 {
-    return (currentStage) ? currentStage->handlEvents(event) : false;
+    if (currentStages.empty()) 
+        return false;
+    
+    // 从尾部向头部遍历：使用反向迭代器
+    for (auto rit = currentStages.rbegin(); rit != currentStages.rend(); ++rit) {
+        if (*rit && (*rit)->handlEvents(event)) {
+            return true; // 找到后立即退出
+        }
+    }
+    return false;
 }
 
 void StageController::onUpdate()
 {
-    if (currentStage)
-        currentStage->onUpdate();
+    if (currentStages.empty())
+        return;
+    
+    // 所有非空 stage 都执行更新
+    for (auto& stage : currentStages) {
+        if (stage) {
+            stage->onUpdate();
+        }
+    }
 }
 
 void StageController::onRender()
 {
-    if (currentStage)
-        currentStage->onRender();
+    if (currentStages.empty())
+        return;
+    
+    for (auto& stage : currentStages) {
+        if (stage) {
+            stage->onRender();
+        }
+    }
 }
