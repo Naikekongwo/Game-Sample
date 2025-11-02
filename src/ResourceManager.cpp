@@ -1,6 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 // 初始化
-#include <SDL2_image.h>
+#include <SDL2/SDL_image.h>
+
 bool ResourceManager::Init() {
     // 确保GraphicsManager 一定在其之前进行初始化
     renderer = OpenCoreManagers::GFXManager.getRenderer();

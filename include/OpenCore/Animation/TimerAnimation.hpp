@@ -5,7 +5,7 @@
 class TimerAnimation : public IAnimation {
 public:
     // 构造函数，传入起始和结束坐标、持续时间、是否循环
-    TimerAnimation(float duration);
+    explicit TimerAnimation(float duration);
 
     // 更新动画状态
     void onUpdate(float totalTime, AnimationState& state) override;

@@ -19,7 +19,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 if(WIN32)
     # SDL2 库链接
-    set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_mixer SDL2_ttf)
+    set(SDL2_LIBRARIES mingw32 SDL2main SDL2 SDL2_mixer SDL2_ttf SDL2_image)
     target_link_libraries(Eclipsea PRIVATE ${SDL2_LIBRARIES})
 
 
