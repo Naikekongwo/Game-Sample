@@ -11,11 +11,11 @@ SDL_Rect UIElement::getBounds()
     const auto &state = *AnimeState;
 
     // 计算缩放后的实际宽高
-    int renderWidth = static_cast<int>(nativeWidth * state.scaleX);
-    int renderHeight = static_cast<int>(nativeHeight * state.scaleY);
+    uint16_t renderWidth = static_cast<uint16_t>(nativeWidth * state.scaleX);
+    uint16_t renderHeight = static_cast<uint16_t>(nativeHeight * state.scaleY);
 
-    int x = state.PositionX;
-    int y = state.PositionY;
+    int16_t x = state.PositionX;
+    int16_t y = state.PositionY;
 
     // 按锚点偏移位置
     switch (state.Anchor)
@@ -54,7 +54,7 @@ SDL_Rect UIElement::getBounds()
         break;
 
     default:
-        SDL_Log("getRenderRect() invalid anchor: %d", static_cast<int>(state.Anchor));
+        SDL_Log("getRenderRect() invalid anchor: %d", static_cast<uint16_t>(state.Anchor));
         break;
     }
 
@@ -88,4 +88,13 @@ void UIElement::onRender()
         // directRender 关闭，使用实时渲染
         preRenderTexture(nullptr);
     }
+}
+
+bool UIElement::onDestroy()
+{
+    if(TextureBuffer)
+    {
+        TextureBuffer.reset();
+    }
+    return true;
 }

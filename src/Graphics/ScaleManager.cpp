@@ -1,9 +1,9 @@
 #include "OpenCore/OpenCore.hpp"
 
-ScaleManager::ScaleManager(int baseW, int baseH)
+ScaleManager::ScaleManager(uint16_t baseW, uint16_t baseH)
     : baseWidth(baseW), baseHeight(baseH) {}
 
-void ScaleManager::UpdateTargetSize(int windowW, int windowH)
+void ScaleManager::UpdateTargetSize(uint16_t windowW, uint16_t windowH)
 {
     windowWidth = windowW;
     windowHeight = windowH;

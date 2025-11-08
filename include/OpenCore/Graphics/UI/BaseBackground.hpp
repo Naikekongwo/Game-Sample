@@ -1,15 +1,17 @@
 #pragma once
 
-// StageBackground.hpp
+// BaseBackground.hpp
 // 每一层级的背景的UI控件
 
 #include "UIElement.hpp"
 
-class StageBackground : public UIElement
+#include <cstdint>
+
+class BaseBackground : public UIElement
 {
     public:
     // 构造函数
-    StageBackground(std::string id, short layer, Texture* texture);
+    BaseBackground(std::string id, short layer, Texture* texture);
 
     // 实现父类
 
@@ -19,10 +21,10 @@ class StageBackground : public UIElement
 
     // 特殊函数
 
-    void setNativeScale(int scale);
+    void setNativeScale(uint8_t scale);
 
 
     private:
 
-    int nativeScale;
+    uint8_t nativeScale;
 };

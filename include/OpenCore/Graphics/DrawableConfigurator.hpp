@@ -4,6 +4,8 @@
 // DrawableConfigurator.h
 // 初始化所有可绘制对象（控件）的部署器类
 
+#include <cstdint>
+
 enum class AnchorPoint : int;
 
 class IDrawableObject;
@@ -14,10 +16,10 @@ class DrawableConfigurator
     // 构造函数
     DrawableConfigurator(IDrawableObject* obj) : obj_p(obj) {}
 
-    DrawableConfigurator& Scale(int w, int h);
+    DrawableConfigurator& Scale(uint16_t w, uint16_t h);
 
     DrawableConfigurator& Anchor(AnchorPoint anchor);
-    DrawableConfigurator& Posite(int x, int y );
+    DrawableConfigurator& Posite(int16_t x, int16_t y );
 
     DrawableConfigurator& Sequence(bool sequential);
 

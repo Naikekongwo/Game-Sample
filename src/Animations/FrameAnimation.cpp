@@ -1,6 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
 
-FrameAnimation::FrameAnimation(int totalFrames, int FPS, bool isLooping)
+FrameAnimation::FrameAnimation(uint8_t totalFrames, uint8_t FPS, bool isLooping)
 {
     this->totalFrames = totalFrames;
     this->FPS = FPS;
@@ -21,7 +21,7 @@ void FrameAnimation::onUpdate(float totalTime, AnimationState& state)
     float elapsedTime = totalTime - startTime;
     if (elapsedTime < 0.0f) elapsedTime = 0.0f;
 
-    int frame = static_cast<int>(elapsedTime * FPS);
+    uint8_t frame = static_cast<int>(elapsedTime * FPS);
 
     if (isLooping) {
         frame = frame % totalFrames;  // 循环时用取模

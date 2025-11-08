@@ -36,9 +36,9 @@ public:
 
     int setOffScreenRender(SDL_Texture *texture);
     
-    SDL_Texture* createTexture(int w, int h);
+    SDL_Texture* createTexture(uint16_t w, uint16_t h);
 
-    void setScale(int w, int h);
+    void setScale(uint16_t w, uint16_t h);
 
 private:
     SDL_Window *window;

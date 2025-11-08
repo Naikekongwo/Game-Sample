@@ -1,5 +1,9 @@
 #pragma once
+
+
 #include "AnimationManager.hpp"
+
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -7,13 +11,19 @@ class AnimationPipeline {
 public:
     // 构造函数(弃用)
     AnimationPipeline(AnimationManager* mgr) : manager(mgr) {}
+
+    // 添加帧动画
+    AnimationPipeline& Frame(uint8_t totalFrames, uint8_t FPS, bool isLooping = false) {
+        animations.push_back(std::make_shared<FrameAnimation>(totalFrames, FPS, isLooping));
+        return *this;
+    }
     // 添加渐变动画
     AnimationPipeline& Fade(float startAlpha, float endAlpha, float duration, bool isLooping = false) {
         animations.push_back(std::make_shared<FadeAnimation>(startAlpha, endAlpha, duration, isLooping));
         return *this;
     }
     // 添加移动动画
-    AnimationPipeline& Move(int startX, int startY, int endX, int endY, float duration, bool isLooping = false) {
+    AnimationPipeline& Move(uint16_t startX, uint16_t startY, uint16_t endX, uint16_t endY, float duration, bool isLooping = false) {
         animations.push_back(std::make_shared<MoveAnimation>(startX, startY, endX, endY, duration, isLooping));
         return *this;
     }

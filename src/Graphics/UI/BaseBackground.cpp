@@ -1,6 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
 
-StageBackground::StageBackground(std::string id, short layer, Texture *texture)
+BaseBackground::BaseBackground(std::string id, short layer, Texture *texture)
 {
 
     this->id = id;
@@ -9,7 +9,7 @@ StageBackground::StageBackground(std::string id, short layer, Texture *texture)
     // 获取材质
     if (!texture)
     {
-        SDL_Log("StageBackground::StageBackground() encountered a empty texture.");
+        SDL_Log("BaseBackground::BaseBackground() encountered a empty texture.");
         return;
         // 如果材质为空，那么我们直接强制返回
     }
@@ -17,12 +17,12 @@ StageBackground::StageBackground(std::string id, short layer, Texture *texture)
     this->texture = texture;
 }
 
-void StageBackground::setNativeScale(int scale)
+void BaseBackground::setNativeScale(uint8_t scale)
 {
     nativeScale = scale;
 }
 
-void StageBackground::handlEvents(SDL_Event &event, float totalTime)
+void BaseBackground::handlEvents(SDL_Event &event, float totalTime)
 {
     if(event.type == SDL_WINDOWEVENT)
     {
@@ -37,7 +37,7 @@ void StageBackground::handlEvents(SDL_Event &event, float totalTime)
     }
 }
 
-int StageBackground::setBakedTexture(bool isBaked)
+int BaseBackground::setBakedTexture(bool isBaked)
 {
     directRender = isBaked;
 
@@ -48,7 +48,7 @@ int StageBackground::setBakedTexture(bool isBaked)
     return 0;
 }
 
-bool StageBackground::preRenderTexture(SDL_Texture *target)
+bool BaseBackground::preRenderTexture(SDL_Texture *target)
 {
     auto &GFX = GraphicsManager::getInstance();
     if (!target) return false;

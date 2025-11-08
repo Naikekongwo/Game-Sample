@@ -19,12 +19,20 @@
 #include "SoundEffectManager.hpp"
 #include "Graphics/GraphicsManager.hpp"
 
+#include "Gameplay/Items/ItemManager.hpp"
+
 // 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
 namespace OpenCoreManagers
 {
     inline ResourceManager& ResManager = ResourceManager::getInstance();
     inline GraphicsManager& GFXManager = GraphicsManager::getInstance();
     inline SoundEffectManager& SFXManager = SoundEffectManager::getInstance();
+}
+
+// 游戏对应的模块单例
+namespace Gameplay
+{
+    inline ItemManager& ItemMgr = ItemManager::getInstance();
 }
 
 #include "Graphics/ScaleManager.hpp"

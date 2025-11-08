@@ -33,6 +33,9 @@ public:
     // 渲染函数
     virtual void onRender() = 0;
 
+    // 自毁函数
+    virtual bool onDestroy() = 0;
+
     // 获取碰撞箱
     virtual SDL_Rect getBounds() = 0;
 
@@ -48,13 +51,13 @@ public:
     bool isAnimeFinished() const;
 
     // 属性设置的方法
-    void setScale(int w, int h)
+    void setScale(uint16_t w, uint16_t h)
     {
         nativeWidth = w;
         nativeHeight = h;
     }
     void setAnchor(AnchorPoint anchor);
-    void setPosition(int x, int y);
+    void setPosition(int16_t x, int16_t y);
 
     // 配置器方法
     AnimationPipeline Animate();
@@ -70,7 +73,7 @@ protected:
     // 动画状态
     std::unique_ptr<AnimationState> AnimeState;
     // 元素基础大小
-    int nativeWidth, nativeHeight;
+    uint16_t nativeWidth, nativeHeight;
     // 贴图
     Texture *texture;
 };

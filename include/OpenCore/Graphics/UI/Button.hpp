@@ -6,6 +6,9 @@
 
 #include "UIElement.hpp"
 
+#include <functional>
+#include <memory>
+
 
 // 按钮状态的枚举类
 enum ButtonState { Normal, Hovered, Pressed };
@@ -24,10 +27,14 @@ class Button : public UIElement
 
     // 特殊函数
 
+    void setOnClick(std::function<void()> func) { onClick = std::move(func); }
+
     protected:
 
     // 按钮状态 0：正常 1：悬停 2：按下
     ButtonState State = ButtonState::Normal;
+
+    std::function<void()> onClick;
 
 };
 

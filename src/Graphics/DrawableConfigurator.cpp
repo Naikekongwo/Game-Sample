@@ -1,6 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
 
-DrawableConfigurator& DrawableConfigurator::Scale(int w, int h)
+DrawableConfigurator& DrawableConfigurator::Scale(uint16_t w, uint16_t h)
 {
     obj_p->setScale(w,h);
     return *this;
@@ -12,7 +12,7 @@ DrawableConfigurator& DrawableConfigurator::Anchor(AnchorPoint anchor)
     return *this;
 }
 
-DrawableConfigurator& DrawableConfigurator::Posite(int x, int y )
+DrawableConfigurator& DrawableConfigurator::Posite(int16_t x, int16_t y )
 {
     obj_p->setPosition(x,y);
     return *this;

@@ -16,7 +16,7 @@ void StageController::changeStage(std::unique_ptr<Stage> newStage)
     // 如果原来位置有对象，它会被自动释放
     currentStages[0] = std::move(newStage);
 }
-void StageController::changeStage(std::unique_ptr<Stage> newStage,int index){
+void StageController::changeStage(std::unique_ptr<Stage> newStage,uint8_t index){
     if (currentStages.empty()) {
         currentStages.resize(3); 
     }
@@ -28,7 +28,7 @@ void StageController::addTempStage(std::unique_ptr<Stage> newStage){
     }
     currentStages.push_back(std::move(newStage));
 }
-bool StageController::deleteStage(int index){
+bool StageController::deleteStage(uint8_t index){
      if (index != 0 && index != 1 && index != 2) {
         return false;
     }
@@ -49,7 +49,7 @@ bool StageController::deleteTempStage(){
     currentStages.pop_back();
     return true;
 }
-void StageController::swapStage(int index1,int index2){
+void StageController::swapStage(uint8_t index1,uint8_t index2){
     if (index1 < 0 || index1 > 2 || index2 < 0 || index2 > 2 || index1 == index2) {
         return;
     }

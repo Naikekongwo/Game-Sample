@@ -18,15 +18,15 @@ enum class AnchorPoint : int {
 
 struct AnimationState
 {
-    int frameIndex = 0;           // 当前帧索引
+    uint8_t frameIndex = 0;           // 当前帧索引
     float transparency = 1.0f;    // 透明度
     float scaleX = 1.0f;          // X轴缩放
     float scaleY = 1.0f;          // Y轴缩放
     float angle = 0.0f;           // 角度
 
     AnchorPoint Anchor = AnchorPoint::Center; // 锚点 默认居中
-    int PositionX = 0; // X坐标
-    int PositionY = 0; // Y坐标
+    int16_t PositionX = 0; // X坐标
+    int16_t PositionY = 0; // Y坐标
 };
 
 class IAnimation

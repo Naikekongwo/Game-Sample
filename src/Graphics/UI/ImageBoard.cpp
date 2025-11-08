@@ -23,6 +23,7 @@ ImageBoard::ImageBoard(std::string id, short layer, Texture* texture)
 
 void ImageBoard::onRender()
 {
+    auto& GFX = GraphicsManager::getInstance();
     // 渲染函数
     SDL_SetTextureAlphaMod(texture->texture.get(), 255.0f * AnimeState->transparency);
 
@@ -32,9 +33,9 @@ void ImageBoard::onRender()
     {
         // 多帧函数
         SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
-        GraphicsManager::getInstance().RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+        GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
         return;
     }
     // 单帧贴图
-    GraphicsManager::getInstance().RenderCopyEx(texture->texture.get(), NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+    GFX.RenderCopyEx(texture->texture.get(), NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
 }

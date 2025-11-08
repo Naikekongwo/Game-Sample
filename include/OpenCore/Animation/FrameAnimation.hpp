@@ -6,10 +6,12 @@
 #include "IAnimation.hpp"
 // 帧动画类继承自IAnimation
 
+#include <cstdint>
+
 class FrameAnimation : public IAnimation
 {
     public:
-    FrameAnimation(int totalFrames, int FPS, bool isLooping);
+    FrameAnimation(uint8_t totalFrames, uint8_t FPS, bool isLooping);
     // 构造方法
 
     void onUpdate(float totalTime, AnimationState& state) override;
@@ -26,9 +28,9 @@ class FrameAnimation : public IAnimation
 
     private:
     float startTime = 0.0f; // 起始时间
-    int currentFrame; // 当前帧索引
-    int totalFrames; // 总帧数
-    int FPS; // 帧率
+    uint8_t currentFrame; // 当前帧索引
+    uint8_t totalFrames; // 总帧数
+    uint8_t FPS; // 帧率
     
     bool isLooping; // 是否循环
 };

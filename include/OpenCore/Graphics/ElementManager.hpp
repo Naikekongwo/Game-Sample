@@ -8,9 +8,8 @@
 
 #include "UI/Button.hpp"
 #include "UI/ImageBoard.hpp"
-#include "UI/StageBackground.hpp"
+#include "UI/BaseBackground.hpp"
 #include "UI/FrameCounter.hpp"
-#include "UI/ItemContainerCollection.hpp"
 
 #include <vector>
 #include <memory>

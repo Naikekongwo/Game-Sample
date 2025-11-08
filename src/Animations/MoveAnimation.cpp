@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 
 // 构造函数实现
-MoveAnimation::MoveAnimation(int startX, int startY, int endX, int endY, float duration, bool isLooping)
+MoveAnimation::MoveAnimation(int16_t startX, int16_t startY, int16_t endX, int16_t endY, float duration, bool isLooping)
     : startX(startX), startY(startY), endX(endX), endY(endY), duration(duration), isLooping(isLooping), finished(false) {}
 
 // 更新动画状态

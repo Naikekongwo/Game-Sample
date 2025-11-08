@@ -22,15 +22,15 @@ class StageController {
     // 切换场景，默认为root；
     void changeStage(std::unique_ptr<Stage> newStage);
     //通过id切换场景
-    void changeStage(std::unique_ptr<Stage> newStage,int index);
+    void changeStage(std::unique_ptr<Stage> newStage,uint8_t index);
     //加入临时场景（这里是指比如说鼠标悬停在什么上会弹出一个说明之类的）
     void addTempStage(std::unique_ptr<Stage> newStage);
     //删除前三个场景
-    bool deleteStage(int index);
+    bool deleteStage(uint8_t index);
     //删除最后一个临时场景
     bool deleteTempStage();
     //交换前三个场景,比如拖到物品时其图层可能在菜单图标之上，此时需要暂时交换图层
-    void swapStage(int index1,int index2);
+    void swapStage(uint8_t index1,uint8_t index2);
     // 处理事件的公共接口
     bool handlEvents(SDL_Event* event);
 

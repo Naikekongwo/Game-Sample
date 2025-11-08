@@ -4,10 +4,13 @@
 
 
 ## 目录
-- [OpenCore 引擎结构叙述](#opencoreh-引擎头)
-- [UI 控件系统](#ui-控件系统)
-- [控件手动销毁](#控件手动销毁)
-- [预烘焙纹理特性](#预烘焙纹理-baked-texture)
+- [OpenCore Documentation  开发人员文档](#opencore-documentation--开发人员文档)
+  - [目录](#目录)
+    - [OpenCore.h 引擎头](#opencoreh-引擎头)
+    - [UI 控件系统](#ui-控件系统)
+      - [控件手动销毁](#控件手动销毁)
+      - [预烘焙纹理 BAKED TEXTURE](#预烘焙纹理-baked-texture)
+      - [UIElement 控件定义规范](#uielement-控件定义规范)
 
 
 ### OpenCore.h 引擎头
@@ -131,3 +134,21 @@ stageBG->setBakedTexture(true);
 但在现阶段仍然存在一些问题，`OpenCore 25.1`版本将预烘焙视作UI控件的基础特性，但是对于预烘焙的时机仍然不明——预烘焙在此版本运行在主线程，会阻塞游戏进行，暂且没有等待机制。
 
 > 2025.10.18 OpenCore 25.1.18 现已支持预渲染贴图的重新绘制。
+
+#### UIElement 控件定义规范
+
+```mermaid
+---
+title:类的关系
+---
+graph LR
+
+    A[IDrawableObject] --> B[UIElement] --> C[实际UI控件]
+```
+
+`UIElement`是继承自IDrawableObject的抽象类，在此之上派生出实际的UI控件类。我们在此，将所有派生自UIElement的类称作UI类。
+
+UI类的定义，需要遵循以下的规范：
++ `onRender()`必须得到实现：<br>这一点尤为重要，由于**预渲染贴图BakedTexture**的加入，我们更改了一般的UIElement的渲染管线，基类中就已经加入了关于预渲染的开关，在基类中给出了onRender的默认实现。实际的UI类在定义时必须重写该方法来确定实际的渲染方法。
++ `onDestroy()`必须得到实现:<br>我们虽然在基类中给出了该方法的默认实现，但是对于实际的控件我们仍然要求再度实现这个方法，因为基类中的默认实现只销毁了纹理。对于实际的控件来说，我们经常会处理到那些存在**子控件**的控件，所以我们必须在特定的控件中重写销毁方法以销毁那些额外加入的内容。
++ `preRenderTexture()`必须得到实现：<br>基类中已经对该方法进行了默认实现，即返回false，对于需要预渲染的控件来说，在此方法中重写以适配。

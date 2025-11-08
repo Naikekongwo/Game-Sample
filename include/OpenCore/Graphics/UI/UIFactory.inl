@@ -16,9 +16,3 @@ inline std::unique_ptr<FrameCounter> UI<FrameCounter>(std::string id, short laye
 {
     return std::make_unique<FrameCounter>(id, layer, nullptr);
 }
-
-template<>
-inline std::unique_ptr<ItemContainerCollection> UI<ItemContainerCollection>(std::string id, short layer, short texID, short frameX, short frameY)
-{
-    return std::make_unique<ItemContainerCollection>(id, layer, texID, frameX, frameY);
-}

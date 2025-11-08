@@ -25,7 +25,7 @@ void IDrawableObject::setAnchor(AnchorPoint anchor)
 }
 
 // 设置控件的位置
-void IDrawableObject::setPosition(int x, int y)
+void IDrawableObject::setPosition(int16_t x, int16_t y)
 {
     AnimeState->PositionX = x;
     AnimeState->PositionY = y;

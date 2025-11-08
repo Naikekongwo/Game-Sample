@@ -78,7 +78,7 @@ void GraphicsManager::CleanUp()
     SDL_Quit();
 }
 
-void GraphicsManager::setScale(int w, int h)
+void GraphicsManager::setScale(uint16_t w, uint16_t h)
 {
     ContentScale->UpdateTargetSize(w, h);
 }
@@ -101,7 +101,7 @@ int GraphicsManager::RenderCopyEx(SDL_Texture *texture,
 }
 
 
-SDL_Texture* GraphicsManager::createTexture(int w, int h)
+SDL_Texture* GraphicsManager::createTexture(uint16_t w, uint16_t h)
 {
     SDL_Texture* texture = SDL_CreateTexture(
         renderer,

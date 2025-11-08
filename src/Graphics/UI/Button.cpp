@@ -37,19 +37,41 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
             }
             else
             {
-                State = (State==ButtonState::Pressed) ? ButtonState::Pressed : ButtonState::Hovered;
+                State = (State == ButtonState::Pressed) ? ButtonState::Pressed : ButtonState::Hovered;
             }
             break;
         }
         case SDL_MOUSEBUTTONDOWN:
         {
-            if(State == ButtonState::Hovered)
-            {
-                State = ButtonState::Pressed;
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                SDL_Point mousePos = { event.button.x, event.button.y };
+                SDL_Rect bounds = getBounds();
+                if (SDL_PointInRect(&mousePos, &bounds))
+                {
+                    State = ButtonState::Pressed;
+                }
             }
-            else if(State == ButtonState::Pressed)
-            {
-                State = ButtonState::Pressed;
+            break;
+        }
+        case SDL_MOUSEBUTTONUP:
+        {
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                SDL_Point mousePos = { event.button.x, event.button.y };
+                SDL_Rect bounds = getBounds();
+                
+                // 检查鼠标是否在按钮范围内且之前是按下的状态
+                if (SDL_PointInRect(&mousePos, &bounds) && State == ButtonState::Pressed)
+                {
+                    // 触发点击回调
+                    if (onClick) {
+                        onClick();
+                    }
+                    State = ButtonState::Hovered;
+                }
+                else
+                {
+                    State = ButtonState::Normal;
+                }
             }
             break;
         }

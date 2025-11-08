@@ -15,6 +15,8 @@ public:
     virtual int setBakedTexture(bool isBaked) { return 0; }
     virtual bool preRenderTexture(SDL_Texture* texture) { return false;}
 
+    virtual bool onDestroy() override;
+
 protected:
     // 预烘焙贴图 : 默认关闭
     // 烘焙贴图的地址 : 默认空

@@ -8,10 +8,10 @@
 
 class ScaleManager {
 public:
-    ScaleManager(int baseW, int baseH);
+    ScaleManager(uint16_t baseW, uint16_t baseH);
 
     // 每次窗口大小变化都应调用一次
-    void UpdateTargetSize(int windowW, int windowH);
+    void UpdateTargetSize(uint16_t windowW, uint16_t windowH);
 
     // 转换逻辑坐标 -> 实际坐标
     SDL_Rect ToScreen(const SDL_Rect& logical) const;
@@ -25,8 +25,8 @@ public:
     SDL_Point GetOffset() const { return { static_cast<int>(offsetX), static_cast<int>(offsetY) }; }
 
 private:
-    int baseWidth, baseHeight;
-    int windowWidth, windowHeight;
+    uint16_t baseWidth, baseHeight;
+    uint16_t windowWidth, windowHeight;
 
     float scale = 1.0f;
     float offsetX = 0.0f;

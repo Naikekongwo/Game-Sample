@@ -12,6 +12,7 @@
 #include "ScaleAnimation.hpp"
 #include "TimerAnimation.hpp"
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -21,20 +22,20 @@ enum class AnimationID { FrameAnime, FadeAnime, MoveAnimation, RotateAnimation, 
 struct Texture
 {
     // 行数和列数
-    int xCount = 1;
-    int yCount = 1;
+    uint8_t xCount = 1;
+    uint8_t yCount = 1;
 
     // 贴图的大小
-    int width,height;
+    uint16_t width,height;
 
     // 材质
     std::shared_ptr<SDL_Texture> texture;
 
-    Texture(int x, int y, std::shared_ptr<SDL_Texture> tex);
+    Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex);
 
-    int Size() const noexcept { return xCount * yCount; }
+    uint16_t Size() const noexcept { return xCount * yCount; }
 
-    SDL_Rect getSrcRect(int index);    
+    SDL_Rect getSrcRect(uint8_t index);    
 };
 
 class AnimationManager

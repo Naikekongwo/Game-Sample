@@ -1,11 +1,16 @@
 #include "OpenCore/OpenCore.hpp"
 #include <algorithm>
 
-Texture::Texture(int x, int y, std::shared_ptr<SDL_Texture> tex) : xCount(x), yCount(y), texture(tex)
+Texture::Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex) : xCount(x), yCount(y), texture(tex)
 {
+    int W,H;
+
     if(!texture) SDL_Log("Texture::Texture() encountered empty texture in the initialization.");
 
-    SDL_QueryTexture(texture.get(), NULL, NULL, &width, &height);
+    SDL_QueryTexture(texture.get(), NULL, NULL, &W, &H);
+
+    width = static_cast<uint16_t>(W);
+    height = static_cast<uint16_t>(H);
 
     if(xCount == 0 || yCount == 0)
     {
@@ -17,7 +22,7 @@ Texture::Texture(int x, int y, std::shared_ptr<SDL_Texture> tex) : xCount(x), yC
     height/=yCount;
 }
 
-SDL_Rect Texture::getSrcRect(int index)
+SDL_Rect Texture::getSrcRect(uint8_t index)
 {
     // 构造一个0矩阵的常量，避免重复生成
     static const SDL_Rect emptyRect{0, 0, 0, 0};
@@ -27,8 +32,8 @@ SDL_Rect Texture::getSrcRect(int index)
         return emptyRect;
     }
 
-    int col = index % xCount;
-    int row = index / xCount;
+    uint8_t col = index % xCount;
+    uint8_t row = index / xCount;
 
     return SDL_Rect{
         col * width,

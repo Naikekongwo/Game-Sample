@@ -1,0 +1,9 @@
+{
+    "1" : {
+        "name" : "水瓶",
+        "Consumable" : {
+            "maxStackedSize" : 2,
+            ""
+        }
+    }
+}
