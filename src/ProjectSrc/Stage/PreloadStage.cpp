@@ -53,8 +53,8 @@ void PreloadStage::onUpdate()
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
 
-        auto startTitle = UI<ImageBoard>("startTitle", 0, 2003, 1, 1);
-        auto oceanBackground = UI<ImageBoard>("background", -1, 2001, 2, 1);
+        auto startTitle = UI<ImageBoard>("startTitle", 1, 2003, 1, 1);
+        auto oceanBackground = UI<ImageBoard>("background", 0, 2001, 2, 1);
         // 创建了加载界面的标题控件
         // 创建了背景控件
 
@@ -87,7 +87,7 @@ void PreloadStage::onUpdate()
 
                 if (stageState == 2)
                 {
-                    Title->changeTexture(new Texture(1, 1, OpenCoreManagers::ResManager.GetTexture(2004)));
+                    Title->changeTexture(MakeTexture(1,1,2004));
                     Title->Configure().Scale(600, 600);
                     Title->setSequential(true);
                     Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(3.0f).Commit();
@@ -97,7 +97,7 @@ void PreloadStage::onUpdate()
 
                 if (stageState == 3)
                 {
-                    Title->changeTexture(new Texture(1, 1, OpenCoreManagers::ResManager.GetTexture(2002)));
+                    Title->changeTexture(MakeTexture(1,1,2002));
                     Title->Configure().Scale(1024, 256);
                     Title->setSequential(true);
                     Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(10.0f).Commit();

@@ -47,11 +47,11 @@ public:
     virtual SDL_Rect getBounds() = 0;
 
     // 获取实际碰撞箱
-    virtual SDL_Rect getBoundsOnScreen() = 0;
+    virtual SDL_Rect getRenderedBounds() = 0;
 
 
     // 更改贴图
-    void changeTexture(Texture *newTexture);
+    void changeTexture(std::unique_ptr<Texture> newTexture);
 
     // 设置动画顺序
     void setSequential(bool sequential);
@@ -70,6 +70,8 @@ public:
     void setAnchor(AnchorPoint anchor);
     void setPosition(int16_t x, int16_t y);
 
+    void setParentContainer(IDrawableObject* parentContainer);
+
     // 配置器方法
     MyAnimationPipeline Animate();
     DrawableConfigurator Configure();
@@ -78,7 +80,7 @@ protected:
     // ID 已经弃用，改用string代替
     std::string id;
     // 默认图层
-    short layer = 0;
+    uint8_t layer = 0;
     // 动画管理器
     std::unique_ptr<AnimationManager> AnimeManager;
     // 动画状态
@@ -86,7 +88,10 @@ protected:
     // 元素基础大小
     uint16_t nativeWidth, nativeHeight;
     // 贴图
-    Texture *texture;
+    std::unique_ptr<Texture> texture;
+    // 父容器类
+    bool absolutePosite = true;
+    IDrawableObject* parentContainer = nullptr;
 };
 
 #endif //_IDRAWABLE_H_

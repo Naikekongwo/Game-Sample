@@ -14,8 +14,8 @@ GameplayStage::GameplayStage(Timer* timer, StageController* sController)
 
 void GameplayStage::Init()
 {
-    std::unique_ptr<ImageBoard> background = std::make_unique<ImageBoard>("background", -1,new Texture(1,1,OpenCoreManagers::ResManager.GetTexture(2007)));
-    std::unique_ptr<ImageBoard> connector = std::make_unique<ImageBoard>("connector", 99, new Texture(1,1,OpenCoreManagers::ResManager.GetTexture(2005)));
+    std::unique_ptr<ImageBoard> background = std::make_unique<ImageBoard>("background", -1, MakeTexture(1,1,2007));
+    std::unique_ptr<ImageBoard> connector = std::make_unique<ImageBoard>("connector", 99, MakeTexture(1,1,2005));
     // 创建了遮罩和背景的资源
 
     background->Configure().Anchor(AnchorPoint::Center).Posite(960, 540).Scale(1920,1080);

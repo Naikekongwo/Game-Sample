@@ -2,7 +2,7 @@
 #include "Union.hpp"
 
 
-FrameCounter::FrameCounter(std::string id, short layer, Texture *texture)
+FrameCounter::FrameCounter(const std::string& id, uint8_t, Texture *texture)
 {
     this->id = id;
     this->layer = layer;

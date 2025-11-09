@@ -23,6 +23,8 @@ class DrawableConfigurator
 
     DrawableConfigurator& Sequence(bool sequential);
 
+    DrawableConfigurator& Parent(IDrawableObject* parent);
+
     private:
     IDrawableObject* obj_p;
 };

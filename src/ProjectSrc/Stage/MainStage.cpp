@@ -14,7 +14,7 @@ MainStage::MainStage(Timer* timer, StageController* sController)
 
 void MainStage::Init()
 {
-    auto background = UI<ImageBoard>("background", -1, 2006, 1, 1);
+    auto background = UI<ImageBoard>("background", 0, 2006, 1, 1);
     auto button1    = UI<Button>("StartButton", 1, 2008, 1, 3);
     auto connector  = UI<ImageBoard>("connector", 99, 2005, 1, 1);
     auto stageBg    = UI<BaseBackground>("BaseBackground", 0, 2009, 3, 3);
@@ -25,7 +25,7 @@ void MainStage::Init()
     // 创建了遮罩和背景的资源
 
     background->Configure().Anchor(AnchorPoint::Center).Posite(960, 540).Scale(1920,1080);
-    button1->Configure().Anchor(AnchorPoint::Center).Posite(960,540).Scale(512,256);
+    button1->Configure().Anchor(AnchorPoint::Center).Posite(960,540).Scale(512,256).Parent(stageBg.get());
     itemBox->Configure().Anchor(AnchorPoint::Center).Posite(960,800).Scale(128,128);
 
     connector->Configure().Scale(1920,1080).Anchor(AnchorPoint::TopLeft).Posite(0,0);

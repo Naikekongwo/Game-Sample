@@ -2,7 +2,7 @@
 #include "Union.hpp"
 #include "OpenCore/Animation/AnimationPipeline.hpp"
 
-ImageBoard::ImageBoard(std::string id, short layer, Texture* texture)
+ImageBoard::ImageBoard(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture)
 {
     // 设置ID 层级属性
     this->id = id;
@@ -18,7 +18,7 @@ ImageBoard::ImageBoard(std::string id, short layer, Texture* texture)
         // 如果材质为空，那么我们直接强制返回
     }
 
-    this->texture = texture;
+    this->texture = std::move(texture);
 }
 
 

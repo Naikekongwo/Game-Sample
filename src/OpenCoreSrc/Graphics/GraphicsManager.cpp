@@ -36,7 +36,7 @@ bool GraphicsManager::Init()
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     
     // 其他平台的初始化方法
-    if (SDL_CreateWindowAndRenderer(1920, 1080, SDL_RENDERER_ACCELERATED, &window, &renderer) != 0)
+    if (SDL_CreateWindowAndRenderer(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT, SDL_RENDERER_ACCELERATED, &window, &renderer) != 0)
     {
         return false;
     }

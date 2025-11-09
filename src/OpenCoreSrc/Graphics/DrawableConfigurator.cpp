@@ -24,3 +24,9 @@ DrawableConfigurator& DrawableConfigurator::Sequence(bool sequential)
     obj_p->setSequential(sequential);
     return *this;
 }
+
+DrawableConfigurator& DrawableConfigurator::Parent(IDrawableObject* parent)
+{
+    obj_p->setParentContainer(parent);
+    return *this;
+}

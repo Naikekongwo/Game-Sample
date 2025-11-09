@@ -2,7 +2,7 @@
 #include "Union.hpp"
 #include "OpenCore/Animation/AnimationPipeline.hpp"
 
-Button::Button(std::string id, short layer, Texture* texture)
+Button::Button(const std::string& id, uint8_t, std::unique_ptr<Texture> texture)
 {
 
     // 设置ID 层级属性
@@ -19,13 +19,13 @@ Button::Button(std::string id, short layer, Texture* texture)
         // 如果材质为空，那么我们直接强制返回
     }
 
-    this->texture = texture;
+    this->texture = std::move(texture);
 }
 
 void Button::handlEvents(SDL_Event &event, float totalTime)
 {
     SDL_Point mousePos = { event.motion.x, event.motion.y };
-    SDL_Rect bounds = getBoundsOnScreen();
+    SDL_Rect bounds = getRenderedBounds();
     // 主要是判断按钮状态：悬停与否
     switch(event.type)
     {

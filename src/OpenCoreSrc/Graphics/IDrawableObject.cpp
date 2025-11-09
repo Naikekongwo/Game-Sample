@@ -53,12 +53,11 @@ bool IDrawableObject::isAnimeFinished() const
 }
 
 // 贴图更新方法
-void IDrawableObject::changeTexture(Texture* newTexture)
+void IDrawableObject::changeTexture(std::unique_ptr<Texture> newTexture)
 {
     if(newTexture)
     {
-        delete this->texture;
-        this->texture = newTexture;
+        texture = std::move(newTexture);
     }
     else
     {
@@ -74,4 +73,32 @@ IDrawableObject::IDrawableObject()
     
     AnimeManager = std::make_unique<AnimationManager>();
     AnimeState = std::make_unique<AnimationState>();
+}
+
+
+void IDrawableObject::setParentContainer(IDrawableObject* parentContainer)
+{
+    if(parentContainer!=nullptr)
+    {
+        // 有父容器
+        absolutePosite = false;
+        this->parentContainer = parentContainer;
+
+        // 向上堆叠
+        this->layer = parentContainer->getLayer() + 1;
+    }
+    else
+    {
+        absolutePosite = true;
+    }
+}
+
+bool IDrawableObject::onDestroy()
+{
+    AnimeManager.reset();
+    AnimeState.reset();
+
+    texture.reset();
+
+    return true;
 }

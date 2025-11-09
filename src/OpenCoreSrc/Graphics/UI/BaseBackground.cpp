@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include "Union.hpp"
 
-BaseBackground::BaseBackground(std::string id, short layer, Texture *texture)
+BaseBackground::BaseBackground(const std::string& id, uint8_t, std::unique_ptr<Texture> texture)
 {
 
     this->id = id;
@@ -15,7 +15,7 @@ BaseBackground::BaseBackground(std::string id, short layer, Texture *texture)
         // 如果材质为空，那么我们直接强制返回
     }
 
-    this->texture = texture;
+    this->texture = std::move(texture);
 }
 
 void BaseBackground::setNativeScale(uint8_t scale)

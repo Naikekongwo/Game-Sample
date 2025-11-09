@@ -5,7 +5,7 @@ SDL_Rect UIElement::getBounds()
 {
     if (!AnimeState)
     {
-        SDL_Log("ImageBoard::getRenderRect() failed: AnimeState is nullptr");
+        SDL_Log("UIElement::getBounds() failed: AnimeState is nullptr");
         return SDL_Rect{0, 0, 0, 0};
     }
 
@@ -55,14 +55,39 @@ SDL_Rect UIElement::getBounds()
         break;
 
     default:
-        SDL_Log("getRenderRect() invalid anchor: %d", static_cast<uint16_t>(state.Anchor));
+        SDL_Log("getBounds() invalid anchor: %d", static_cast<uint16_t>(state.Anchor));
         break;
     }
 
-    return SDL_Rect{x, y, renderWidth, renderHeight};
+    SDL_Rect logicalRect = {x, y, renderWidth, renderHeight};
+    
+    // 根据 absolutePosite 属性决定坐标系转换
+    if (absolutePosite) {
+        // 绝对定位：直接返回在1920x1080逻辑坐标系中的Rect
+        return logicalRect;
+    } else {
+        // 相对定位：将父容器的Bounds视作1920x1080进行坐标转换
+        if (parentContainer) {
+            SDL_Rect parentBounds = parentContainer->getBounds();
+            
+            // 将逻辑坐标转换为父容器实际坐标系
+            float scaleX = parentBounds.w / 1920.0f;
+            float scaleY = parentBounds.h / 1080.0f;
+            
+            return SDL_Rect{
+                parentBounds.x + static_cast<int16_t>(x * scaleX),
+                parentBounds.y + static_cast<int16_t>(y * scaleY),
+                static_cast<uint16_t>(renderWidth * scaleX),
+                static_cast<uint16_t>(renderHeight * scaleY)
+            };
+        } else {
+            // 没有父容器，相对定位等同于绝对定位
+            return logicalRect;
+        }
+    }
 }
 
-SDL_Rect UIElement::getBoundsOnScreen()
+SDL_Rect UIElement::getRenderedBounds()
 {
     return OpenCoreManagers::GFXManager.getScale()->ToScreen(getBounds());
 }
@@ -98,6 +123,8 @@ void UIElement::onRender()
 
 bool UIElement::onDestroy()
 {
+    IDrawableObject::onDestroy();
+    
     if(TextureBuffer)
     {
         TextureBuffer.reset();
