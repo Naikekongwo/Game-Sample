@@ -4,7 +4,6 @@
 // 引入内核
 #include "OpenCore/OpenCore.hpp"
 
-
 #include <cmath>
 const int WIDTH = 1920, HEIGHT = 1080;
 

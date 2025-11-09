@@ -17,9 +17,9 @@
 
 #include "ResourceManager.hpp"
 #include "SoundEffectManager.hpp"
-#include "Graphics/GraphicsManager.hpp"
+#include "Graphics/Manager/GraphicsManager.hpp"
 
-#include "Gameplay/Items/ItemManager.hpp"
+#include "Gameplay/Manager/ItemManager.hpp"
 
 // 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
 namespace OpenCoreManagers
@@ -35,11 +35,11 @@ namespace Gameplay
     inline ItemManager& ItemMgr = ItemManager::getInstance();
 }
 
-#include "Graphics/ScaleManager.hpp"
+#include "Graphics/Manager/ScaleManager.hpp"
 #include "Animation/AnimationPipeline.hpp"
-#include "Animation/AnimationManager.hpp"
-#include "Graphics/DrawableConfigurator.hpp"
-#include "Graphics/ElementManager.hpp"
+#include "Animation/Manager/AnimationManager.hpp"
+#include "Graphics/Configurator/DrawableConfigurator.hpp"
+#include "Graphics/Manager/ElementManager.hpp"
 #include "Stage/StageController.hpp"
 
 #include <memory>

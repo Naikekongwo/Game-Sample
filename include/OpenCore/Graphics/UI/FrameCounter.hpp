@@ -3,7 +3,7 @@
 // FrameCounter.hpp
 // 帧率计数器的控件
 
-#include "UIElement.hpp"
+#include "OpenCore/Graphics/IDrawableObject/UIElement.hpp"
 
 class FrameCounter : public UIElement
 {

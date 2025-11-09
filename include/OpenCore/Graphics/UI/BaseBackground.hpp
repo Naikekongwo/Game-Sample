@@ -3,7 +3,7 @@
 // BaseBackground.hpp
 // 每一层级的背景的UI控件
 
-#include "UIElement.hpp"
+#include "OpenCore/Graphics/IDrawableObject/UIElement.hpp"
 
 #include <cstdint>
 

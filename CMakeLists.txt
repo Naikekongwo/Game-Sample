@@ -12,6 +12,7 @@ file(GLOB_RECURSE SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/project/*.cpp"
 )
 include_directories("${CMAKE_SOURCE_DIR}/include")
+include_directories("${CMAKE_SOURCE_DIR}/project/include")
 
 # 可执行文件
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

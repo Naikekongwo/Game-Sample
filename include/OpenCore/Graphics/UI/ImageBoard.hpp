@@ -6,8 +6,7 @@
 
 #include <string>
 
-#include "UIElement.hpp"
-#include "OpenCore/Animation/AnimationPipeline.hpp"
+#include "OpenCore/Graphics/IDrawableObject/UIElement.hpp"
 
 class ImageBoard : public UIElement
 {
