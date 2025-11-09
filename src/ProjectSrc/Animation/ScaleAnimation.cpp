@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 // 构造函数实现
 ScaleAnimation::ScaleAnimation(float startScale, float endScale, float duration, bool isLooping)

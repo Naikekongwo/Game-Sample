@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 BaseBackground::BaseBackground(const std::string& id, uint8_t, std::unique_ptr<Texture> texture)
 {

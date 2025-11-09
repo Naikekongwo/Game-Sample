@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 // 构造函数实现
 FadeAnimation::FadeAnimation(float startAlpha, float endAlpha, float duration, bool isLooping)

@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/Animation/AnimationPipeline.hpp"
 
 ImageBoard::ImageBoard(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture)

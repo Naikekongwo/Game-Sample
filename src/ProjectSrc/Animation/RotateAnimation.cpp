@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 // 构造函数实现
 RotateAnimation::RotateAnimation(float startAngle, float endAngle, float duration, bool isLooping)

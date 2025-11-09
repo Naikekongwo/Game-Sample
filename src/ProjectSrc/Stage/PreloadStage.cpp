@@ -2,7 +2,7 @@
 // 预加载页面的实现
 
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 PreloadStage::PreloadStage(Timer *timer, StageController *sController)
 {

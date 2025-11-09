@@ -2,7 +2,7 @@
 // 负责 GFX_CORE 的方法实现
 
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 GraphicsManager &GraphicsManager::getInstance()
 {

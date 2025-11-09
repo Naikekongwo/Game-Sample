@@ -25,7 +25,6 @@ file(GLOB_RECURSE SOURCE_FILES
 # 头文件目录
 include_directories(
     "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/project/include"
 )
 
 # 创建可执行文件
@@ -102,7 +101,6 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
     # 使用现代目标包含目录语法
     target_include_directories(${PROJECT_NAME} PRIVATE
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/project/include>
     )
 endif()
 

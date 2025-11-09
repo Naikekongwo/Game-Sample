@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 ScaleManager::ScaleManager(uint16_t baseW, uint16_t baseH)
     : baseWidth(baseW), baseHeight(baseH) {}

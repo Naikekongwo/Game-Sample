@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 // 设置动画的播放顺序（sequential 为顺序播放，否则为并行）
 void IDrawableObject::setSequential(bool sequential)

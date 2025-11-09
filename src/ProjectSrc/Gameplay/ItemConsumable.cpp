@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 int16_t ItemConsumable::changeAmount(uint8_t src, int16_t offset)
 {

@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 bool Stage::transferElementFrom(Stage* srcStage, const std::string& id)
 {

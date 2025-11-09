@@ -1,6 +1,6 @@
 #pragma once
 
-// Union.hpp
+// Eclipsea.hpp
 // 项目实际的头库
 
 #include "Animation/MyAnimationPipeline.hpp"

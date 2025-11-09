@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 #include <algorithm>
 
 Texture::Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex) : xCount(x), yCount(y), texture(tex)

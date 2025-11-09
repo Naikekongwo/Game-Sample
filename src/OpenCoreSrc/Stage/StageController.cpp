@@ -1,5 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
-#include "Union.hpp"
+#include "Eclipsea/Eclipsea.hpp"
 
 void StageController::changeBaseStage(std::unique_ptr<BaseStage> newStage)
 {   
