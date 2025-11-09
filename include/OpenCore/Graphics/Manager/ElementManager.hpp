@@ -14,12 +14,6 @@
 #include <vector>
 #include <memory>
 
-template <typename T>
-std::unique_ptr<T> UI(std::string id, short layer, short texID, short frameX, short frameY);
-
-// 引入工厂方法
-#include "OpenCore/Graphics/IDrawableObject/UIFactory.inl"
-
 class ElementManager
 {
     public:
