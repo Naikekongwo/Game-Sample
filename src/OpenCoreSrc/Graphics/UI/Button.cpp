@@ -24,13 +24,14 @@ Button::Button(std::string id, short layer, Texture* texture)
 
 void Button::handlEvents(SDL_Event &event, float totalTime)
 {
+    SDL_Point mousePos = { event.motion.x, event.motion.y };
+    SDL_Rect bounds = getBoundsOnScreen();
     // 主要是判断按钮状态：悬停与否
     switch(event.type)
     {
         case SDL_MOUSEMOTION:
         {
-            SDL_Point mousePos = { event.motion.x, event.motion.y };
-            SDL_Rect bounds = getBounds();
+            
             if(!SDL_PointInRect(&mousePos, &bounds))
             {
                 // 如果鼠标不在其范围之内
@@ -45,8 +46,6 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
         case SDL_MOUSEBUTTONDOWN:
         {
             if (event.button.button == SDL_BUTTON_LEFT) {
-                SDL_Point mousePos = { event.button.x, event.button.y };
-                SDL_Rect bounds = getBounds();
                 if (SDL_PointInRect(&mousePos, &bounds))
                 {
                     State = ButtonState::Pressed;
@@ -57,8 +56,6 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
         case SDL_MOUSEBUTTONUP:
         {
             if (event.button.button == SDL_BUTTON_LEFT) {
-                SDL_Point mousePos = { event.button.x, event.button.y };
-                SDL_Rect bounds = getBounds();
                 
                 // 检查鼠标是否在按钮范围内且之前是按下的状态
                 if (SDL_PointInRect(&mousePos, &bounds) && State == ButtonState::Pressed)

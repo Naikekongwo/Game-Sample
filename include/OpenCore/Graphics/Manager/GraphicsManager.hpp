@@ -24,6 +24,8 @@ public:
     // 清理回收的函数
     void CleanUp();
 
+    ScaleManager* getScale() const { return this->ContentScale.get(); }
+
     SDL_Window *getWindow() const { return window; }
     SDL_Renderer *getRenderer() const { return renderer; }
 

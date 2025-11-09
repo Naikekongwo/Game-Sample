@@ -139,6 +139,7 @@ void PreloadStage::onUpdate()
             else
             {
                 std::unique_ptr<MainStage> mainStage = std::make_unique<MainStage>(timer, sController);
+                transferElementTo(mainStage.get(), "frameCounter");
                 sController->changeStage(std::move(mainStage));
             }
         }

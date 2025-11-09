@@ -43,8 +43,12 @@ public:
     // 自毁函数
     virtual bool onDestroy() = 0;
 
-    // 获取碰撞箱
+    // 获取逻辑碰撞箱
     virtual SDL_Rect getBounds() = 0;
+
+    // 获取实际碰撞箱
+    virtual SDL_Rect getBoundsOnScreen() = 0;
+
 
     // 更改贴图
     void changeTexture(Texture *newTexture);

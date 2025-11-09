@@ -24,3 +24,9 @@ bool Stage::transferElementTo(Stage* destStage, const std::string& id)
     }
     return true;
 }
+
+void Stage::onDestroy()
+{
+    SDL_Log("Stage::onDestroy() stage is going to destroy.");
+    Elements.reset();
+}

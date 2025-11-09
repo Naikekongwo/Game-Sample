@@ -18,7 +18,6 @@ void MainStage::Init()
     auto button1    = UI<Button>("StartButton", 1, 2008, 1, 3);
     auto connector  = UI<ImageBoard>("connector", 99, 2005, 1, 1);
     auto stageBg    = UI<BaseBackground>("BaseBackground", 0, 2009, 3, 3);
-    auto frameCounter = UI<FrameCounter>("frameCounter", 100, 0, 0, 0);
 
     auto itemBox = UI<ImageBoard>("item", 1, 2013, 1, 2);
 
@@ -46,7 +45,6 @@ void MainStage::Init()
     Elements->PushElement(std::move(stageBg));
     Elements->PushElement(std::move(button1));
     Elements->PushElement(std::move(connector));
-    Elements->PushElement(std::move(frameCounter));
     Elements->PushElement(std::move(itemBox));
 
     // auto bottle_full = std::make_shared<Item>(1, "水壶_满", std::move(std::make_unique<Texture>(1,1, OpenCoreManagers::ResManager.GetTexture(2011))));

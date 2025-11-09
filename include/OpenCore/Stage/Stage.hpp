@@ -16,7 +16,10 @@ enum StageType { baseStage, overlayStage, topStage, unregistered};
 
 class Stage{
     public:
-    ~Stage() = default;
+    virtual ~Stage()
+    {
+        onDestroy();
+    }
 
     // 虚函数部分
 
@@ -28,6 +31,9 @@ class Stage{
 
     // 渲染逻辑
     virtual void onRender() = 0;
+
+    // 回收逻辑
+    virtual void onDestroy();
 
     // 场景类型
     StageType getStageType() const { return stageType; }

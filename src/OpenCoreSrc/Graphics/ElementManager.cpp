@@ -74,4 +74,11 @@ std::unique_ptr<IDrawableObject> ElementManager::getElement(const std::string& i
             return element;
         }
     }
+
+    return nullptr;
+}
+
+void ElementManager::onDestroy()
+{
+    Elements.clear();
 }

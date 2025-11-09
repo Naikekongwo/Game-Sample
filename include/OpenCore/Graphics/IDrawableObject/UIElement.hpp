@@ -10,6 +10,7 @@ class UIElement : public IDrawableObject
 {
 public:
     SDL_Rect getBounds() override;
+    SDL_Rect getBoundsOnScreen() override;
 
     virtual void onRender() override;
     virtual int setBakedTexture(bool isBaked) { return 0; }

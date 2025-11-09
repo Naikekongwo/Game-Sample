@@ -62,6 +62,11 @@ SDL_Rect UIElement::getBounds()
     return SDL_Rect{x, y, renderWidth, renderHeight};
 }
 
+SDL_Rect UIElement::getBoundsOnScreen()
+{
+    return OpenCoreManagers::GFXManager.getScale()->ToScreen(getBounds());
+}
+
 void UIElement::onRender()
 {
     auto& GFX = OpenCoreManagers::GFXManager.getInstance();
