@@ -2,7 +2,7 @@
 #include "Union.hpp"
 #include <algorithm>
 
-IDrawableObject* ElementManager::find(std::string id) const
+IDrawableObject* ElementManager::find(const std::string& id) const
 {
     for( auto &element : Elements)
     {
@@ -54,5 +54,24 @@ void ElementManager::onRender()
     for( auto &element : Elements)
     {
         element->onRender();
+    }
+}
+
+std::unique_ptr<IDrawableObject> ElementManager::getElement(const std::string& id)
+{
+    if(find(id) == nullptr)
+    {
+        SDL_Log("ElementManager::getElement() failed to get element : %s, because we cannot find it.", id.c_str());
+        return nullptr;
+    }
+    
+    for(auto it = Elements.begin(); it != Elements.end(); ++it)
+    {
+        if((*it)->getID() == id)
+        {
+            auto element = std::move(*it);
+            it = Elements.erase(it);
+            return element;
+        }
     }
 }

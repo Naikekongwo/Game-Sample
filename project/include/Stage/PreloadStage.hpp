@@ -11,7 +11,7 @@
 class StageController;
 class ElementManager;
 
-class PreloadStage : public Stage
+class PreloadStage : public BaseStage
 {
 public:
     PreloadStage(Timer* timer, StageController* sController);
@@ -30,7 +30,7 @@ private:
     int stageState = 0;
     // 0为未播放
     std::future<void> LoadingState;
-    std::unique_ptr<ElementManager> Elements;
+    
 };
 
 #endif //_PRELOADSTAGE_H_

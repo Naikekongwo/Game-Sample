@@ -7,6 +7,8 @@ GameplayStage::GameplayStage(Timer* timer, StageController* sController)
 
     Elements = std::make_unique<ElementManager>();
 
+    this->stageType = StageType::baseStage;
+
     Init();
 }
 

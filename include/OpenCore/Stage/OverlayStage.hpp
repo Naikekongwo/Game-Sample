@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _OVERLAY_STAGE_H_
+#define _OVERLAY_STAGE_H_
 
 // OverlayStage.hpp
 // 覆盖层场景的基类
@@ -14,3 +15,5 @@ public:
 private:
 
 };
+
+#endif //_OVERLAY_STAGE_H_

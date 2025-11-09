@@ -34,7 +34,9 @@ class ElementManager
 
     bool PushElement(std::unique_ptr<IDrawableObject> element);
 
-    IDrawableObject* find(std::string id) const; // 查找是否存在元素的函数，使用const表示不会修改类状态
+    IDrawableObject* find(const std::string& id) const; // 查找是否存在元素的函数，使用const表示不会修改类状态
+
+    std::unique_ptr<IDrawableObject> getElement(const std::string& id);
 
     private:
     // 储存子类的表

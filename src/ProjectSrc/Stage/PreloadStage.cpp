@@ -10,6 +10,8 @@ PreloadStage::PreloadStage(Timer *timer, StageController *sController)
     Elements = std::make_unique<ElementManager>();
 
     this->sController = sController;
+
+    this->stageType = StageType::baseStage;
     LoadResources();
 }
 

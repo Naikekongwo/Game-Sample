@@ -9,7 +9,7 @@ class StageController;
 
 class ElementManager;
 
-class MainStage : public Stage
+class MainStage : public BaseStage
 {
     public:
     // 构造函数
@@ -27,7 +27,7 @@ class MainStage : public Stage
 
     private:
 
-    std::unique_ptr<ElementManager> Elements;
+    
 };
 
 #endif //_MAINSTAGE_H_

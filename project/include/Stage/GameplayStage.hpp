@@ -9,7 +9,8 @@
 class StageController;
 class ElementManager;
 
-class GameplayStage : public Stage {
+class GameplayStage : public BaseStage 
+{
     public:
     // 构造函数
     GameplayStage(Timer* timer, StageController* sController);
@@ -26,6 +27,6 @@ class GameplayStage : public Stage {
 
     private:
 
-    std::unique_ptr<ElementManager> Elements;
+    
 };
 
