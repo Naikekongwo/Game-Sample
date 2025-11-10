@@ -17,7 +17,7 @@ class Button : public UIElement
 {
     public:
     // 构造函数
-    Button(const std::string& id, uint8_t, std::unique_ptr<Texture> texture);
+    Button(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture);
 
     // 实现父类
 

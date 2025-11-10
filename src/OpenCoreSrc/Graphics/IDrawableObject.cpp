@@ -26,10 +26,47 @@ void IDrawableObject::setAnchor(AnchorPoint anchor)
 }
 
 // 设置控件的位置
-void IDrawableObject::setPosition(int16_t x, int16_t y)
+void IDrawableObject::setPosition(float xPercent, float yPercent)
 {
-    AnimeState->PositionX = x;
-    AnimeState->PositionY = y;
+    uint16_t baseW;
+    uint16_t baseH;
+
+    if(parentContainer==nullptr)
+    {
+        // 相对于屏幕
+        OpenCoreManagers::GFXManager.getScale()->queryBaseScale(baseW, baseH);
+    }
+    else
+    {
+        SDL_Rect parent = parentContainer->getBounds();
+        baseW = parent.w;
+        baseH = parent.h;
+    }
+    
+    AnimeState->PositionX = baseW * xPercent;
+    AnimeState->PositionY = baseW * yPercent;
+}
+
+// 设置控件的大小
+void IDrawableObject::setScale(float w, float h)
+{
+    uint16_t baseW;
+    uint16_t baseH;
+
+    if(parentContainer==nullptr)
+    {
+        // 相对于屏幕
+        OpenCoreManagers::GFXManager.getScale()->queryBaseScale(baseW, baseH);
+    }
+    else
+    {
+        SDL_Rect parent = parentContainer->getBounds();
+        baseW = parent.w;
+        baseH = parent.h;
+    }
+
+    nativeWidth = baseW * w;
+    nativeHeight = baseW * h;
 }
 
 // 动画配置器方法

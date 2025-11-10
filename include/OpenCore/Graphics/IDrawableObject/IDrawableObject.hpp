@@ -62,13 +62,10 @@ public:
     bool isAnimeFinished() const;
 
     // 属性设置的方法
-    void setScale(uint16_t w, uint16_t h)
-    {
-        nativeWidth = w;
-        nativeHeight = h;
-    }
+    void setScale(float w, float h);
+    
     void setAnchor(AnchorPoint anchor);
-    void setPosition(int16_t x, int16_t y);
+    void setPosition(float xPercent, float yPercent);
 
     void setParentContainer(IDrawableObject* parentContainer);
 

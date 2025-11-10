@@ -2,12 +2,16 @@
 #include "Eclipsea/Eclipsea.hpp"
 
 
-FrameCounter::FrameCounter(const std::string& id, uint8_t, Texture *texture)
+FrameCounter::FrameCounter(const std::string& id, uint8_t layer, Texture *texture)
 {
     this->id = id;
     this->layer = layer;
 
     this->directRender = false;
+
+    this->AnimeState = std::make_unique<AnimationState>();
+
+    this->AnimeManager = std::make_unique<AnimationManager>();
 
 }
 
@@ -50,4 +54,6 @@ void FrameCounter::onUpdate(float totalTime)
         FPS = 1.0f / (totalTime - lastTime);
         lastTime = totalTime;   
     }
+    
+    AnimeManager->onUpdate(totalTime, *AnimeState.get());
 }

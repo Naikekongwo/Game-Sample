@@ -24,6 +24,8 @@ public:
     float GetScale() const { return scale; }
     SDL_Point GetOffset() const { return { static_cast<int>(offsetX), static_cast<int>(offsetY) }; }
 
+    void queryBaseScale(uint16_t& w, uint16_t &h) { w = baseWidth; h = baseHeight;}
+
 private:
     uint16_t baseWidth, baseHeight;
     uint16_t windowWidth, windowHeight;

@@ -11,81 +11,68 @@ SDL_Rect UIElement::getBounds()
 
     const auto &state = *AnimeState;
 
-    // 计算缩放后的实际宽高
-    uint16_t renderWidth = static_cast<uint16_t>(nativeWidth * state.scaleX);
-    uint16_t renderHeight = static_cast<uint16_t>(nativeHeight * state.scaleY);
+    // 计算基于1920x1080逻辑坐标系的宽高
+    uint16_t logicalWidth = static_cast<uint16_t>(nativeWidth * state.scaleX);
+    uint16_t logicalHeight = static_cast<uint16_t>(nativeHeight * state.scaleY);
 
-    int16_t x = state.PositionX;
-    int16_t y = state.PositionY;
+    int16_t logicalX = state.PositionX;
+    int16_t logicalY = state.PositionY;
 
-    // 按锚点偏移位置
+    // 按锚点偏移位置（在1920x1080逻辑坐标系中）
     switch (state.Anchor)
     {
     case AnchorPoint::TopLeft:
         break;
     case AnchorPoint::TopCenter:
-        x -= renderWidth / 2;
+        logicalX -= logicalWidth / 2;
         break;
     case AnchorPoint::TopRight:
-        x -= renderWidth;
+        logicalX -= logicalWidth;
         break;
-
     case AnchorPoint::MiddleLeft:
-        y -= renderHeight / 2;
+        logicalY -= logicalHeight / 2;
         break;
     case AnchorPoint::Center:
-        x -= renderWidth / 2;
-        y -= renderHeight / 2;
+        logicalX -= logicalWidth / 2;
+        logicalY -= logicalHeight / 2;
         break;
     case AnchorPoint::MiddleRight:
-        x -= renderWidth;
-        y -= renderHeight / 2;
+        logicalX -= logicalWidth;
+        logicalY -= logicalHeight / 2;
         break;
-
     case AnchorPoint::BottomLeft:
-        y -= renderHeight;
+        logicalY -= logicalHeight;
         break;
     case AnchorPoint::BottomCenter:
-        x -= renderWidth / 2;
-        y -= renderHeight;
+        logicalX -= logicalWidth / 2;
+        logicalY -= logicalHeight;
         break;
     case AnchorPoint::BottomRight:
-        x -= renderWidth;
-        y -= renderHeight;
-        break;
-
-    default:
-        SDL_Log("getBounds() invalid anchor: %d", static_cast<uint16_t>(state.Anchor));
+        logicalX -= logicalWidth;
+        logicalY -= logicalHeight;
         break;
     }
 
-    SDL_Rect logicalRect = {x, y, renderWidth, renderHeight};
+    // 如果是绝对定位，直接返回逻辑坐标
+    if (absolutePosite || !parentContainer) {
+        return SDL_Rect{logicalX, logicalY, logicalWidth, logicalHeight};
+    }
+
+    // 相对定位：基于父容器的实际边界进行转换
+    SDL_Rect parentBounds = parentContainer->getBounds();
     
-    // 根据 absolutePosite 属性决定坐标系转换
-    if (absolutePosite) {
-        // 绝对定位：直接返回在1920x1080逻辑坐标系中的Rect
-        return logicalRect;
-    } else {
-        // 相对定位：将父容器的Bounds视作1920x1080进行坐标转换
-        if (parentContainer) {
-            SDL_Rect parentBounds = parentContainer->getBounds();
-            
-            // 将逻辑坐标转换为父容器实际坐标系
-            float scaleX = parentBounds.w / 1920.0f;
-            float scaleY = parentBounds.h / 1080.0f;
-            
-            return SDL_Rect{
-                parentBounds.x + static_cast<int16_t>(x * scaleX),
-                parentBounds.y + static_cast<int16_t>(y * scaleY),
-                static_cast<uint16_t>(renderWidth * scaleX),
-                static_cast<uint16_t>(renderHeight * scaleY)
-            };
-        } else {
-            // 没有父容器，相对定位等同于绝对定位
-            return logicalRect;
-        }
-    }
+    
+    // 将本元素的逻辑坐标转换到父容器的实际坐标系中
+    // Position 是基于父容器1920x1080逻辑空间的
+    // Scale 也是基于父容器1920x1080逻辑空间的
+    return SDL_Rect{
+        parentBounds.x + static_cast<int16_t>(logicalX),
+        parentBounds.y + static_cast<int16_t>(logicalY),
+        static_cast<uint16_t>(logicalWidth),  // 宽度也会根据父容器缩放
+        static_cast<uint16_t>(logicalHeight)  // 高度也会根据父容器缩放
+    };
 }
+
 
 SDL_Rect UIElement::getRenderedBounds()
 {

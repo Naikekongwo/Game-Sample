@@ -30,7 +30,7 @@ private:
     int stageState = 0;
     // 0为未播放
     std::future<void> LoadingState;
-    
+
 };
 
 #endif //_PRELOADSTAGE_H_

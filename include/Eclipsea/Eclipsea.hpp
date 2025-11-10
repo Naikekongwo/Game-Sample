@@ -9,7 +9,7 @@
 #include "Gameplay/ItemContainer/Backpack.hpp"
 
 
-#include "UI/MultiImageBoad.hpp"
+#include "UI/MultiImageBoard.hpp"
 
 #include "Stage/PreloadStage.hpp"
 #include "Stage/MainStage.hpp"
@@ -17,7 +17,7 @@
 
 // 模板
 template <typename T>
-std::unique_ptr<T> UI(const std::string& id, uint8_t, short texID, short frameX, short frameY);
+std::unique_ptr<T> UI(const std::string& id, uint8_t layer, short texID, short frameX, short frameY);
 
 #include "template/UIFactory.inl"
 

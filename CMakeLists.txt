@@ -54,7 +54,7 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
         COMMAND ${CMAKE_COMMAND} -E copy_directory 
                 "${CMAKE_SOURCE_DIR}/assets" 
-                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/"
         COMMENT "Copying game assets to build directory"
     )
 

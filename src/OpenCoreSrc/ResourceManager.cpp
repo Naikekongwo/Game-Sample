@@ -25,6 +25,7 @@ bool ResourceManager::Init() {
     }
 
     SDL_Log("ResourceManager::ResourceManager() SDL_Mixer initialized successfully.");
+
     return true;
 }
 
@@ -283,7 +284,7 @@ SDL_Surface* ResourceManager::LoadSurface(const std::string& path) {
         return nullptr;
     }
 
-    SDL_Log("ResourceManager::LoadSurface() surface loaded successfully.");
+    SDL_Log("ResourceManager::LoadSurface() %s surface loaded successfully.", path.c_str());
     return convertedSurface;
 }
 
@@ -423,6 +424,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id) {
         for (auto& future : futures) {
             future.wait();
         }
+        
         SDL_Log("ResourceManager: Resources loaded from JSON file %s was finished", filename.c_str());
     });
 }

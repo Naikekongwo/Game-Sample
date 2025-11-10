@@ -1,0 +1,15 @@
+{
+    "2013" : {
+        "path" : "assets/ui/animation_waterdrops.png",
+        "category" : "texture"
+    },
+    "2014" : {
+        "path" : "assets/ui/animation_waterwaves.png",
+        "category" : "texture"
+    },
+    "9001" : {
+        "path" : "assets/ui/font/OpenCoreFont.ttf",
+        "category" : "font",
+        "size" : 24
+    }
+}

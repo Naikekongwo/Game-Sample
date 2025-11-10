@@ -16,10 +16,10 @@ class DrawableConfigurator
     // 构造函数
     DrawableConfigurator(IDrawableObject* obj) : obj_p(obj) {}
 
-    DrawableConfigurator& Scale(uint16_t w, uint16_t h);
+    DrawableConfigurator& Scale(float w, float h);
 
     DrawableConfigurator& Anchor(AnchorPoint anchor);
-    DrawableConfigurator& Posite(int16_t x, int16_t y );
+    DrawableConfigurator& Posite(float xPercent, float yPercent);
 
     DrawableConfigurator& Sequence(bool sequential);
 

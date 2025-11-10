@@ -15,37 +15,41 @@ MainStage::MainStage(Timer* timer, StageController* sController)
 void MainStage::Init()
 {
     auto background = UI<ImageBoard>("background", 0, 2006, 1, 1);
-    auto button1    = UI<Button>("StartButton", 1, 2008, 1, 3);
     auto connector  = UI<ImageBoard>("connector", 99, 2005, 1, 1);
-    auto stageBg    = UI<BaseBackground>("BaseBackground", 0, 2009, 3, 3);
 
-    auto itemBox = UI<ImageBoard>("item", 1, 2013, 1, 2);
 
-    stageBg->setBakedTexture(true);
-    // 创建了遮罩和背景的资源
-
-    background->Configure().Anchor(AnchorPoint::Center).Posite(960, 540).Scale(1920,1080);
-    button1->Configure().Anchor(AnchorPoint::Center).Posite(960,540).Scale(512,256).Parent(stageBg.get());
-    itemBox->Configure().Anchor(AnchorPoint::Center).Posite(960,800).Scale(128,128);
-
-    connector->Configure().Scale(1920,1080).Anchor(AnchorPoint::TopLeft).Posite(0,0);
+    background->Configure().Anchor(AnchorPoint::Center).Posite(0.5f, 0.28f).Scale(1.0f,0.56f);
+    connector->Configure().Scale(1.0f,0.56f).Anchor(AnchorPoint::TopLeft).Posite(0,0);
     connector->Animate().Move(0,0,1920,0,5.0f, false).Commit();
 
-    stageBg->Configure().Anchor(AnchorPoint::Center).Posite(960,540).Scale(1600,960);
+    auto title = UI<ImageBoard>("mainTitle", 1, 2012, 1, 1);
 
-    stageBg->setNativeScale(60);
+    title->Configure().Anchor(AnchorPoint::TopLeft).Parent(nullptr).Posite(0.08333f, 0.0677f).Scale(0.365f, 0.13f).Sequence(true);
+
+    Elements->PushElement(std::move(title));
+
+    auto startButton = UI<Button>("startButton", 1, 2008, 1, 3);
+    auto continueButton = UI<Button>("continueButton", 1, 2010, 1,3);
+    auto settingButton = UI<Button>("settingButton", 1, 2011, 1, 3);
+
+    startButton->Configure().Anchor(AnchorPoint::TopLeft).Parent(nullptr).Posite(0.755f,0.383f).Scale(0.156f,0.0416f).Sequence(true);
+    continueButton->Configure().Anchor(AnchorPoint::TopLeft).Parent(nullptr).Posite(0.79f,0.4375f).Scale(0.156f,0.0416f).Sequence(true);
+    settingButton->Configure().Anchor(AnchorPoint::TopLeft).Parent(nullptr).Posite(0.825f,0.492f).Scale(0.156f,0.0416f).Sequence(true);
+
+    Elements->PushElement(std::move(startButton));
+    Elements->PushElement(std::move(continueButton));
+    Elements->PushElement(std::move(settingButton));
+
+
 
     // 获取原始指针用于回调
-    ImageBoard* itemBoxRaw = itemBox.get();
+    // ImageBoard* itemBoxRaw = itemBox.get();
 
-    button1->setOnClick([itemBoxRaw]() { itemBoxRaw->Animate().Frame(2,2,false).Commit();});
+    // button1->setOnClick([itemBoxRaw]() { itemBoxRaw->Animate().Frame(2,2,false).Commit();});
 
 
     Elements->PushElement(std::move(background));
-    Elements->PushElement(std::move(stageBg));
-    Elements->PushElement(std::move(button1));
     Elements->PushElement(std::move(connector));
-    Elements->PushElement(std::move(itemBox));
 
     // auto bottle_full = std::make_shared<Item>(1, "水壶_满", std::move(std::make_unique<Texture>(1,1, OpenCoreManagers::ResManager.GetTexture(2011))));
     // auto bottle_empty = std::make_shared<Item>(2, "水壶_空", std::move(std::make_unique<Texture>(1,1, OpenCoreManagers::ResManager.GetTexture(2012))));

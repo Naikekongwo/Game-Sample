@@ -22,16 +22,14 @@ void MultiImageBoard::onUpdate(float totalTime)
     }
 }
 
-bool MultiImageBoard::preRenderTexture(SDL_Texture* texture)
+void MultiImageBoard::onRender()
 {
-    // 多重图片框并不支持离屏渲染
     for(int i = 0; i < Layers.size() ; i++)
     {
         Layers[i].get()->onRender();
     }
-    
-    return true;
 }
+
 
 MultiImageBoard::MultiImageBoard(const std::string& id, uint8_t layer, uint8_t size)
 {
@@ -41,5 +39,59 @@ MultiImageBoard::MultiImageBoard(const std::string& id, uint8_t layer, uint8_t s
     this->directRender = false;
 
     this->size = static_cast<size_t>(size);
+
+    SDL_Log("MImageBoard::~() created with size: %d", size);
 }
 
+
+bool MultiImageBoard::pushImageBoard(std::vector<std::unique_ptr<Texture>> &list)
+{
+    if(list.size() != size)
+    {
+        SDL_Log("MImageBoard::Push... Failed to push texture, it should be %d, but it is a %d", size, list.size());
+        return false;
+    }
+
+    uint8_t iter = 0;
+
+    for( auto it = list.begin(); it != list.end(); )
+    {
+        auto ImgBoard = std::make_unique<ImageBoard>(std::to_string(iter), layer+iter, std::move(*it));
+
+        ImgBoard->Configure().Parent(this);
+
+        Layers.push_back(std::move(ImgBoard));
+
+        SDL_Log("MImageBoard::Push... successfully pushed a element id %d", iter);
+        it = list.erase(it);
+
+        iter++;
+    }
+
+    return true;
+}
+
+MyAnimationPipeline MultiImageBoard::AnimateAt(uint8_t index)
+{
+    if(Layers.size() <= index)
+    {
+        throw std::out_of_range("Index out of range");
+    }
+    else
+    {
+        return Layers[index]->Animate();
+    }
+}
+
+DrawableConfigurator MultiImageBoard::ConfigureAt(uint8_t index)
+{
+    SDL_Log("CONFIGURE:: Now the size is %d, layers size is %d", size, Layers.size());
+    if(Layers.size() <= index)
+    {
+        throw std::out_of_range("Index out of range");
+    }
+    else
+    {
+        return Layers[index]->Configure();
+    }
+}

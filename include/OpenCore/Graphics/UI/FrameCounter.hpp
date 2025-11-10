@@ -8,7 +8,7 @@
 class FrameCounter : public UIElement
 {
     public:
-    FrameCounter(const std::string& id, uint8_t, Texture *texture);
+    FrameCounter(const std::string& id, uint8_t layer, Texture *texture);
 
     // 继承
 

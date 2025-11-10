@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 
-DrawableConfigurator& DrawableConfigurator::Scale(uint16_t w, uint16_t h)
+DrawableConfigurator& DrawableConfigurator::Scale(float w, float h)
 {
     obj_p->setScale(w,h);
     return *this;
@@ -13,9 +13,9 @@ DrawableConfigurator& DrawableConfigurator::Anchor(AnchorPoint anchor)
     return *this;
 }
 
-DrawableConfigurator& DrawableConfigurator::Posite(int16_t x, int16_t y )
+DrawableConfigurator& DrawableConfigurator::Posite(float xPercent, float yPercent)
 {
-    obj_p->setPosition(x,y);
+    obj_p->setPosition(xPercent, yPercent);
     return *this;
 }
 

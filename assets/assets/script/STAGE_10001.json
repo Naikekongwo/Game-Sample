@@ -32,7 +32,7 @@
         "category" : "texture"
     },
     "2008" : {
-        "path" : "assets/ui/gameStartButton.png",
+        "path" : "assets/ui/Button_Start.png",
         "category" : "texture"
     },
     "2009" : {
@@ -40,19 +40,23 @@
         "category" : "texture"
     },
     "2010" : {
-        "path" : "assets/ui/item_container.png",
+        "path" : "assets/ui/Button_Continue.png",
         "category" : "texture"
     },
     "2011" : {
-        "path" : "assets/items/bottle_empty.png",
+        "path" : "assets/ui/Button_Settings.png",
         "category" : "texture"
     },
     "2012" : {
-        "path" : "assets/items/bottle_full.png",
+        "path" : "assets/ui/Title_Main.png",
         "category" : "texture"
     },
     "2013" : {
-        "path" : "assets/items/bottle.png",
+        "path" : "assets/ui/animation_waterdrops.png",
+        "category" : "texture"
+    },
+    "2014" : {
+        "path" : "assets/ui/animation_waterwaves.png",
         "category" : "texture"
     },
     "9001" : {

@@ -2,7 +2,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/Animation/AnimationPipeline.hpp"
 
-Button::Button(const std::string& id, uint8_t, std::unique_ptr<Texture> texture)
+Button::Button(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture)
 {
 
     // 设置ID 层级属性

@@ -82,3 +82,20 @@ void ElementManager::onDestroy()
 {
     Elements.clear();
 }
+
+bool ElementManager::removeElement(const std::string &id)
+{
+    if(!find(id))
+    {
+        return false;
+    }
+    for(auto it = Elements.begin(); it != Elements.end(); ++it)
+    {
+        if(it->get()->getID() == id)
+        {
+            Elements.erase(it);
+            break;
+        }
+    }
+    return true;
+}

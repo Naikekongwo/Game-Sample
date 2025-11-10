@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 
-BaseBackground::BaseBackground(const std::string& id, uint8_t, std::unique_ptr<Texture> texture)
+BaseBackground::BaseBackground(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture)
 {
 
     this->id = id;

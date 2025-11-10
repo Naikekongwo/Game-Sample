@@ -39,17 +39,60 @@ void PreloadStage::onUpdate()
     if (LoadingState.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
     {
         preload = true;
+        // 预加载已经完毕
+        // 第二段加载开始的位置
     }
 
     if (preload && stageState == 0)
     {
+        auto frameCounter = UI<FrameCounter>("frameCounter", 100, NULL, NULL, NULL);
+
+        frameCounter->Configure().Sequence(true);
+        frameCounter->Animate().Timer(6.0f).Commit();
+
+        Elements->PushElement(std::move(frameCounter));
+        
         stageState = 1;
 
+        std::vector<std::unique_ptr<Texture>> animeList;
+
+
+        animeList.push_back(std::move(MakeTexture(1,5,2013)));
+        animeList.push_back(std::move(MakeTexture(1,5,2014)));
+        auto animation = UI<MultiImageBoard>("animation", 10, 2, 0, 0);
+
+        animation->pushImageBoard(animeList);
+        animation->Configure().Anchor(AnchorPoint::Center).Scale(0.208f, 0.117f).Posite(0.5f, 0.28f).Sequence(true);
+        animation->ConfigureAt(0).Anchor(AnchorPoint::Center).Scale(1.0f, 0.56f).Posite(0.5f, 0.28f).Sequence(true);
+        animation->AnimateAt(0).Frame(5,5,true).Commit();
+
+        animation->ConfigureAt(1).Anchor(AnchorPoint::Center).Scale(1.0f, 0.56f).Posite(0.5f, 0.4f).Sequence(true);
+        animation->AnimateAt(1).Frame(5,5,true).Commit();
+
+        Elements->PushElement(std::move(animation));
+
+        return;
+    }
+
+    if(preload && stageState == 1)
+    {
+        Elements->onUpdate(timer->getTotalTime());
+        auto entry = Elements->find("frameCounter");
+        if(entry && entry->isAnimeFinished())
+        {
+            Elements->removeElement("animation");
+            stageState = 2;
+            return;
+        }
+    }
+
+    if (preload && stageState == 2)
+    {
         SFX.loadBGM(1001); // BGM
         SFX.playBGM();
         SFX.setVolume(30); // 加载背景音乐
 
-        stageState = 2;
+        stageState = 3;
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
 
@@ -59,22 +102,20 @@ void PreloadStage::onUpdate()
         // 创建了背景控件
 
         // 部署各项属性
-        startTitle->Configure().Scale(1000, 500).Anchor(AnchorPoint::Center).Posite(960, 540).Sequence(false);
-        oceanBackground->Configure().Scale(1920, 1080).Anchor(AnchorPoint::Center).Posite(960, 540);
+        startTitle->Configure().Scale(0.52f, 0.26f).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f).Sequence(false);
+        oceanBackground->Configure().Scale(1.0f, 0.56f).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f);
         startTitle->Animate().Fade(0.4f, 1.0f, 5.0f, false).Commit();
         oceanBackground->Animate().Fade(0.0f, 1.0f, 10.0f, false).Timer(5.0f).Fade(1.0f, 0.0f, 5.0f, false).Commit();
 
-        auto frameCounter = UI<FrameCounter>("frameCounter", 100, 0, 0, 0);
 
         // 使得背景的动画执行顺序变为顺序执行
         oceanBackground->setSequential(true);
 
         Elements->PushElement(std::move(startTitle));
-        Elements->PushElement(std::move(oceanBackground));
-        Elements->PushElement(std::move(frameCounter));
+        Elements->PushElement(std::move(oceanBackground)); 
     }
 
-    if (stageState >= 2 && stageState <= 4)
+    if (stageState >= 3 && stageState <= 5)
     {
         // 更新状态
         Elements->onUpdate(timer->getTotalTime());
@@ -85,43 +126,43 @@ void PreloadStage::onUpdate()
             if (Title->isAnimeFinished())
             {
 
-                if (stageState == 2)
-                {
-                    Title->changeTexture(MakeTexture(1,1,2004));
-                    Title->Configure().Scale(600, 600);
-                    Title->setSequential(true);
-                    Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(3.0f).Commit();
-                    stageState = 3;
-                    return;
-                }
-
                 if (stageState == 3)
                 {
-                    Title->changeTexture(MakeTexture(1,1,2002));
-                    Title->Configure().Scale(1024, 256);
+                    Title->changeTexture(MakeTexture(1,1,2004));
+                    Title->Configure().Scale(0.3125f, 0.3125f);
                     Title->setSequential(true);
-                    Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(10.0f).Commit();
+                    Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(3.0f).Commit();
                     stageState = 4;
                     return;
                 }
 
                 if (stageState == 4)
                 {
+                    Title->changeTexture(MakeTexture(1,1,2002));
+                    Title->Configure().Scale(0.53f, 0.13f);
+                    Title->setSequential(true);
+                    Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(10.0f).Commit();
+                    stageState = 5;
+                    return;
+                }
+
+                if (stageState == 5)
+                {
                     auto connector = UI<ImageBoard>("connector", 99, 2005, 1, 1);
                     // 创建了遮罩和背景的资源
 
-                    connector->Configure().Scale(1920, 1080).Anchor(AnchorPoint::TopRight).Posite(0, 0);
+                    connector->Configure().Scale(1.0f, 0.56f).Anchor(AnchorPoint::TopRight).Posite(0.0f, 0.0f);
                     connector->Animate().Move(0, 0, 1920, 0, 5.0f, false).Commit();
 
                     Elements->PushElement(std::move(connector));
-                    stageState = 5;
+                    stageState = 6;
                     return;
                 }
             }
         }
     }
 
-    if (stageState == 5)
+    if (stageState == 6)
     {
         // 更新状态
         Elements->onUpdate(timer->getTotalTime());
@@ -148,7 +189,7 @@ void PreloadStage::onUpdate()
 
 void PreloadStage::onRender()
 {
-    if (stageState >= 2)
+    if (stageState >= 1)
     {
         Elements->onRender();
     }
