@@ -7,7 +7,7 @@ MainStage::MainStage(Timer* timer, StageController* sController)
 
     Elements = std::make_unique<ElementManager>();
 
-    this->stageType = StageType::baseStage;
+    this->stageType = StageType::overlayStage;
 
     Init();
 }

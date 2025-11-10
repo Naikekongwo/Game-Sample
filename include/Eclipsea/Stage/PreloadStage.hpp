@@ -11,7 +11,7 @@
 class StageController;
 class ElementManager;
 
-class PreloadStage : public BaseStage
+class PreloadStage : public OverlayStage
 {
 public:
     PreloadStage(Timer* timer, StageController* sController);

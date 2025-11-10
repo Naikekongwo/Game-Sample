@@ -11,7 +11,7 @@ PreloadStage::PreloadStage(Timer *timer, StageController *sController)
 
     this->sController = sController;
 
-    this->stageType = StageType::baseStage;
+    this->stageType = StageType::overlayStage;
     LoadResources();
 }
 
@@ -45,7 +45,7 @@ void PreloadStage::onUpdate()
 
     if (preload && stageState == 0)
     {
-        auto frameCounter = UI<FrameCounter>("frameCounter", 100, NULL, NULL, NULL);
+        auto frameCounter = UI<FrameCounter>("frameCounter", 100, 0, 0, 0);
 
         frameCounter->Configure().Sequence(true);
         frameCounter->Animate().Timer(6.0f).Commit();

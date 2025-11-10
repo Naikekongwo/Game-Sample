@@ -9,7 +9,7 @@ class StageController;
 
 class ElementManager;
 
-class MainStage : public BaseStage
+class MainStage : public OverlayStage
 {
     public:
     // 构造函数
