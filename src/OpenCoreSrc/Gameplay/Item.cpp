@@ -13,5 +13,8 @@ Item::Item(uint16_t id, const std::string& name, std::unique_ptr<Texture> textur
         SDL_Log("Item::Item() encountered a empty name when initialize item.");
     }
 
-    this->texture_ = std::move(texture);
+    if(texture)
+    {
+        this->texture_ = std::move(texture);
+    }
 }

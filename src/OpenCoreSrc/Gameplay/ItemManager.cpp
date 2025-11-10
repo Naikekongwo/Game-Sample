@@ -34,3 +34,27 @@ std::shared_ptr<Item> ItemManager::modifyItem(uint16_t itemId)
     }
     return items_[itemId];
 }
+
+std::shared_ptr<Item> ItemManager::getItem(uint16_t itemId)
+{
+    return items_[itemId];
+}
+
+std::shared_ptr<Item> ItemManager::getItem(const std::string& name)
+{
+    for( auto it = items_.begin(); it != items_.end(); ++it)
+    {
+        if( it->second->getName() == name)
+        {
+            return items_[it->first];
+        }
+    }
+    return nullptr;
+}
+
+ItemManager::ItemManager()
+{
+    auto emptyItem = std::make_shared<Item>(0, "emptyItem", nullptr);
+
+    items_[0] = emptyItem;
+}

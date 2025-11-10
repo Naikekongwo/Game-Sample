@@ -35,3 +35,5 @@ private:
 
     std::unique_ptr<Texture> texture_; 
 };
+
+using Items = std::pair<std::shared_ptr<Item>, uint8_t>;

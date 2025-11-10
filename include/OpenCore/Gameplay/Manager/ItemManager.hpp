@@ -9,8 +9,7 @@
 #include <unordered_map>
 
 #include "OpenCore/Gameplay/Items/Item.hpp"
-
-using Items = std::pair<std::shared_ptr<Item>, uint8_t>;
+#include "OpenCore/Gameplay/Items/ItemContainer.hpp"
 
 // 类之定义
 class ItemManager
@@ -33,8 +32,16 @@ class ItemManager
     // 查找物品是否存在
     bool countItemById(uint16_t id);
 
+    // 使用id取得对应的物品
+    std::shared_ptr<Item> getItem(uint16_t itemId);
+
+    // 使用name取得对应的物品
+    std::shared_ptr<Item> getItem(const std::string& name);
+
 
     private:
+
+    ItemManager();
     
     std::unordered_map<uint16_t, std::shared_ptr<Item>> items_;
 

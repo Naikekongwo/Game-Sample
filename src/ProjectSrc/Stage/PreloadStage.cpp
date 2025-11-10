@@ -57,8 +57,8 @@ void PreloadStage::onUpdate()
         std::vector<std::unique_ptr<Texture>> animeList;
 
 
-        animeList.push_back(std::move(MakeTexture(1,5,2013)));
-        animeList.push_back(std::move(MakeTexture(1,5,2014)));
+        animeList.push_back(std::move(MakeTexture(1,5,water_drops)));
+        animeList.push_back(std::move(MakeTexture(1,5,water_waves)));
         auto animation = UI<MultiImageBoard>("animation", 10, 2, 0, 0);
 
         animation->pushImageBoard(animeList);
@@ -96,8 +96,8 @@ void PreloadStage::onUpdate()
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
 
-        auto startTitle = UI<ImageBoard>("startTitle", 1, 2003, 1, 1);
-        auto oceanBackground = UI<ImageBoard>("background", 0, 2001, 2, 1);
+        auto startTitle = UI<ImageBoard>("startTitle", 1, icon_opencore, 1, 1);
+        auto oceanBackground = UI<ImageBoard>("background", 0, background_ocean, 2, 1);
         // 创建了加载界面的标题控件
         // 创建了背景控件
 
@@ -128,7 +128,7 @@ void PreloadStage::onUpdate()
 
                 if (stageState == 3)
                 {
-                    Title->changeTexture(MakeTexture(1,1,2004));
+                    Title->changeTexture(MakeTexture(1,1,icon_studio));
                     Title->Configure().Scale(0.3125f, 0.3125f);
                     Title->setSequential(true);
                     Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(3.0f).Commit();
@@ -138,7 +138,7 @@ void PreloadStage::onUpdate()
 
                 if (stageState == 4)
                 {
-                    Title->changeTexture(MakeTexture(1,1,2002));
+                    Title->changeTexture(MakeTexture(1,1,preload_title));
                     Title->Configure().Scale(0.53f, 0.13f);
                     Title->setSequential(true);
                     Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(10.0f).Commit();
@@ -148,7 +148,7 @@ void PreloadStage::onUpdate()
 
                 if (stageState == 5)
                 {
-                    auto connector = UI<ImageBoard>("connector", 99, 2005, 1, 1);
+                    auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
                     // 创建了遮罩和背景的资源
 
                     connector->Configure().Scale(1.0f, 0.56f).Anchor(AnchorPoint::TopRight).Posite(0.0f, 0.0f);
