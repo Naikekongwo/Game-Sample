@@ -43,3 +43,13 @@ bool ItemContainer::resetItem()
 
    return true;
 }
+
+bool ItemContainer::changeElement(Items item)
+{
+    if(item.first->getID() != 0 && item.second > 0)
+    {
+        item_ = item.first;
+        amount_ = item.second;
+    }
+    return false;
+}
