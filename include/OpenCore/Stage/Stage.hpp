@@ -6,10 +6,13 @@
 
 #include <SDL2/SDL.h>
 
+#include <memory>
+
 class ResourceManager;
 class SoundEffectManager;
 class Timer; 
 class StageController;
+class ElementManager;
 // 前向定义
 
 enum StageType { baseStage, overlayStage, topStage, unregistered};

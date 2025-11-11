@@ -5,6 +5,9 @@ include/STB-IMAGE/
 # 屏蔽 .vscode/目录
 .vscode/
 
+# 屏蔽 clangd 生成的cache目录
+.cache/
+
 # 屏蔽 CMAKE 的生成目录
 build/
 

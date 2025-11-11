@@ -5,7 +5,7 @@
 // Purifier Stage
 // 净水器的UI界面
 
-#include "OpenCore/Stage/StageController.hpp"
+#include "OpenCore/Stage/OverlayStage.hpp"
 
 class PurifierStage : public OverlayStage
 {
