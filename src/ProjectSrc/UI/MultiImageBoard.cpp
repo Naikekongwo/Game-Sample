@@ -48,7 +48,7 @@ bool MultiImageBoard::pushImageBoard(std::vector<std::unique_ptr<Texture>> &list
 {
     if(list.size() != size)
     {
-        SDL_Log("MImageBoard::Push... Failed to push texture, it should be %d, but it is a %d", size, list.size());
+        SDL_Log("MImageBoard::Push... Failed to push texture, it should be %d, but it is a %d", static_cast<int>(size), static_cast<int>(list.size()));
         return false;
     }
 

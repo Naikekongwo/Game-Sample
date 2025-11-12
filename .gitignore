@@ -13,3 +13,5 @@ build/
 
 # 屏蔽所有RAW文件
 assets/assets/raw/
+
+# 屏蔽clang-format

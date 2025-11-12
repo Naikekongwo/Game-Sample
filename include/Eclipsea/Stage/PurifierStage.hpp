@@ -19,6 +19,10 @@ class PurifierStage : public OverlayStage
 
     void onRender() override;
 
+    protected:
+
+    bool constructStage();
+
     private:
 };
 

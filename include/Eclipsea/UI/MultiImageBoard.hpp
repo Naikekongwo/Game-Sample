@@ -14,6 +14,9 @@
 using std::vector;
 using std::unique_ptr;
 
+class ImageBoard;
+// 前向声明
+
 
 class MultiImageBoard : public UIElement
 {

@@ -1,0 +1,5 @@
+# 大括号必须换行
+
+BreakBeforeBraces: Allman
+IndentWidth: 4
+UseTab: Never

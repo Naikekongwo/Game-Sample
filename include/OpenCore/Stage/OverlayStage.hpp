@@ -6,14 +6,12 @@
 
 #include "Stage.hpp"
 
-class OverlayStage : public Stage
-{
+class OverlayStage : public Stage {
 public:
 
-    // 继承！
+  // 继承！
 
 private:
-
 };
 
 #endif //_OVERLAY_STAGE_H_
