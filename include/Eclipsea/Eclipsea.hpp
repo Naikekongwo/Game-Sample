@@ -19,6 +19,7 @@
 #define main_title 2012
 #define water_drops 2013
 #define water_waves 2014
+#define img_BackButton 2015
 
 #define font_normal 9001
 

@@ -32,6 +32,8 @@ void GameplayStage::Init()
     Elements->PushElement(std::move(background));
     // Elements->PushElement(std::move(connector));
 
+    SDL_Log("尝试添加！");
+
     // 临时加入
     auto purifier = std::make_unique<PurifierStage>(timer, sController);
 

@@ -10,9 +10,26 @@
 #include <memory>
 #include <queue>
 
-enum Operation { Add, Remove};
+using std::unique_ptr;
 
-using OperateRecord = std::pair<Operation, std::unique_ptr<Stage>>;
+enum Operation : uint8_t
+{
+    Add,
+    Remove
+};
+
+struct OperateRecord
+{
+    Operation opt;
+    StageType sType;
+    unique_ptr<Stage> stage_;
+
+    OperateRecord(Operation opt, StageType sType, unique_ptr<Stage> stage_)
+        : opt(opt), sType(sType), stage_(std::move(stage_))
+    {
+    }
+    // 初始化函数
+};
 
 class StageController
 {
@@ -20,10 +37,10 @@ class StageController
     ~StageController() = default;
 
     // 通用场景切换（按类型自动分配，延迟执行）
-    void changeStage(std::unique_ptr<Stage> newStage);
+    void changeStage(unique_ptr<Stage> newStage);
 
     // 销毁某场景
-    void removeStage(std::unique_ptr<Stage> newStage);
+    void removeStage(StageType sType);
 
     // 处理事件的公共接口
     bool handlEvents(SDL_Event *event);
@@ -55,14 +72,12 @@ class StageController
 
   protected:
 
-    void addStage(std::unique_ptr<Stage> newStage);
-    void deleteStage(std::unique_ptr<Stage> newStage);
+    void ParsingStreamLine();
 
   private:
-    std::array<std::unique_ptr<Stage>, 3>
+    std::array<unique_ptr<Stage>, 3>
         stageContainer; // [0]:base, [1]:overlay, [2]:top
-
-    std::queue<OperateRecord> StreamLine;
+    std::queue<unique_ptr<OperateRecord>> StreamLine;
 };
 
 #endif //_STAGECONTROLLER_H_

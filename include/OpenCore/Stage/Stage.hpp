@@ -15,7 +15,7 @@ class StageController;
 class ElementManager;
 // 前向定义
 
-enum StageType
+enum StageType : uint8_t
 {
     baseStage,
     overlayStage,

@@ -48,8 +48,8 @@ void MainStage::Init()
     std::function<void()> startAction = [this]()
     {
         auto gameplay = std::make_unique<GameplayStage>(timer, sController);
+        sController->removeStage(this->stageType);
         sController->changeStage(std::move(gameplay));
-        sController->deleteOverlayStage();
     };
 
     startButton->Configure()

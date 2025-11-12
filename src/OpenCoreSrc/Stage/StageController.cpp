@@ -1,81 +1,128 @@
 #include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 
-
-
-bool StageController::handlEvents(SDL_Event* event)
+void StageController::changeStage(unique_ptr<Stage> newStage)
 {
-    // 从后往前处理：top -> overlay -> base
-    for (int i = 2; i >= 0; --i) {
-        if (stageContainer[i] && stageContainer[i]->handlEvents(event)) {
-            return true;
-        }
+    if(!newStage)
+    {
+        SDL_Log("StageController::changeStage encountered a nulllptr in pushing stage.");
+        return;
     }
-    return false;
+    StreamLine.push(std::make_unique<OperateRecord>(Operation::Add, newStage->getStageType(), std::move(newStage)));
+}
+
+void StageController::removeStage(StageType sType)
+{
+    int index = 0;
+    switch(sType)
+    {
+        case baseStage:
+        {
+            index = 0;
+            break;
+        }
+        case overlayStage:
+        {
+            index = 1;
+            break;
+        }
+        case topStage:
+        {
+            index = 2;
+            break;
+        }
+        case unregistered:
+        {
+            return;
+        }
+        default: return;
+    }
+    
+    if(!stageContainer[index])
+    {
+        StreamLine.push(std::make_unique<OperateRecord>(Operation::Remove, sType, nullptr));
+    }
 }
 
 void StageController::onUpdate()
 {
-    
-    // 更新所有 Stage
-    for (auto& stage : stageContainer) {
-        if (stage) {
-            stage->onUpdate();
+    // 更新函数
+    for(auto &entry : stageContainer)
+    {
+        if(entry)
+        {
+            entry->onUpdate();
         }
     }
 
-    // 执行延迟操作
+    ParsingStreamLine();
+}
+
+void StageController::ParsingStreamLine()
+{
+    bool output = ((int)StreamLine.size()==0)?false:true;
+    // 处理流水线操作的
+    if(output) SDL_Log("ParsingStreamLine start, queue size = %d", (int)StreamLine.size());
+
     while(!StreamLine.empty())
     {
-        OperateRecord op = std::move(StreamLine.front());
-        StageType stageType = op.second->getStageType();
-        if(op.first==Add)
+        // 当这个序列不为空
+        auto task = std::move(StreamLine.front());
+        switch(task->opt)
         {
-            // 添加场景
-            addStage(std::move(op.second));
+            case Operation::Add:
+            {
+                SDL_Log("sController::StreamLine Now we are adding one stage to %d", (int)task->sType);
+                // 进行新增的操作
+                switch(task->sType)
+                {
+                    case baseStage: stageContainer[0] = std::move(task->stage_);break;
+                    case overlayStage: stageContainer[1] = std::move(task->stage_);break;
+                    case topStage: stageContainer[2] = std::move(task->stage_);break;
+                    default: continue;
+                }
+                break;
+            }
+            case Operation::Remove:
+            {
+                SDL_Log("sController::StreamLine Now we are removing one stage to %d", (int)task->sType);
+                switch(task->sType)
+                {
+                    case baseStage: stageContainer[0].reset();break;
+                    case overlayStage: stageContainer[1].reset();break;
+                    case topStage: stageContainer[2].reset();break;
+                    default: continue;
+                }
+                break;
+            }
+            default: break;
         }
-        else if(op.first==Remove)
-        {
-            deleteStage(std::move(op.second));
-        }
-        StreamLine.pop();        
+        StreamLine.pop();
     }
+    if(output) SDL_Log("ParsingStreamLine end, queue size = %d", (int)StreamLine.size());
 }
 
 
 void StageController::onRender()
 {
-    for (auto& stage : stageContainer) {
-        if (stage) {
-            stage->onRender();
+    // 渲染
+    for(auto &entry : stageContainer)
+    {
+        if(entry)
+        {
+            entry->onRender();
         }
     }
 }
 
-void StageController::removeStage(std::unique_ptr<Stage> newStage)
+bool StageController::handlEvents(SDL_Event *event)
 {
-    StreamLine.push(std::make_pair(Remove, std::move(newStage)));
-}
-
-void StageController::changeStage(std::unique_ptr<Stage> newStage)
-{
-    StreamLine.push(std::make_pair(Add, std::move(newStage)));
-}
-
-void StageController::deleteStage(std::unique_ptr<Stage> newStage)
-{
-    if(!newStage) return;
-
-    if(newStage->getStageType() == baseStage) stageContainer[0].reset();
-    else if(newStage->getStageType() == overlayStage) stageContainer[1].reset();
-    else if(newStage->getStageType() == topStage) stageContainer[2].reset();
-}
-
-void StageController::addStage(std::unique_ptr<Stage> newStage)
-{
-    if(!newStage) return;
-
-    if(newStage->getStageType() == baseStage) stageContainer[0] = std::move(newStage);
-    else if(newStage->getStageType() == overlayStage) stageContainer[1] = std::move(newStage);
-    else if(newStage->getStageType() == topStage) stageContainer[2] = std::move(newStage);
+    for(auto &entry : stageContainer)
+    {
+        if(entry)
+        {
+            entry->handlEvents(event);
+        }
+    }
+    return true;
 }
