@@ -53,9 +53,6 @@ class Stage
     StageType getStageType() const { return stageType; }
     void setStageType(StageType stageType) { this->stageType = stageType; }
 
-    LifeStatus getLifeStatus() const { return lifeStatus; }
-    void setlifeStatus(LifeStatus lifeStatus) { this->lifeStatus = lifeStatus; }
-
     // 元素传送相关
     bool transferElementTo(Stage *destStage, const std::string &id);
     bool transferElementFrom(Stage *srcStage, const std::string &id);
@@ -70,8 +67,6 @@ class Stage
     StageController *sController;
     // 场景类型
     StageType stageType = unregistered;
-    // 场景状态
-    LifeStatus lifeStatus = alive;
     // 元素管理器
     std::unique_ptr<ElementManager> Elements;
 };

@@ -174,13 +174,12 @@ void PreloadStage::onUpdate()
             // 进入生命周期末期销毁！
             if (DEBUG_MODE == DEBUG_MAP)
             {
-                lifeStatus = died;
                 std::unique_ptr<GameplayStage> gameplayStage = std::make_unique<GameplayStage>(timer, sController);
                 sController->changeStage(std::move(gameplayStage));
             }
             else
             {
-                lifeStatus = died;
+
                 std::unique_ptr<MainStage> mainStage = std::make_unique<MainStage>(timer, sController);
                 transferElementTo(mainStage.get(), "frameCounter");
                 sController->changeStage(std::move(mainStage));

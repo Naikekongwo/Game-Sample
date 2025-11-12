@@ -6,6 +6,8 @@ GameplayStage::GameplayStage(Timer* timer, StageController* sController)
     this->timer = timer;
 
     Elements = std::make_unique<ElementManager>();
+    
+    this->sController = sController;
 
     this->stageType = StageType::baseStage;
 
@@ -34,7 +36,6 @@ void GameplayStage::Init()
     auto purifier = std::make_unique<PurifierStage>(timer, sController);
 
     sController->changeStage(std::move(purifier));
-
 }
 
 

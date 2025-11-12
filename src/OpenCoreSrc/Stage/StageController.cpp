@@ -1,39 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 
-void StageController::changeBaseStage(std::unique_ptr<BaseStage> newStage)
-{   
-    stageContainer[0] = std::move(newStage);
-}
 
-void StageController::changeOverlayStage(std::unique_ptr<OverlayStage> newStage)
-{   
-    stageContainer[1] = std::move(newStage);
-}
-
-void StageController::changeTopStage(std::unique_ptr<TopStage> newStage)
-{   
-    stageContainer[2] = std::move(newStage);
-}
-
-void StageController::changeStage(std::unique_ptr<Stage> newStage)
-{
-    if (!newStage) return;
-    
-    switch (newStage->getStageType()) {
-        case baseStage:
-            stageContainer[0] = std::move(newStage);
-            break;
-        case overlayStage:
-            stageContainer[1] = std::move(newStage);
-            break;
-        case topStage:
-            stageContainer[2] = std::move(newStage);
-            break;
-        default:
-            break;
-    }
-}
 
 bool StageController::handlEvents(SDL_Event* event)
 {
@@ -48,29 +16,32 @@ bool StageController::handlEvents(SDL_Event* event)
 
 void StageController::onUpdate()
 {
-    std::vector<StageType> died_stage;
+    
+    // 更新所有 Stage
     for (auto& stage : stageContainer) {
         if (stage) {
-            if(stage->getLifeStatus() == died)
-            {
-                died_stage.push_back(stage->getStageType());
-            }
-            else {
-                stage->onUpdate();
-            }
+            stage->onUpdate();
         }
     }
 
-    if(!died_stage.empty())
+    // 执行延迟操作
+    while(!StreamLine.empty())
     {
-        for(auto entry: died_stage)
+        OperateRecord op = std::move(StreamLine.front());
+        StageType stageType = op.second->getStageType();
+        if(op.first==Add)
         {
-            if(entry == StageType::baseStage)   deleteBaseStage();
-            else if (entry == StageType::overlayStage) deleteOverlayStage();
-            else if (entry == StageType::topStage) deleteTopStage();
+            // 添加场景
+            addStage(std::move(op.second));
         }
+        else if(op.first==Remove)
+        {
+            deleteStage(std::move(op.second));
+        }
+        StreamLine.pop();        
     }
 }
+
 
 void StageController::onRender()
 {
@@ -79,4 +50,32 @@ void StageController::onRender()
             stage->onRender();
         }
     }
+}
+
+void StageController::removeStage(std::unique_ptr<Stage> newStage)
+{
+    StreamLine.push(std::make_pair(Remove, std::move(newStage)));
+}
+
+void StageController::changeStage(std::unique_ptr<Stage> newStage)
+{
+    StreamLine.push(std::make_pair(Add, std::move(newStage)));
+}
+
+void StageController::deleteStage(std::unique_ptr<Stage> newStage)
+{
+    if(!newStage) return;
+
+    if(newStage->getStageType() == baseStage) stageContainer[0].reset();
+    else if(newStage->getStageType() == overlayStage) stageContainer[1].reset();
+    else if(newStage->getStageType() == topStage) stageContainer[2].reset();
+}
+
+void StageController::addStage(std::unique_ptr<Stage> newStage)
+{
+    if(!newStage) return;
+
+    if(newStage->getStageType() == baseStage) stageContainer[0] = std::move(newStage);
+    else if(newStage->getStageType() == overlayStage) stageContainer[1] = std::move(newStage);
+    else if(newStage->getStageType() == topStage) stageContainer[2] = std::move(newStage);
 }

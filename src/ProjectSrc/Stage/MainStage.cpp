@@ -49,7 +49,7 @@ void MainStage::Init()
     {
         auto gameplay = std::make_unique<GameplayStage>(timer, sController);
         sController->changeStage(std::move(gameplay));
-        lifeStatus = died;
+        sController->deleteOverlayStage();
     };
 
     startButton->Configure()

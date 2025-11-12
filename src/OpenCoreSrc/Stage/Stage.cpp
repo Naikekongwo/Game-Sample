@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include <string>
 
 
 bool Stage::transferElementFrom(Stage *srcStage, const std::string &id)
@@ -29,7 +30,7 @@ bool Stage::transferElementTo(Stage *destStage, const std::string &id)
 
 void Stage::onDestroy()
 {
-    SDL_Log("Stage::onDestroy() stage is going to destroy.");
+    SDL_Log("Stage::onDestroy() The %d stage is going to destroy.", stageType);
     Elements.reset();
 }
 
