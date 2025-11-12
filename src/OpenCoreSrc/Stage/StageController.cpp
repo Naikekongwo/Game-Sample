@@ -48,9 +48,26 @@ bool StageController::handlEvents(SDL_Event* event)
 
 void StageController::onUpdate()
 {
+    std::vector<StageType> died_stage;
     for (auto& stage : stageContainer) {
         if (stage) {
-            stage->onUpdate();
+            if(stage->getLifeStatus() == died)
+            {
+                died_stage.push_back(stage->getStageType());
+            }
+            else {
+                stage->onUpdate();
+            }
+        }
+    }
+
+    if(!died_stage.empty())
+    {
+        for(auto entry: died_stage)
+        {
+            if(entry == StageType::baseStage)   deleteBaseStage();
+            else if (entry == StageType::overlayStage) deleteOverlayStage();
+            else if (entry == StageType::topStage) deleteTopStage();
         }
     }
 }

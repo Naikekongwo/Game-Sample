@@ -63,10 +63,10 @@ void PreloadStage::onUpdate()
 
         animation->pushImageBoard(animeList);
         animation->Configure().Anchor(AnchorPoint::Center).Scale(0.208f, 0.117f).Posite(0.5f, 0.28f).Sequence(true);
-        animation->ConfigureAt(0).Anchor(AnchorPoint::Center).Scale(1.0f, 0.56f).Posite(0.5f, 0.28f).Sequence(true);
+        animation->ConfigureAt(0).Anchor(AnchorPoint::Center).Scale(fullwidth, fullheight).Posite(0.5f, 0.28f).Sequence(true);
         animation->AnimateAt(0).Frame(5,5,true).Commit();
 
-        animation->ConfigureAt(1).Anchor(AnchorPoint::Center).Scale(1.0f, 0.56f).Posite(0.5f, 0.4f).Sequence(true);
+        animation->ConfigureAt(1).Anchor(AnchorPoint::Center).Scale(fullwidth, fullheight).Posite(0.5f, 0.4f).Sequence(true);
         animation->AnimateAt(1).Frame(5,5,true).Commit();
 
         Elements->PushElement(std::move(animation));
@@ -103,7 +103,7 @@ void PreloadStage::onUpdate()
 
         // 部署各项属性
         startTitle->Configure().Scale(0.52f, 0.26f).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f).Sequence(false);
-        oceanBackground->Configure().Scale(1.0f, 0.56f).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f);
+        oceanBackground->Configure().Scale(fullwidth, fullheight).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f);
         startTitle->Animate().Fade(0.4f, 1.0f, 5.0f, false).Commit();
         oceanBackground->Animate().Fade(0.0f, 1.0f, 10.0f, false).Timer(5.0f).Fade(1.0f, 0.0f, 5.0f, false).Commit();
 
@@ -151,7 +151,7 @@ void PreloadStage::onUpdate()
                     auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
                     // 创建了遮罩和背景的资源
 
-                    connector->Configure().Scale(1.0f, 0.56f).Anchor(AnchorPoint::TopRight).Posite(0.0f, 0.0f);
+                    connector->Configure().Scale(fullwidth, fullheight).Anchor(AnchorPoint::TopRight).Posite(0.0f, 0.0f);
                     connector->Animate().Move(0, 0, 1920, 0, 5.0f, false).Commit();
 
                     Elements->PushElement(std::move(connector));
@@ -174,11 +174,13 @@ void PreloadStage::onUpdate()
             // 进入生命周期末期销毁！
             if (DEBUG_MODE == DEBUG_MAP)
             {
+                lifeStatus = died;
                 std::unique_ptr<GameplayStage> gameplayStage = std::make_unique<GameplayStage>(timer, sController);
                 sController->changeStage(std::move(gameplayStage));
             }
             else
             {
+                lifeStatus = died;
                 std::unique_ptr<MainStage> mainStage = std::make_unique<MainStage>(timer, sController);
                 transferElementTo(mainStage.get(), "frameCounter");
                 sController->changeStage(std::move(mainStage));

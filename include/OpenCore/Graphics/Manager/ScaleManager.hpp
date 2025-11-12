@@ -6,27 +6,34 @@
 
 #include <SDL2/SDL.h>
 
-class ScaleManager {
-public:
+class ScaleManager final
+{
+  public:
     ScaleManager(uint16_t baseW, uint16_t baseH);
 
     // 每次窗口大小变化都应调用一次
     void UpdateTargetSize(uint16_t windowW, uint16_t windowH);
 
     // 转换逻辑坐标 -> 实际坐标
-    SDL_Rect ToScreen(const SDL_Rect& logical) const;
-    SDL_FPoint ToScreen(const SDL_FPoint& logical) const;
+    SDL_Rect ToScreen(const SDL_Rect &logical) const;
+    SDL_FPoint ToScreen(const SDL_FPoint &logical) const;
 
     // 转换实际坐标 -> 逻辑坐标
-    SDL_Point ToLogical(const SDL_Point& screenPoint) const;
-
+    SDL_Point ToLogical(const SDL_Point &screenPoint) const;
 
     float GetScale() const { return scale; }
-    SDL_Point GetOffset() const { return { static_cast<int>(offsetX), static_cast<int>(offsetY) }; }
+    SDL_Point GetOffset() const
+    {
+        return {static_cast<int>(offsetX), static_cast<int>(offsetY)};
+    }
 
-    void queryBaseScale(uint16_t& w, uint16_t &h) { w = baseWidth; h = baseHeight;}
+    void queryBaseScale(uint16_t &w, uint16_t &h)
+    {
+        w = baseWidth;
+        h = baseHeight;
+    }
 
-private:
+  private:
     uint16_t baseWidth, baseHeight;
     uint16_t windowWidth, windowHeight;
 
@@ -34,7 +41,5 @@ private:
     float offsetX = 0.0f;
     float offsetY = 0.0f;
 };
-
-
 
 #endif //_SCALEMANAGER_H_

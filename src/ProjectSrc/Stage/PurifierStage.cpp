@@ -1,10 +1,5 @@
-#include "Eclipsea/Stage/PurifierStage.hpp"
 #include "Eclipsea/Eclipsea.hpp"
-#include "OpenCore/Animation/IAnimation.hpp"
-#include "OpenCore/Graphics/UI/BaseBackground.hpp"
 #include "OpenCore/OpenCore.hpp"
-#include "OpenCore/Stage/OverlayStage.hpp"
-#include "OpenCore/Stage/Stage.hpp"
 
 PurifierStage::PurifierStage(Timer *timer, StageController *sController)
 {

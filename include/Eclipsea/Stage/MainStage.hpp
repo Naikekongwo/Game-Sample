@@ -26,7 +26,6 @@ class MainStage : public OverlayStage
     void Init();
 
     private:
-
     
 };
 

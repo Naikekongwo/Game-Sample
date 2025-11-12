@@ -85,7 +85,7 @@ MyAnimationPipeline MultiImageBoard::AnimateAt(uint8_t index)
 
 DrawableConfigurator MultiImageBoard::ConfigureAt(uint8_t index)
 {
-    SDL_Log("CONFIGURE:: Now the size is %d, layers size is %d", size, Layers.size());
+    SDL_Log("CONFIGURE:: Now the size is %d, layers size is %d", static_cast<int>(size), static_cast<int>(Layers.size()));
     if(Layers.size() <= index)
     {
         throw std::out_of_range("Index out of range");

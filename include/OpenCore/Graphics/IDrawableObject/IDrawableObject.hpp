@@ -30,6 +30,8 @@ public:
     // 默认的构造方法
     IDrawableObject();
 
+    virtual ~IDrawableObject() = default;
+
     // 处理事件的函数
     virtual void handlEvents(SDL_Event &event, float totalTime);
 

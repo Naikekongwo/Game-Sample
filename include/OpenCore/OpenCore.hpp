@@ -45,7 +45,7 @@ namespace Gameplay
 #include <memory>
 
 
-class OpenEngine
+class OpenEngine final
 {
     public:
     // 单例的获取函数

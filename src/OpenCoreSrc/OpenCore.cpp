@@ -1,9 +1,6 @@
 // OpenCore.cpp
 // OpenCore 的具体实现
 
-#include <iostream>
-#include <memory>
-
 #include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 
@@ -43,11 +40,11 @@ bool OpenEngine::Initialize()
     using namespace OpenCoreManagers;
 
     // 创建 GFX 实例
-    GFXManager;
+    (void)GFXManager;
     // 创建资源管理器实例
-    ResManager;
+    (void)ResManager;
     // 创建音效管理器实例
-    SFXManager;
+    (void)SFXManager;
     // 创建场景控制器实例
     sController = std::make_unique<StageController>();
     // 创建计时器实例

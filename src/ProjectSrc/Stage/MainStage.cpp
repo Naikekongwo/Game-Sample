@@ -1,9 +1,12 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include <functional>
 
 MainStage::MainStage(Timer *timer, StageController *sController)
 {
     this->timer = timer;
+
+    this->sController = sController;
 
     Elements = std::make_unique<ElementManager>();
 
@@ -19,10 +22,10 @@ void MainStage::Init()
 
     background->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.28f)
-        .Scale(1.0f, 0.56f);
+        .Posite(0.5 * fullwidth, 0.5* fullheight)
+        .Scale(fullwidth, fullheight);
     connector->Configure()
-        .Scale(1.0f, 0.56f)
+        .Scale(fullwidth, fullheight)
         .Anchor(AnchorPoint::TopLeft)
         .Posite(0, 0);
     connector->Animate().Move(0, 0, 1920, 0, 5.0f, false).Commit();
@@ -42,6 +45,13 @@ void MainStage::Init()
     auto continueButton = UI<Button>("continueButton", 1, img_ContButton, 1, 3);
     auto settingButton = UI<Button>("settingButton", 1, img_SettButton, 1, 3);
 
+    std::function<void()> startAction = [this]()
+    {
+        auto gameplay = std::make_unique<GameplayStage>(timer, sController);
+        sController->changeStage(std::move(gameplay));
+        lifeStatus = died;
+    };
+
     startButton->Configure()
         .Anchor(AnchorPoint::TopLeft)
         .Parent(nullptr)
@@ -60,6 +70,9 @@ void MainStage::Init()
         .Posite(0.825f, 0.492f)
         .Scale(0.156f, 0.0416f)
         .Sequence(true);
+
+    // 配置
+    startButton->setOnClick(startAction);
 
     Elements->PushElement(std::move(startButton));
     Elements->PushElement(std::move(continueButton));
@@ -87,7 +100,9 @@ void MainStage::Init()
     // ItemMgr.registerItem(bottle_empty);
 }
 
-void MainStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
+void MainStage::onUpdate() { 
+    Elements->onUpdate(timer->getTotalTime()); 
+}
 
 void MainStage::onRender() { Elements->onRender(); }
 
