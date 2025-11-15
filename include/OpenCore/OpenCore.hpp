@@ -20,6 +20,7 @@
 #include "Graphics/Manager/GraphicsManager.hpp"
 
 #include "Gameplay/Manager/ItemManager.hpp"
+#include "OpenCore/Map/Manager/MapManager.h"
 
 // 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
 namespace OpenCoreManagers
@@ -33,6 +34,7 @@ namespace OpenCoreManagers
 namespace Gameplay
 {
     inline ItemManager& ItemMgr = ItemManager::getInstance();
+    inline MapManager& MapMgr = MapManager::getInstance();
 }
 
 #include "Graphics/Manager/ScaleManager.hpp"
