@@ -15,6 +15,6 @@ constexpr uint8_t lengthInfo[] = {1,1,1,1};
 struct BlockInfo
 {
     uint16_t Info[MapLayers];
-}
+};
 
 #endif //_BLOCKINFO_H_
