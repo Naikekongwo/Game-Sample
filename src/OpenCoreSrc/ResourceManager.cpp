@@ -71,6 +71,33 @@ Mix_Music* ResourceManager::GetMusic(short id) {
     return it->second.get();
 }
 
+// 音效加载同步
+void ResourceManager::LoadSound(short id, const std::string& path) {
+    
+    std::lock_guard<std::mutex> lock(soundMutex_);
+    if (soundCache_.count(id)) return;
+
+    SoundPtr sound(Mix_LoadWAV(path.c_str()));
+    if (!sound) {
+        SDL_Log("Mix_LoadWAV failed: %s", Mix_GetError());
+        return;
+    }
+
+    SDL_Log("ResourceManager::LoadSound sound id %d loaded successfully.", id);
+}
+
+//获取音效
+Mix_Chunk* ResourceManager::GetSound(short id) {
+    std::lock_guard<std::mutex> lock(soundMutex_);
+    auto it = soundCache_.find(id);
+
+    if (it == soundCache_.end()) {
+        SDL_Log("ResourceManager::GetSound failed to get sound id %d", id);
+        return nullptr;
+    }
+    return it->second.get();
+}
+
 // 纹理加载同步
 void ResourceManager::LoadTexture(short id, const std::string &path) {
     // 检查是否已加载
@@ -107,6 +134,15 @@ std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string& p
     return EnqueueTask([this, id, path] {
         activeTasks_++;
         LoadMusic(id, path);
+        activeTasks_--;
+    });
+}
+// 异步加载音效
+std::future<void> ResourceManager::LoadSoundAsync(short id, const std::string& path) {
+    
+    return EnqueueTask([this, id, path] {
+        activeTasks_++;
+        LoadSound(id, path);
         activeTasks_--;
     });
 }
@@ -331,6 +367,10 @@ void SDLDeleter::operator()(TTF_Font* font) const {
     if (font) TTF_CloseFont(font);
 }
 
+void SDLDeleter::operator()(Mix_Chunk* chunk) const {
+    if (chunk) Mix_FreeChunk(chunk);
+}
+
 //通过json进行整个场景的资源加载
 //新增一些说明，大体上结构是这样的，首先有一个main.json,用于储存场景名称与id的对应关系，当然这个main.json在一定程度上是可有可无的
 //只是为了方便记忆，即使不用短id修改起来也很方便，只需要修改输入即可，文件的位置在第1步，自行修改即可。对于各个场景的json文件，大致结构如下
@@ -438,6 +478,17 @@ void ResourceManager::FreeMusic(short id) {
     }
 }
 
+//释放音效
+void ResourceManager::FreeSound(short id) {
+    std::lock_guard<std::mutex> lock(soundMutex_);
+    if (soundCache_.count(id)) {
+        Mix_FreeChunk(soundCache_[id].get());
+        soundCache_.erase(id);
+    }
+}
+
+
+
 //释放纹理
 void ResourceManager::FreeTexture(short id) {
     std::lock_guard<std::mutex> lock(textureMutex_);
@@ -478,4 +529,12 @@ std::future<void> ResourceManager::FreeFontAsync(short id) {
         FreeFont(id);
         activeTasks_--;
     }); 
+}
+
+std::future<void> ResourceManager::FreeSoundAsync(short id) {
+    return EnqueueTask([this, id] {
+        activeTasks_++;
+        FreeSound(id);
+        activeTasks_--;
+    });
 }
