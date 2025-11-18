@@ -29,11 +29,13 @@ struct SDLDeleter
     void operator()(Mix_Music *music) const;
     void operator()(SDL_Texture *texture) const;
     void operator()(TTF_Font *font) const;
+    void operator()(Mix_Chunk *chunk) const;
 };
 
 using MusicPtr = std::unique_ptr<Mix_Music, SDLDeleter>;
 using TexturePtr = std::unique_ptr<SDL_Texture, SDLDeleter>;
 using FontPtr = std::unique_ptr<TTF_Font, SDLDeleter>;
+using ChunkPtr = std::unique_ptr<Mix_Chunk, SDLDeleter>;
 
 class ResourceManager
 {
@@ -46,6 +48,9 @@ public:
     void LoadMusic(short id, const std::string &path);
     Mix_Music *GetMusic(short id);
 
+    void LoadSound(short id, const std::string &path);
+    Mix_Chunk *GetSound(short id);
+
     void LoadTexture(short id, const std::string &path);
     std::shared_ptr<SDL_Texture> GetTexture(short id);
 
@@ -55,6 +60,7 @@ public:
     std::future<void> LoadMusicAsync(short id, const std::string &path);
     std::future<void> LoadTextureAsync(short id, const std::string &path);
     std::future<void> LoadFontAsync(short id, const std::string &path, int size);
+    std::future<void> LoadSoundAsync(short id, const std::string &path);
 
     void ClearAll();
     // 新增：主线程任务处理
@@ -67,11 +73,13 @@ public:
     void FreeMusic(short id);
     void FreeTexture(short id);
     void FreeFont(short id);
+    void FreeSound(short id);
 
     // 异步释放资源
     std::future<void> FreeMusicAsync(short id);
     std::future<void> FreeTextureAsync(short id);
     std::future<void> FreeFontAsync(short id);
+    std::future<void> FreeSoundAsync(short id);
 
 private:
     SDL_Renderer *renderer = nullptr;
@@ -93,6 +101,9 @@ private:
     // 资源缓存
     std::mutex musicMutex_;
     std::unordered_map<short, MusicPtr> musicCache_;
+
+    std::mutex soundMutex_;
+    std::unordered_map<short, ChunkPtr> soundCache_;
 
     std::mutex textureMutex_;
     std::unordered_map<short, TexturePtr> textureCache_;
