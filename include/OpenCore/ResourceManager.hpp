@@ -35,7 +35,7 @@ struct SDLDeleter
 using MusicPtr = std::unique_ptr<Mix_Music, SDLDeleter>;
 using TexturePtr = std::unique_ptr<SDL_Texture, SDLDeleter>;
 using FontPtr = std::unique_ptr<TTF_Font, SDLDeleter>;
-using ChunkPtr = std::unique_ptr<Mix_Chunk, SDLDeleter>;
+using SoundPtr = std::unique_ptr<Mix_Chunk, SDLDeleter>;
 
 class ResourceManager
 {
@@ -103,7 +103,7 @@ private:
     std::unordered_map<short, MusicPtr> musicCache_;
 
     std::mutex soundMutex_;
-    std::unordered_map<short, ChunkPtr> soundCache_;
+    std::unordered_map<short, SoundPtr> soundCache_;
 
     std::mutex textureMutex_;
     std::unordered_map<short, TexturePtr> textureCache_;
