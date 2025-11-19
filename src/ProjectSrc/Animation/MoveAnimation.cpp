@@ -29,8 +29,8 @@ void MoveAnimation::onUpdate(float totalTime, AnimationState& state) {
         SDL_Log("MoveAnimation: animation finished."); // 动画结束
     }
     // 线性插值计算当前位置
-    state.PositionX = startX + (endX - startX) * t;
-    state.PositionY = startY + (endY - startY) * t;
+    state.Position[0] = startX + (endX - startX) * t;
+    state.Position[1] = startY + (endY - startY) * t;
 }
 
 // 判断动画是否结束

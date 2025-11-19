@@ -29,7 +29,7 @@ void ScaleAnimation::onUpdate(float totalTime, AnimationState& state) {
         SDL_Log("ScaleAnimation: animation finished."); // 动画结束
     }
     // 线性插值计算当前缩放
-    state.scaleX = state.scaleY = startScale + (endScale - startScale) * t;
+    state.scale[0] = state.scale[1] = startScale + (endScale - startScale) * t;
 }
 
 // 判断动画是否结束

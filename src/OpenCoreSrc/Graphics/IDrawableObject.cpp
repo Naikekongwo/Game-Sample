@@ -43,8 +43,8 @@ void IDrawableObject::setPosition(float xPercent, float yPercent)
         baseH = parent.h;
     }
     
-    AnimeState->PositionX = baseW * xPercent;
-    AnimeState->PositionY = baseW * yPercent;
+    AnimeState->Position[0] = baseW * xPercent;
+    AnimeState->Position[1] = baseW * yPercent;
 }
 
 // 设置控件的大小

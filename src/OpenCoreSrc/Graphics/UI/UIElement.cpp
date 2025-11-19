@@ -12,11 +12,11 @@ SDL_Rect UIElement::getBounds()
     const auto &state = *AnimeState;
 
     // 计算基于1920x1080逻辑坐标系的宽高
-    uint16_t logicalWidth = static_cast<uint16_t>(nativeWidth * state.scaleX);
-    uint16_t logicalHeight = static_cast<uint16_t>(nativeHeight * state.scaleY);
+    uint16_t logicalWidth = static_cast<uint16_t>(nativeWidth * state.scale[0]);
+    uint16_t logicalHeight = static_cast<uint16_t>(nativeHeight * state.scale[1]);
 
-    int16_t logicalX = state.PositionX;
-    int16_t logicalY = state.PositionY;
+    int16_t logicalX = state.Position[0];
+    int16_t logicalY = state.Position[1];
 
     // 按锚点偏移位置（在1920x1080逻辑坐标系中）
     switch (state.Anchor)
