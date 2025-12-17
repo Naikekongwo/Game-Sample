@@ -74,6 +74,14 @@ void MainStage::Init()
     // 配置
     startButton->setOnClick(startAction);
 
+    auto Label1 = UI<Label>("label", 1, 24, NULL, NULL);
+
+    Label1->Configure().Anchor(AnchorPoint::Center).Parent(nullptr).Posite(0.5 * fullwidth, 0.5 * fullheight).Scale(0.5 * fullwidth, 0.5 * fullheight);
+
+    Label1->setText("测试测试测试", 24);
+
+    Elements->PushElement(std::move(Label1));
+
     Elements->PushElement(std::move(startButton));
     Elements->PushElement(std::move(continueButton));
     Elements->PushElement(std::move(settingButton));

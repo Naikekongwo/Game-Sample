@@ -16,6 +16,12 @@ inline std::unique_ptr<FrameCounter> UI<FrameCounter>(const std::string &id, uin
     return std::make_unique<FrameCounter>(id, layer, nullptr);
 }
 
+template <>
+inline std::unique_ptr<Label> UI<Label>(const std::string &id, uint8_t layer, short texID, short frameX, short frameY)
+{
+    return std::make_unique<Label>(id, layer, texID);
+}
+
 // 特化版本：MultiImageBoard
 template<>
 inline std::unique_ptr<MultiImageBoard> UI<MultiImageBoard>(const std::string &id, uint8_t layer, short texID, short frameX, short frameY)

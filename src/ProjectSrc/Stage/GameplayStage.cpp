@@ -38,6 +38,7 @@ void GameplayStage::Init()
     auto purifier = std::make_unique<PurifierStage>(timer, sController);
 
     sController->changeStage(std::move(purifier));
+
 }
 
 

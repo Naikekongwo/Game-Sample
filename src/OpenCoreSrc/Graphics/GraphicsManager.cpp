@@ -101,6 +101,22 @@ int GraphicsManager::RenderCopyEx(SDL_Texture *texture,
                             flip);
 }
 
+int GraphicsManager::RenderCopy(SDL_Texture *texture,
+                                  const SDL_Rect *srcrect,
+                                  const SDL_Rect *dstrect,
+                                  const double angle,
+                                  const SDL_Point *center,
+                                  const SDL_RendererFlip flip)
+{
+    return SDL_RenderCopyEx(renderer,
+                            texture,
+                            srcrect,
+                            dstrect,
+                            angle,
+                            center,
+                            flip);
+}
+
 
 SDL_Texture* GraphicsManager::createTexture(uint16_t w, uint16_t h)
 {

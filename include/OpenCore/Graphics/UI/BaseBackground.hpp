@@ -4,14 +4,15 @@
 // 每一层级的背景的UI控件
 
 #include "OpenCore/Graphics/IDrawableObject/UIElement.hpp"
-
 #include <cstdint>
+
+using std::string;
 
 class BaseBackground : public UIElement
 {
     public:
     // 构造函数
-    BaseBackground(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture);
+    BaseBackground(const string& id, uint8_t layer, std::unique_ptr<Texture> texture);
 
     // 实现父类
 

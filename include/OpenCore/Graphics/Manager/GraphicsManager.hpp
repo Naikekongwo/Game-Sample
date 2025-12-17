@@ -33,6 +33,9 @@ class GraphicsManager
     int RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
                      const SDL_Rect *dstrect, const double angle,
                      const SDL_Point *center, const SDL_RendererFlip flip);
+    int RenderCopy(SDL_Texture *texture, const SDL_Rect *srcrect,
+                     const SDL_Rect *dstrect, const double angle,
+                     const SDL_Point *center, const SDL_RendererFlip flip);
 
     int setOffScreenRender(SDL_Texture *texture);
 
