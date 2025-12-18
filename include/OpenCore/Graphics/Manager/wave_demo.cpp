@@ -9,7 +9,7 @@
 // 模块选择宏定义
 // 取消注释你想要运行的模块，确保只有一个模块被取消注释
 //#define RUN_ORIGINAL_MAIN    // 运行原始水波模拟
-//#define RUN_MODULAR_MAIN     // 运行模块化版本
+#define RUN_MODULAR_MAIN     // 运行模块化版本
 
 // 如果未定义任何模块，默认运行原始版本
 #if !defined(RUN_ORIGINAL_MAIN) && !defined(RUN_MODULAR_MAIN)
@@ -373,33 +373,81 @@ Color CalculateWaterColor(float h, const Vec3& normal, const Vec3& light,
                          int sampleScale, int width, int height, float time) {
     auto clamp01 = [](float v){ return std::min(1.0f, std::max(0.0f, v)); };
     
-    float nx = normal.x, ny = normal.y, nz = normal.z;
-    float NdotL = std::max(0.0f, nx * light.x + ny * light.y + nz * light.z);
-    float diff = std::pow(NdotL, 1.25f) * 1.9f;
-    diff = std::min(1.0f, diff);
+    Vec3 n{normal.x, normal.y, normal.z};
+    Vec3 viewDir{0.0f, 0.0f, 1.0f}; // 假设视线方向为(0,0,1)
+    //float nx = normal.x, ny = normal.y, nz = normal.z;
     
-    float heightBoost = (h + 80.0f) / 160.0f;
-    heightBoost = std::pow(std::max(0.0f, heightBoost), 1.8f) * 0.5f;
+    // 基于波高计算基础亮度：将h线性映射到[0,1]范围
+    // 这里是根据黄老师给出的波高范围，波高在[-77,77],这里大致取[-80, 80]范围内，使用时根据实际修改，映射公式：height_brightness = (h + 80) / 160
+    float height_brightness = (h + 80.0f) / 160.0f;
+    height_brightness = clamp01(height_brightness);
     
-    float baseR = 20.0f/255.0f, baseG = 70.0f/255.0f, baseB = 140.0f/255.0f;
-    float shadedR = baseR * (0.1f + 0.9f * diff);
-    float shadedG = baseG * (0.15f + 0.85f * diff);
-    float shadedB = baseB * (0.2f + 0.8f * diff);
+    // 计算法向量与光照方向的点积（允许负值，区分朝向/背对光照）
+    float NdotL = inner_product(n,light); // 不再使用std::max(0, ...)限制
     
-    float r = shadedR * (1.0f - heightBoost) + 1.0f * heightBoost;
-    float g = shadedG * (1.0f - heightBoost) + 1.0f * heightBoost;
-    float b = shadedB * (1.0f - heightBoost) + 0.9f * heightBoost;
+    // 根据NdotL正负计算光照因子
+    float light_factor;
+    if (NdotL > 0.0f) {
+        // 朝向光照方向：增加亮度（因子>1模拟高光）
+        light_factor = 1.0f + 0.5f * NdotL; // 可调整系数，当前为1.0~1.5（当NdotL=0~1）
+    } else {
+        // 背对光照方向：加深阴影（因子<1）
+        light_factor = 0.3f + 0.2f * (1.0f + NdotL); // 当NdotL=-1时因子=0.3，NdotL=0时因子=0.5，这里光照因子延用黄老师的参数，后续根据实际调整
+        light_factor = std::max(0.0f, light_factor); // 确保非负
+    }
     
-    float HdotN = std::max(0.0f, halfv.x * nx + halfv.y * ny + halfv.z * nz);
+    // 结合波高亮度和光照因子
+    float final_brightness = height_brightness * light_factor;
+    final_brightness = clamp01(final_brightness);
+
+    // 环境光  
+    float ambientStrength = 0.1f; // 环境光强度，根据实际调整
+    Vec3 ambientColor = {0.02f, 0.05f, 0.1f}; // 深蓝色环境光
+    // 菲涅尔效应
+    Vec3 viewDirNormalized = {viewDir.x, viewDir.y, viewDir.z}; // 应已归一化
+    float VdotN = std::max(0.0f, std::min(1.0f, inner_product(viewDirNormalized, n)));
+    float fresnelRatio = 0.02f + (1.0f - 0.02f) * std::pow(1.0f - VdotN, 5.0f); // Schlick近似，这里菲涅尔系数0.02可调
+    //光线衰减
+    float depthAttenuation = 1.0f - (h + 80.0f) / 160.0f * 0.5f; // 波谷(h小)处更暗
+    // 颜色混合
+    // 基础水色 (透射色/折射色)
+    Vec3 waterBaseColor = {20.0f/255.0f, 70.0f/255.0f, 140.0f/255.0f};
+    // 反射色 (如天空色)
+    Vec3 reflectColor = {0.3f, 0.4f, 0.6f}; // 浅蓝色，模拟天空反射
+    
+    // 应用菲涅尔混合：结合反射色和水底色
+    Vec3 mixedColor;
+    mixedColor.x = reflectColor.x * fresnelRatio + waterBaseColor.x * (1.0f - fresnelRatio);
+    mixedColor.y = reflectColor.y * fresnelRatio + waterBaseColor.y * (1.0f - fresnelRatio);
+    mixedColor.z = reflectColor.z * fresnelRatio + waterBaseColor.z * (1.0f - fresnelRatio);
+    
+    // 应用光照和衰减
+    float shadedR = (ambientColor.x + mixedColor.x * final_brightness) * depthAttenuation;
+    float shadedG = (ambientColor.y + mixedColor.y * final_brightness) * depthAttenuation;
+    float shadedB = (ambientColor.z + mixedColor.z * final_brightness) * depthAttenuation;
+    
+    // 计算镜面高光（Blinn-Phong模型），仅用于朝向光照区域
+    float HdotN = std::max(0.0f, inner_product(halfv, n));
     float spec = std::pow(HdotN, 25.0f) * 0.28f;
-    r += spec; g += spec; b += spec * 0.7f;
     
-    r = clamp01(r); g = clamp01(g); b = clamp01(b);
+    // 仅当朝向光照时添加高光效果
+    if (NdotL > 0.0f) {
+        shadedR += spec;
+        shadedG += spec;
+        shadedB += spec * 0.7f; // 蓝色通道高光减弱以保持自然色调
+    }
+
+    // 颜色钳制与伽马校正
+    shadedR = clamp01(shadedR);
+    shadedG = clamp01(shadedG);
+    shadedB = clamp01(shadedB);
     float gamma = 1.8f;
-    r = std::powf(r, 1.0f/gamma);
-    g = std::powf(g, 1.0f/gamma);
-    b = std::powf(b, 1.0f/gamma);
-    
+    float r = std::powf(shadedR, 1.0f/gamma);
+    float g = std::powf(shadedG, 1.0f/gamma);
+    float b = std::powf(shadedB, 1.0f/gamma);
+    r = clamp01(r); g = clamp01(g); b = clamp01(b);
+
+    // 返回Color结构体，包含RGB整数值
     return {static_cast<int>(r * 255.0f), static_cast<int>(g * 255.0f), static_cast<int>(b * 255.0f)};
 }
 
