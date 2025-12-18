@@ -96,23 +96,44 @@ void PreloadStage::onUpdate()
 
         SDL_Log("PreloadStage: All resources loaded successfully.");
 
-        auto startTitle = UI<ImageBoard>("startTitle", 1, icon_opencore, 1, 1);
-        auto oceanBackground = UI<ImageBoard>("background", 0, background_ocean, 2, 1);
+        auto startTitle = UI<ImageBoard>("startTitle", 2, icon_opencore, 1, 1);
+        // auto oceanBackground = UI<ImageBoard>("background", 0, background_ocean, 2, 1);
         // 创建了加载界面的标题控件
         // 创建了背景控件
 
         // 部署各项属性
         startTitle->Configure().Scale(0.52f, 0.26f).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f).Sequence(false);
-        oceanBackground->Configure().Scale(fullwidth, fullheight).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f);
+        // oceanBackground->Configure().Scale(fullwidth, fullheight).Anchor(AnchorPoint::Center).Posite(0.5f, 0.28125f);
         startTitle->Animate().Fade(0.4f, 1.0f, 5.0f, false).Commit();
-        oceanBackground->Animate().Fade(0.0f, 1.0f, 10.0f, false).Timer(5.0f).Fade(1.0f, 0.0f, 5.0f, false).Commit();
+        // oceanBackground->Animate().Fade(0.0f, 1.0f, 10.0f, false).Timer(5.0f).Fade(1.0f, 0.0f, 5.0f, false).Commit();
 
+
+        
 
         // 使得背景的动画执行顺序变为顺序执行
-        oceanBackground->setSequential(true);
+        // oceanBackground->setSequential(true);
 
+
+        auto Test = std::make_unique<Waterrect>("water", 1, std::move(std::make_unique<Texture>(1,1,OpenCoreManagers::ResManager.GetTexture(2016))) );
+
+        Test->Configure().Anchor(AnchorPoint::TopCenter).Parent(nullptr).Posite(0.5 * fullwidth, 0.5 * fullheight).Scale(1.0 * fullwidth, 0.5 * fullheight);
+
+        auto wave = std::make_unique<Wave>();
+
+        wave->insertWave(WaveInfo(50, 1200, 0.02, 0, 1.0, 0.0));
+        wave->insertWave(WaveInfo(18, 600, 0.12, 1.0, 0.8, 0.6));
+        wave->insertWave(WaveInfo(4.0, 180, 0., 0.5, -0.3, 0.95));
+
+        Test->setWave(std::move(wave));
+        Test->setDetail(50);
+
+        vector<float> rSets {0.0f, 0.5f * fullheight, 1.0f, 0.5f * fullheight, -0.25 * fullwidth, 1.0f * fullheight, 1.25 * fullwidth, 1.0f * fullheight};
+
+        Test->SpecialDraw(true, rSets);
+
+        Elements->PushElement(std::move(Test));
         Elements->PushElement(std::move(startTitle));
-        Elements->PushElement(std::move(oceanBackground)); 
+        // Elements->PushElement(std::move(oceanBackground)); 
     }
 
     if (stageState >= 3 && stageState <= 5)

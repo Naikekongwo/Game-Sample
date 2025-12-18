@@ -1,6 +1,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <functional>
+#include <memory>
 
 MainStage::MainStage(Timer *timer, StageController *sController)
 {
@@ -91,6 +92,7 @@ void MainStage::Init()
 
     // button1->setOnClick([itemBoxRaw]() {
     // itemBoxRaw->Animate().Frame(2,2,false).Commit();});
+
 
     Elements->PushElement(std::move(background));
     Elements->PushElement(std::move(connector));

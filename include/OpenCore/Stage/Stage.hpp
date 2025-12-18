@@ -6,13 +6,14 @@
 
 #include <SDL2/SDL.h>
 
+#include "OpenCore/Graphics/Manager/ElementManager.hpp"
+
 #include <memory>
 
 class ResourceManager;
 class SoundEffectManager;
 class Timer;
 class StageController;
-class ElementManager;
 // 前向定义
 
 enum StageType : uint8_t

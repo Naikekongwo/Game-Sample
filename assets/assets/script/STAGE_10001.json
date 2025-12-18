@@ -63,6 +63,10 @@
         "path" : "assets/ui/Button_Back.png",
         "category" : "texture"
     },
+    "2016" : {
+        "path" : "assets/terrain/water.png",
+        "category" : "texture"
+    },
     "9001" : {
         "path" : "assets/ui/font/OpenCoreFont.ttf",
         "category" : "font",

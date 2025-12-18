@@ -17,6 +17,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <functional>
 
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"

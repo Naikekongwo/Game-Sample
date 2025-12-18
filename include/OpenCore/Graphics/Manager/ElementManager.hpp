@@ -12,6 +12,8 @@
 #include "OpenCore/Graphics/UI/ImageBoard.hpp"
 #include "OpenCore/Graphics/UI/Label.hpp"
 
+#include "OpenCore/Graphics/IDrawableObject/Sprite.hpp"
+
 
 #include <memory>
 #include <vector>

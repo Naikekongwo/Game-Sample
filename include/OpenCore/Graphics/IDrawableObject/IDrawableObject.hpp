@@ -5,8 +5,9 @@
 // 可绘图类的基类
 
 #include <SDL2/SDL.h>
-#include <string>
 #include <memory>
+#include <string>
+
 
 class AnimationManager;
 class AnimationPipeline;
@@ -26,7 +27,7 @@ enum class AnchorPoint : int;
 
 class IDrawableObject
 {
-public:
+  public:
     // 默认的构造方法
     IDrawableObject();
 
@@ -51,7 +52,6 @@ public:
     // 获取实际碰撞箱
     virtual SDL_Rect getRenderedBounds() = 0;
 
-
     // 更改贴图
     void changeTexture(std::unique_ptr<Texture> newTexture);
 
@@ -65,17 +65,17 @@ public:
 
     // 属性设置的方法
     void setScale(float w, float h);
-    
+
     void setAnchor(AnchorPoint anchor);
     void setPosition(float xPercent, float yPercent);
 
-    void setParentContainer(IDrawableObject* parentContainer);
+    void setParentContainer(IDrawableObject *parentContainer);
 
     // 配置器方法
     MyAnimationPipeline Animate();
     DrawableConfigurator Configure();
 
-protected:
+  protected:
     // ID 已经弃用，改用string代替
     std::string id;
     // 默认图层
@@ -90,7 +90,7 @@ protected:
     std::unique_ptr<Texture> texture;
     // 父容器类
     bool absolutePosite = true;
-    IDrawableObject* parentContainer = nullptr;
+    IDrawableObject *parentContainer = nullptr;
 };
 
 #endif //_IDRAWABLE_H_

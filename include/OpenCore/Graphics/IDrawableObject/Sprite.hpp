@@ -9,6 +9,11 @@
 class Sprite : public IDrawableObject
 {
     public:
+
+    virtual SDL_Rect getBounds() override;
+
+    virtual SDL_Rect getRenderedBounds() override;
+
 };
 
 #endif //_SPRITE_H_

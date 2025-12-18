@@ -26,7 +26,7 @@ public:
 
 
     Texture* getTexture() const { return texture_.get(); }
-    void setTexture(std::unique_ptr<Texture> texture) { texture_ = std::move(texture); }
+    void setTexture(std::unique_ptr<Texture> texture);
 
 private:
     uint16_t id_;

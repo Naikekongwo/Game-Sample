@@ -15,8 +15,8 @@
 #include "Timer.hpp"
 #include "Macros.hpp"
 
-#include "OpenCore/Concepts/Vec3.hpp"
-#include "OpenCore/Concepts/WaterSimpler.hpp"
+#include "OpenCore/Concepts/OpenCore_Vec3.hpp"
+#include "OpenCore/Concepts/OpenCore_Wave.hpp"
 
 #include "ResourceManager.hpp"
 #include "SoundEffectManager.hpp"

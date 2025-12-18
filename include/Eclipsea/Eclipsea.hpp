@@ -28,6 +28,7 @@
 #include "Gameplay/Items/ItemConsumable.hpp"
 #include "Gameplay/ItemContainer/Backpack.hpp"
 
+#include "Sprite/Waterrect.hpp"
 
 #include "UI/MultiImageBoard.hpp"
 
