@@ -6,6 +6,22 @@
 #include <algorithm>
 #include <iostream>
 
+// 模块选择宏定义
+// 取消注释你想要运行的模块，确保只有一个模块被取消注释
+//#define RUN_ORIGINAL_MAIN    // 运行原始水波模拟
+//#define RUN_MODULAR_MAIN     // 运行模块化版本
+
+// 如果未定义任何模块，默认运行原始版本
+#if !defined(RUN_ORIGINAL_MAIN) && !defined(RUN_MODULAR_MAIN)
+#define RUN_ORIGINAL_MAIN
+#endif
+
+// 条件编译：确保只有一个main函数被编译
+#if defined(RUN_ORIGINAL_MAIN) && defined(RUN_MODULAR_MAIN)
+#error "只能定义一个运行模块！请确保只有一个RUN_*宏被取消注释"
+#endif
+
+
 // 说明：此文件包含一个简单的 CPU 端水波演示实现，使用多个正弦波分量叠加。
 // 主要步骤：
 // 1) 定义波分量参数结构 `WaveComponent`（振幅、波数、方向、角速度、相位、衰减）
@@ -23,6 +39,21 @@ struct WaveComponent {
     float phase; // 相位（弧度）
     float damp;  // 衰减系数（1/毫秒）
 };
+typedef struct Vec3 {
+    float x, y, z;
+}Vec3;
+
+float inner_product(const Vec3& a, const Vec3& b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+Vec3 cross_product(const Vec3& a, const Vec3& b) {
+    return Vec3{
+        a.y * b.z - a.z * b.y,  
+        a.z * b.x - a.x * b.z,  
+        a.x * b.y - a.y * b.x   
+    };
+}
 
 static void normalizeDir(float &x, float &y) {
     float l = std::sqrtf(x*x + y*y);
@@ -53,7 +84,7 @@ float WaterHeight(const std::vector<WaveComponent>& comps, float x, float y, flo
 // 计算给定位置和时间的法线（用于光照）
 // 采用近似法线：n = (-∂H/∂x, -∂H/∂y, 1)，并归一化
 // ∂/∂x [A*sin(k*(dir·pos) - ωt + φ)] = A * cos(...) * k * dirX
-std::array<float,3> WaterNormal(const std::vector<WaveComponent>& comps, float x, float y, float t_ms) {
+struct Vec3 WaterNormal(const std::vector<WaveComponent>& comps, float x, float y, float t_ms) {
     float dhdx = 0.0f, dhdy = 0.0f;
     for (const auto &c : comps) {
         float d = x * c.dirX + y * c.dirY;
@@ -66,9 +97,10 @@ std::array<float,3> WaterNormal(const std::vector<WaveComponent>& comps, float x
     float ny = -dhdy;
     float nz = 1.0f;
     float invLen = 1.0f / std::sqrtf(nx*nx + ny*ny + nz*nz);
-    return {nx*invLen, ny*invLen, nz*invLen};
+    struct Vec3 n = {nx*invLen, ny*invLen, nz*invLen};
+    return n;
 }
-
+#ifdef RUN_ORIGINAL_MAIN
 int main(int argc, char** argv) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         std::cerr << "SDL_Init error: " << SDL_GetError() << std::endl;
@@ -137,13 +169,13 @@ int main(int argc, char** argv) {
         SDL_RenderClear(ren);
 
         // 灯光设置（归一化光照方向和视角）
-        std::array<float,3> light = {0.6f, -0.4f, 0.7f};
-        float llen = std::sqrtf(light[0]*light[0]+light[1]*light[1]+light[2]*light[2]);
-        if (llen > 0.0f) { light[0]/=llen; light[1]/=llen; light[2]/=llen; }
-        std::array<float,3> view = {0.0f, 0.0f, 1.0f};
-        std::array<float,3> halfv = {light[0]+view[0], light[1]+view[1], light[2]+view[2]};
-        float hlen = std::sqrtf(halfv[0]*halfv[0]+halfv[1]*halfv[1]+halfv[2]*halfv[2]);
-        if (hlen > 0.0f) { halfv[0]/=hlen; halfv[1]/=hlen; halfv[2]/=hlen; }
+        struct Vec3 light = {0.6f, -0.4f, 0.7f};
+        float llen = std::sqrtf(light.x*light.x+light.y*light.y+light.z*light.z);
+        if (llen > 0.0f) { light.x/=llen; light.y/=llen; light.z/=llen; }
+        struct Vec3 view = {0.0f, 0.0f, 1.0f};
+        struct Vec3 halfv = {light.x+view.x, light.y+view.y, light.z+view.z};
+        float hlen = std::sqrtf(halfv.x*halfv.x+halfv.y*halfv.y+halfv.z*halfv.z);
+        if (hlen > 0.0f) { halfv.x/=hlen; halfv.y/=hlen; halfv.z/=hlen; }
 
         auto clamp01 = [](float v){ return std::min(1.0f, std::max(0.0f, v)); };
 
@@ -159,10 +191,10 @@ int main(int argc, char** argv) {
 
                 // 计算法线用于光照
                 auto n = WaterNormal(comps, x, y, t);
-                float nx = n[0], ny = n[1], nz = n[2];
+                float nx = n.x, ny = n.y, nz = n.z;
 
                 // 漫反射项 N·L
-                float NdotL = std::max(0.0f, nx*light[0] + ny*light[1] + nz*light[2]);
+                float NdotL = std::max(0.0f, nx*light.x + ny*light.y + nz*light.z);
                 // 略微增强漫反射对比，使明暗边界更清晰
                 float diff = std::pow(NdotL, 1.25f) * 1.9f;
                 diff = std::min(1.0f, diff);
@@ -183,7 +215,7 @@ int main(int argc, char** argv) {
                 float b = shadedB * (1.0f - heightBoost) + 0.9f * heightBoost;
 
                 // 计算半程向量与法线的镜面项 H·N，用于高光（Blinn-Phong）
-                float HdotN = std::max(0.0f, halfv[0]*nx + halfv[1]*ny + halfv[2]*nz);
+                float HdotN = std::max(0.0f, halfv.x*nx + halfv.y*ny + halfv.z*nz);
                 // 柔和的镜面高光，但为可见性略微增强
                 float spec = std::pow(HdotN, 25.0f) * 0.28f;
                 r += spec; g += spec; b += spec*0.7f;
@@ -214,3 +246,193 @@ int main(int argc, char** argv) {
     SDL_Quit();
     return 0;
 }
+#endif
+#ifdef RUN_MODULAR_MAIN
+//模块函数声明
+bool InitializeSDL(SDL_Window** window, SDL_Renderer** renderer, int width, int height);
+void CleanupSDL(SDL_Window* window, SDL_Renderer* renderer);
+std::vector<WaveComponent> InitializeWaveComponents();//波分量初始化
+bool HandleEvents();
+void PrecomputeHeightMap(const std::vector<WaveComponent>& comps, std::vector<float>& grid, 
+                        int gw, int gh, int sampleScale, int width, int height, float time);//计算波的高度
+void RenderWater(SDL_Renderer* renderer, const std::vector<WaveComponent>& comps,
+                const std::vector<float>& grid, int gw, int gh, 
+                int sampleScale, int width, int height, float time);//渲染函数
+
+int main(int argc, char** argv) {
+    
+    const int WIDTH = 1920, HEIGHT = 1080;
+    const int SAMPLE_SCALE = 2;
+    const int GRID_WIDTH = WIDTH / SAMPLE_SCALE;
+    const int GRID_HEIGHT = HEIGHT / SAMPLE_SCALE;
+    
+    // 初始化SDL
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
+    if (!InitializeSDL(&window, &renderer, WIDTH, HEIGHT)) {
+        return 1;
+    }
+    
+    // 初始化波分量
+    std::vector<WaveComponent> waveComps = InitializeWaveComponents();
+    std::vector<float> heightGrid(GRID_WIDTH * GRID_HEIGHT);
+    
+    // 主循环
+    bool running = true;
+    while (running) {
+        running = HandleEvents();
+        float currentTime = static_cast<float>(SDL_GetTicks());
+        
+        PrecomputeHeightMap(waveComps, heightGrid, GRID_WIDTH, GRID_HEIGHT, 
+                           SAMPLE_SCALE, WIDTH, HEIGHT, currentTime);
+        
+        RenderWater(renderer, waveComps, heightGrid, GRID_WIDTH, GRID_HEIGHT,
+                   SAMPLE_SCALE, WIDTH, HEIGHT, currentTime);
+        
+        SDL_Delay(16);
+    }
+    
+    CleanupSDL(window, renderer);
+    return 0;
+}
+
+bool InitializeSDL(SDL_Window** window, SDL_Renderer** renderer, int width, int height) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
+        std::cerr << "SDL_Init error: " << SDL_GetError() << std::endl;
+        return false;
+    }
+
+    *window = SDL_CreateWindow("Wave Demo - Modular", SDL_WINDOWPOS_CENTERED, 
+                              SDL_WINDOWPOS_CENTERED, width, height, 0);
+    if (!*window) {
+        std::cerr << "CreateWindow failed: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return false;
+    }
+
+    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
+    if (!*renderer) {
+        std::cerr << "CreateRenderer failed: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(*window);
+        SDL_Quit();
+        return false;
+    }
+    return true;
+}
+
+void CleanupSDL(SDL_Window* window, SDL_Renderer* renderer) {
+    if (renderer) SDL_DestroyRenderer(renderer);
+    if (window) SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
+std::vector<WaveComponent> InitializeWaveComponents() {
+    std::vector<WaveComponent> comps;
+    const float PI = 3.14159265358979323846f;
+    
+    float lambda1 = 1200.0f; float k1 = 2.0f * PI / lambda1; float f1 = 0.02f; float omega1 = 2.0f * PI * f1 / 1000.0f;
+    comps.push_back({50.0f, k1, 1.0f, 0.0f, omega1, 0.0f, 0.0f});
+    
+    float lambda2 = 600.0f; float k2 = 2.0f * PI / lambda2; float f2 = 0.12f; float omega2 = 2.0f * PI * f2 / 1000.0f;
+    comps.push_back({18.0f, k2, 0.8f, 0.6f, omega2, 1.0f, 0.0f});
+    
+    float lambda3 = 180.0f; float k3 = 2.0f * PI / lambda3; float f3 = 0.6f; float omega3 = 2.0f * PI * f3 / 1000.0f;
+    comps.push_back({4.0f, k3, -0.3f, 0.95f, omega3, 0.5f, 0.0f});
+    
+    for (auto &c : comps) normalizeDir(c.dirX, c.dirY);
+    return comps;
+}
+
+bool HandleEvents() {
+    SDL_Event ev;
+    while (SDL_PollEvent(&ev)) {
+        if (ev.type == SDL_QUIT) return false;
+        if (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_ESCAPE) return false;
+    }
+    return true;
+}
+
+void PrecomputeHeightMap(const std::vector<WaveComponent>& comps, std::vector<float>& grid, 
+                        int gw, int gh, int sampleScale, int width, int height, float time) {
+    for (int gy = 0; gy < gh; ++gy) {
+        for (int gx = 0; gx < gw; ++gx) {
+            float x = (gx * sampleScale + sampleScale * 0.5f) - width * 0.5f;
+            float y = (gy * sampleScale + sampleScale * 0.5f) - height * 0.5f;
+            float h = WaterHeight(comps, x, y, time);
+            grid[gy * gw + gx] = h;
+        }
+    }
+}
+
+struct Color {
+    int r, g, b;
+};
+
+Color CalculateWaterColor(float h, const Vec3& normal, const Vec3& light, 
+                         const Vec3& halfv, int gx, int gy, 
+                         int sampleScale, int width, int height, float time) {
+    auto clamp01 = [](float v){ return std::min(1.0f, std::max(0.0f, v)); };
+    
+    float nx = normal.x, ny = normal.y, nz = normal.z;
+    float NdotL = std::max(0.0f, nx * light.x + ny * light.y + nz * light.z);
+    float diff = std::pow(NdotL, 1.25f) * 1.9f;
+    diff = std::min(1.0f, diff);
+    
+    float heightBoost = (h + 80.0f) / 160.0f;
+    heightBoost = std::pow(std::max(0.0f, heightBoost), 1.8f) * 0.5f;
+    
+    float baseR = 20.0f/255.0f, baseG = 70.0f/255.0f, baseB = 140.0f/255.0f;
+    float shadedR = baseR * (0.1f + 0.9f * diff);
+    float shadedG = baseG * (0.15f + 0.85f * diff);
+    float shadedB = baseB * (0.2f + 0.8f * diff);
+    
+    float r = shadedR * (1.0f - heightBoost) + 1.0f * heightBoost;
+    float g = shadedG * (1.0f - heightBoost) + 1.0f * heightBoost;
+    float b = shadedB * (1.0f - heightBoost) + 0.9f * heightBoost;
+    
+    float HdotN = std::max(0.0f, halfv.x * nx + halfv.y * ny + halfv.z * nz);
+    float spec = std::pow(HdotN, 25.0f) * 0.28f;
+    r += spec; g += spec; b += spec * 0.7f;
+    
+    r = clamp01(r); g = clamp01(g); b = clamp01(b);
+    float gamma = 1.8f;
+    r = std::powf(r, 1.0f/gamma);
+    g = std::powf(g, 1.0f/gamma);
+    b = std::powf(b, 1.0f/gamma);
+    
+    return {static_cast<int>(r * 255.0f), static_cast<int>(g * 255.0f), static_cast<int>(b * 255.0f)};
+}
+
+void RenderWater(SDL_Renderer* renderer, const std::vector<WaveComponent>& comps,
+                const std::vector<float>& grid, int gw, int gh, 
+                int sampleScale, int width, int height, float time) {
+    SDL_SetRenderDrawColor(renderer, 10, 24, 40, 255);
+    SDL_RenderClear(renderer);
+    
+    Vec3 light = {0.6f, -0.4f, 0.7f};
+    float llen = std::sqrtf(light.x * light.x + light.y * light.y + light.z * light.z);
+    if (llen > 0.0f) { light.x /= llen; light.y /= llen; light.z /= llen; }
+    
+    Vec3 view = {0.0f, 0.0f, 1.0f};
+    Vec3 halfv = {light.x + view.x, light.y + view.y, light.z + view.z};
+    float hlen = std::sqrtf(halfv.x * halfv.x + halfv.y * halfv.y + halfv.z * halfv.z);
+    if (hlen > 0.0f) { halfv.x /= hlen; halfv.y /= hlen; halfv.z /= hlen; }
+    
+    for (int gy = 0; gy < gh; ++gy) {
+        for (int gx = 0; gx < gw; ++gx) {
+            float h = grid[gy * gw + gx];
+            float x = (gx * sampleScale + sampleScale * 0.5f) - width * 0.5f;
+            float y = (gy * sampleScale + sampleScale * 0.5f) - height * 0.5f;
+            
+            Vec3 normal = WaterNormal(comps, x, y, time);
+            Color color = CalculateWaterColor(h, normal, light, halfv, gx, gy, 
+                                           sampleScale, width, height, time);
+            
+            SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+            SDL_Rect rect{gx * sampleScale, gy * sampleScale, sampleScale, sampleScale};
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+    SDL_RenderPresent(renderer);
+}
+#endif
