@@ -6,7 +6,6 @@
 
 #include "OpenCore/Graphics/IDrawableObject/Sprite.hpp"
 
-#include <SDL2/SDL_rect.h>
 #include <array>
 #include <memory>
 #include <vector>
@@ -22,6 +21,8 @@ class SDL_Vertex;
 using Wave = OpenCore_Wave;
 
 struct Texture;
+
+using OpenCore_Renderer::OpenCore_Rect;
 
 class Waterrect : public Sprite
 {

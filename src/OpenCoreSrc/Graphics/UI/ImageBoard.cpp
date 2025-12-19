@@ -26,17 +26,19 @@ void ImageBoard::onRender()
 {
     auto& GFX = GraphicsManager::getInstance();
     // 渲染函数
-    SDL_SetTextureAlphaMod(texture->texture.get(), 255.0f * AnimeState->transparency);
 
-    SDL_Rect dstRect = getBounds();
+
+    texture->texture.get()->setAlpha(255.0f * AnimeState->transparency);
+
+    OpenCore_Rect dstRect = getBounds();
 
     if (texture->Size() > 1)
     {
         // 多帧函数
-        SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
-        GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+        OpenCore_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
+        GFX.RenderTile(*texture->texture.get(), &srcRect, &dstRect, {0.0f, nullptr, 0});
         return;
     }
     // 单帧贴图
-    GFX.RenderCopyEx(texture->texture.get(), NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+    GFX.RenderTile(*texture->texture.get(), NULL, &dstRect, {0.0f, nullptr, 0});
 }

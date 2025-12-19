@@ -24,15 +24,15 @@ Button::Button(const std::string& id, uint8_t layer, std::unique_ptr<Texture> te
 
 void Button::handlEvents(SDL_Event &event, float totalTime)
 {
-    SDL_Point mousePos = { event.motion.x, event.motion.y };
-    SDL_Rect bounds = getRenderedBounds();
+    OpenCore_Point mousePos = { event.motion.x, event.motion.y };
+    OpenCore_Rect bounds = getRenderedBounds();
     // 主要是判断按钮状态：悬停与否
     switch(event.type)
     {
         case SDL_MOUSEMOTION:
         {
             
-            if(!SDL_PointInRect(&mousePos, &bounds))
+            if(!OpenCore_PointInRect(mousePos, bounds))
             {
                 // 如果鼠标不在其范围之内
                 State = ButtonState::Normal;
@@ -46,7 +46,7 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
         case SDL_MOUSEBUTTONDOWN:
         {
             if (event.button.button == SDL_BUTTON_LEFT) {
-                if (SDL_PointInRect(&mousePos, &bounds))
+                if (OpenCore_PointInRect(mousePos, bounds))
                 {
                     State = ButtonState::Pressed;
                 }
@@ -58,7 +58,7 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
             if (event.button.button == SDL_BUTTON_LEFT) {
                 
                 // 检查鼠标是否在按钮范围内且之前是按下的状态
-                if (SDL_PointInRect(&mousePos, &bounds) && State == ButtonState::Pressed)
+                if (OpenCore_PointInRect(mousePos, bounds) && State == ButtonState::Pressed)
                 {
                     // 触发点击回调
                     if (onClick) {
@@ -86,17 +86,17 @@ void Button::onUpdate(float totalTime)
 void Button::onRender()
 {
     // 渲染函数
-    SDL_SetTextureAlphaMod(texture->texture.get(), 255.0f * AnimeState->transparency);
+    texture->texture.get()->setAlpha(static_cast<uint8_t>(255.0f * AnimeState->transparency));
 
-    SDL_Rect dstRect = getBounds();
+    OpenCore_Rect dstRect = getBounds();
 
     if (texture->Size() > 1)
     {
         // 多帧函数
-        SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
-        GraphicsManager::getInstance().RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+        OpenCore_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
+        GraphicsManager::getInstance().RenderTile(*texture->texture.get(), &srcRect, &dstRect, {AnimeState->angle, nullptr, NULL});
         return;
     }
     // 单帧贴图
-    GraphicsManager::getInstance().RenderCopyEx(texture->texture.get(), NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+    GraphicsManager::getInstance().RenderTile(*texture->texture.get(), nullptr, &dstRect, {AnimeState->angle, nullptr, NULL});
 }

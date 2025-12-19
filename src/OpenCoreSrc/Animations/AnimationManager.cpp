@@ -2,13 +2,13 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include <algorithm>
 
-Texture::Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex) : xCount(x), yCount(y), texture(tex)
+Texture::Texture(uint8_t x, uint8_t y, std::shared_ptr<OpenCore_Tilemap> tex) : xCount(x), yCount(y), texture(tex)
 {
     int W,H;
 
     if(!texture) SDL_Log("Texture::Texture() encountered empty texture in the initialization.");
 
-    SDL_QueryTexture(texture.get(), NULL, NULL, &W, &H);
+    texture.get()->QueryTile(W, H);
 
     width = static_cast<uint16_t>(W);
     height = static_cast<uint16_t>(H);
@@ -23,10 +23,10 @@ Texture::Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex) : xCoun
     height/=yCount;
 }
 
-SDL_Rect Texture::getSrcRect(uint8_t index)
+OpenCore_Rect Texture::getSrcRect(uint8_t index)
 {
     // 构造一个0矩阵的常量，避免重复生成
-    static const SDL_Rect emptyRect{0, 0, 0, 0};
+    static const OpenCore_Rect emptyRect{0, 0, 0, 0};
 
     if (index < 0 || index >= Size()) {
         SDL_Log("Texture::getSrcRect() index out of range: %d", index);
@@ -36,7 +36,7 @@ SDL_Rect Texture::getSrcRect(uint8_t index)
     uint8_t col = index % xCount;
     uint8_t row = index / xCount;
 
-    return SDL_Rect{
+    return OpenCore_Rect{
         col * width,
         row * height,
         width,

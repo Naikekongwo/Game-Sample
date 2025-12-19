@@ -7,6 +7,8 @@
 #include <atomic>
 #include <string>
 
+#include "OpenCore/Graphics/Renderer/IRenderer.hpp"
+
 // AnimationState 动画状态
 // 他会返回一系列的状态信息
 // 例如透明度、尺寸、或者是位置等

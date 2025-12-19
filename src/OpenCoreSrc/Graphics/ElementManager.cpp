@@ -99,3 +99,8 @@ bool ElementManager::removeElement(const std::string &id)
     }
     return true;
 }
+
+ElementManager::~ElementManager()
+{
+    onDestroy();
+}

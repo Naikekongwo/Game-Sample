@@ -38,7 +38,7 @@ void IDrawableObject::setPosition(float xPercent, float yPercent)
     }
     else
     {
-        SDL_Rect parent = parentContainer->getBounds();
+        OpenCore_Rect parent = parentContainer->getBounds();
         baseW = parent.w;
         baseH = parent.h;
     }
@@ -60,7 +60,7 @@ void IDrawableObject::setScale(float w, float h)
     }
     else
     {
-        SDL_Rect parent = parentContainer->getBounds();
+        OpenCore_Rect parent = parentContainer->getBounds();
         baseW = parent.w;
         baseH = parent.h;
     }

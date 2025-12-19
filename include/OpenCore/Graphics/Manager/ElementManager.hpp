@@ -10,7 +10,6 @@
 #include "OpenCore/Graphics/UI/Button.hpp"
 #include "OpenCore/Graphics/UI/FrameCounter.hpp"
 #include "OpenCore/Graphics/UI/ImageBoard.hpp"
-#include "OpenCore/Graphics/UI/Label.hpp"
 
 #include "OpenCore/Graphics/IDrawableObject/Sprite.hpp"
 
@@ -22,8 +21,7 @@
 class ElementManager
 {
   public:
-    ~ElementManager() { onDestroy(); }
-
+    ~ElementManager();
     // 基础方法
 
     void handlEvents(SDL_Event &event, float totalTime);

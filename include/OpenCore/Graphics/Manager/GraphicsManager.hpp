@@ -7,6 +7,8 @@
 #include <SDL2/SDL.h>
 #include <string>
 
+#include "OpenCore/Graphics/Renderer/IRenderer.hpp"
+#include "OpenCore/Graphics/Renderer/SDL_Adapter.hpp"
 
 #include <memory>
 
@@ -27,26 +29,28 @@ class GraphicsManager
 
     ScaleManager *getScale() const { return this->ContentScale.get(); }
 
-    SDL_Window *getWindow() const { return window; }
-    SDL_Renderer *getRenderer() const { return renderer; }
-
-    int RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
-                     const SDL_Rect *dstrect, const double angle,
+    int RenderCopyEx(SDL_Texture *texture, const OpenCore_Rect *srcrect,
+                     const OpenCore_Rect *dstrect, const double angle,
                      const SDL_Point *center, const SDL_RendererFlip flip);
-    int RenderCopy(SDL_Texture *texture, const SDL_Rect *srcrect,
-                     const SDL_Rect *dstrect, const double angle,
-                     const SDL_Point *center, const SDL_RendererFlip flip);
+    int RenderCopy(SDL_Texture *texture, const OpenCore_Rect *srcrect,
+                   const OpenCore_Rect *dstrect, const double angle,
+                   const SDL_Point *center, const SDL_RendererFlip flip);
 
-    int setOffScreenRender(SDL_Texture *texture);
+    int setOffScreenRender(OpenCore_Tilemap *tileMap);
 
-    SDL_Texture *createTexture(uint16_t w, uint16_t h);
+    int RenderTile(OpenCore_Tilemap &Tile, OpenCore_Rect *srcRect, OpenCore_Rect *dstRect, Tilemap_Info Info)
+    {
+      return Renderer->RenderTilemap(Tile, srcRect, dstRect, Info);
+    }
+
+    IRenderer* getRenderEngine();
+
+    OpenCore_Tilemap *createTexture(uint16_t w, uint16_t h);
 
     void setScale(uint16_t w, uint16_t h);
 
   private:
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-
+    std::unique_ptr<IRenderer> Renderer;
     std::unique_ptr<ScaleManager> ContentScale;
 };
 

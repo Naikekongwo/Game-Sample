@@ -1,7 +1,10 @@
-#pragma once
+#ifndef _ECLIPSEA_HPP_
+#define _ECLIPSEA_HPP_
+
 
 // Eclipsea.hpp
 // 项目实际的头库
+
 
 #define music_oceanwaves 1001
 
@@ -47,3 +50,5 @@ std::unique_ptr<T> UI(const std::string& id, uint8_t layer, short texID, short f
 std::unique_ptr<Texture> MakeTexture(uint8_t xCount, uint8_t yCount, short texId);
 
 #include "template/TextureFactory.inl"
+
+#endif //_ECLIPSEA_HPP_

@@ -56,6 +56,9 @@ bool OpenEngine::Initialize()
 
     // 初始化资源管理器(其初始化时需要renderer，所以必须在GFX之后初始化)
     ResManager.Init();
+
+    
+    
     // 初始化音效管理器
     SFXManager.Init(&ResManager);
 
@@ -69,6 +72,8 @@ bool OpenEngine::MainLoop()
 
     bool should_close = false;
     SDL_Event event;
+
+    auto SDL_GFX = static_cast<SDL_Adapter*>(GFXManager.getRenderEngine());
 
     sController->changeStage(std::make_unique<PreloadStage>(timer.get(), sController.get()));
 
@@ -85,14 +90,14 @@ bool OpenEngine::MainLoop()
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_F11)
                 {
-                    Uint32 flags = SDL_GetWindowFlags(GFXManager.getWindow());
+                    Uint32 flags = SDL_GetWindowFlags(SDL_GFX->getWindow());
                     if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
                     {
-                        SDL_SetWindowFullscreen(GFXManager.getWindow(), 0);
+                        SDL_SetWindowFullscreen(SDL_GFX->getWindow(), 0);
                     }
                     else
                     {
-                        SDL_SetWindowFullscreen(GFXManager.getWindow(), SDL_WINDOW_FULLSCREEN);
+                        SDL_SetWindowFullscreen(SDL_GFX->getWindow(), SDL_WINDOW_FULLSCREEN);
                     }
                 }
                 break;
@@ -120,14 +125,16 @@ bool OpenEngine::MainLoop()
 
         ResManager.ProcessMainThreadTasks();
 
+        GFXManager.getRenderEngine()->SyncFunction();
+
         sController->onUpdate();
 
-        SDL_Renderer *renderer = GFXManager.getRenderer();
+        SDL_Renderer *renderer = SDL_GFX->getRenderer();
 
-        SDL_RenderClear(GFXManager.getRenderer());
+        SDL_RenderClear(SDL_GFX->getRenderer());
         sController->onRender();
 
-        SDL_RenderPresent(GFXManager.getRenderer());
+        SDL_RenderPresent(SDL_GFX->getRenderer());
 
         SDL_Delay(timer->getDelayTime());
         // 限制帧间隔

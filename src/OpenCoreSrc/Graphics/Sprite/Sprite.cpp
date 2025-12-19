@@ -1,11 +1,11 @@
 #include "OpenCore/OpenCore.hpp"
 
-SDL_Rect Sprite::getBounds()
+OpenCore_Rect Sprite::getBounds()
 {
     if (!AnimeState)
     {
         SDL_Log("Sprite::getBounds() failed: AnimeState is nullptr");
-        return SDL_Rect{0, 0, 0, 0};
+        return OpenCore_Rect{0, 0, 0, 0};
     }
 
     const auto &state = *AnimeState;
@@ -54,17 +54,17 @@ SDL_Rect Sprite::getBounds()
 
     // 如果是绝对定位，直接返回逻辑坐标
     if (absolutePosite || !parentContainer) {
-        return SDL_Rect{logicalX, logicalY, logicalWidth, logicalHeight};
+        return OpenCore_Rect{logicalX, logicalY, logicalWidth, logicalHeight};
     }
 
     // 相对定位：基于父容器的实际边界进行转换
-    SDL_Rect parentBounds = parentContainer->getBounds();
+    OpenCore_Rect parentBounds = parentContainer->getBounds();
     
     
     // 将本元素的逻辑坐标转换到父容器的实际坐标系中
     // Position 是基于父容器1920x1080逻辑空间的
     // Scale 也是基于父容器1920x1080逻辑空间的
-    return SDL_Rect{
+    return OpenCore_Rect{
         parentBounds.x + static_cast<int16_t>(logicalX),
         parentBounds.y + static_cast<int16_t>(logicalY),
         static_cast<uint16_t>(logicalWidth),  // 宽度也会根据父容器缩放
@@ -73,7 +73,7 @@ SDL_Rect Sprite::getBounds()
 }
 
 
-SDL_Rect Sprite::getRenderedBounds()
+OpenCore_Rect Sprite::getRenderedBounds()
 {
     return OpenCoreManagers::GFXManager.getScale()->ToScreen(getBounds());
 }

@@ -4,10 +4,11 @@
 // IDrawableObject.hpp
 // 可绘图类的基类
 
-#include <SDL2/SDL.h>
 #include <memory>
 #include <string>
+#include "OpenCore/Graphics/Renderer/IRenderer.hpp"
 
+#include "SDL2/SDL.h"
 
 class AnimationManager;
 class AnimationPipeline;
@@ -47,10 +48,10 @@ class IDrawableObject
     virtual bool onDestroy() = 0;
 
     // 获取逻辑碰撞箱
-    virtual SDL_Rect getBounds() = 0;
+    virtual OpenCore_Rect getBounds() = 0;
 
     // 获取实际碰撞箱
-    virtual SDL_Rect getRenderedBounds() = 0;
+    virtual OpenCore_Rect getRenderedBounds() = 0;
 
     // 更改贴图
     void changeTexture(std::unique_ptr<Texture> newTexture);

@@ -6,6 +6,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "OpenCore/Graphics/Renderer/IRenderer.hpp"
+
 class ScaleManager final
 {
   public:
@@ -15,7 +17,7 @@ class ScaleManager final
     void UpdateTargetSize(uint16_t windowW, uint16_t windowH);
 
     // 转换逻辑坐标 -> 实际坐标
-    SDL_Rect ToScreen(const SDL_Rect &logical) const;
+    OpenCore_Rect ToScreen(const OpenCore_Rect &logical) const;
     SDL_FPoint ToScreen(const SDL_FPoint &logical) const;
 
     // 转换实际坐标 -> 逻辑坐标

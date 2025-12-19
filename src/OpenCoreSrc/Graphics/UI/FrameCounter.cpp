@@ -1,5 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
+#include <SDL2/SDL_render.h>
 
 
 FrameCounter::FrameCounter(const std::string& id, uint8_t layer, Texture *texture)
@@ -33,14 +34,25 @@ void FrameCounter::onRender()
     if(!textSurface) return;
 
     auto &GFX = GraphicsManager::getInstance();
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(GFX.getRenderer(), textSurface);
+    auto GF = GFX.getRenderEngine();
+
+    auto SDLGF = static_cast<SDL_Adapter*>(GF);
+
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(SDLGF->getRenderer(), textSurface);
     if(!textTexture) {
         SDL_FreeSurface(textSurface);
         return;
     }
 
-    SDL_Rect rect {0, 0, textSurface->w, textSurface->h};
-    GFX.RenderCopyEx(textTexture, nullptr, &rect, 0.0, nullptr, SDL_FLIP_NONE);
+    OpenCore_Rect rect {0, 0, textSurface->w, textSurface->h};
+
+    auto entry = GFX.getRenderEngine();
+
+    auto si = static_cast<SDL_Adapter*>(entry);
+
+    SDL_Rect Srect {rect.x, rect.y, rect.w, rect.h};
+
+    SDL_RenderCopyEx(si->getRenderer(),textTexture, nullptr, &Srect, 0.0, nullptr, SDL_FLIP_NONE);
 
     SDL_DestroyTexture(textTexture);
     SDL_FreeSurface(textSurface);

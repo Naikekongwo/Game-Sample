@@ -20,9 +20,9 @@ void ScaleManager::UpdateTargetSize(uint16_t windowW, uint16_t windowH)
     SDL_Log("ScaleManager::UpdateTargetSize() Now we are using %d x %d", windowWidth, windowHeight);
 }
 
-SDL_Rect ScaleManager::ToScreen(const SDL_Rect &logical) const
+OpenCore_Rect ScaleManager::ToScreen(const OpenCore_Rect &logical) const
 {
-    SDL_Rect r;
+    OpenCore_Rect r;
     r.x = static_cast<int>(logical.x * scale + offsetX);
     r.y = static_cast<int>(logical.y * scale + offsetY);
     r.w = static_cast<int>(logical.w * scale);

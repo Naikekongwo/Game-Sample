@@ -60,7 +60,11 @@ void Waterrect::onRender()
 {
     const auto& GFXManager = OpenCoreManagers::GFXManager;
 
-    SDL_RenderGeometry(GFXManager.getRenderer(), this->texture->texture.get(), Vertices.data(), Vertices.size(), indices.data(), indices.size());
+    auto dick = GFXManager.getInstance().getRenderEngine();
+
+    auto engine = static_cast<SDL_Adapter*>(dick);
+
+    engine->RenderVertices(this->texture->texture.get(), Vertices.data(), Vertices.size(), indices.data(), indices.size());
 }
 
 bool Waterrect::onDestroy()
@@ -74,7 +78,7 @@ bool Waterrect::onDestroy()
 // 注意！这里是亮度的映射函数
 int Waterrect::FreshVertex(SDL_Vertex& vertex, float totalTime)
 {
-    SDL_Rect Border = getRenderedBounds();
+    OpenCore_Rect Border = getRenderedBounds();
     
     // 基础位置计算
     vertex.position.x = vertex.tex_coord.x * Border.w + Border.x;
@@ -212,7 +216,7 @@ int Waterrect::FreshVertex(SDL_Vertex& vertex, float totalTime)
     vertex.color.b = static_cast<uint8_t>(b * 255.0f);
     vertex.color.a = static_cast<uint8_t>(alpha * 255.0f);
 
-    SDL_Rect newRect;
+    OpenCore_Rect newRect;
 
     newRect.x = vertex.position.x;
     newRect.y =vertex.position.y;

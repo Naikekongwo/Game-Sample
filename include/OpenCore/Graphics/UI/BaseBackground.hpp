@@ -18,7 +18,7 @@ class BaseBackground : public UIElement
 
     void handlEvents(SDL_Event &event, float totalTime) override;
     int setBakedTexture(bool isBaked) override;
-    bool preRenderTexture(SDL_Texture* texture) override;
+    bool preRenderTexture(OpenCore_Tilemap* texture) override;
 
     // 特殊函数
 

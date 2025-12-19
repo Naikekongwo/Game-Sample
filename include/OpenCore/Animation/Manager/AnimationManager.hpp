@@ -23,13 +23,13 @@ struct Texture
     uint16_t width,height;
 
     // 材质
-    std::shared_ptr<SDL_Texture> texture;
+    std::shared_ptr<OpenCore_Tilemap> texture;
 
-    Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex);
+    Texture(uint8_t x, uint8_t y, std::shared_ptr<OpenCore_Tilemap> tex);
 
     uint16_t Size() const noexcept { return xCount * yCount; }
 
-    SDL_Rect getSrcRect(uint8_t index);    
+    OpenCore_Rect getSrcRect(uint8_t index);    
 };
 
 class AnimationManager

@@ -42,14 +42,14 @@ int BaseBackground::setBakedTexture(bool isBaked)
 {
     directRender = isBaked;
 
-    // SDL_Rect Borders = getBounds();
+    // OpenCore_Rect Borders = getBounds();
 
     // TextureBuffer.reset(GraphicsManager::getInstance().createTexture(Borders.w, Borders.h));
     // preRenderTexture(TextureBuffer.get());
     return 0;
 }
 
-bool BaseBackground::preRenderTexture(SDL_Texture *target)
+bool BaseBackground::preRenderTexture(OpenCore_Tilemap *target)
 {
     auto &GFX = GraphicsManager::getInstance();
     if (!target) return false;
@@ -57,14 +57,14 @@ bool BaseBackground::preRenderTexture(SDL_Texture *target)
     GFX.setOffScreenRender(target);
 
     int texW, texH;
-    SDL_QueryTexture(texture->texture.get(), nullptr, nullptr, &texW, &texH);
+    texture->texture.get()->QueryTile(texW, texH);
 
-    SDL_Rect srcRect{};
-    SDL_Rect dstRect{};
+    OpenCore_Rect srcRect{};
+    OpenCore_Rect dstRect{};
 
     // 离屏纹理宽高
     int targetW, targetH;
-    SDL_QueryTexture(target, nullptr, nullptr, &targetW, &targetH);
+    target->QueryTile(targetW, targetH);
 
     for (int row = 0; row < 3; row++)
     {
@@ -106,7 +106,7 @@ bool BaseBackground::preRenderTexture(SDL_Texture *target)
                 dstRect.h = nativeScale;
             }
 
-            GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, 0.0, nullptr, SDL_FLIP_NONE);
+            GFX.RenderTile(*texture->texture.get(), &srcRect, &dstRect, {0.0, nullptr, 0});
         }
     }
 

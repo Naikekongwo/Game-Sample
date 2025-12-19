@@ -232,7 +232,7 @@ int main(int argc, char** argv) {
                 int ig = static_cast<int>(g*255.0f);
                 int ib = static_cast<int>(b*255.0f);
                 SDL_SetRenderDrawColor(ren, ir, ig, ib, 255);
-                SDL_Rect rect{gx*sampleScale, gy*sampleScale, sampleScale, sampleScale};
+                OpenCore_Rect rect{gx*sampleScale, gy*sampleScale, sampleScale, sampleScale};
                 SDL_RenderFillRect(ren, &rect);
             }
         }
@@ -477,7 +477,7 @@ void RenderWater(SDL_Renderer* renderer, const std::vector<WaveComponent>& comps
                                            sampleScale, width, height, time);
             
             SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
-            SDL_Rect rect{gx * sampleScale, gy * sampleScale, sampleScale, sampleScale};
+            OpenCore_Rect rect{gx * sampleScale, gy * sampleScale, sampleScale, sampleScale};
             SDL_RenderFillRect(renderer, &rect);
         }
     }
