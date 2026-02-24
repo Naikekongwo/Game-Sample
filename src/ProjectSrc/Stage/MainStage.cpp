@@ -23,7 +23,7 @@ void MainStage::Init()
 
     background->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5 * fullwidth, 0.5* fullheight)
+        .Posite(0.5 * fullwidth, 0.5 * fullheight)
         .Scale(fullwidth, fullheight);
     connector->Configure()
         .Scale(fullwidth, fullheight)
@@ -49,7 +49,6 @@ void MainStage::Init()
     std::function<void()> startAction = [this]()
     {
         auto gameplay = std::make_unique<GameplayStage>(timer, sController);
-        sController->removeStage(this->stageType);
         sController->changeStage(std::move(gameplay));
     };
 
@@ -77,7 +76,11 @@ void MainStage::Init()
 
     auto Label1 = UI<Label>("label", 1, 24, NULL, NULL);
 
-    Label1->Configure().Anchor(AnchorPoint::Center).Parent(nullptr).Posite(0.5 * fullwidth, 0.5 * fullheight).Scale(0.5 * fullwidth, 0.5 * fullheight);
+    Label1->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Parent(nullptr)
+        .Posite(0.5 * fullwidth, 0.5 * fullheight)
+        .Scale(0.5 * fullwidth, 0.5 * fullheight);
 
     Label1->setText("测试测试测试", 24);
 
@@ -92,7 +95,6 @@ void MainStage::Init()
 
     // button1->setOnClick([itemBoxRaw]() {
     // itemBoxRaw->Animate().Frame(2,2,false).Commit();});
-
 
     Elements->PushElement(std::move(background));
     Elements->PushElement(std::move(connector));
@@ -110,9 +112,7 @@ void MainStage::Init()
     // ItemMgr.registerItem(bottle_empty);
 }
 
-void MainStage::onUpdate() { 
-    Elements->onUpdate(timer->getTotalTime()); 
-}
+void MainStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
 
 void MainStage::onRender() { Elements->onRender(); }
 

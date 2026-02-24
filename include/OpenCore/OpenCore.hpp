@@ -11,57 +11,54 @@
 
 #define DEBUG_MODE DEBUG_OFF
 
-
-#include "Timer.hpp"
 #include "Macros.hpp"
+#include "Timer.hpp"
 
+#include "Graphics/Manager/GraphicsManager.hpp"
 #include "OpenCore/Concepts/OpenCore_Vec3.hpp"
 #include "OpenCore/Concepts/OpenCore_Wave.hpp"
-
 #include "ResourceManager.hpp"
 #include "SoundEffectManager.hpp"
-#include "Graphics/Manager/GraphicsManager.hpp"
 
-#include "Gameplay/Manager/ItemManager.hpp"
-#include "OpenCore/Map/Manager/MapManager.h"
+#include "Gameplay/Manager/EntityManager.hpp"
+#include "Map/Manager/MapManager.hpp"
 
 // 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
 namespace OpenCoreManagers
 {
-    inline ResourceManager& ResManager = ResourceManager::getInstance();
-    inline GraphicsManager& GFXManager = GraphicsManager::getInstance();
-    inline SoundEffectManager& SFXManager = SoundEffectManager::getInstance();
-}
+inline ResourceManager &ResManager = ResourceManager::getInstance();
+inline GraphicsManager &GFXManager = GraphicsManager::getInstance();
+inline SoundEffectManager &SFXManager = SoundEffectManager::getInstance();
+} // namespace OpenCoreManagers
 
 // 游戏对应的模块单例
 namespace Gameplay
 {
-    inline ItemManager& ItemMgr = ItemManager::getInstance();
-    inline MapManager& MapMgr = MapManager::getInstance();
-}
+inline MapManager &MapMgr = MapManager::getInstance();
+inline PlayerEntity &Player = PlayerEntity::getInstance();
+} // namespace Gameplay
 
-#include "Graphics/Manager/ScaleManager.hpp"
 #include "Animation/AnimationPipeline.hpp"
 #include "Animation/Manager/AnimationManager.hpp"
 #include "Graphics/Configurator/DrawableConfigurator.hpp"
 #include "Graphics/Manager/ElementManager.hpp"
+#include "Graphics/Manager/ScaleManager.hpp"
 #include "Stage/StageController.hpp"
 
 #include <memory>
 
-
 class OpenEngine final
 {
-    public:
+  public:
     // 单例的获取函数
-    static OpenEngine& getInstance();
+    static OpenEngine &getInstance();
 
     bool Run();
     bool Initialize();
     bool MainLoop();
     bool CleanUp();
 
-    private:
+  private:
     std::unique_ptr<StageController> sController;
     std::unique_ptr<Timer> timer;
 };

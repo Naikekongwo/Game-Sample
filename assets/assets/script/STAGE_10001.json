@@ -1,75 +1,79 @@
 {
-    "1001" : {
-        "path" : "assets/audio/bgm_oceanwaves.mp3",
-        "category" : "music"
+    "1001": {
+        "path": "assets/audio/bgm_oceanwaves.mp3",
+        "category": "music"
     },
-    "2001" : {
-        "path" : "assets/backgrounds/menu_ocean.png",
-        "category" : "texture"
+    "2001": {
+        "path": "assets/backgrounds/menu_ocean.png",
+        "category": "texture"
     },
-    "2002" : {
-        "path" : "assets/ui/Preload_Title.png",
-        "category" : "texture"
+    "2002": {
+        "path": "assets/ui/Preload_Title.png",
+        "category": "texture"
     },
-    "2003" : {
+    "2003": {
         "path": "assets/ui/icon_opencore.png",
-        "category" : "texture"
+        "category": "texture"
     },
-    "2004" : {
-        "path" : "assets/ui/icon_studio.png",
-        "category" : "texture"
+    "2004": {
+        "path": "assets/ui/icon_studio.png",
+        "category": "texture"
     },
-    "2005" : {
-        "path" : "assets/ui/preload_menu_connector.png",
-        "category" : "texture"
+    "2005": {
+        "path": "assets/ui/preload_menu_connector.png",
+        "category": "texture"
     },
-    "2006" : {
-        "path" : "assets/backgrounds/main_background.png",
-        "category" : "texture"
+    "2006": {
+        "path": "assets/backgrounds/main_background.png",
+        "category": "texture"
     },
-    "2007" : {
-        "path" : "assets/backgrounds/gameplay_background.png",
-        "category" : "texture"
+    "2007": {
+        "path": "assets/backgrounds/gameplay_background.png",
+        "category": "texture"
     },
-    "2008" : {
-        "path" : "assets/ui/Button_Start.png",
-        "category" : "texture"
+    "2008": {
+        "path": "assets/ui/Button_Start.png",
+        "category": "texture"
     },
-    "2009" : {
-        "path" : "assets/ui/purifier_background.png",
-        "category" : "texture"
+    "2009": {
+        "path": "assets/ui/purifier_background.png",
+        "category": "texture"
     },
-    "2010" : {
-        "path" : "assets/ui/Button_Continue.png",
-        "category" : "texture"
+    "2010": {
+        "path": "assets/ui/Button_Continue.png",
+        "category": "texture"
     },
-    "2011" : {
-        "path" : "assets/ui/Button_Settings.png",
-        "category" : "texture"
+    "2011": {
+        "path": "assets/ui/Button_Settings.png",
+        "category": "texture"
     },
-    "2012" : {
-        "path" : "assets/ui/Title_Main.png",
-        "category" : "texture"
+    "2012": {
+        "path": "assets/ui/Title_Main.png",
+        "category": "texture"
     },
-    "2013" : {
-        "path" : "assets/ui/animation_waterdrops.png",
-        "category" : "texture"
+    "2013": {
+        "path": "assets/ui/animation_waterdrops.png",
+        "category": "texture"
     },
-    "2014" : {
-        "path" : "assets/ui/animation_waterwaves.png",
-        "category" : "texture"
+    "2014": {
+        "path": "assets/ui/animation_waterwaves.png",
+        "category": "texture"
     },
-    "2015" : {
-        "path" : "assets/ui/Button_Back.png",
-        "category" : "texture"
+    "2015": {
+        "path": "assets/ui/Button_Back.png",
+        "category": "texture"
     },
-    "2016" : {
-        "path" : "assets/terrain/water.png",
-        "category" : "texture"
+    "2016": {
+        "path": "assets/terrain/wasteland.png",
+        "category": "texture"
     },
-    "9001" : {
-        "path" : "assets/ui/font/OpenCoreFont.ttf",
-        "category" : "font",
-        "size" : 24
+    "2017": {
+        "path": "assets/terrain/water.png",
+        "category": "texture"
+    },
+    "9001": {
+        "path": "assets/ui/font/OpenCoreFont.ttf",
+        "category": "font",
+        "size": 24
     }
 }

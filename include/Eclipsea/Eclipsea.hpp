@@ -20,30 +20,29 @@
 #define water_drops 2013
 #define water_waves 2014
 #define img_BackButton 2015
+#define wasteland 2016
 
 #define font_normal 9001
 
 #include "Animation/MyAnimationPipeline.hpp"
 
-#include "Gameplay/Items/ItemConsumable.hpp"
-#include "Gameplay/ItemContainer/Backpack.hpp"
-
 #include "Sprite/Waterrect.hpp"
 
 #include "UI/MultiImageBoard.hpp"
 
-#include "Stage/PurifierStage.hpp"
-#include "Stage/PreloadStage.hpp"
-#include "Stage/MainStage.hpp"
 #include "Stage/GameplayStage.hpp"
+#include "Stage/MainStage.hpp"
+#include "Stage/PreloadStage.hpp"
+#include "Stage/PurifierStage.hpp"
 
 // 模板
 template <typename T>
-std::unique_ptr<T> UI(const std::string& id, uint8_t layer, short texID, short frameX, short frameY);
+std::unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,
+                      short frameX, short frameY);
 
 #include "template/UIFactory.inl"
 
-
-std::unique_ptr<Texture> MakeTexture(uint8_t xCount, uint8_t yCount, short texId);
+std::unique_ptr<Texture> MakeTexture(uint8_t xCount, uint8_t yCount,
+                                     short texId);
 
 #include "template/TextureFactory.inl"
