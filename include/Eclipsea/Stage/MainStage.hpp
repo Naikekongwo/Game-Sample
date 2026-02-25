@@ -9,6 +9,7 @@ enum class MainStagePhase
 {
     Entering,
     Idle,
+    Exposure,
     Exiting
 };
 

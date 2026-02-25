@@ -1,8 +1,9 @@
-#include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/Animation/AnimationPipeline.hpp"
+#include "OpenCore/OpenCore.hpp"
 
-ImageBoard::ImageBoard(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture)
+ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
+                       std::unique_ptr<Texture> texture)
 {
     // 设置ID 层级属性
     this->id = id;
@@ -21,22 +22,26 @@ ImageBoard::ImageBoard(const std::string& id, uint8_t layer, std::unique_ptr<Tex
     this->texture = std::move(texture);
 }
 
-
 void ImageBoard::onRender()
 {
-    auto& GFX = GraphicsManager::getInstance();
+    auto &GFX = GraphicsManager::getInstance();
     // 渲染函数
-    SDL_SetTextureAlphaMod(texture->texture.get(), 255.0f * AnimeState->transparency);
+    SDL_SetTextureAlphaMod(texture->texture.get(),
+                           255.0f * AnimeState->transparency);
 
     SDL_Rect dstRect = getBounds();
+
+    dstRect = followRect(dstRect);
 
     if (texture->Size() > 1)
     {
         // 多帧函数
         SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
-        GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+        GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect,
+                         AnimeState->angle, NULL, SDL_FLIP_NONE);
         return;
     }
     // 单帧贴图
-    GFX.RenderCopyEx(texture->texture.get(), NULL, &dstRect, AnimeState->angle, NULL, SDL_FLIP_NONE);
+    GFX.RenderCopyEx(texture->texture.get(), NULL, &dstRect, AnimeState->angle,
+                     NULL, SDL_FLIP_NONE);
 }

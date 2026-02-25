@@ -142,3 +142,41 @@ bool IDrawableObject::onDestroy()
 
     return true;
 }
+
+void IDrawableObject::setMovingMargin(int Margin) { movingMargin = Margin; }
+
+SDL_Rect IDrawableObject::followRect(const SDL_Rect &srcRect) const
+{
+    // 如果不启用视差，直接返回
+    if (movingMargin == 0)
+        return srcRect;
+
+    auto &GFX = GraphicsManager::getInstance();
+
+    int winW, winH;
+    SDL_GetWindowSize(GFX.getWindow(), &winW, &winH);
+
+    int centerX = winW / 2;
+    int centerY = winH / 2;
+
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    // 归一化到 -1 ~ 1
+    float normX = (mouseX - centerX) / static_cast<float>(centerX);
+    float normY = (mouseY - centerY) / static_cast<float>(centerY);
+
+    // 防止鼠标移出窗口导致过大
+    normX = std::clamp(normX, -1.0f, 1.0f);
+    normY = std::clamp(normY, -1.0f, 1.0f);
+
+    // 计算偏移
+    float offsetX = normX * movingMargin;
+    float offsetY = normY * movingMargin;
+
+    SDL_Rect result = srcRect;
+    result.x += static_cast<int>(offsetX);
+    result.y += static_cast<int>(offsetY);
+
+    return result;
+}

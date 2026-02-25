@@ -11,6 +11,8 @@
 #define icon_studio 2004
 #define img_connector 2005
 #define background_main 2006
+#define desset_top 2020
+#define base_sky 2021
 #define background_gameplay 2007
 #define img_StartButton 2008
 #define img_ContButton 2010

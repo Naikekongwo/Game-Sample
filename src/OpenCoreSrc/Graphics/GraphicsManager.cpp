@@ -37,9 +37,9 @@ bool GraphicsManager::Init()
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
     // 其他平台的初始化方法
-    if (SDL_CreateWindowAndRenderer(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT,
-                                    SDL_RENDERER_ACCELERATED, &window,
-                                    &renderer) != 0)
+    if (SDL_CreateWindowAndRenderer(
+            BASE_WINDOW_WIDTH * 0.5, BASE_WINDOW_HEIGHT * 0.5,
+            SDL_RENDERER_ACCELERATED, &window, &renderer) != 0)
     {
         return false;
     }
@@ -59,6 +59,8 @@ bool GraphicsManager::Init()
     ContentScale =
         std::make_unique<ScaleManager>(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT);
     // ContentScale->UpdateTargetSize(480, 272);
+
+    setScale(BASE_WINDOW_WIDTH * 0.5, BASE_WINDOW_HEIGHT * 0.5);
 
     // 初始化成功
     return true;

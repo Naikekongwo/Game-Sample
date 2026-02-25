@@ -8,8 +8,9 @@
 #define DEBUG_OFF 0
 #define DEBUG_WATERWAVE 1
 #define DEBUG_MAP 1213
+#define DEBUG_MAIN 520
 
-#define DEBUG_MODE DEBUG_MAP
+#define DEBUG_MODE DEBUG_MAIN
 
 #include "Macros.hpp"
 #include "Timer.hpp"

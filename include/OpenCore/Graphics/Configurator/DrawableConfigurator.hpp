@@ -27,6 +27,8 @@ class DrawableConfigurator
 
     DrawableConfigurator &Alpha(float alphaValue);
 
+    DrawableConfigurator &Follow(int margin);
+
   private:
     IDrawableObject *obj_p;
 };

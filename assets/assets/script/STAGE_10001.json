@@ -79,6 +79,14 @@
         "path": "assets/items/purifier.png",
         "category": "texture"
     },
+    "2020": {
+        "path": "assets/backgrounds/dessert_top.png",
+        "category": "texture"
+    },
+    "2021": {
+        "path": "assets/backgrounds/base_sky.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

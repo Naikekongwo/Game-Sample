@@ -68,6 +68,10 @@ class IDrawableObject
     void setPosition(float xPercent, float yPercent);
     void setParentContainer(IDrawableObject *parentContainer);
     void setTransparency(float alpha);
+    void setMovingMargin(int Margin);
+
+    // 辅助方法
+    SDL_Rect followRect(const SDL_Rect &srcRect) const;
 
     AnimationState *getAnimationState() const { return AnimeState.get(); }
 
@@ -89,6 +93,8 @@ class IDrawableObject
     // 贴图
     std::unique_ptr<Texture> texture;
     // 父容器类
+    int movingMargin = 0;
+    // 相对鼠标的移动系数
     bool absolutePosite = true;
     IDrawableObject *parentContainer = nullptr;
 };

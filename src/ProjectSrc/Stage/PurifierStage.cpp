@@ -69,8 +69,6 @@ bool PurifierStage::buildStage()
             if (phase != PurifierPhase::Normal)
                 return; // 防止多次点击
             phase = PurifierPhase::Exiting;
-
-            float fadeTime = 1.0f; // 动画时间
             Elements->forEachElement(
                 [](auto &elem)
                 {
@@ -79,7 +77,7 @@ bool PurifierStage::buildStage()
                         "We are searching for certain thing, the alpha is : %f",
                         state->transparency);
                     elem->Animate()
-                        .Fade(state->transparency, 0.0f, 1.0f, false)
+                        .Fade(state->transparency, 0.0f, 0.25f)
                         .Commit();
                     SDL_Log("PurfierStage:: Sucessfully added animation to "
                             "certain thing!");

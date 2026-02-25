@@ -37,3 +37,9 @@ DrawableConfigurator &DrawableConfigurator::Alpha(float alphaValue)
     obj_p->setTransparency(alphaValue);
     return *this;
 }
+
+DrawableConfigurator &DrawableConfigurator::Follow(int Margin)
+{
+    obj_p->setMovingMargin(Margin);
+    return *this;
+}
