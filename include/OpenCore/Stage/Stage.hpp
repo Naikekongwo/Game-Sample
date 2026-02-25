@@ -13,7 +13,7 @@
 class ResourceManager;
 class SoundEffectManager;
 class Timer;
-class StageController;
+class StageManager;
 // 前向定义
 
 enum StageType : uint8_t
@@ -24,7 +24,7 @@ enum StageType : uint8_t
     unregistered
 };
 
-enum LifeStatus
+enum stageState
 {
     alive,
     pause,
@@ -34,21 +34,22 @@ enum LifeStatus
 class Stage
 {
   public:
-    virtual ~Stage() { onDestroy(); }
-
-    // 虚函数部分
-
-    // 初始化逻辑
+    virtual ~Stage() = default;
     virtual bool handlEvents(SDL_Event *event) = 0;
-
-    // 更新逻辑
+    virtual void onEnter() {};
     virtual void onUpdate() = 0;
-
-    // 渲染逻辑
     virtual void onRender() = 0;
-
-    // 回收逻辑
+    virtual void onExit() {};
     virtual void onDestroy();
+
+    // 虚函数列表自上而下依次是
+    // 析构函数
+    // 事件处理函数
+    // 场景加入管理器的函数
+    // 场景的更新函数
+    // 场景的渲染函数
+    // 场景退出的函数
+    // 场景的销毁函数
 
     // 场景类型
     StageType getStageType() const { return stageType; }
@@ -65,7 +66,7 @@ class Stage
     // 先前内置的渲染器、资源管理器和音效管理器全部都被弃用了
     Timer *timer = nullptr;
     // 场景控制器
-    StageController *sController;
+    StageManager *sController;
     // 场景类型
     StageType stageType = unregistered;
     // 元素管理器

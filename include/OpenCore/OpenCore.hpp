@@ -9,7 +9,7 @@
 #define DEBUG_WATERWAVE 1
 #define DEBUG_MAP 1213
 
-#define DEBUG_MODE DEBUG_OFF
+#define DEBUG_MODE DEBUG_MAP
 
 #include "Macros.hpp"
 #include "Timer.hpp"
@@ -43,7 +43,7 @@ inline PlayerEntity &Player = PlayerEntity::getInstance();
 #include "Graphics/Configurator/DrawableConfigurator.hpp"
 #include "Graphics/Manager/ElementManager.hpp"
 #include "Graphics/Manager/ScaleManager.hpp"
-#include "Stage/StageController.hpp"
+#include "Stage/StageManager.hpp"
 
 #include <memory>
 
@@ -59,7 +59,7 @@ class OpenEngine final
     bool CleanUp();
 
   private:
-    std::unique_ptr<StageController> sController;
+    std::unique_ptr<StageManager> sController;
     std::unique_ptr<Timer> timer;
 };
 

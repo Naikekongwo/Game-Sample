@@ -8,7 +8,6 @@
 #include <memory>
 #include <string>
 
-
 class AnimationManager;
 class AnimationPipeline;
 class MyAnimationPipeline;
@@ -65,11 +64,12 @@ class IDrawableObject
 
     // 属性设置的方法
     void setScale(float w, float h);
-
     void setAnchor(AnchorPoint anchor);
     void setPosition(float xPercent, float yPercent);
-
     void setParentContainer(IDrawableObject *parentContainer);
+    void setTransparency(float alpha);
+
+    AnimationState *getAnimationState() const { return AnimeState.get(); }
 
     // 配置器方法
     MyAnimationPipeline Animate();

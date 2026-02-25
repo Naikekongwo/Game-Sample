@@ -21,6 +21,9 @@
 #define water_waves 2014
 #define img_BackButton 2015
 #define wasteland 2016
+#define oriwater 2017
+#define copyright 2018
+#define item_purifier 2019
 
 #define font_normal 9001
 

@@ -12,29 +12,30 @@
 
 using std::unique_ptr;
 
-enum Operation : uint8_t
+enum StageCommandType : uint8_t
 {
     Add,
     Remove
 };
 
-struct OperateRecord
+struct StageCommand
 {
-    Operation opt;
+    StageCommandType opt;
     StageType sType;
     unique_ptr<Stage> stage_;
 
-    OperateRecord(Operation opt, StageType sType, unique_ptr<Stage> stage_)
+    StageCommand(StageCommandType opt, StageType sType,
+                 unique_ptr<Stage> stage_)
         : opt(opt), sType(sType), stage_(std::move(stage_))
     {
     }
     // 初始化函数
 };
 
-class StageController
+class StageManager
 {
   public:
-    ~StageController() = default;
+    ~StageManager() = default;
 
     // 通用场景切换（按类型自动分配，延迟执行）
     void changeStage(unique_ptr<Stage> newStage);
@@ -71,13 +72,15 @@ class StageController
     bool hasTopStage() const { return stageContainer[2] != nullptr; }
 
   protected:
-
-    void ParsingStreamLine();
+    void processCommandQueue();
 
   private:
-    std::array<unique_ptr<Stage>, 3>
-        stageContainer; // [0]:base, [1]:overlay, [2]:top
-    std::queue<unique_ptr<OperateRecord>> StreamLine;
+    //   定义场景池的大小为3
+    static constexpr size_t kStageCount = 3;
+
+    std::array<unique_ptr<Stage>, kStageCount> stageContainer;
+    // [0]:base, [1]:overlay, [2]:top
+    std::queue<unique_ptr<StageCommand>> commandQueue;
 };
 
 #endif //_STAGECONTROLLER_H_

@@ -1,7 +1,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 
-GameplayStage::GameplayStage(Timer *timer, StageController *sController)
+GameplayStage::GameplayStage(Timer *timer, StageManager *sController)
 {
     this->timer = timer;
 
@@ -44,9 +44,9 @@ void GameplayStage::Init()
 
     Elements->PushElement(std::move(waste));
 
-    // auto purifier = std::make_unique<PurifierStage>(timer, sController);
+    auto purifier = std::make_unique<PurifierStage>(timer, sController);
 
-    // sController->changeStage(std::move(purifier));
+    sController->changeStage(std::move(purifier));
 }
 
 void GameplayStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }

@@ -1,16 +1,12 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 
-PurifierStage::PurifierStage(Timer *timer, StageController *sController)
+PurifierStage::PurifierStage(Timer *timer, StageManager *sController)
 {
     this->timer = timer;
     this->sController = sController;
-
-    Elements = std::make_unique<ElementManager>();
-
-    // 声明元素
     stageType = StageType::overlayStage;
-    constructStage();
+    Elements = std::make_unique<ElementManager>();
 }
 
 bool PurifierStage::handlEvents(SDL_Event *event)
@@ -19,13 +15,33 @@ bool PurifierStage::handlEvents(SDL_Event *event)
     return true;
 }
 
-void PurifierStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
+void PurifierStage::onUpdate()
+{
+    Elements->onUpdate(timer->getTotalTime());
 
+    if (phase == PurifierPhase::Exiting)
+    {
+        auto purifier = Elements->find("purifier_body");
+        if (purifier)
+        {
+            if (purifier->isAnimeFinished())
+            {
+                phase = PurifierPhase::Finished;
+            }
+        }
+    }
+
+    if (phase == PurifierPhase::Finished)
+    {
+        if (sController)
+            sController->removeStage(this->stageType);
+    }
+}
 void PurifierStage::onRender() { Elements->onRender(); }
 
-bool PurifierStage::constructStage()
+bool PurifierStage::buildStage()
 {
-    // 构建舞台的基本函数
+    // 背景
     auto stageBg = UI<BaseBackground>("purSbg", 0, background_purifier, 3, 3);
     stageBg->setNativeScale(60);
     stageBg->Configure()
@@ -34,26 +50,68 @@ bool PurifierStage::constructStage()
         .Parent(nullptr)
         .Posite(0.5f, 0.28f)
         .Sequence(false);
-    
     stageBg->setBakedTexture(true);
-    
-
     Elements->PushElement(std::move(stageBg));
 
+    // 返回按钮
     auto backButton = UI<Button>("backButton", 1, img_BackButton, 1, 3);
+    backButton->Configure()
+        .Scale(0.03f, 0.03f)
+        .Posite(0.88f, 0.05f)
+        .Anchor(AnchorPoint::Center)
+        .Sequence(false)
+        .Parent(nullptr);
 
-    backButton->Configure().Scale(0.03f, 0.03f).Posite(0.88f, 0.05f).Anchor(AnchorPoint::Center).Parent(nullptr);
+    // 点击回调
+    backButton->setOnClick(
+        [this]()
+        {
+            if (phase != PurifierPhase::Normal)
+                return; // 防止多次点击
+            phase = PurifierPhase::Exiting;
 
-    
-
-    std::function<void()> destroy = [this]() { 
-        SDL_Log("StageController::removeStage called, type=%d", (int)stageType);
-        sController->removeStage(this->stageType);
-    };
-    
-    backButton->setOnClick(destroy);
+            float fadeTime = 1.0f; // 动画时间
+            Elements->forEachElement(
+                [](auto &elem)
+                {
+                    auto state = elem->getAnimationState();
+                    SDL_Log(
+                        "We are searching for certain thing, the alpha is : %f",
+                        state->transparency);
+                    elem->Animate()
+                        .Fade(state->transparency, 0.0f, 1.0f, false)
+                        .Commit();
+                    SDL_Log("PurfierStage:: Sucessfully added animation to "
+                            "certain thing!");
+                });
+        });
 
     Elements->PushElement(std::move(backButton));
 
+    // 净水器状态
+    auto purifierbody = UI<ImageBoard>("purifier_body", 1, item_purifier, 1, 1);
+
+    purifierbody->Configure()
+        .Scale(0.146f, 0.182f)
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.2f, 0.08f)
+        .Sequence(false)
+        .Parent(nullptr);
+
+    Elements->PushElement(std::move(purifierbody));
+
     return true;
 }
+void PurifierStage::onEnter()
+{
+    SDL_Log("PurifierStage::onEnter");
+    buildStage();
+}
+
+void PurifierStage::onExit()
+{
+    Elements->onDestroy();
+    SDL_Log("PurifierStage::onExit - cleared elements");
+}
+
+void PurifierStage::onDestroy() { SDL_Log("PurifierStage::onDestroy"); }

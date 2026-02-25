@@ -11,7 +11,14 @@
 #include <vector>
 
 // 枚举类
-enum class AnimationID { FrameAnime, FadeAnime, MoveAnimation, RotateAnimation, ScaleAnimation};
+enum class AnimationID
+{
+    FrameAnime,
+    FadeAnime,
+    MoveAnimation,
+    RotateAnimation,
+    ScaleAnimation
+};
 
 struct Texture
 {
@@ -20,7 +27,7 @@ struct Texture
     uint8_t yCount = 1;
 
     // 贴图的大小
-    uint16_t width,height;
+    uint16_t width, height;
 
     // 材质
     std::shared_ptr<SDL_Texture> texture;
@@ -29,17 +36,18 @@ struct Texture
 
     uint16_t Size() const noexcept { return xCount * yCount; }
 
-    SDL_Rect getSrcRect(uint8_t index);    
+    SDL_Rect getSrcRect(uint8_t index);
 };
 
 class AnimationManager
 {
-public:
-    void onUpdate(float totalTime, AnimationState& state); // 刷新函数
+  public:
+    void onUpdate(float totalTime, AnimationState &state); // 刷新函数
 
     void pushAnimation(std::shared_ptr<IAnimation> anime); // 只需传动画指针
 
-    void eraseAnimation(std::shared_ptr<IAnimation> anime); // 可选：按指针移除动画
+    void
+    eraseAnimation(std::shared_ptr<IAnimation> anime); // 可选：按指针移除动画
 
     bool isEmpty() const { return Animations.empty(); }
 
@@ -49,16 +57,20 @@ public:
 
     void setSequence(bool isSequential);
 
-    bool isFinished() const { 
+    bool isFinished() const
+    {
         // 所有动画都完成才算 finished
-        if (Animations.empty()) return true;
-        for (const auto& anime : Animations) {
-            if (!anime->isFinished()) return false;
+        if (Animations.empty())
+            return true;
+        for (const auto &anime : Animations)
+        {
+            if (!anime->isFinished())
+                return false;
         }
         return true;
     }
 
-private:
+  private:
     // 改为vector存储
     std::vector<std::shared_ptr<IAnimation>> Animations;
 

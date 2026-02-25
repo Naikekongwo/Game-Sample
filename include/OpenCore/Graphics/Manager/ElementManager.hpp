@@ -12,12 +12,11 @@
 #include "OpenCore/Graphics/UI/ImageBoard.hpp"
 #include "OpenCore/Graphics/UI/Label.hpp"
 
+#include "OpenCore/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Graphics/IDrawableObject/Sprite.hpp"
-
 
 #include <memory>
 #include <vector>
-
 
 class ElementManager
 {
@@ -42,6 +41,25 @@ class ElementManager
         const; // 查找是否存在元素的函数，使用const表示不会修改类状态
 
     std::unique_ptr<IDrawableObject> getElement(const std::string &id);
+
+    template <typename Func> void forEachElement(Func &&func)
+    {
+        for (auto &elem : Elements) // 假设内部存放元素的 vector 名为 elements
+        {
+            if (elem)
+                func(elem);
+        }
+    }
+
+    template <typename Predicate> bool any(Predicate &&pred) const
+    {
+        for (const auto &elem : Elements)
+        {
+            if (elem && pred(elem))
+                return true;
+        }
+        return false;
+    }
 
   private:
     // 储存子类的表

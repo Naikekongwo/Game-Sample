@@ -12,22 +12,23 @@ class IDrawableObject;
 
 class DrawableConfigurator
 {
-    public:
+  public:
     // 构造函数
-    DrawableConfigurator(IDrawableObject* obj) : obj_p(obj) {}
+    DrawableConfigurator(IDrawableObject *obj) : obj_p(obj) {}
 
-    DrawableConfigurator& Scale(float w, float h);
+    DrawableConfigurator &Scale(float w, float h);
 
-    DrawableConfigurator& Anchor(AnchorPoint anchor);
-    DrawableConfigurator& Posite(float xPercent, float yPercent);
+    DrawableConfigurator &Anchor(AnchorPoint anchor);
+    DrawableConfigurator &Posite(float xPercent, float yPercent);
 
-    DrawableConfigurator& Sequence(bool sequential);
+    DrawableConfigurator &Sequence(bool sequential);
 
-    DrawableConfigurator& Parent(IDrawableObject* parent);
+    DrawableConfigurator &Parent(IDrawableObject *parent);
 
-    private:
-    IDrawableObject* obj_p;
+    DrawableConfigurator &Alpha(float alphaValue);
+
+  private:
+    IDrawableObject *obj_p;
 };
-
 
 #endif //_DRAWABLECONFIGURATOR_H_

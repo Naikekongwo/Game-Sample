@@ -3,30 +3,41 @@
 #ifndef _MAINSTAGE_H_
 #define _MAINSTAGE_H_
 
-#include "OpenCore/Stage/StageController.hpp"
+#include "OpenCore/Stage/StageManager.hpp"
 
-class StageController;
+enum class MainStagePhase
+{
+    Entering,
+    Idle,
+    Exiting
+};
+
+class StageManager;
 
 class ElementManager;
 
 class MainStage : public OverlayStage
 {
-    public:
+  public:
     // 构造函数
-    MainStage(Timer* timer, StageController* sController);
+    MainStage(Timer *timer, StageManager *sController);
 
     // 完成继承
-    bool handlEvents(SDL_Event* event);
+    bool handlEvents(SDL_Event *event) override;
 
-    void onUpdate();
+    void onEnter() override;
+    void onExit() override;
 
-    void onRender();
+    void onUpdate() override;
+    void onRender() override;
 
-    // 准备函数
-    void Init();
+  private:
+    MainStagePhase phase = MainStagePhase::Entering;
 
-    private:
-    
+    // 工具函数
+    void setupBackground();
+    void setupTitle();
+    void setupButtons();
 };
 
 #endif //_MAINSTAGE_H_

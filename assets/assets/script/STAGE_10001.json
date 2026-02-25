@@ -71,6 +71,14 @@
         "path": "assets/terrain/water.png",
         "category": "texture"
     },
+    "2018": {
+        "path": "assets/ui/icon_copyright.png",
+        "category": "texture"
+    },
+    "2019": {
+        "path": "assets/items/purifier.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

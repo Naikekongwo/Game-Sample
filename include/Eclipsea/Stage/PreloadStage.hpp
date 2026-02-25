@@ -4,33 +4,57 @@
 #ifndef _PRELOADSTAGE_H_
 #define _PRELOADSTAGE_H_
 
-#include "OpenCore/Stage/StageController.hpp"
+#include "OpenCore/Stage/StageManager.hpp"
 
 #include <future>
 
-class StageController;
+enum class PreloadPhase
+{
+    // 预加载阶段的枚举类
+    WaitingForResource,
+    BuildLoadingUI,
+    WaitAnimation,
+    InitAudio,
+    ShowTitle1,
+    ShowTitle2,
+    ShowConnector,
+    Finished
+};
+
+class StageManager;
 class ElementManager;
 
-class PreloadStage : public OverlayStage
+class PreloadStage : public Stage
 {
-public:
-    PreloadStage(Timer* timer, StageController* sController);
+  public:
+    PreloadStage(Timer *timer, StageManager *sController);
 
-    void LoadResources();
+    // 生命周期
+    void onEnter() override;
+    void onExit() override;
+    void onDestroy() override;
 
+    // 基类接口
     bool handlEvents(SDL_Event *event) override;
-
     void onUpdate() override;
-
     void onRender() override;
 
-    // 以上则为事件处理、事件更新、渲染的逻辑重写
+  protected:
+    // 阶段状态机
+    PreloadPhase phase;
+    bool pendingNextStage = false;
 
-private:
-    int stageState = 0;
-    // 0为未播放
+    // 异步资源加载
     std::future<void> LoadingState;
 
+    // 内部辅助函数
+    void buildLoadingUI();
+    void buildTitleAndWater();
+    void handleTitleSequence();
+
+    // 构建元素引用
+    Timer *timer;
+    StageManager *sController;
 };
 
 #endif //_PRELOADSTAGE_H_

@@ -1,30 +1,37 @@
 #ifndef _PURIFIER_STAGE_H_
 #define _PURIFIER_STAGE_H_
 
-
 // Purifier Stage
 // 净水器的UI界面
 
 #include "OpenCore/Stage/OverlayStage.hpp"
 
-class PurifierStage : public OverlayStage
+enum class PurifierPhase
 {
-    public:
-
-    PurifierStage(Timer* timer, StageController* sController);
-
-    bool handlEvents(SDL_Event* event) override;
-
-    void onUpdate() override;
-
-    void onRender() override;
-
-    protected:
-
-    bool constructStage();
-
-    private:
+    Normal,
+    Exiting,
+    Finished
 };
 
+class PurifierStage : public OverlayStage
+{
+  public:
+    PurifierStage(Timer *timer, StageManager *sController);
+
+    bool handlEvents(SDL_Event *event) override;
+    void onUpdate() override;
+    void onRender() override;
+
+    void onDestroy() override;
+
+    void onEnter() override;
+    void onExit() override;
+
+  protected:
+    bool buildStage();
+
+  private:
+    PurifierPhase phase = PurifierPhase::Normal;
+};
 
 #endif //_PURIFIER_STAGE_H_

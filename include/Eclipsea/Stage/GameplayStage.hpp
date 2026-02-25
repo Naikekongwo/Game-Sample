@@ -1,22 +1,22 @@
 #pragma once
 
-#include "OpenCore/Stage/StageController.hpp"
+#include "OpenCore/Stage/StageManager.hpp"
 
 // GameplayStage.hpp
 // 游戏场景的头
 
 // 前向声明
-class StageController;
+class StageManager;
 class ElementManager;
 
-class GameplayStage : public BaseStage 
+class GameplayStage : public BaseStage
 {
-    public:
+  public:
     // 构造函数
-    GameplayStage(Timer* timer, StageController* sController);
+    GameplayStage(Timer *timer, StageManager *sController);
 
     // 完成继承
-    bool handlEvents(SDL_Event* event);
+    bool handlEvents(SDL_Event *event);
 
     void onUpdate();
 
@@ -25,8 +25,5 @@ class GameplayStage : public BaseStage
     // 准备函数
     void Init();
 
-    private:
-
-    
+  private:
 };
-

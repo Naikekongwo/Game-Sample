@@ -46,7 +46,7 @@ bool OpenEngine::Initialize()
     // 创建音效管理器实例
     (void)SFXManager;
     // 创建场景控制器实例
-    sController = std::make_unique<StageController>();
+    sController = std::make_unique<StageManager>();
     // 创建计时器实例
     timer = std::make_unique<Timer>(30);
 
@@ -70,7 +70,8 @@ bool OpenEngine::MainLoop()
     bool should_close = false;
     SDL_Event event;
 
-    sController->changeStage(std::make_unique<PreloadStage>(timer.get(), sController.get()));
+    sController->changeStage(
+        std::make_unique<PreloadStage>(timer.get(), sController.get()));
 
     while (!should_close)
     {
@@ -92,22 +93,23 @@ bool OpenEngine::MainLoop()
                     }
                     else
                     {
-                        SDL_SetWindowFullscreen(GFXManager.getWindow(), SDL_WINDOW_FULLSCREEN);
+                        SDL_SetWindowFullscreen(GFXManager.getWindow(),
+                                                SDL_WINDOW_FULLSCREEN);
                     }
                 }
                 break;
             case SDL_WINDOWEVENT:
                 switch (event.window.event)
                 {
-                    case SDL_WINDOWEVENT_RESIZED:
-                    case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    {
-                        GFXManager.setScale(event.window.data1, event.window.data2);
-                        break;
-                        // 注: data1 和 data2 分别是窗口的宽和高
-                    }
-                    default:
-                        break;
+                case SDL_WINDOWEVENT_RESIZED:
+                case SDL_WINDOWEVENT_SIZE_CHANGED:
+                {
+                    GFXManager.setScale(event.window.data1, event.window.data2);
+                    break;
+                    // 注: data1 和 data2 分别是窗口的宽和高
+                }
+                default:
+                    break;
                 }
                 break;
             default:
@@ -132,7 +134,8 @@ bool OpenEngine::MainLoop()
         SDL_Delay(timer->getDelayTime());
         // 限制帧间隔
 
-        // SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(), timer->getDelayTime()*1000);
+        // SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(),
+        // timer->getDelayTime()*1000);
     }
 
     return true;
