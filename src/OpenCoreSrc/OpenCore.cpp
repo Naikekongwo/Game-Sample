@@ -104,7 +104,6 @@ bool OpenEngine::MainLoop()
                 case SDL_WINDOWEVENT_RESIZED:
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
                 {
-                    GFXManager.setScale(event.window.data1, event.window.data2);
                     break;
                     // 注: data1 和 data2 分别是窗口的宽和高
                 }

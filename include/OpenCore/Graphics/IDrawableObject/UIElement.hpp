@@ -8,21 +8,13 @@
 
 class UIElement : public IDrawableObject
 {
-public:
-    virtual SDL_Rect getBounds() override;
-    virtual SDL_Rect getRenderedBounds() override;
+  public:
+    virtual SDL_Rect getLogicalBounds() override;
+    virtual SDL_Rect getPhysicalBounds() override;
 
-    virtual void onRender() override;
-    virtual int setBakedTexture(bool isBaked) { return 0; }
-    virtual bool preRenderTexture(SDL_Texture* texture) { return false;}
+    virtual bool generateTexture(SDL_Texture *texture) { return false; }
 
     virtual bool onDestroy() override;
-
-protected:
-    // 预烘焙贴图 : 默认关闭
-    // 烘焙贴图的地址 : 默认空
-    bool directRender = false;
-    std::unique_ptr<SDL_Texture, void(*)(SDL_Texture*)> TextureBuffer { nullptr, SDL_DestroyTexture};
 };
 
 #endif //_UIELEMENT_H_

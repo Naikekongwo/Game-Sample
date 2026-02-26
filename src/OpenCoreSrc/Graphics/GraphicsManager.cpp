@@ -56,11 +56,7 @@ bool GraphicsManager::Init()
     SDL_SetWindowTitle(window, title.c_str());
     SDL_SetWindowResizable(window, SDL_TRUE);
 
-    ContentScale =
-        std::make_unique<ScaleManager>(BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT);
-    // ContentScale->UpdateTargetSize(480, 272);
-
-    setScale(BASE_WINDOW_WIDTH * 0.5, BASE_WINDOW_HEIGHT * 0.5);
+    SDL_RenderSetLogicalSize(renderer, BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT);
 
     // 初始化成功
     return true;
@@ -78,16 +74,10 @@ void GraphicsManager::CleanUp()
     else
         SDL_DestroyWindow(window);
 
-    ContentScale.reset();
     SDL_Log("GFXManager::CleanUp() has reseted the scale system.");
 
     SDL_Log("GFXManager::CleanUp() manage to quit the SDL.");
     SDL_Quit();
-}
-
-void GraphicsManager::setScale(uint16_t w, uint16_t h)
-{
-    ContentScale->UpdateTargetSize(w, h);
 }
 
 int GraphicsManager::RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
@@ -95,8 +85,7 @@ int GraphicsManager::RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
                                   const SDL_Point *center,
                                   const SDL_RendererFlip flip)
 {
-    SDL_Rect newRect = ContentScale->ToScreen(*dstrect);
-    return SDL_RenderCopyEx(renderer, texture, srcrect, &newRect, angle, center,
+    return SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center,
                             flip);
 }
 

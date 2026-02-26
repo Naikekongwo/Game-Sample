@@ -9,8 +9,6 @@ ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
     this->id = id;
     this->layer = layer;
 
-    this->directRender = false;
-
     // 获取材质
     if (!texture)
     {
@@ -29,9 +27,9 @@ void ImageBoard::onRender()
     SDL_SetTextureAlphaMod(texture->texture.get(),
                            255.0f * AnimeState->transparency);
 
-    SDL_Rect dstRect = getBounds();
+    SDL_Rect dstRect = getLogicalBounds();
 
-    dstRect = followRect(dstRect);
+    dstRect = magnetRect(dstRect);
 
     if (texture->Size() > 1)
     {

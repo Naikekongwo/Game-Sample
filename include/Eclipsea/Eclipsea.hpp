@@ -40,6 +40,9 @@
 #include "Stage/PreloadStage.hpp"
 #include "Stage/PurifierStage.hpp"
 
+#include "Stage/MainStage/ContinueStage.hpp"
+#include "Stage/MainStage/SettingsStage.hpp"
+
 // 模板
 template <typename T>
 std::unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,

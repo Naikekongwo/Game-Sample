@@ -1,9 +1,11 @@
+#include <SDL2/SDL_error.h>
 #include <iostream>
 #include <stdexcept>
 
 // 引入内核
-#include "OpenCore/OpenCore.hpp"
 #include "Eclipsea/Eclipsea.hpp"
+#include "OpenCore/OpenCore.hpp"
+
 
 #include <cmath>
 const int WIDTH = 1920, HEIGHT = 1080;
@@ -24,16 +26,17 @@ int main(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
     OpenEngine engine;
-    
+
     try
     {
         engine.Run();
     }
-    catch(const std::exception& e)
+    catch (const std::exception &e)
     {
+        SDL_Log("%s", SDL_GetError());
         std::cerr << e.what() << '\n';
     }
-    
+
     return EXIT_SUCCESS;
 }
 #endif

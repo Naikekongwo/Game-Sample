@@ -34,22 +34,18 @@ class IDrawableObject
 
     // 处理事件的函数
     virtual void handlEvents(SDL_Event &event, float totalTime);
-
-    // 更新函数
-    // 2025/10/19 给予默认的方法，进行动画更新
     virtual void onUpdate(float totalTime);
-
-    // 渲染函数
-    virtual void onRender() = 0;
-
-    // 自毁函数
+    virtual void onRender() {};
     virtual bool onDestroy() = 0;
 
+    virtual void onEnter() {};
+    virtual void onExit() {};
+
     // 获取逻辑碰撞箱
-    virtual SDL_Rect getBounds() = 0;
+    virtual SDL_Rect getLogicalBounds() = 0;
 
     // 获取实际碰撞箱
-    virtual SDL_Rect getRenderedBounds() = 0;
+    virtual SDL_Rect getPhysicalBounds();
 
     // 更改贴图
     void changeTexture(std::unique_ptr<Texture> newTexture);
@@ -68,11 +64,10 @@ class IDrawableObject
     void setPosition(float xPercent, float yPercent);
     void setParentContainer(IDrawableObject *parentContainer);
     void setTransparency(float alpha);
-    void setMovingMargin(int Margin);
+    void setMagnetFactor(int Margin);
 
     // 辅助方法
-    SDL_Rect followRect(const SDL_Rect &srcRect) const;
-
+    SDL_Rect magnetRect(const SDL_Rect &srcRect) const;
     AnimationState *getAnimationState() const { return AnimeState.get(); }
 
     // 配置器方法
@@ -93,7 +88,7 @@ class IDrawableObject
     // 贴图
     std::unique_ptr<Texture> texture;
     // 父容器类
-    int movingMargin = 0;
+    int magnetFactor = 0;
     // 相对鼠标的移动系数
     bool absolutePosite = true;
     IDrawableObject *parentContainer = nullptr;

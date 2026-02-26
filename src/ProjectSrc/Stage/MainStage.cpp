@@ -52,7 +52,9 @@ void MainStage::setupTitle()
         .Posite(0.08333f, 0.0677f)
         .Scale(0.365f, 0.13f)
         .Sequence(true)
-        .Follow(20);
+        .Follow(20)
+        .Alpha(0.0f);
+    title->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 5.0f).Commit();
     Elements->PushElement(std::move(title));
 
     auto copyright_icon = UI<ImageBoard>("copyrights", 2, copyright, 1, 1);
@@ -98,7 +100,6 @@ void MainStage::setupButtons()
         .Posite(0.825f, 0.492f)
         .Scale(0.156f, 0.0416f)
         .Sequence(true);
-
     // 回调
     startButton->setOnClick(
         [this]()
@@ -111,6 +112,9 @@ void MainStage::setupButtons()
         [this]()
         {
             SDL_Log("Continue button clicked");
+            auto continues =
+                std::make_unique<ContinueStage>(timer, sController);
+            sController->changeStage(std::move(continues));
             // TODO: 可以加读取存档逻辑
         });
 
@@ -118,6 +122,8 @@ void MainStage::setupButtons()
         [this]()
         {
             SDL_Log("Setting button clicked");
+            auto settings = std::make_unique<SettingsStage>(timer, sController);
+            sController->changeStage(std::move(settings));
             // TODO: 打开设置界面
         });
 

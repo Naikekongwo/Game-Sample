@@ -40,6 +40,6 @@ DrawableConfigurator &DrawableConfigurator::Alpha(float alphaValue)
 
 DrawableConfigurator &DrawableConfigurator::Follow(int Margin)
 {
-    obj_p->setMovingMargin(Margin);
+    obj_p->setMagnetFactor(Margin);
     return *this;
 }

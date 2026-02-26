@@ -43,7 +43,6 @@ inline PlayerEntity &Player = PlayerEntity::getInstance();
 #include "Animation/Manager/AnimationManager.hpp"
 #include "Graphics/Configurator/DrawableConfigurator.hpp"
 #include "Graphics/Manager/ElementManager.hpp"
-#include "Graphics/Manager/ScaleManager.hpp"
 #include "Stage/StageManager.hpp"
 
 #include <memory>

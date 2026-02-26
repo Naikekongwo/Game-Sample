@@ -34,17 +34,24 @@ void IDrawableObject::setPosition(float xPercent, float yPercent)
     if (parentContainer == nullptr)
     {
         // 相对于屏幕
-        OpenCoreManagers::GFXManager.getScale()->queryBaseScale(baseW, baseH);
+        baseW = BASE_WINDOW_WIDTH;
+        baseH = BASE_WINDOW_HEIGHT;
     }
     else
     {
-        SDL_Rect parent = parentContainer->getBounds();
+        SDL_Rect parent = parentContainer->getLogicalBounds();
         baseW = parent.w;
         baseH = parent.h;
     }
 
     AnimeState->Position[0] = baseW * xPercent;
     AnimeState->Position[1] = baseW * yPercent;
+}
+
+SDL_Rect IDrawableObject::getPhysicalBounds()
+{
+    return (magnetFactor == 0) ? getLogicalBounds()
+                               : magnetRect(getLogicalBounds());
 }
 
 // 设置控件的大小
@@ -56,11 +63,12 @@ void IDrawableObject::setScale(float w, float h)
     if (parentContainer == nullptr)
     {
         // 相对于屏幕
-        OpenCoreManagers::GFXManager.getScale()->queryBaseScale(baseW, baseH);
+        baseW = BASE_WINDOW_WIDTH;
+        baseH = BASE_WINDOW_HEIGHT;
     }
     else
     {
-        SDL_Rect parent = parentContainer->getBounds();
+        SDL_Rect parent = parentContainer->getLogicalBounds();
         baseW = parent.w;
         baseH = parent.h;
     }
@@ -143,12 +151,12 @@ bool IDrawableObject::onDestroy()
     return true;
 }
 
-void IDrawableObject::setMovingMargin(int Margin) { movingMargin = Margin; }
+void IDrawableObject::setMagnetFactor(int Margin) { magnetFactor = Margin; }
 
-SDL_Rect IDrawableObject::followRect(const SDL_Rect &srcRect) const
+SDL_Rect IDrawableObject::magnetRect(const SDL_Rect &srcRect) const
 {
     // 如果不启用视差，直接返回
-    if (movingMargin == 0)
+    if (magnetFactor == 0)
         return srcRect;
 
     auto &GFX = GraphicsManager::getInstance();
@@ -171,8 +179,8 @@ SDL_Rect IDrawableObject::followRect(const SDL_Rect &srcRect) const
     normY = std::clamp(normY, -1.0f, 1.0f);
 
     // 计算偏移
-    float offsetX = normX * movingMargin;
-    float offsetY = normY * movingMargin;
+    float offsetX = normX * magnetFactor;
+    float offsetY = normY * magnetFactor;
 
     SDL_Rect result = srcRect;
     result.x += static_cast<int>(offsetX);

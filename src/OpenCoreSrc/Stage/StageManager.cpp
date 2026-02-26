@@ -111,8 +111,11 @@ bool StageManager::handlEvents(SDL_Event *event)
 {
     for (auto it = stageContainer.rbegin(); it != stageContainer.rend(); ++it)
     {
-        if (*it && (*it)->handlEvents(event))
-            return true;
+        if (*it)
+        {
+            (*it)->handlEvents(event);
+            break;
+        }
     }
-    return false;
+    return true;
 }

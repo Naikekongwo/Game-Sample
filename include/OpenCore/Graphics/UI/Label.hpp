@@ -12,25 +12,22 @@ using std::unique_ptr;
 
 class Label : public UIElement
 {
-    public:
-
+  public:
     // 构造函数
-    Label(const string& id, uint8_t layer, uint8_t fontWeight);
+    Label(const string &id, uint8_t layer, uint8_t fontWeight);
 
     // 父类的实现
 
     void handlEvents(SDL_Event &event, float totalTime) override;
-    int setBakedTexture(bool isBaked) override {return false; }
-    bool preRenderTexture(SDL_Texture* texture) override;
+    bool generateTexture(SDL_Texture *texture) override;
 
     void onUpdate(float totalTime) override;
 
     // 文本框特有功能
 
-    void setText(const string& sentence, uint8_t fontWeight);
+    void setText(const string &sentence, uint8_t fontWeight);
 
-    private:
-
+  private:
     uint8_t fontWeight;
     string sentence;
 

@@ -1,6 +1,8 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <SDL2/SDL_render.h>
+#include <cstddef>
+#include <memory>
 
 BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
                                std::unique_ptr<Texture> texture)
@@ -17,40 +19,51 @@ BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
         return;
         // 如果材质为空，那么我们直接强制返回
     }
-
     this->texture = std::move(texture);
+}
+
+void BaseBackground::onUpdate(float totalTime)
+{
+    if (status != BaseBackgroundStatus::ready)
+    {
+        onEnter();
+    }
+}
+void BaseBackground::onEnter()
+{
+    auto &GFX = OpenCoreManagers::GFXManager;
+    SDL_Rect bounds = getLogicalBounds();
+    TextureCache = GFX.createTexture(bounds.w, bounds.h);
+    generateTexture(TextureCache);
+}
+
+void BaseBackground::onExit()
+{
+    if (TextureCache)
+    {
+        SDL_DestroyTexture(TextureCache);
+        TextureCache = nullptr;
+    }
+}
+
+void BaseBackground::onRender()
+{
+    if (TextureCache)
+    {
+        SDL_Rect dstRect = getPhysicalBounds();
+        SDL_SetTextureAlphaMod(
+            TextureCache,
+            static_cast<uint8_t>(AnimeState->transparency * 255.0f));
+        OpenCoreManagers::GFXManager.RenderCopy(TextureCache, NULL, &dstRect, 0,
+                                                0, SDL_FLIP_NONE);
+    }
 }
 
 void BaseBackground::setNativeScale(uint8_t scale) { nativeScale = scale; }
 
-void BaseBackground::handlEvents(SDL_Event &event, float totalTime)
-{
-    if (event.type == SDL_WINDOWEVENT)
-    {
-        if (event.window.event == SDL_WINDOWEVENT_RESIZED ||
-            event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-        {
-            if (directRender)
-            {
-                setBakedTexture(true);
-            }
-        }
-    }
-}
+void BaseBackground::handlEvents(SDL_Event &event, float totalTime) {}
 
-int BaseBackground::setBakedTexture(bool isBaked)
-{
-    directRender = isBaked;
-
-    // SDL_Rect Borders = getBounds();
-
-    // TextureBuffer.reset(
-    //     GraphicsManager::getInstance().createTexture(Borders.w, Borders.h));
-    // preRenderTexture(TextureBuffer.get());
-    return 0;
-}
-
-bool BaseBackground::preRenderTexture(SDL_Texture *target)
+bool BaseBackground::generateTexture(SDL_Texture *target)
 {
     auto &GFX = GraphicsManager::getInstance();
     if (!target)
@@ -108,14 +121,13 @@ bool BaseBackground::preRenderTexture(SDL_Texture *target)
                 dstRect.h = nativeScale;
             }
 
-            SDL_SetTextureAlphaMod(texture->texture.get(),
-                                   AnimeState->transparency * 255.0f);
-
             GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, 0.0,
                              nullptr, SDL_FLIP_NONE);
         }
     }
 
     GFX.setOffScreenRender(nullptr);
+
+    status = BaseBackgroundStatus::ready;
     return true;
 }

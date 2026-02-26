@@ -49,8 +49,7 @@ bool PurifierStage::buildStage()
         .Anchor(AnchorPoint::Center)
         .Parent(nullptr)
         .Posite(0.5f, 0.28f)
-        .Sequence(false);
-    stageBg->setBakedTexture(true);
+        .Sequence(true);
     Elements->PushElement(std::move(stageBg));
 
     // 返回按钮
@@ -73,14 +72,11 @@ bool PurifierStage::buildStage()
                 [](auto &elem)
                 {
                     auto state = elem->getAnimationState();
-                    SDL_Log(
-                        "We are searching for certain thing, the alpha is : %f",
-                        state->transparency);
+                    SDL_Log("Adding fade out effect to %s, transparency, %f",
+                            elem->getID().c_str(), state->transparency);
                     elem->Animate()
-                        .Fade(state->transparency, 0.0f, 0.25f)
+                        .Fade(state->transparency, 0.0f, 5.0f)
                         .Commit();
-                    SDL_Log("PurfierStage:: Sucessfully added animation to "
-                            "certain thing!");
                 });
         });
 
