@@ -16,9 +16,9 @@ void SettingsStage::onEnter()
 {
     // 初始化设置页面，首先创建baseBackground
     auto baseBG =
-        UI<BaseBackground>("set_background", 0, background_purifier, 3, 3);
+        UI<BaseBackground>("set_background", 0, stone_background, 3, 3);
 
-    baseBG->setNativeScale(60);
+    baseBG->setNativeScale(255);
 
     baseBG->Configure()
         .Anchor(AnchorPoint::Center)
@@ -30,11 +30,21 @@ void SettingsStage::onEnter()
 
     Elements->PushElement(std::move(baseBG));
 
+    auto buttonBorder = UI<ImageBoard>("buttonBorders", 1, button_border, 1, 1);
+    buttonBorder->Configure()
+        .Scale(0.03f * 1.25f, 0.03f * 1.25f)
+        .Posite(0.70f, 0.10f)
+        .Anchor(AnchorPoint::Center)
+        .Sequence(false)
+        .Parent(nullptr);
+
+    Elements->PushElement(std::move(buttonBorder));
+
     // 返回按钮
     auto backButton = UI<Button>("backButton", 1, img_BackButton, 1, 3);
     backButton->Configure()
-        .Scale(0.03f, 0.03f)
-        .Posite(0.72f, 0.08f)
+        .Scale(0.03f * 0.8f, 0.03f * 0.8f)
+        .Posite(0.70f, 0.10f)
         .Anchor(AnchorPoint::Center)
         .Sequence(false)
         .Parent(nullptr);

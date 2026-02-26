@@ -24,6 +24,6 @@
 #define BOOL_IS_BETA true
 
 #define ENGINE_VERSION_MAJOR 25
-#define ENGINE_VERSION_MINOR 5
+#define ENGINE_VERSION_MINOR 6
 
 #endif //_MACROS_H_

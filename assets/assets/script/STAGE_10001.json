@@ -7,6 +7,10 @@
         "path": "assets/audio/fx_waterdrops.mp3",
         "category": "sound"
     },
+    "1003": {
+        "path": "assets/audio/bgm_lostworld.mp3",
+        "category": "music"
+    },
     "2001": {
         "path": "assets/backgrounds/menu_ocean.png",
         "category": "texture"
@@ -89,6 +93,18 @@
     },
     "2021": {
         "path": "assets/backgrounds/base_sky.png",
+        "category": "texture"
+    },
+    "2022": {
+        "path": "assets/backgrounds/cities_top.png",
+        "category": "texture"
+    },
+    "2023": {
+        "path": "assets/ui/rect_border.png",
+        "category": "texture"
+    },
+    "2024": {
+        "path": "assets/ui/stone_background.png",
         "category": "texture"
     },
     "9001": {

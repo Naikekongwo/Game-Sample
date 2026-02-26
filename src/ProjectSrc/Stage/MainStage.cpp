@@ -27,12 +27,17 @@ void MainStage::setupBackground()
         .Scale(fullwidth * 1.1, fullheight * 1.1)
         .Follow(30);
     Elements->PushElement(std::move(bg));
-    auto bg1 = UI<ImageBoard>("dessert_top", 1, desset_top, 1, 1);
+    auto bg1 = UI<ImageBoard>("dessert_top", 1, cities_top, 1, 1);
     bg1->Configure()
         .Anchor(AnchorPoint::Center)
         .Posite(0.5 * fullwidth, 0.5 * fullheight)
         .Scale(fullwidth * 1.2, fullheight * 1.2)
         .Follow(40);
+    bg1->Animate()
+        .Timer(5.0f)
+        .Move(0.5 * BASE_WINDOW_WIDTH, 1.5 * BASE_WINDOW_HEIGHT,
+              0.5 * BASE_WINDOW_WIDTH, 0.5 * BASE_WINDOW_HEIGHT, 5.0f)
+        .Commit();
     Elements->PushElement(std::move(bg1));
     auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
     connector->Configure()
@@ -136,6 +141,7 @@ void MainStage::setupButtons()
 void MainStage::onEnter()
 {
     // 播放进入动画、BGM
+    OpenCoreManagers::SFXManager.stopBGM();
     phase = MainStagePhase::Idle;
 }
 
@@ -152,6 +158,8 @@ void MainStage::onUpdate()
         auto connector = Elements->find("connector");
         if (connector and connector->isAnimeFinished())
         {
+            OpenCoreManagers::SFXManager.changeBGM(1003);
+            OpenCoreManagers::SFXManager.playBGM();
             Elements->removeElement("connector");
         }
     }

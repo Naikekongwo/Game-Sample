@@ -11,7 +11,7 @@
 #define DEBUG_MAIN 520
 #define DEBUG_PASS_VIDEO 2
 
-#define DEBUG_MODE DEBUG_PASS_VIDEO
+#define DEBUG_MODE DEBUG_MAIN
 
 #include "Macros.hpp"
 #include "Timer.hpp"

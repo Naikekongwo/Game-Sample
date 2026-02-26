@@ -26,6 +26,9 @@
 #define oriwater 2017
 #define copyright 2018
 #define item_purifier 2019
+#define cities_top 2022
+#define button_border 2023
+#define stone_background 2024
 
 #define font_normal 9001
 
