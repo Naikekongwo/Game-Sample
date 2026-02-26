@@ -82,7 +82,7 @@ MyAnimationPipeline IDrawableObject::Animate()
 {
     // return AnimationPipeline(AnimeManager.get());
     // 上面是系统管线
-    return MyAnimationPipeline(AnimeManager.get());
+    return MyAnimationPipeline(AnimeManager.get(), nullptr);
 }
 
 // 属性配置器方法

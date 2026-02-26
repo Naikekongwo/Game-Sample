@@ -9,15 +9,20 @@
 #include <functional>
 #include <memory>
 
-
 // 按钮状态的枚举类
-enum ButtonState { Normal, Hovered, Pressed };
+enum ButtonState
+{
+    Normal,
+    Hovered,
+    Pressed
+};
 
 class Button : public UIElement
 {
-    public:
+  public:
     // 构造函数
-    Button(const std::string& id, uint8_t layer, std::unique_ptr<Texture> texture);
+    Button(const std::string &id, uint8_t layer,
+           std::unique_ptr<Texture> texture);
 
     // 实现父类
 
@@ -29,13 +34,12 @@ class Button : public UIElement
 
     void setOnClick(std::function<void()> func) { onClick = std::move(func); }
 
-    protected:
-
+  protected:
     // 按钮状态 0：正常 1：悬停 2：按下
     ButtonState State = ButtonState::Normal;
-
     std::function<void()> onClick;
 
+    short soundID = 1002;
 };
 
 #endif //_BUTTON_H_

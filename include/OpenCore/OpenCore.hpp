@@ -9,8 +9,9 @@
 #define DEBUG_WATERWAVE 1
 #define DEBUG_MAP 1213
 #define DEBUG_MAIN 520
+#define DEBUG_PASS_VIDEO 2
 
-#define DEBUG_MODE DEBUG_MAIN
+#define DEBUG_MODE DEBUG_PASS_VIDEO
 
 #include "Macros.hpp"
 #include "Timer.hpp"
@@ -21,7 +22,6 @@
 #include "ResourceManager.hpp"
 #include "SoundEffectManager.hpp"
 
-#include "Gameplay/Manager/EntityManager.hpp"
 #include "Map/Manager/MapManager.hpp"
 
 // 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
@@ -36,7 +36,6 @@ inline SoundEffectManager &SFXManager = SoundEffectManager::getInstance();
 namespace Gameplay
 {
 inline MapManager &MapMgr = MapManager::getInstance();
-inline PlayerEntity &Player = PlayerEntity::getInstance();
 } // namespace Gameplay
 
 #include "Animation/AnimationPipeline.hpp"

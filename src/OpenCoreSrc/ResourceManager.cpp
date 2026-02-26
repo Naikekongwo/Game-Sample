@@ -103,6 +103,8 @@ void ResourceManager::LoadSound(short id, const std::string &path)
     }
 
     SDL_Log("ResourceManager::LoadSound sound id %d loaded successfully.", id);
+
+    soundCache_[id] = std::move(sound);
 }
 
 // 获取音效
@@ -557,6 +559,10 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         if (category == "music")
         {
             futures.push_back(LoadMusicAsync(resourceId, path));
+        }
+        else if (category == "sound")
+        {
+            futures.push_back(LoadSoundAsync(resourceId, path));
         }
         else if (category == "texture")
         {

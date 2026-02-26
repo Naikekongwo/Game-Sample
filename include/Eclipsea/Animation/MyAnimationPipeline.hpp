@@ -5,6 +5,7 @@
 
 #include "OpenCore/Animation/AnimationPipeline.hpp"
 
+#include "CollectionAnimation.hpp"
 #include "FadeAnimation.hpp"
 #include "FrameAnimation.hpp"
 #include "MoveAnimation.hpp"
@@ -14,35 +15,74 @@
 
 class MyAnimationPipeline : public AnimationPipeline
 {
-    public:
+  public:
+    MyAnimationPipeline(AnimationManager *AnimeManager,
+                        MyAnimationPipeline *parentPipeline)
+        : AnimationPipeline(AnimeManager), parentPipeline(parentPipeline) {};
+
     // 添加帧动画
-    MyAnimationPipeline& Frame(uint8_t totalFrames, uint8_t FPS, bool isLooping = false) {
-        animations.push_back(std::make_shared<FrameAnimation>(totalFrames, FPS, isLooping));
+    MyAnimationPipeline &Frame(uint8_t totalFrames, uint8_t FPS,
+                               bool isLooping = false)
+    {
+        animations.push_back(
+            std::make_shared<FrameAnimation>(totalFrames, FPS, isLooping));
         return *this;
     }
     // 添加渐变动画
-    MyAnimationPipeline& Fade(float startAlpha, float endAlpha, float duration, bool isLooping = false) {
-        animations.push_back(std::make_shared<FadeAnimation>(startAlpha, endAlpha, duration, isLooping));
+    MyAnimationPipeline &Fade(float startAlpha, float endAlpha, float duration,
+                              bool isLooping = false)
+    {
+        animations.push_back(std::make_shared<FadeAnimation>(
+            startAlpha, endAlpha, duration, isLooping));
         return *this;
     }
     // 添加移动动画
-    MyAnimationPipeline& Move(uint16_t startX, uint16_t startY, uint16_t endX, uint16_t endY, float duration, bool isLooping = false) {
-        animations.push_back(std::make_shared<MoveAnimation>(startX, startY, endX, endY, duration, isLooping));
+    MyAnimationPipeline &Move(uint16_t startX, uint16_t startY, uint16_t endX,
+                              uint16_t endY, float duration,
+                              bool isLooping = false)
+    {
+        animations.push_back(std::make_shared<MoveAnimation>(
+            startX, startY, endX, endY, duration, isLooping));
         return *this;
     }
     // 添加缩放动画
-    MyAnimationPipeline& Scale(float startScale, float endScale, float duration, bool isLooping = false) {
-        animations.push_back(std::make_shared<ScaleAnimation>(startScale, endScale, duration, isLooping));
+    MyAnimationPipeline &Scale(float startScale, float endScale, float duration,
+                               bool isLooping = false)
+    {
+        animations.push_back(std::make_shared<ScaleAnimation>(
+            startScale, endScale, duration, isLooping));
         return *this;
     }
     // 添加旋转动画
-    MyAnimationPipeline& Rotate(float startAngle, float endAngle, float duration, bool isLooping = false) {
-        animations.push_back(std::make_shared<RotateAnimation>(startAngle, endAngle, duration, isLooping));
+    MyAnimationPipeline &Rotate(float startAngle, float endAngle,
+                                float duration, bool isLooping = false)
+    {
+        animations.push_back(std::make_shared<RotateAnimation>(
+            startAngle, endAngle, duration, isLooping));
         return *this;
     }
     // 添加定时器动画
-    MyAnimationPipeline& Timer(float duration) {
+    MyAnimationPipeline &Timer(float duration)
+    {
         animations.push_back(std::make_shared<TimerAnimation>(duration));
         return *this;
     }
+
+    MyAnimationPipeline *SubStart(bool isParalle)
+    {
+        auto colani = std::make_shared<CollectionAnimation>(this, isParalle);
+        animations.push_back(colani);
+        // colani 是集合的共享指针
+        return colani->Begin();
+    }
+
+    MyAnimationPipeline &SubEnd()
+    {
+        Commit();
+        // 将当前子段的动画全部返回
+        return *parentPipeline;
+    }
+
+  private:
+    MyAnimationPipeline *parentPipeline = nullptr;
 };

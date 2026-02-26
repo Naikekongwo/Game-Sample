@@ -36,10 +36,10 @@ void MainStage::setupBackground()
     Elements->PushElement(std::move(bg1));
     auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
     connector->Configure()
-        .Anchor(AnchorPoint::TopLeft)
+        .Anchor(AnchorPoint::TopRight)
         .Posite(0, 0)
-        .Scale(fullwidth, fullheight);
-    connector->Animate().Move(0, 0, 1920, 0, 5.f, false).Commit();
+        .Scale(fullheight * 3.2f, fullheight);
+    connector->Animate().Move(2700, 0, 6000, 0, 5.f, false).Commit();
     Elements->PushElement(std::move(connector));
 }
 

@@ -10,6 +10,9 @@ class MapExplorer : public UIElement
 {
   public:
   private:
+    // 地图窗口容纳的地图大小
+    uint8_t WideRange = 16;
+    uint8_t HeightRange = 9;
 };
 
 #endif //_MAP_EXPLORER_HPP_

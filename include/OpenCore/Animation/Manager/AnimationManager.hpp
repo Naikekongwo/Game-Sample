@@ -53,6 +53,8 @@ class AnimationManager
 
     void clear(); // 清空动画表
 
+    void reset(float totalTime, AnimationState &state); // 重置所有动画
+
     bool hasAnimation() const { return !Animations.empty(); } // 判断是否存在
 
     void setSequence(bool isSequential);

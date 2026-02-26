@@ -82,6 +82,11 @@ void PreloadStage::onUpdate()
     {
         Elements->onUpdate(totalTime);
         auto entry = Elements->find("frameCounter");
+        if (DEBUG_MODE == DEBUG_PASS_VIDEO)
+        {
+            Elements->removeElement("animation");
+            phase = PreloadPhase::InitAudio;
+        }
         if (entry && entry->isAnimeFinished())
         {
             Elements->removeElement("animation");
@@ -104,7 +109,8 @@ void PreloadStage::onUpdate()
     // 5️⃣ 处理标题动画阶段
     if (phase == PreloadPhase::ShowTitle1 ||
         phase == PreloadPhase::ShowTitle2 ||
-        phase == PreloadPhase::ShowConnector)
+        phase == PreloadPhase::ShowConnector ||
+        phase == PreloadPhase::ConnectorOn)
     {
         Elements->onUpdate(totalTime);
         handleTitleSequence();
@@ -193,8 +199,12 @@ void PreloadStage::buildTitleAndWater()
         .Anchor(AnchorPoint::Center)
         .Posite(0.5f, 0.28125f)
         .Sequence(false)
-        .Alpha(0.0f);
-    startTitle->Animate().Fade(0.4f, 1.0f, 5.0f, false).Commit();
+        .Alpha(0.0f)
+        .Follow(20);
+    startTitle->Animate()
+        .Fade(0.4f, 1.0f, 5.0f, false)
+        .Scale(1.2f, 1.0f, 5.0f)
+        .Commit();
 
     auto waterRect = std::make_unique<Waterrect>(
         "water", 1,
@@ -208,8 +218,8 @@ void PreloadStage::buildTitleAndWater()
         .Scale(1.0 * fullwidth, 0.5 * fullheight);
 
     auto wave = std::make_unique<Wave>();
-    wave->insertWave(WaveInfo(50, 1200, 0.02, 0, 1.0, 0.0));
-    wave->insertWave(WaveInfo(18, 600, 0.12, 1.0, 0.8, 0.6));
+    wave->insertWave(WaveInfo(50, 1200, 0.04, 0, 1.0, 0.0));
+    wave->insertWave(WaveInfo(18, 600, 0.24, 1.0, 0.8, 0.6));
     wave->insertWave(WaveInfo(4.0, 180, 0., 0.5, -0.3, 0.95));
 
     waterRect->setWave(std::move(wave));
@@ -242,7 +252,12 @@ void PreloadStage::handleTitleSequence()
         Title->changeTexture(MakeTexture(1, 1, icon_studio));
         Title->Configure().Scale(0.3125f, 0.3125f);
         Title->setSequential(true);
-        Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(3.0f).Commit();
+        Title->Animate()
+            .SubStart(true)
+            ->Fade(0.0f, 1.0f, 2.0f, false)
+            .SubEnd()
+            .Timer(3.0f)
+            .Commit();
         phase = PreloadPhase::ShowTitle2;
         break;
 
@@ -259,15 +274,24 @@ void PreloadStage::handleTitleSequence()
     {
         auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
         connector->Configure()
-            .Scale(fullwidth, fullheight)
+            .Scale(fullheight * 3.2f, fullheight)
             .Anchor(AnchorPoint::TopRight)
             .Posite(0.0f, 0.0f);
-        connector->Animate().Move(0, 0, 1920, 0, 5.0f, false).Commit();
+        connector->Animate().Move(0, 0, 2700, 0, 5.0f, false).Commit();
         Elements->PushElement(std::move(connector));
-        phase = PreloadPhase::Finished;
+        phase = PreloadPhase::ConnectorOn;
         break;
     }
 
+    case PreloadPhase::ConnectorOn:
+    {
+        auto connector = Elements->find("connector");
+        if (connector && connector->isAnimeFinished())
+        {
+            phase = PreloadPhase::Finished;
+        }
+        break;
+    }
     default:
         break;
     }

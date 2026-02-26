@@ -3,6 +3,10 @@
         "path": "assets/audio/bgm_oceanwaves.mp3",
         "category": "music"
     },
+    "1002": {
+        "path": "assets/audio/fx_waterdrops.mp3",
+        "category": "sound"
+    },
     "2001": {
         "path": "assets/backgrounds/menu_ocean.png",
         "category": "texture"

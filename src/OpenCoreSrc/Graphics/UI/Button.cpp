@@ -47,7 +47,10 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
             mousePos = {event.button.x, event.button.y};
 
             if (SDL_PointInRect(&mousePos, &bounds))
+            {
+                OpenCoreManagers::SFXManager.playSE(1002);
                 State = ButtonState::Pressed;
+            }
         }
         break;
     }
@@ -68,6 +71,7 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
             }
             else
             {
+
                 State = ButtonState::Normal;
             }
         }

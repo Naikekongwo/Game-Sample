@@ -44,7 +44,6 @@ void OrdMap::onUpdate(float totalTime)
 
 void OrdMap::onRender()
 {
-    PhysicalProperties pProperties = Gameplay::Player.getProperties();
 
     // 直接开始以玩家位置为中心绘制地图
 }

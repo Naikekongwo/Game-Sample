@@ -18,6 +18,7 @@ enum class PreloadPhase
     ShowTitle1,
     ShowTitle2,
     ShowConnector,
+    ConnectorOn,
     Finished
 };
 
