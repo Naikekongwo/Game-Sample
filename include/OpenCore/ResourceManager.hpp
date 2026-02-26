@@ -1,28 +1,35 @@
 #ifndef _RESOURCE_MANAGER_H_
 #define _RESOURCE_MANAGER_H_
 
-#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
-#include <memory>
-#include <unordered_map>
-#include <string>
+#include <condition_variable>
+#include <exception>
+#include <fstream>
+#include <functional>
 #include <future>
+#include <iostream>
+#include <memory>
 #include <mutex>
 #include <queue>
-#include <condition_variable>
+#include <string>
 #include <thread>
-#include <exception>
-#include <iostream>
-#include <fstream>
+#include <unordered_map>
 #include <vector>
-#include <functional>
 
 #include "rapidjson/document.h"
-#include "rapidjson/filereadstream.h"
 #include "rapidjson/error/en.h"
+#include "rapidjson/filereadstream.h"
 
+// 任务保护
+struct TaskGuard
+{
+    std::atomic<int> &counter;
+    TaskGuard(std::atomic<int> &c) : counter(c) { counter++; }
+    ~TaskGuard() { counter--; }
+};
 
 // 对应的删除器
 struct SDLDeleter
@@ -40,7 +47,7 @@ using SoundPtr = std::unique_ptr<Mix_Chunk, SDLDeleter>;
 
 class ResourceManager
 {
-public:
+  public:
     static ResourceManager &getInstance();
 
     bool Init();
@@ -60,7 +67,8 @@ public:
 
     std::future<void> LoadMusicAsync(short id, const std::string &path);
     std::future<void> LoadTextureAsync(short id, const std::string &path);
-    std::future<void> LoadFontAsync(short id, const std::string &path, int size);
+    std::future<void> LoadFontAsync(short id, const std::string &path,
+                                    int size);
     std::future<void> LoadSoundAsync(short id, const std::string &path);
 
     void ClearAll();
@@ -82,14 +90,13 @@ public:
     std::future<void> FreeFontAsync(short id);
     std::future<void> FreeSoundAsync(short id);
 
-private:
+  private:
     SDL_Renderer *renderer = nullptr;
 
     void StartWorker();
     void StopWorker();
 
-    template <typename F>
-    std::future<void> EnqueueTask(F &&f);
+    template <typename F> std::future<void> EnqueueTask(F &&f);
 
     // 主线程任务队列
     std::mutex mainThreadQueueMutex_;
@@ -121,17 +128,16 @@ private:
     std::atomic<bool> shouldStop_{false};
 };
 
-template <typename F>
-std::future<void> ResourceManager::EnqueueTask(F &&f)
+template <typename F> std::future<void> ResourceManager::EnqueueTask(F &&f)
 {
-    auto task = std::make_shared<std::packaged_task<void()>>(std::forward<F>(f));
+    auto task =
+        std::make_shared<std::packaged_task<void()>>(std::forward<F>(f));
 
     {
         std::lock_guard<std::mutex> lock(queueMutex_);
         if (!worker_.joinable())
             StartWorker();
-        taskQueue_.emplace([task]()
-                           { (*task)(); });
+        taskQueue_.emplace([task]() { (*task)(); });
     }
 
     queueCV_.notify_one();
