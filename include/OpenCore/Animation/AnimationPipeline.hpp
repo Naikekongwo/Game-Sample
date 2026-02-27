@@ -10,6 +10,9 @@
 #include <memory>
 #include <vector>
 
+using std::shared_ptr;
+using std::vector;
+
 class AnimationPipeline
 {
   public:
@@ -34,6 +37,6 @@ class AnimationPipeline
     }
 
   protected:
-    AnimationManager *manager = nullptr;                 // 动画管理器指针
-    std::vector<std::shared_ptr<IAnimation>> animations; // 存储动画的容器
+    AnimationManager *manager = nullptr;       // 动画管理器指针
+    vector<shared_ptr<IAnimation>> animations; // 存储动画的容器
 };

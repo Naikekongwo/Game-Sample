@@ -5,7 +5,7 @@
 #include <memory>
 
 BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
-                               std::unique_ptr<Texture> texture)
+                               unique_ptr<Texture> texture)
 {
 
     this->id = id;

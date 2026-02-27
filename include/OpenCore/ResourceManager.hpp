@@ -23,6 +23,9 @@
 #include "rapidjson/error/en.h"
 #include "rapidjson/filereadstream.h"
 
+using std::shared_ptr;
+using std::unique_ptr;
+
 // 任务保护
 struct TaskGuard
 {
@@ -40,10 +43,10 @@ struct SDLDeleter
     void operator()(Mix_Chunk *chunk) const;
 };
 
-using MusicPtr = std::unique_ptr<Mix_Music, SDLDeleter>;
-using TexturePtr = std::unique_ptr<SDL_Texture, SDLDeleter>;
-using FontPtr = std::unique_ptr<TTF_Font, SDLDeleter>;
-using SoundPtr = std::unique_ptr<Mix_Chunk, SDLDeleter>;
+using MusicPtr = unique_ptr<Mix_Music, SDLDeleter>;
+using TexturePtr = unique_ptr<SDL_Texture, SDLDeleter>;
+using FontPtr = unique_ptr<TTF_Font, SDLDeleter>;
+using SoundPtr = unique_ptr<Mix_Chunk, SDLDeleter>;
 
 class ResourceManager
 {
@@ -60,7 +63,7 @@ class ResourceManager
     Mix_Chunk *GetSound(short id);
 
     void LoadTexture(short id, const std::string &path);
-    std::shared_ptr<SDL_Texture> GetTexture(short id);
+    shared_ptr<SDL_Texture> GetTexture(short id);
 
     void LoadFont(short id, const std::string &path, int size);
     TTF_Font *GetFont(short id);

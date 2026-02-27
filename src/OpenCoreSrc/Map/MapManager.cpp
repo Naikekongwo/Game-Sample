@@ -3,7 +3,7 @@
 
 // 来实现地图的管理器吧
 
-bool MapManager::registerMap(std::unique_ptr<OpenCoreMap> map)
+bool MapManager::registerMap(unique_ptr<OpenCoreMap> map)
 {
     if (MapPool_.contains(map->id))
     {

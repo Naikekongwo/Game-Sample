@@ -146,7 +146,7 @@ void ResourceManager::LoadTexture(short id, const std::string &path)
 }
 
 // 获取纹理
-std::shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
+shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
 {
     std::lock_guard<std::mutex> lock(textureMutex_);
     auto it = textureCache_.find(id);
@@ -156,7 +156,7 @@ std::shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
         SDL_Log("ResourceManager::GetTexture failed to get texture id %d", id);
         return nullptr;
     }
-    return std::shared_ptr<SDL_Texture>(
+    return shared_ptr<SDL_Texture>(
         it->second.get(),
         [](SDL_Texture *) { /* do nothing, managed by unique_ptr */ });
 }
@@ -528,7 +528,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
     }
 
     // 6. 存储异步任务future
-    std::vector<std::future<void>> futures;
+    vector<std::future<void>> futures;
 
     // 7. 遍历所有资源对象
     for (auto it = doc.MemberBegin(); it != doc.MemberEnd(); ++it)

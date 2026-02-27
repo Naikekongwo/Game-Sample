@@ -10,15 +10,8 @@
 #include <memory>
 #include <vector>
 
-// 枚举类
-enum class AnimationID
-{
-    FrameAnime,
-    FadeAnime,
-    MoveAnimation,
-    RotateAnimation,
-    ScaleAnimation
-};
+using std::shared_ptr;
+using std::vector;
 
 struct Texture
 {
@@ -30,9 +23,9 @@ struct Texture
     uint16_t width, height;
 
     // 材质
-    std::shared_ptr<SDL_Texture> texture;
+    shared_ptr<SDL_Texture> texture;
 
-    Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex);
+    Texture(uint8_t x, uint8_t y, shared_ptr<SDL_Texture> tex);
 
     uint16_t Size() const noexcept { return xCount * yCount; }
 
@@ -47,10 +40,9 @@ class AnimationManager
   public:
     void onUpdate(float totalTime, AnimationState &state); // 刷新函数
 
-    void pushAnimation(std::shared_ptr<IAnimation> anime); // 只需传动画指针
+    void pushAnimation(shared_ptr<IAnimation> anime); // 只需传动画指针
 
-    void
-    eraseAnimation(std::shared_ptr<IAnimation> anime); // 可选：按指针移除动画
+    void eraseAnimation(shared_ptr<IAnimation> anime); // 可选：按指针移除动画
 
     bool isEmpty() const { return Animations.empty(); }
 
@@ -77,7 +69,7 @@ class AnimationManager
 
   private:
     // 改为vector存储
-    std::vector<std::shared_ptr<IAnimation>> Animations;
+    vector<shared_ptr<IAnimation>> Animations;
 
     // 是否顺序执行 ： 默认为 false 即默认是并行执行
     bool sequential = false;

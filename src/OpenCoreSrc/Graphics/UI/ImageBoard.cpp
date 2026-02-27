@@ -3,7 +3,7 @@
 #include "OpenCore/OpenCore.hpp"
 
 ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
-                       std::unique_ptr<Texture> texture)
+                       unique_ptr<Texture> texture)
 {
     // 设置ID 层级属性
     this->id = id;

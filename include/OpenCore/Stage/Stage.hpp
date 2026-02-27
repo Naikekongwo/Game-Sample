@@ -70,7 +70,7 @@ class Stage
     // 场景类型
     StageType stageType = unregistered;
     // 元素管理器
-    std::unique_ptr<ElementManager> Elements;
+    unique_ptr<ElementManager> Elements;
 };
 
 #endif //_STAGE_H_

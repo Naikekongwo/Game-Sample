@@ -1,21 +1,22 @@
 #ifndef _OPENCORE_WAVE_HPP_
 #define _OPENCORE_WAVE_HPP_
 
-
 #include "OpenCore/Concepts/OpenCore_Vec3.hpp"
-#include "OpenCore/Concepts/WaveBase.hpp"
 #include "OpenCore/Concepts/SineWave.hpp"
+#include "OpenCore/Concepts/WaveBase.hpp"
 #include <bit>
+#include <memory>
 #include <numbers>
 #include <vector>
-#include <memory>
 
+using std::shared_ptr;
+using std::unique_ptr;
+using std::vector;
 
 // 为兼容历史代码保留的数据结构，供构造波形使用
 class WaveInfo
 {
-    public:
-
+  public:
     float amplitude;
     float waveLength;
     float frequency;
@@ -25,21 +26,24 @@ class WaveInfo
 
     // 分别为 振幅/波长/频率/相位/X方向向量/Y方向向量
 
-    WaveInfo(float A, float wL, float fre, float pha, float vX, float vY) : amplitude(A), waveLength(wL), frequency(fre), phase(pha), vectorX(vX), vectorY(vY)
+    WaveInfo(float A, float wL, float fre, float pha, float vX, float vY)
+        : amplitude(A), waveLength(wL), frequency(fre), phase(pha), vectorX(vX),
+          vectorY(vY)
     {
     }
 };
 
 class OpenCore_Wave
 {
-    public:
-
+  public:
     OpenCore_Wave() = default;
 
     // 保持接口兼容，接受历史的 WaveInfo，然后创建对应的 SineWave
     void insertWave(WaveInfo waveInfo)
     {
-        Wave_.push_back(std::make_unique<SineWave>(waveInfo.amplitude, waveInfo.waveLength, waveInfo.frequency, waveInfo.phase, waveInfo.vectorX, waveInfo.vectorY));
+        Wave_.push_back(std::make_unique<SineWave>(
+            waveInfo.amplitude, waveInfo.waveLength, waveInfo.frequency,
+            waveInfo.phase, waveInfo.vectorX, waveInfo.vectorY));
     }
 
     // 获取高度（多个子波贡献之和）
@@ -47,7 +51,7 @@ class OpenCore_Wave
     {
         float summarize = 0.0f;
 
-        for(auto &entry : Wave_)
+        for (auto &entry : Wave_)
         {
             summarize += entry->getHeight(x, y, t);
         }
@@ -63,7 +67,7 @@ class OpenCore_Wave
         normalizedVec[1] = 0.0f;
         normalizedVec[2] = 1.0f;
 
-        for(auto &entry : Wave_)
+        for (auto &entry : Wave_)
         {
             Vec3 contrib = entry->getNormalizedVector(x, y, t);
             normalizedVec[0] += contrib[0];
@@ -78,7 +82,7 @@ class OpenCore_Wave
     float getRange()
     {
         float range = 0.0f;
-        for(auto &entry : Wave_)
+        for (auto &entry : Wave_)
         {
             range += entry->getRange();
         }
@@ -86,9 +90,8 @@ class OpenCore_Wave
         return range;
     }
 
-    private:
-
-    std::vector<std::unique_ptr<WaveBase>> Wave_;
+  private:
+    vector<unique_ptr<WaveBase>> Wave_;
 };
 
 #endif //_OPENCORE_WAVE_HPP_

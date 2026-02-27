@@ -121,13 +121,13 @@ void PreloadStage::onUpdate()
 
         if (DEBUG_MODE == DEBUG_MAP)
         {
-            std::unique_ptr<GameplayStage> gameplayStage =
+            unique_ptr<GameplayStage> gameplayStage =
                 std::make_unique<GameplayStage>(timer, sController);
             sController->changeStage(std::move(gameplayStage));
         }
         else
         {
-            std::unique_ptr<MainStage> mainStage =
+            unique_ptr<MainStage> mainStage =
                 std::make_unique<MainStage>(timer, sController);
             transferElementTo(mainStage.get(), "frameCounter");
             sController->changeStage(std::move(mainStage));
@@ -155,7 +155,7 @@ void PreloadStage::buildLoadingUI()
     frameCounter->Animate().Timer(6.0f).Commit();
     Elements->PushElement(std::move(frameCounter));
 
-    std::vector<std::unique_ptr<Texture>> animeList;
+    vector<unique_ptr<Texture>> animeList;
     animeList.push_back(std::move(MakeTexture(1, 5, water_drops)));
     animeList.push_back(std::move(MakeTexture(1, 5, water_waves)));
 
@@ -218,14 +218,14 @@ void PreloadStage::buildTitleAndWater()
     waterRect->setWave(std::move(wave));
     waterRect->setDetail(50);
 
-    std::vector<float> rSets{0.0f,
-                             0.5f * fullheight,
-                             1.0f,
-                             0.5f * fullheight,
-                             -0.25f * fullwidth,
-                             1.0f * fullheight,
-                             1.25f * fullwidth,
-                             1.0f * fullheight};
+    vector<float> rSets{0.0f,
+                        0.5f * fullheight,
+                        1.0f,
+                        0.5f * fullheight,
+                        -0.25f * fullwidth,
+                        1.0f * fullheight,
+                        1.25f * fullwidth,
+                        1.0f * fullheight};
     waterRect->SpecialDraw(true, rSets);
 
     Elements->PushElement(std::move(waterRect));

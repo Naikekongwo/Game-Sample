@@ -159,7 +159,7 @@ bool IDrawableObject::isAnimeFinished() const
 }
 
 // 贴图更新方法
-void IDrawableObject::changeTexture(std::unique_ptr<Texture> newTexture)
+void IDrawableObject::changeTexture(unique_ptr<Texture> newTexture)
 {
     if (newTexture)
     {

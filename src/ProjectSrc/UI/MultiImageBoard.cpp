@@ -1,7 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 
-
 bool MultiImageBoard::onDestroy()
 {
     auto result = UIElement::onDestroy();
@@ -42,8 +41,7 @@ MultiImageBoard::MultiImageBoard(const std::string &id, uint8_t layer,
     SDL_Log("MImageBoard::~() created with size: %d", size);
 }
 
-bool MultiImageBoard::pushImageBoard(
-    std::vector<std::unique_ptr<Texture>> &list)
+bool MultiImageBoard::pushImageBoard(vector<unique_ptr<Texture>> &list)
 {
     if (list.size() != size)
     {

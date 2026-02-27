@@ -19,7 +19,7 @@ class BaseBackground : public UIElement
   public:
     // 构造函数
     BaseBackground(const string &id, uint8_t layer,
-                   std::unique_ptr<Texture> texture);
+                   unique_ptr<Texture> texture);
 
     // 实现父类
     bool generateTexture(SDL_Texture *texture) override;

@@ -4,6 +4,8 @@
 #include "OpenCore/Animation/Manager/AnimationManager.hpp"
 #include <memory>
 
+using std::unique_ptr;
+
 class MyAnimationPipeline;
 
 class CollectionAnimation : public IAnimation
@@ -25,6 +27,6 @@ class CollectionAnimation : public IAnimation
     bool Parallel = true;
     bool isLooping = false;
     bool finished = false;
-    std::unique_ptr<AnimationManager> AnimeManager;
+    unique_ptr<AnimationManager> AnimeManager;
     MyAnimationPipeline *parentPipe = nullptr;
 };

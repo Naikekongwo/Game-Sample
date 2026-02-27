@@ -10,6 +10,7 @@
 #include "OpenCore/Graphics/UI/Button.hpp"
 #include "OpenCore/Graphics/UI/FrameCounter.hpp"
 #include "OpenCore/Graphics/UI/ImageBoard.hpp"
+#include "OpenCore/Graphics/UI/Scrollbar.hpp"
 
 #include "OpenCore/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Graphics/IDrawableObject/Sprite.hpp"
@@ -34,12 +35,12 @@ class ElementManager
 
     bool removeElement(const std::string &id);
 
-    bool PushElement(std::unique_ptr<IDrawableObject> element);
+    bool PushElement(unique_ptr<IDrawableObject> element);
 
     IDrawableObject *find(const std::string &id)
         const; // 查找是否存在元素的函数，使用const表示不会修改类状态
 
-    std::unique_ptr<IDrawableObject> getElement(const std::string &id);
+    unique_ptr<IDrawableObject> getElement(const std::string &id);
 
     template <typename Func> void forEachElement(Func &&func)
     {
@@ -62,6 +63,6 @@ class ElementManager
 
   private:
     // 储存子类的表
-    std::vector<std::unique_ptr<IDrawableObject>> Elements;
+    vector<unique_ptr<IDrawableObject>> Elements;
 };
 #endif //_ELEMENTMANANGER_H_

@@ -2,7 +2,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include <algorithm>
 
-Texture::Texture(uint8_t x, uint8_t y, std::shared_ptr<SDL_Texture> tex)
+Texture::Texture(uint8_t x, uint8_t y, shared_ptr<SDL_Texture> tex)
     : xCount(x), yCount(y), texture(tex)
 {
     int W, H;
@@ -45,7 +45,7 @@ SDL_Rect Texture::getSrcRect(uint8_t index)
 
 void AnimationManager::onUpdate(float totalTime, AnimationState &state)
 {
-    std::vector<size_t> eraseList;
+    vector<size_t> eraseList;
 
     for (size_t i = 0; i < Animations.size(); ++i)
     {
@@ -70,12 +70,12 @@ void AnimationManager::onUpdate(float totalTime, AnimationState &state)
     }
 }
 
-void AnimationManager::pushAnimation(std::shared_ptr<IAnimation> anime)
+void AnimationManager::pushAnimation(shared_ptr<IAnimation> anime)
 {
     Animations.push_back(anime);
 }
 
-void AnimationManager::eraseAnimation(std::shared_ptr<IAnimation> anime)
+void AnimationManager::eraseAnimation(shared_ptr<IAnimation> anime)
 {
     auto it = std::find(Animations.begin(), Animations.end(), anime);
     if (it != Animations.end())

@@ -63,8 +63,8 @@ class OpenEngine final
     bool CleanUp();
 
   private:
-    std::unique_ptr<StageManager> sController;
-    std::unique_ptr<Timer> timer;
+    unique_ptr<StageManager> sController;
+    unique_ptr<Timer> timer;
 };
 
 #endif //_OPENCORE_H_

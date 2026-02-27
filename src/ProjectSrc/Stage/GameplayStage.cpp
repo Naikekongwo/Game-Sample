@@ -20,7 +20,7 @@ void GameplayStage::Init()
 
     SFX.stopBGM();
 
-    std::unique_ptr<ImageBoard> background = std::make_unique<ImageBoard>(
+    unique_ptr<ImageBoard> background = std::make_unique<ImageBoard>(
         "background", 0, MakeTexture(1, 1, background_gameplay));
 
     background->Configure()

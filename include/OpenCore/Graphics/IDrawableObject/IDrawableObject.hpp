@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+using std::unique_ptr;
+
 class AnimationManager;
 class AnimationPipeline;
 class MyAnimationPipeline;
@@ -48,7 +50,7 @@ class IDrawableObject
     virtual SDL_Rect getPhysicalBounds();
 
     // 更改贴图
-    void changeTexture(std::unique_ptr<Texture> newTexture);
+    void changeTexture(unique_ptr<Texture> newTexture);
 
     // 设置动画顺序
     void setSequential(bool sequential);
@@ -80,13 +82,13 @@ class IDrawableObject
     // 默认图层
     uint8_t layer = 0;
     // 动画管理器
-    std::unique_ptr<AnimationManager> AnimeManager;
+    unique_ptr<AnimationManager> AnimeManager;
     // 动画状态
-    std::unique_ptr<AnimationState> AnimeState;
+    unique_ptr<AnimationState> AnimeState;
     // 元素基础大小
     uint16_t absWidth, absHeight;
     // 贴图
-    std::unique_ptr<Texture> texture;
+    unique_ptr<Texture> texture;
     // 父容器类
     int magnetFactor = 0;
     // 相对鼠标的移动系数

@@ -19,10 +19,10 @@ class MapManager final
         return instance;
     }
 
-    bool registerMap(std::unique_ptr<OpenCoreMap> map);
+    bool registerMap(unique_ptr<OpenCoreMap> map);
     bool downloadMap(OpenCoreMap *map);
 
   private:
     // 地图池
-    std::unordered_map<short, std::unique_ptr<OpenCoreMap>> MapPool_;
+    std::unordered_map<short, unique_ptr<OpenCoreMap>> MapPool_;
 };

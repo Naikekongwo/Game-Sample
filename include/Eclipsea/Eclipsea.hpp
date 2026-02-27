@@ -50,12 +50,11 @@
 
 // 模板
 template <typename T>
-std::unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,
-                      short frameX, short frameY);
+unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,
+                 short frameX, short frameY);
 
 #include "template/UIFactory.inl"
 
-std::unique_ptr<Texture> MakeTexture(uint8_t xCount, uint8_t yCount,
-                                     short texId);
+unique_ptr<Texture> MakeTexture(uint8_t xCount, uint8_t yCount, short texId);
 
 #include "template/TextureFactory.inl"
