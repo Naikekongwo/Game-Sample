@@ -6,23 +6,20 @@
 
 #include "OpenCore/Graphics/IDrawableObject/UIElement.hpp"
 
-
 #include <memory>
-#include <vector>
 #include <string>
+#include <vector>
 
-using std::vector;
 using std::unique_ptr;
+using std::vector;
 
 class ImageBoard;
 // 前向声明
 
-
 class MultiImageBoard : public UIElement
 {
-    public:
-
-    MultiImageBoard(const std::string& id, uint8_t layer, uint8_t size);
+  public:
+    MultiImageBoard(const std::string &id, uint8_t layer, uint8_t size);
 
     // 多层级ImageBoard不存在实时渲染的问题，所以可以直接忽略
     bool onDestroy() override;
@@ -34,17 +31,16 @@ class MultiImageBoard : public UIElement
 
     // 配置贴图算法
     bool pushImageBoard(vector<unique_ptr<Texture>> &list);
-    
+
     // 配置算法
     MyAnimationPipeline AnimateAt(uint8_t index);
     DrawableConfigurator ConfigureAt(uint8_t index);
-    
-    private:
+
+  private:
     bool async = true;
     bool ready = false;
     size_t size = 0;
-    vector<unique_ptr<ImageBoard>> Layers; 
+    vector<unique_ptr<ImageBoard>> Layers;
 };
-
 
 #endif //_MULTI_IMAGEBOARD_H_

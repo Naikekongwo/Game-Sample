@@ -10,7 +10,6 @@
 #include "OpenCore/Graphics/UI/Button.hpp"
 #include "OpenCore/Graphics/UI/FrameCounter.hpp"
 #include "OpenCore/Graphics/UI/ImageBoard.hpp"
-#include "OpenCore/Graphics/UI/Label.hpp"
 
 #include "OpenCore/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Graphics/IDrawableObject/Sprite.hpp"

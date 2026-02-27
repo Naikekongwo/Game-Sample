@@ -22,16 +22,15 @@ class BaseBackground : public UIElement
                    std::unique_ptr<Texture> texture);
 
     // 实现父类
+    bool generateTexture(SDL_Texture *texture) override;
 
     void handlEvents(SDL_Event &event, float totalTime) override;
     void onUpdate(float totalTime) override;
-    bool generateTexture(SDL_Texture *texture) override;
     void onEnter() override;
     void onExit() override;
     void onRender() override;
 
     // 特殊函数
-
     void setNativeScale(uint8_t scale);
 
   private:
