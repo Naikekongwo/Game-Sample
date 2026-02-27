@@ -84,7 +84,7 @@ class IDrawableObject
     // 动画状态
     std::unique_ptr<AnimationState> AnimeState;
     // 元素基础大小
-    uint16_t nativeWidth, nativeHeight;
+    uint16_t absWidth, absHeight;
     // 贴图
     std::unique_ptr<Texture> texture;
     // 父容器类

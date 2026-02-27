@@ -54,14 +54,7 @@ void PreloadStage::onUpdate()
         {
             phase = PreloadPhase::BuildLoadingUI;
 
-            if (DEBUG_MODE == DEBUG_MAP)
-            {
-                sController->removeStage(this->stageType);
-                auto gameplay =
-                    std::make_unique<GameplayStage>(timer, sController);
-                sController->changeStage(std::move(gameplay));
-            }
-            else if (DEBUG_MODE == DEBUG_MAIN)
+            if (DEBUG_MODE & DEBUG_MAIN)
             {
                 sController->removeStage(this->stageType);
                 auto main = std::make_unique<MainStage>(timer, sController);

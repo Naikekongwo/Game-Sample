@@ -33,7 +33,6 @@ void IDrawableObject::setPosition(float xPercent, float yPercent)
 
     if (parentContainer == nullptr)
     {
-        // 相对于屏幕
         baseW = BASE_WINDOW_WIDTH;
         baseH = BASE_WINDOW_HEIGHT;
     }
@@ -44,8 +43,40 @@ void IDrawableObject::setPosition(float xPercent, float yPercent)
         baseH = parent.h;
     }
 
-    AnimeState->Position[0] = baseW * xPercent;
-    AnimeState->Position[1] = baseW * yPercent;
+    if (xPercent != 0 && yPercent != 0)
+    {
+        // 二者都不为0，直接按照父尺寸赋值
+        AnimeState->Position[0] = baseW * xPercent;
+        AnimeState->Position[1] =
+            ((parentContainer == nullptr) ? baseW : baseH) * yPercent;
+        // 父对象不是屏幕就可以分别系数
+    }
+    else if (xPercent == 0)
+    {
+        // 以y之百分比进行尺寸标定
+        AnimeState->Position[1] =
+            ((parentContainer == nullptr) ? baseW : baseH) * yPercent;
+        AnimeState->Position[0] =
+            AnimeState->Position[1] *
+            (texture->getFrameWidth() / texture->getFrameHeight());
+    }
+    else if (yPercent == 0)
+    {
+        // 以x之百分比进行尺寸标定
+        AnimeState->Position[0] =
+            ((parentContainer == nullptr) ? baseW : baseH) * xPercent;
+        AnimeState->Position[1] =
+            AnimeState->Position[0] *
+            (texture->getFrameHeight() / texture->getFrameWidth());
+    }
+    else
+    {
+        // 二者都为0
+        SDL_Log("Encountered Fatal error in element scaling!");
+        // 以y之百分比进行尺寸标定
+        AnimeState->Position[1] = 1;
+        AnimeState->Position[0] = 1;
+    }
 }
 
 SDL_Rect IDrawableObject::getPhysicalBounds()
@@ -73,8 +104,38 @@ void IDrawableObject::setScale(float w, float h)
         baseH = parent.h;
     }
 
-    nativeWidth = baseW * w;
-    nativeHeight = baseW * h;
+    if (w != 0 && h != 0)
+    {
+        // 二者都不为0，直接按照父尺寸赋值
+        absWidth = baseW * w;
+        absHeight = ((parentContainer == nullptr) ? baseW : baseH) * h;
+        // 父对象不是屏幕就可以分别系数
+    }
+    else if (w == 0)
+    {
+        // 以y之百分比进行尺寸标定
+        absHeight = ((parentContainer == nullptr) ? baseW : baseH) * h;
+        absWidth =
+            absHeight * (texture->getFrameWidth() / texture->getFrameHeight());
+    }
+    else if (h == 0)
+    {
+        // 以x之百分比进行尺寸标定
+        absWidth = ((parentContainer == nullptr) ? baseW : baseH) * w;
+        absHeight =
+            absWidth * (texture->getFrameHeight() / texture->getFrameWidth());
+    }
+    else
+    {
+        // 二者都为0
+        SDL_Log("Encountered Fatal error in element scaling!");
+        // 以y之百分比进行尺寸标定
+        absHeight = 1;
+        absWidth = 1;
+    }
+
+    absWidth = baseW * w;
+    absHeight = baseW * h;
 }
 
 // 动画配置器方法

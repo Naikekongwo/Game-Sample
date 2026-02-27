@@ -107,6 +107,14 @@
         "path": "assets/ui/stone_background.png",
         "category": "texture"
     },
+    "2025": {
+        "path": "assets/ui/Button_Create.png",
+        "category": "texture"
+    },
+    "2026": {
+        "path": "assets/ui/scrollbutton.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

@@ -84,6 +84,19 @@ void MainStage::setupButtons()
     auto continueButton = UI<Button>("continueButton", 2, img_ContButton, 1, 3);
     auto settingButton = UI<Button>("settingButton", 2, img_SettButton, 1, 3);
 
+    if (DEBUG_MODE & DEBUG_MAP)
+    {
+        auto worldbutton = UI<Button>("worldbutton", 2, img_createworld, 1, 3);
+        worldbutton->Configure()
+            .Anchor(AnchorPoint::TopLeft)
+            .Parent(nullptr)
+            .Posite(0.72f, 0.3285f)
+            .Scale(0.156f, 0.0416f)
+            .Sequence(true);
+
+        Elements->PushElement(std::move(worldbutton));
+    }
+
     // 配置位置与缩放
     startButton->Configure()
         .Anchor(AnchorPoint::TopLeft)

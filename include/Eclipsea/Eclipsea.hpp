@@ -29,6 +29,8 @@
 #define cities_top 2022
 #define button_border 2023
 #define stone_background 2024
+#define img_createworld 2025
+#define img_scrollbutton 2026
 
 #define font_normal 9001
 

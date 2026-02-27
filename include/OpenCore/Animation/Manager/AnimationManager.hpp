@@ -36,6 +36,9 @@ struct Texture
 
     uint16_t Size() const noexcept { return xCount * yCount; }
 
+    uint16_t getFrameWidth() const noexcept { return width / xCount; }
+    uint16_t getFrameHeight() const noexcept { return height / yCount; }
+
     SDL_Rect getSrcRect(uint8_t index);
 };
 

@@ -5,18 +5,23 @@
 // 引擎的核心
 
 // 对于调试模式的宏定义
-#define DEBUG_OFF 0
-#define DEBUG_WATERWAVE 1
-#define DEBUG_MAP 1213
-#define DEBUG_MAIN 520
-#define DEBUG_PASS_VIDEO 2
 
-#define DEBUG_MODE DEBUG_MAIN
+enum DebugFlags
+{
+    DEBUG_OFF = 0,
+    DEBUG_WATERWAVE = 1 << 0, // 0x01
+    DEBUG_MAP = 1 << 1,       // 0x02
+    DEBUG_MAIN = 1 << 2,      // 0x04
+    DEBUG_PASS_VIDEO = 1 << 3 // 0x08
+};
+
+constexpr int DEBUG_MODE = DEBUG_MAP | DEBUG_MAIN;
 
 #include "Macros.hpp"
 #include "Timer.hpp"
 
 #include "Graphics/Manager/GraphicsManager.hpp"
+#include "OpenCore/Concepts/OpenCore_Spiral.hpp"
 #include "OpenCore/Concepts/OpenCore_Vec3.hpp"
 #include "OpenCore/Concepts/OpenCore_Wave.hpp"
 #include "ResourceManager.hpp"
