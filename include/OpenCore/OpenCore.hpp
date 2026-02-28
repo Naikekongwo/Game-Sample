@@ -15,7 +15,7 @@ enum DebugFlags
     DEBUG_PASS_VIDEO = 1 << 3 // 0x08
 };
 
-constexpr int DEBUG_MODE = DEBUG_MAP | DEBUG_MAIN;
+constexpr int DEBUG_MODE = DEBUG_MAIN | DEBUG_MAIN;
 
 #include "Macros.hpp"
 #include "Timer.hpp"
@@ -25,6 +25,7 @@ constexpr int DEBUG_MODE = DEBUG_MAP | DEBUG_MAIN;
 #include "OpenCore/Concepts/OpenCore_Vec3.hpp"
 #include "OpenCore/Concepts/OpenCore_Wave.hpp"
 #include "ResourceManager.hpp"
+#include "SettingsManager.hpp"
 #include "SoundEffectManager.hpp"
 
 #include "Map/Manager/MapManager.hpp"
@@ -35,6 +36,7 @@ namespace OpenCoreManagers
 inline ResourceManager &ResManager = ResourceManager::getInstance();
 inline GraphicsManager &GFXManager = GraphicsManager::getInstance();
 inline SoundEffectManager &SFXManager = SoundEffectManager::getInstance();
+inline SettingsManager &SetManager = SettingsManager::getInstance();
 } // namespace OpenCoreManagers
 
 // 游戏对应的模块单例
@@ -50,6 +52,10 @@ inline MapManager &MapMgr = MapManager::getInstance();
 #include "Stage/StageManager.hpp"
 
 #include <memory>
+
+using std::make_shared;
+using std::shared_ptr;
+using std::string;
 
 class OpenEngine final
 {

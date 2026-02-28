@@ -17,7 +17,7 @@ void MultiImageBoard::onUpdate(float totalTime)
         for (auto &entry : Layers)
         {
             // 遍历vector
-            entry.get()->onUpdate(totalTime);
+            entry->onUpdate(totalTime);
         }
     }
 }

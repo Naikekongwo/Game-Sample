@@ -15,39 +15,73 @@ SettingsStage::SettingsStage(Timer *timer, StageManager *sController)
 void SettingsStage::onEnter()
 {
     // 初始化设置页面，首先创建baseBackground
-    auto baseBG =
+    auto Container =
         UI<BaseBackground>("set_background", 0, stone_background, 3, 3);
 
-    baseBG->setNativeScale(255);
+    Container->setNativeScale(255);
 
-    baseBG->Configure()
+    Container->Configure()
         .Anchor(AnchorPoint::Center)
         .Posite(fullwidth * 0.5f, fullheight * 0.5f)
-        .Scale(fullwidth * 0.5f, fullheight * 0.8f)
+        .Scale(fullwidth * 0.6f, fullheight * 0.8f)
         .Sequence(true)
         .Follow(0)
         .Parent(nullptr);
 
-    Elements->PushElement(std::move(baseBG));
+    auto background_large =
+        UI<BaseBackground>("largebg", 1, img_itemcontain, 3, 3);
 
-    auto buttonBorder = UI<ImageBoard>("buttonBorders", 1, button_border, 1, 1);
-    buttonBorder->Configure()
-        .Scale(0.03f * 1.25f, 0.03f * 1.25f)
-        .Posite(0.70f, 0.10f)
+    background_large->setNativeScale(20);
+
+    background_large->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopCenter)
+        .Scale(0.9f, 0.7f)
+        .Posite(0.5f, 0.15f);
+
+    Elements->PushElement(std::move(background_large));
+
+    auto settingtitle =
+        UI<ImageBoard>("settingtitle", 99, img_settingstitle, 1, 1);
+
+    settingtitle->Configure()
+        .Anchor(AnchorPoint::TopCenter)
+        .Parent(Container.get())
+        .Scale(0.113f, 0.0f)
+        .Posite(0.5f, 0.05f);
+
+    Elements->PushElement(std::move(settingtitle));
+
+    auto scroll = UI<Scrollbar>("scroll", 3, 0, 0, 0);
+
+    scroll->Configure()
         .Anchor(AnchorPoint::Center)
-        .Sequence(false)
-        .Parent(nullptr);
+        .Parent(Container.get())
+        .Scale(0.7f, 0.033f)
+        .Posite(0.5f, 0.3f);
+
+    scroll->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
+
+    Elements->PushElement(std::move(scroll));
+
+    auto buttonBorder = UI<ImageBoard>("buttonBorders", 3, button_border, 1, 1);
+    buttonBorder->Configure()
+        .Parent(Container.get())
+        .Scale(0.06f, 0.0f)
+        .Posite(0.92f, 0.10f)
+        .Anchor(AnchorPoint::Center)
+        .Sequence(false);
 
     Elements->PushElement(std::move(buttonBorder));
 
     // 返回按钮
-    auto backButton = UI<Button>("backButton", 1, img_BackButton, 1, 3);
+    auto backButton = UI<Button>("backButton", 3, img_BackButton, 1, 3);
     backButton->Configure()
-        .Scale(0.03f * 0.8f, 0.03f * 0.8f)
-        .Posite(0.70f, 0.10f)
+        .Parent(Container.get())
+        .Scale(0.05f, 0.0f)
+        .Posite(0.92f, 0.10f)
         .Anchor(AnchorPoint::Center)
-        .Sequence(false)
-        .Parent(nullptr);
+        .Sequence(false);
 
     // 点击回调
     backButton->setOnClick(
@@ -59,6 +93,9 @@ void SettingsStage::onEnter()
         });
     Elements->PushElement(std::move(backButton));
     // 将元素添加进入
+
+    // 将背景推送
+    Elements->PushElement(std::move(Container));
 }
 
 void SettingsStage::onUpdate()
@@ -84,7 +121,11 @@ void SettingsStage::onUpdate()
     }
 }
 
-void SettingsStage::onExit() { sController->removeStage(this->stageType); }
+void SettingsStage::onExit()
+{
+    OpenCoreManagers::SetManager.RefreshSettings();
+    sController->removeStage(this->stageType);
+}
 
 bool SettingsStage::handlEvents(SDL_Event *event)
 {

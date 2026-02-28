@@ -163,21 +163,21 @@ void PreloadStage::buildLoadingUI()
     animation->pushImageBoard(animeList);
     animation->Configure()
         .Anchor(AnchorPoint::Center)
-        .Scale(0.208f, 0.117f)
-        .Posite(0.5f, 0.28f)
+        .Scale(0.208f, 0.208f * widthheight)
+        .Posite(0.5f, 0.5f)
         .Sequence(true);
 
     animation->ConfigureAt(0)
         .Anchor(AnchorPoint::Center)
-        .Scale(fullwidth, fullheight)
-        .Posite(0.5f, 0.28f)
+        .Scale(1.0f, 1.0f)
+        .Posite(0.5f, 0.5f)
         .Sequence(true);
     animation->AnimateAt(0).Frame(5, 5, true).Commit();
 
     animation->ConfigureAt(1)
         .Anchor(AnchorPoint::Center)
-        .Scale(fullwidth, fullheight)
-        .Posite(0.5f, 0.4f)
+        .Scale(1.0f, 1.0f)
+        .Posite(0.5f, 0.5f)
         .Sequence(true);
     animation->AnimateAt(1).Frame(5, 5, true).Commit();
 
@@ -188,9 +188,9 @@ void PreloadStage::buildTitleAndWater()
 {
     auto startTitle = UI<ImageBoard>("startTitle", 2, icon_opencore, 1, 1);
     startTitle->Configure()
-        .Scale(0.52f, 0.26f)
+        .Scale(0.52f, 0.46f)
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.28125f)
+        .Posite(0.5f, 0.5f)
         .Sequence(false)
         .Alpha(0.0f)
         .Follow(20);
@@ -207,8 +207,8 @@ void PreloadStage::buildTitleAndWater()
     waterRect->Configure()
         .Anchor(AnchorPoint::TopCenter)
         .Parent(nullptr)
-        .Posite(0.5 * fullwidth, 0.5 * fullheight)
-        .Scale(1.0 * fullwidth, 0.5 * fullheight);
+        .Posite(0.5f, 0.5f)
+        .Scale(1.0f, 0.5f);
 
     auto wave = std::make_unique<Wave>();
     wave->insertWave(WaveInfo(50, 1200, 0.04, 0, 1.0, 0.0));
@@ -243,7 +243,7 @@ void PreloadStage::handleTitleSequence()
     case PreloadPhase::ShowTitle1:
         Title->setTransparency(0.0f);
         Title->changeTexture(MakeTexture(1, 1, icon_studio));
-        Title->Configure().Scale(0.3125f, 0.3125f);
+        Title->Configure().Scale(0.3125f, 0.0f);
         Title->setSequential(true);
         Title->Animate()
             .SubStart(true)
@@ -257,7 +257,7 @@ void PreloadStage::handleTitleSequence()
     case PreloadPhase::ShowTitle2:
         Title->setTransparency(0.0f);
         Title->changeTexture(MakeTexture(1, 1, preload_title));
-        Title->Configure().Scale(0.53f, 0.13f);
+        Title->Configure().Scale(0.53f, 0.0f);
         Title->setSequential(true);
         Title->Animate().Fade(0.0f, 1.0f, 2.0f, false).Timer(10.0f).Commit();
         phase = PreloadPhase::ShowConnector;
@@ -267,7 +267,7 @@ void PreloadStage::handleTitleSequence()
     {
         auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
         connector->Configure()
-            .Scale(fullheight * 3.2f, fullheight)
+            .Scale(0.0f, fullheight)
             .Anchor(AnchorPoint::TopRight)
             .Posite(0.0f, 0.0f);
         connector->Animate().Move(0, 0, 2700, 0, 5.0f, false).Commit();

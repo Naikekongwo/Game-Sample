@@ -31,6 +31,8 @@
 #define stone_background 2024
 #define img_createworld 2025
 #define img_scrollbutton 2026
+#define img_itemcontain 2027
+#define img_settingstitle 2028
 
 #define font_normal 9001
 

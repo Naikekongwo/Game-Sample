@@ -1,5 +1,6 @@
 // UIFactory.inl
 // UI的工厂方法
+#include "Eclipsea/UI/MultiImageBoard.hpp"
 #include "OpenCore/OpenCore.hpp"
 
 // 通用版本

@@ -53,24 +53,7 @@ SDL_Rect UIElement::getLogicalBounds()
         break;
     }
 
-    // 如果是绝对定位，直接返回逻辑坐标
-    if (absolutePosite || !parentContainer)
-    {
-        return SDL_Rect{logicalX, logicalY, logicalWidth, logicalHeight};
-    }
-
-    // 相对定位：基于父容器的实际边界进行转换
-    SDL_Rect parentBounds = parentContainer->getLogicalBounds();
-
-    // 将本元素的逻辑坐标转换到父容器的实际坐标系中
-    // Position 是基于父容器1920x1080逻辑空间的
-    // Scale 也是基于父容器1920x1080逻辑空间的
-    return SDL_Rect{
-        parentBounds.x + static_cast<int16_t>(logicalX),
-        parentBounds.y + static_cast<int16_t>(logicalY),
-        static_cast<uint16_t>(logicalWidth), // 宽度也会根据父容器缩放
-        static_cast<uint16_t>(logicalHeight) // 高度也会根据父容器缩放
-    };
+    return SDL_Rect{logicalX, logicalY, logicalWidth, logicalHeight};
 }
 
 SDL_Rect UIElement::getPhysicalBounds() { return getLogicalBounds(); }

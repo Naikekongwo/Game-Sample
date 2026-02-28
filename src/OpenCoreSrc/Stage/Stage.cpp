@@ -2,7 +2,6 @@
 #include "OpenCore/OpenCore.hpp"
 #include <string>
 
-
 bool Stage::transferElementFrom(Stage *srcStage, const std::string &id)
 {
     return srcStage->transferElementTo(this, id);

@@ -115,6 +115,14 @@
         "path": "assets/ui/scrollbutton.png",
         "category": "texture"
     },
+    "2027": {
+        "path": "assets/ui/item_container.png",
+        "category": "texture"
+    },
+    "2028": {
+        "path": "assets/ui/settings/settings_title.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",
