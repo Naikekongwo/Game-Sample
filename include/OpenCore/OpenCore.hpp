@@ -9,13 +9,14 @@
 enum DebugFlags
 {
     DEBUG_OFF = 0,
-    DEBUG_WATERWAVE = 1 << 0, // 0x01
-    DEBUG_MAP = 1 << 1,       // 0x02
-    DEBUG_MAIN = 1 << 2,      // 0x04
-    DEBUG_PASS_VIDEO = 1 << 3 // 0x08
+    DEBUG_WATERWAVE = 1 << 0,  // 0x01
+    DEBUG_MAP = 1 << 1,        // 0x02
+    DEBUG_MAIN = 1 << 2,       // 0x04
+    DEBUG_PASS_VIDEO = 1 << 3, // 0x08
+    DEBUG_COPYRIGHT = 1 << 4
 };
 
-constexpr int DEBUG_MODE = DEBUG_MAIN | DEBUG_MAP;
+constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 
 #include "Macros.hpp"
 #include "Timer.hpp"

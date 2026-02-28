@@ -43,6 +43,8 @@ void Scrollbar::onEnter()
         baseBack->onEnter();
         slideBar->onEnter();
 
+        UpdateBar();
+
         status = ScrollStatus::Ready;
     }
 }
@@ -68,7 +70,8 @@ void Scrollbar::UpdateBar() { slideBar->setPosition(*value, 0.5f); }
 
 void Scrollbar::handlEvents(SDL_Event &event, float totalTime)
 {
-    // 子控件无需处理事件
+    if (baseBack)
+        baseBack->handlEvents(event, totalTime);
     // 处理点击事件
     SDL_Point mousePos{};
     SDL_Rect bounds = getPhysicalBounds();

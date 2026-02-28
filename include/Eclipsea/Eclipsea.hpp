@@ -35,6 +35,7 @@
 #define img_settingstitle 2028
 #define img_musicvolume 2029
 #define img_sfxvolume 2030
+#define pad_copyright 2031
 
 #define font_normal 9001
 

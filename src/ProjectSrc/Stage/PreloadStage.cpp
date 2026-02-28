@@ -170,7 +170,7 @@ void PreloadStage::buildLoadingUI()
     animation->ConfigureAt(0)
         .Anchor(AnchorPoint::Center)
         .Scale(1.0f, 1.0f)
-        .Posite(0.5f, 0.5f)
+        .Posite(0.5f, 0.34f)
         .Sequence(true);
     animation->AnimateAt(0).Frame(5, 5, true).Commit();
 
@@ -182,6 +182,28 @@ void PreloadStage::buildLoadingUI()
     animation->AnimateAt(1).Frame(5, 5, true).Commit();
 
     Elements->PushElement(std::move(animation));
+
+    if (DEBUG_MODE && DEBUG_COPYRIGHT)
+    {
+        auto copyrightpad =
+            UI<ImageBoard>("copyrightpad", 99, pad_copyright, 1, 1);
+
+        copyrightpad->Configure()
+            .Parent(nullptr)
+            .Anchor(AnchorPoint::BottomCenter)
+            .Posite(0.5f, 1.0f)
+            .Scale(0.26f, 0.0f)
+            .Alpha(0.0f)
+            .Sequence(true);
+
+        copyrightpad->Animate()
+            .Fade(0.0f, 1.0f, 5.0f)
+            .Timer(10.0f)
+            .Fade(1.0f, 0.0f, 5.0f)
+            .Commit();
+
+        Elements->PushElement(std::move(copyrightpad));
+    }
 }
 
 void PreloadStage::buildTitleAndWater()
@@ -219,13 +241,13 @@ void PreloadStage::buildTitleAndWater()
     waterRect->setDetail(50);
 
     vector<float> rSets{0.0f,
-                        0.5f * fullheight,
+                        0.5f * heightfactor,
                         1.0f,
-                        0.5f * fullheight,
+                        0.5f * heightfactor,
                         -0.25f * fullwidth,
-                        1.0f * fullheight,
+                        1.0f * heightfactor,
                         1.25f * fullwidth,
-                        1.0f * fullheight};
+                        1.0f * heightfactor};
     waterRect->SpecialDraw(true, rSets);
 
     Elements->PushElement(std::move(waterRect));

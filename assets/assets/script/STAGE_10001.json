@@ -131,6 +131,10 @@
         "path": "assets/ui/settings/tem_chunkvolume.png",
         "category": "texture"
     },
+    "2031": {
+        "path": "assets/ui/pad_copyright.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

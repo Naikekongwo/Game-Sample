@@ -1,6 +1,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_video.h>
 #include <cstddef>
 #include <memory>
 
@@ -61,7 +62,28 @@ void BaseBackground::onRender()
 
 void BaseBackground::setNativeScale(uint8_t scale) { nativeScale = scale; }
 
-void BaseBackground::handlEvents(SDL_Event &event, float totalTime) {}
+void BaseBackground::handlEvents(SDL_Event &event, float totalTime)
+{
+    switch (event.type)
+    {
+    case SDL_WINDOWEVENT:
+    {
+        if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+        {
+            auto &GFX = OpenCoreManagers::GFXManager;
+            SDL_Rect bounds = getLogicalBounds();
+            if (TextureCache)
+            {
+                SDL_DestroyTexture(TextureCache);
+            }
+            TextureCache = GFX.createTexture(bounds.w, bounds.h);
+            generateTexture(TextureCache);
+        }
+    }
+    default:
+        break;
+    }
+}
 
 bool BaseBackground::generateTexture(SDL_Texture *target)
 {

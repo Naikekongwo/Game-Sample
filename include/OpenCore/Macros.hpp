@@ -11,7 +11,7 @@
 #define BASE_WINDOW_WIDTH 1920
 #define BASE_WINDOW_HEIGHT 1080
 #define fullwidth 1.0f
-// #define fullheight 0.5625f
+#define heightfactor 0.5625f
 #define fullheight 1.0f
 
 #define widthheight 1.777f

@@ -18,7 +18,7 @@ void SettingsStage::onEnter()
     auto Container =
         UI<BaseBackground>("set_background", 0, stone_background, 3, 3);
 
-    Container->setNativeScale(255);
+    Container->setNativeScale(128);
 
     Container->Configure()
         .Anchor(AnchorPoint::Center)
