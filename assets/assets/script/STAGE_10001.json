@@ -123,6 +123,14 @@
         "path": "assets/ui/settings/settings_title.png",
         "category": "texture"
     },
+    "2029": {
+        "path": "assets/ui/settings/tem_musicvolume.png",
+        "category": "texture"
+    },
+    "2030": {
+        "path": "assets/ui/settings/tem_chunkvolume.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

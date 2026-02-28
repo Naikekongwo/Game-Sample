@@ -52,17 +52,51 @@ void SettingsStage::onEnter()
 
     Elements->PushElement(std::move(settingtitle));
 
-    auto scroll = UI<Scrollbar>("scroll", 3, 0, 0, 0);
+    // 选项名称
 
-    scroll->Configure()
+    auto musicV = UI<ImageBoard>("musicvol", 3, img_musicvolume, 1, 1);
+    auto SFXV = UI<ImageBoard>("sfxVol", 3, img_sfxvolume, 1, 1);
+
+    musicV->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.22f)
+        .Scale(0.246f, 0.0f);
+
+    SFXV->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.35f)
+        .Scale(0.246f, 0.0f);
+
+    Elements->PushElement(std::move(musicV));
+    Elements->PushElement(std::move(SFXV));
+
+    // 选项名称结束
+
+    auto scroll_musicv = UI<Scrollbar>("scroll_musicv", 3, 0, 0, 0);
+
+    scroll_musicv->Configure()
         .Anchor(AnchorPoint::Center)
         .Parent(Container.get())
         .Scale(0.7f, 0.033f)
         .Posite(0.5f, 0.3f);
 
-    scroll->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
+    scroll_musicv->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
 
-    Elements->PushElement(std::move(scroll));
+    Elements->PushElement(std::move(scroll_musicv));
+
+    auto scroll_chunk = UI<Scrollbar>("scroll_chunkv", 3, 0, 0, 0);
+
+    scroll_chunk->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Parent(Container.get())
+        .Scale(0.7f, 0.033f)
+        .Posite(0.5f, 0.43f);
+
+    // scroll_chunk->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
+
+    Elements->PushElement(std::move(scroll_chunk));
 
     auto buttonBorder = UI<ImageBoard>("buttonBorders", 3, button_border, 1, 1);
     buttonBorder->Configure()

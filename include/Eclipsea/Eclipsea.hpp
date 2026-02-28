@@ -33,6 +33,8 @@
 #define img_scrollbutton 2026
 #define img_itemcontain 2027
 #define img_settingstitle 2028
+#define img_musicvolume 2029
+#define img_sfxvolume 2030
 
 #define font_normal 9001
 

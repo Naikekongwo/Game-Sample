@@ -15,7 +15,7 @@ enum DebugFlags
     DEBUG_PASS_VIDEO = 1 << 3 // 0x08
 };
 
-constexpr int DEBUG_MODE = DEBUG_MAIN | DEBUG_MAIN;
+constexpr int DEBUG_MODE = DEBUG_MAIN | DEBUG_MAP;
 
 #include "Macros.hpp"
 #include "Timer.hpp"

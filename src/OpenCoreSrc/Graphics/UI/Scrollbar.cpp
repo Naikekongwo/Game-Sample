@@ -29,7 +29,7 @@ void Scrollbar::onEnter()
             .Anchor(AnchorPoint::Center)
             .Parent(this)
             .Posite(0.5f, 0.5f)
-            .Scale(0.0f, 1.0f)
+            .Scale(0.0f, 1.2f)
             .Sequence(true);
 
         baseBack->Configure()
