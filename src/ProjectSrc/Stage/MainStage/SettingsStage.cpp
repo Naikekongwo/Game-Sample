@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include <cstddef>
 #include <memory>
 
 SettingsStage::SettingsStage(Timer *timer, StageManager *sController)
@@ -16,8 +17,7 @@ void SettingsStage::onEnter()
 {
     // 初始化设置页面，首先创建baseBackground
     auto Container =
-        UI<BaseBackground>("set_background", 0, stone_background, 3, 3);
-
+        UI<BaseBackground>("set_background", 0, stone_background, NULL, NULL);
     Container->setNativeScale(128);
 
     Container->Configure()
@@ -29,7 +29,7 @@ void SettingsStage::onEnter()
         .Parent(nullptr);
 
     auto background_large =
-        UI<BaseBackground>("largebg", 1, img_itemcontain, 3, 3);
+        UI<BaseBackground>("largebg", 1, img_itemcontain, NULL, NULL);
 
     background_large->setNativeScale(20);
 
@@ -72,6 +72,24 @@ void SettingsStage::onEnter()
     Elements->PushElement(std::move(musicV));
     Elements->PushElement(std::move(SFXV));
 
+    auto renderD = UI<ImageBoard>("renderd", 3, img_renderd, 1, 1);
+    auto Multi = UI<ImageBoard>("multi", 3, img_multi, 1, 1);
+
+    renderD->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.48f)
+        .Scale(0.0f, 0.053f);
+
+    Multi->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.61f)
+        .Scale(0.0f, 0.053f);
+
+    Elements->PushElement(std::move(renderD));
+    Elements->PushElement(std::move(Multi));
+
     // 选项名称结束
 
     auto scroll_musicv = UI<Scrollbar>("scroll_musicv", 3, 0, 0, 0);
@@ -97,6 +115,18 @@ void SettingsStage::onEnter()
     // scroll_chunk->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
 
     Elements->PushElement(std::move(scroll_chunk));
+
+    auto scroll_renderd = UI<Scrollbar>("scroll_renderd", 3, 0, 0, 0);
+
+    scroll_renderd->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Parent(Container.get())
+        .Scale(0.7f, 0.033f)
+        .Posite(0.5f, 0.56f);
+
+    scroll_renderd->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
+
+    Elements->PushElement(std::move(scroll_renderd));
 
     auto buttonBorder = UI<ImageBoard>("buttonBorders", 3, button_border, 1, 1);
     buttonBorder->Configure()

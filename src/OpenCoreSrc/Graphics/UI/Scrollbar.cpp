@@ -21,7 +21,8 @@ void Scrollbar::onEnter()
     if (status == ScrollStatus::Creating)
     {
         // 避免反复初始化
-        baseBack = UI<BaseBackground>("background", 1, backgroundTexture, 3, 3);
+        baseBack =
+            UI<BaseBackground>("background", 1, backgroundTexture, NULL, NULL);
         slideBar = UI<ImageBoard>("slideimg", 1, buttonTexture, 1, 1);
 
         // 部署

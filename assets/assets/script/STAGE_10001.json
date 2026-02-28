@@ -135,6 +135,14 @@
         "path": "assets/ui/pad_copyright.png",
         "category": "texture"
     },
+    "2032": {
+        "path": "assets/ui/settings/tem_renderdistance.png",
+        "category": "texture"
+    },
+    "2033": {
+        "path": "assets/ui/settings/tem_multiplayer.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

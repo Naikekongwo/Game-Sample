@@ -14,19 +14,29 @@ inline unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,
             frameX, frameY, OpenCoreManagers::ResManager.GetTexture(texID))));
 }
 
-// 特化版本：FrameCounter <id,layer,X,X,X>
 template <>
 inline unique_ptr<FrameCounter> UI<FrameCounter>(const std::string &id,
                                                  uint8_t layer, short texID,
-                                                 short frameX, short frameY)
+                                                 short reserve0, short reserve1)
 {
     return std::make_unique<FrameCounter>(id, layer, nullptr);
 }
 
 template <>
+inline unique_ptr<BaseBackground>
+UI<BaseBackground>(const std::string &id, uint8_t layer, short texID,
+                   short reserve0, short reserve1)
+{
+    return std::make_unique<BaseBackground>(
+        id, layer,
+        std::move(std::make_unique<Texture>(
+            3, 3, OpenCoreManagers::ResManager.GetTexture(texID))));
+}
+
+template <>
 inline unique_ptr<Scrollbar> UI<Scrollbar>(const std::string &id, uint8_t layer,
                                            short backTexID, short buttTexID,
-                                           short frameY)
+                                           short reserve0)
 {
     return std::make_unique<Scrollbar>(id, layer, backTexID, buttTexID);
 }
@@ -35,7 +45,7 @@ inline unique_ptr<Scrollbar> UI<Scrollbar>(const std::string &id, uint8_t layer,
 template <>
 inline unique_ptr<MultiImageBoard>
 UI<MultiImageBoard>(const std::string &id, uint8_t layer, short texID,
-                    short frameX, short frameY)
+                    short reserve0, short reserve1)
 {
     return std::make_unique<MultiImageBoard>(id, layer, texID);
 }

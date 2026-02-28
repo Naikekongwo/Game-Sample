@@ -15,8 +15,8 @@ ContinueStage::ContinueStage(Timer *timer, StageManager *sController)
 void ContinueStage::onEnter()
 {
     // 初始化设置页面，首先创建baseBackground
-    auto baseBG =
-        UI<BaseBackground>("set_background", 0, background_purifier, 3, 3);
+    auto baseBG = UI<BaseBackground>("set_background", 0, background_purifier,
+                                     NULL, NULL);
 
     baseBG->setNativeScale(60);
 
