@@ -8,9 +8,11 @@
 
 #include "OpenCore/Graphics/UI/BaseBackground.hpp"
 #include "OpenCore/Graphics/UI/Button.hpp"
+#include "OpenCore/Graphics/UI/CheckBox.hpp"
 #include "OpenCore/Graphics/UI/FrameCounter.hpp"
 #include "OpenCore/Graphics/UI/ImageBoard.hpp"
 #include "OpenCore/Graphics/UI/Scrollbar.hpp"
+
 
 #include "OpenCore/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Graphics/IDrawableObject/Sprite.hpp"

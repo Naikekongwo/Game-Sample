@@ -4,6 +4,7 @@
 
 ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
                        unique_ptr<Texture> texture)
+    : UIElement(id, layer, std::move(texture))
 {
     // 设置ID 层级属性
     this->id = id;

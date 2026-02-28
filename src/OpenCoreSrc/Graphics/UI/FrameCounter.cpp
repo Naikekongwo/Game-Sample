@@ -3,12 +3,9 @@
 
 FrameCounter::FrameCounter(const std::string &id, uint8_t layer,
                            Texture *texture)
+    : UIElement(id, layer, nullptr)
 {
-    this->id = id;
-    this->layer = layer;
-
     this->AnimeState = std::make_unique<AnimationState>();
-
     this->AnimeManager = std::make_unique<AnimationManager>();
 }
 

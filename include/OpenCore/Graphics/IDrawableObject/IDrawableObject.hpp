@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 
+using std::string;
 using std::unique_ptr;
 
 class AnimationManager;

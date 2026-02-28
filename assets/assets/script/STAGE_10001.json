@@ -143,6 +143,10 @@
         "path": "assets/ui/settings/tem_multiplayer.png",
         "category": "texture"
     },
+    "2034": {
+        "path": "assets/ui/checkbox_classic.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

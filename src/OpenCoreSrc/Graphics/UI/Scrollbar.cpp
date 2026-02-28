@@ -4,10 +4,10 @@
 
 Scrollbar::Scrollbar(const string &id, short layer, short backTexID,
                      short buttTexID)
+    : UIElement(id, layer, nullptr)
 {
-    this->id = id;
-    this->layer = layer;
-    if (backTexID * buttonTexture)
+
+    if (backTexID * buttTexID)
     {
         this->backgroundTexture = backTexID;
         this->buttonTexture = buttTexID;

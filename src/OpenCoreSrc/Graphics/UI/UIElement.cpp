@@ -63,3 +63,21 @@ bool UIElement::onDestroy()
     IDrawableObject::onDestroy();
     return true;
 }
+
+UIElement::UIElement(const string &id, short layer, unique_ptr<Texture> texture)
+{
+    this->id = id;
+    this->layer = layer;
+
+    if (!texture)
+    {
+        SDL_Log(
+            "UIElement id %s encountered a empty texture, but relax, for some "
+            "element have child element it's ok to init without texture.",
+            id.c_str());
+    }
+    else
+    {
+        this->texture = std::move(texture);
+    }
+}

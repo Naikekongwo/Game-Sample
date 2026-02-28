@@ -9,6 +9,8 @@
 class UIElement : public IDrawableObject
 {
   public:
+    UIElement(const string &id, short layer, unique_ptr<Texture> texture);
+
     virtual SDL_Rect getLogicalBounds() override;
     virtual SDL_Rect getPhysicalBounds() override;
 

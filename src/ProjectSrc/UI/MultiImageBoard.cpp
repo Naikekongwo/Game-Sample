@@ -32,10 +32,8 @@ void MultiImageBoard::onRender()
 
 MultiImageBoard::MultiImageBoard(const std::string &id, uint8_t layer,
                                  uint8_t size)
+    : UIElement(id, layer, nullptr)
 {
-    this->id = id;
-    this->layer = layer;
-
     this->size = static_cast<size_t>(size);
 
     SDL_Log("MImageBoard::~() created with size: %d", size);

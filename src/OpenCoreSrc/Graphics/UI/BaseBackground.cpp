@@ -7,6 +7,7 @@
 
 BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
                                unique_ptr<Texture> texture)
+    : UIElement(id, layer, std::move(texture))
 {
 
     this->id = id;

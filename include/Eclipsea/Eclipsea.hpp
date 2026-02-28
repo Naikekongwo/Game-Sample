@@ -38,6 +38,7 @@
 #define pad_copyright 2031
 #define img_renderd 2032
 #define img_multi 2033
+#define img_checkbox 2034
 
 #define font_normal 9001
 

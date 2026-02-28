@@ -128,11 +128,21 @@ void SettingsStage::onEnter()
 
     Elements->PushElement(std::move(scroll_renderd));
 
+    auto checkbox = UI<CheckBox>("checkbox", 3, img_checkbox, NULL, NULL);
+
+    checkbox->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Scale(0.0f, 0.053f)
+        .Posite(0.5f, 0.61f);
+
+    Elements->PushElement(std::move(checkbox));
+
     auto buttonBorder = UI<ImageBoard>("buttonBorders", 3, button_border, 1, 1);
     buttonBorder->Configure()
         .Parent(Container.get())
         .Scale(0.06f, 0.0f)
-        .Posite(0.92f, 0.10f)
+        .Posite(0.92f, 0.08f)
         .Anchor(AnchorPoint::Center)
         .Sequence(false);
 
@@ -143,7 +153,7 @@ void SettingsStage::onEnter()
     backButton->Configure()
         .Parent(Container.get())
         .Scale(0.05f, 0.0f)
-        .Posite(0.92f, 0.10f)
+        .Posite(0.92f, 0.08f)
         .Anchor(AnchorPoint::Center)
         .Sequence(false);
 

@@ -4,21 +4,8 @@
 
 Button::Button(const std::string &id, uint8_t layer,
                unique_ptr<Texture> texture)
+    : UIElement(id, layer, std::move(texture))
 {
-
-    // 设置ID 层级属性
-    this->id = id;
-    this->layer = layer;
-
-    // 获取材质
-    if (!texture)
-    {
-        SDL_Log("Button::Button() encountered a empty texture.");
-        return;
-        // 如果材质为空，那么我们直接强制返回
-    }
-
-    this->texture = std::move(texture);
 }
 
 void Button::handlEvents(SDL_Event &event, float totalTime)

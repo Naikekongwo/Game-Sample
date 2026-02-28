@@ -41,6 +41,17 @@ inline unique_ptr<Scrollbar> UI<Scrollbar>(const std::string &id, uint8_t layer,
     return std::make_unique<Scrollbar>(id, layer, backTexID, buttTexID);
 }
 
+template <>
+inline unique_ptr<CheckBox> UI<CheckBox>(const std::string &id, uint8_t layer,
+                                         short TexID, short reserve1,
+                                         short reserve0)
+{
+    return std::make_unique<CheckBox>(
+        id, layer,
+        std::move(std::make_unique<Texture>(
+            1, 2, OpenCoreManagers::ResManager.GetTexture(TexID))));
+}
+
 // 特化版本：MultiImageBoard
 template <>
 inline unique_ptr<MultiImageBoard>
