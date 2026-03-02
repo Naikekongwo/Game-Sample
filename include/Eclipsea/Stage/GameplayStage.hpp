@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OpenCore/Stage/StageManager.hpp"
+#include "OpenCore/World/Stage/StageManager.hpp"
 
 // GameplayStage.hpp
 // 游戏场景的头

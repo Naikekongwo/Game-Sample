@@ -18,20 +18,22 @@ enum DebugFlags
 
 constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 
-#include "Macros.hpp"
-#include "Timer.hpp"
+#include "OpenCore/Core/Macros.hpp"
+#include "OpenCore/Core/Timer.hpp"
 
-#include "Graphics/Manager/GraphicsManager.hpp"
-#include "OpenCore/Concepts/OpenCore_Spiral.hpp"
-#include "OpenCore/Concepts/OpenCore_Vec3.hpp"
-#include "OpenCore/Concepts/OpenCore_Wave.hpp"
-#include "ResourceManager.hpp"
-#include "SettingsManager.hpp"
-#include "SoundEffectManager.hpp"
+#include "OpenCore/Asset/ResourceManager.hpp"
+#include "OpenCore/Core/GameInfo.hpp"
+#include "OpenCore/Core/Math/OpenCore_Spiral.hpp"
+#include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
+#include "OpenCore/Core/Math/OpenCore_Wave.hpp"
+#include "OpenCore/Runtime/Audio/SoundEffectManager.hpp"
+#include "OpenCore/Runtime/Config/SettingsManager.hpp"
+#include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
 
-#include "Map/Manager/MapManager.hpp"
+#include "OpenCore/World/Map/Manager/MapManager.hpp"
 
 // 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
+
 namespace OpenCoreManagers
 {
 inline ResourceManager &ResManager = ResourceManager::getInstance();
@@ -46,11 +48,22 @@ namespace Gameplay
 inline MapManager &MapMgr = MapManager::getInstance();
 } // namespace Gameplay
 
-#include "Animation/AnimationPipeline.hpp"
-#include "Animation/Manager/AnimationManager.hpp"
-#include "Graphics/Configurator/DrawableConfigurator.hpp"
-#include "Graphics/Manager/ElementManager.hpp"
-#include "Stage/StageManager.hpp"
+#include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
+#include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
+#include "OpenCore/Runtime/Graphics/Configurator/DrawableConfigurator.hpp"
+#include "OpenCore/Runtime/Graphics/Manager/ElementManager.hpp"
+#include "OpenCore/World/Stage/StageManager.hpp"
+
+// 模板
+template <typename T>
+unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,
+                 short frameX, short frameY);
+
+#include "OpenCore/Runtime/Graphics/Factory/UIFactory.inl"
+
+unique_ptr<Texture> MakeTexture(uint8_t xCount, uint8_t yCount, short texId);
+
+#include "OpenCore/Runtime/Graphics/Factory/TextureFactory.inl"
 
 #include <memory>
 
@@ -69,7 +82,19 @@ class OpenEngine final
     bool MainLoop();
     bool CleanUp();
 
+    // 注册游戏类
+    bool GameRegistry(unique_ptr<GameInfo> gameInfo);
+
+    // 工具函数
+    Timer *getTimer() const noexcept { return timer.get(); }
+    StageManager *getStageController() const noexcept
+    {
+        return sController.get();
+    }
+    GameInfo *getGameInfo() { return gameInfo.get(); }
+
   private:
+    unique_ptr<GameInfo> gameInfo = std::make_unique<GameInfo>();
     unique_ptr<StageManager> sController;
     unique_ptr<Timer> timer;
 };

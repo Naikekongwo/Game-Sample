@@ -1,0 +1,46 @@
+
+#include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
+
+ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
+                       unique_ptr<Texture> texture)
+    : UIElement(id, layer, std::move(texture))
+{
+    // 设置ID 层级属性
+    this->id = id;
+    this->layer = layer;
+
+    // 获取材质
+    if (!texture)
+    {
+        SDL_Log("ImageBoard::ImageBoard() encountered a empty texture.");
+        return;
+        // 如果材质为空，那么我们直接强制返回
+    }
+
+    this->texture = std::move(texture);
+}
+
+void ImageBoard::onRender()
+{
+    auto &GFX = GraphicsManager::getInstance();
+    // 渲染函数
+    SDL_SetTextureAlphaMod(texture->texture.get(),
+                           255.0f * AnimeState->transparency);
+
+    SDL_Rect dstRect = getLogicalBounds();
+
+    dstRect = magnetRect(dstRect);
+
+    if (texture->Size() > 1)
+    {
+        // 多帧函数
+        SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
+        GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect,
+                         AnimeState->angle, NULL, SDL_FLIP_NONE);
+        return;
+    }
+    // 单帧贴图
+    GFX.RenderCopyEx(texture->texture.get(), NULL, &dstRect, AnimeState->angle,
+                     NULL, SDL_FLIP_NONE);
+}

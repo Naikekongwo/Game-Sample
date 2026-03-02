@@ -3,7 +3,7 @@
 // SettingsStage.hpp
 // 设置页面
 
-#include "OpenCore/Stage/TopStage.hpp"
+#include "OpenCore/World/Stage/TopStage.hpp"
 
 enum class ContinuePhase
 {

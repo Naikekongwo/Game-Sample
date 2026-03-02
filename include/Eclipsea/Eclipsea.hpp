@@ -42,11 +42,7 @@
 
 #define font_normal 9001
 
-#include "Animation/MyAnimationPipeline.hpp"
-
-#include "Sprite/Waterrect.hpp"
-
-#include "UI/MultiImageBoard.hpp"
+#include "OpenCore/OpenCore.hpp"
 
 #include "Stage/GameplayStage.hpp"
 #include "Stage/MainStage.hpp"
@@ -56,13 +52,10 @@
 #include "Stage/MainStage/ContinueStage.hpp"
 #include "Stage/MainStage/SettingsStage.hpp"
 
-// 模板
-template <typename T>
-unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,
-                 short frameX, short frameY);
+class Eclipsea
+{
+  public:
+    bool StartUp();
 
-#include "template/UIFactory.inl"
-
-unique_ptr<Texture> MakeTexture(uint8_t xCount, uint8_t yCount, short texId);
-
-#include "template/TextureFactory.inl"
+  private:
+};

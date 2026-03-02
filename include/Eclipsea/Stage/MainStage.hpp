@@ -3,7 +3,7 @@
 #ifndef _MAINSTAGE_H_
 #define _MAINSTAGE_H_
 
-#include "OpenCore/Stage/StageManager.hpp"
+#include "OpenCore/World/Stage/StageManager.hpp"
 
 enum class MainStagePhase
 {

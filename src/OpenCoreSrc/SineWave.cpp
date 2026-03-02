@@ -1,8 +1,9 @@
-#include "OpenCore/Concepts/SineWave.hpp"
+#include "OpenCore/Core/Math/SineWave.hpp"
 #include <cmath>
 
 SineWave::SineWave(float A, float wL, float fre, float pha, float vX, float vY)
-    : amplitude(A), waveLength(wL), frequency(fre), phase(pha), vectorX(vX), vectorY(vY)
+    : amplitude(A), waveLength(wL), frequency(fre), phase(pha), vectorX(vX),
+      vectorY(vY)
 {
     RefreshInfo();
 }
@@ -13,7 +14,8 @@ void SineWave::RefreshInfo()
 
     float length = sqrt(vectorX * vectorX + vectorY * vectorY);
 
-    if(length == 0.0f) length = 1.0f;
+    if (length == 0.0f)
+        length = 1.0f;
 
     normX = vectorX / length;
     normY = vectorY / length;

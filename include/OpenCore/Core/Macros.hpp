@@ -1,0 +1,31 @@
+#ifndef _MACROS_H_
+#define _MACROS_H_
+
+// Macros.hpp
+// 公共宏定义文件
+
+// 路径定义
+#define JSON_PATH "assets/script"
+
+// 图形宏定义
+#define BASE_WINDOW_WIDTH 1920
+#define BASE_WINDOW_HEIGHT 1080
+#define fullwidth 1.0f
+#define heightfactor 0.5625f
+#define fullheight 1.0f
+
+#define widthheight 1.777f
+
+// [PSP支持] 图形宏定义
+#define PSP_BASE_WINDOW_WIDTH 480
+#define PSP_BASE_WINDOW_HEIGHT 272
+
+// 版本信息
+#define APP_VERSION_MAJOR 1
+#define APP_VERSION_MINOR 0
+#define BOOL_IS_BETA true
+
+#define ENGINE_VERSION_MAJOR 25
+#define ENGINE_VERSION_MINOR 7
+
+#endif //_MACROS_H_

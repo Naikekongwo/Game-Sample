@@ -2,7 +2,8 @@
 // OpenCore 的具体实现
 
 #include "OpenCore/OpenCore.hpp"
-#include "Eclipsea/Eclipsea.hpp"
+
+#include <memory>
 
 // 单例
 OpenEngine &OpenEngine::getInstance()
@@ -70,8 +71,7 @@ bool OpenEngine::MainLoop()
     bool should_close = false;
     SDL_Event event;
 
-    sController->changeStage(
-        std::make_unique<PreloadStage>(timer.get(), sController.get()));
+    sController->changeStage(std::move(gameInfo->entranceStage));
 
     while (!should_close)
     {
@@ -123,6 +123,8 @@ bool OpenEngine::MainLoop()
 
         sController->onUpdate();
 
+        GFXManager.refreshWindowProperties();
+
         SDL_Renderer *renderer = GFXManager.getRenderer();
 
         SDL_RenderClear(GFXManager.getRenderer());
@@ -132,9 +134,6 @@ bool OpenEngine::MainLoop()
 
         SDL_Delay(timer->getDelayTime());
         // 限制帧间隔
-
-        // SDL_Log("Delta Time: %f, Delay Time: %f", timer->getDeltaTime(),
-        // timer->getDelayTime()*1000);
     }
 
     return true;
@@ -151,6 +150,25 @@ bool OpenEngine::CleanUp()
     ResManager.CleanUp();
 
     GFXManager.CleanUp();
+
+    return true;
+}
+
+bool OpenEngine::GameRegistry(unique_ptr<GameInfo> gameInfo)
+{
+    if (!gameInfo->entranceStage)
+    {
+        // 空入口
+        SDL_Log("OpenEngine::RegGame() You have a gameInfo that contains no "
+                "stage!");
+        return false;
+    }
+
+    SDL_Log("Game %s , Version %d.%d, Has been registered as the game.",
+            gameInfo->gameName.c_str(), gameInfo->version_major,
+            gameInfo->version_minor);
+
+    this->gameInfo = std::move(gameInfo);
 
     return true;
 }

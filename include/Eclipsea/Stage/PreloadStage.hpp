@@ -4,7 +4,7 @@
 #ifndef _PRELOADSTAGE_H_
 #define _PRELOADSTAGE_H_
 
-#include "OpenCore/Stage/StageManager.hpp"
+#include "OpenCore/World/Stage/StageManager.hpp"
 
 #include <future>
 

@@ -4,7 +4,7 @@
 // Purifier Stage
 // 净水器的UI界面
 
-#include "OpenCore/Stage/OverlayStage.hpp"
+#include "OpenCore/World/Stage/OverlayStage.hpp"
 
 enum class PurifierPhase
 {

@@ -1,42 +1,26 @@
 #include <SDL2/SDL_error.h>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 // 引入内核
 #include "Eclipsea/Eclipsea.hpp"
-#include "OpenCore/OpenCore.hpp"
-
 
 #include <cmath>
 const int WIDTH = 1920, HEIGHT = 1080;
 
 using namespace std;
 
-// #define TESTBENCH_MODE // 打开测试模式的宏
-
-// 测试平台入口
-#ifdef TESTBENCH_MODE
-int main(int argc, char *argv[])
-{
-    // 测试平台的代码写于此
-    return EXIT_SUCCESS;
-}
-#else
 // 游戏入口
 int main(int argc, char *argv[])
 {
-    OpenEngine engine;
+    Eclipsea game;
 
-    try
+    if (!game.StartUp())
     {
-        engine.Run();
-    }
-    catch (const std::exception &e)
-    {
-        SDL_Log("%s", SDL_GetError());
-        std::cerr << e.what() << '\n';
+        throw runtime_error("The game has exited with a bad return-value!");
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;
 }
-#endif
