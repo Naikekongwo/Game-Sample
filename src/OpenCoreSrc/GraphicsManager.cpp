@@ -29,13 +29,9 @@ bool GraphicsManager::Init()
         return -1;
     }
 
-    // 预计在 OpenCore 27.1解决该问题
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-
     // 其他平台的初始化方法
-    if (SDL_CreateWindowAndRenderer(
-            BASE_WINDOW_WIDTH * 0.5, BASE_WINDOW_HEIGHT * 0.5,
-            SDL_RENDERER_ACCELERATED, &window, &renderer) != 0)
+    if (SDL_CreateWindowAndRenderer(1280, 720, SDL_RENDERER_ACCELERATED,
+                                    &window, &renderer) != 0)
     {
         return false;
     }
@@ -43,8 +39,6 @@ bool GraphicsManager::Init()
     SDL_SetWindowTitle(window, "OpenCore Window");
 
     SDL_SetWindowResizable(window, SDL_TRUE);
-
-    SDL_RenderSetLogicalSize(renderer, BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT);
 
     // 初始化成功
     return true;
@@ -63,14 +57,30 @@ void GraphicsManager::refreshWindowProperties()
 
     std::string title = OpenEngine::getInstance().getGameInfo()->gameName;
 
-    if (BOOL_IS_BETA == true)
+    if (gameInfo->beta == true)
     {
-        title = title + std::string(" Beta with OpenCore ") +
+        title = title + " : " +
+                std::to_string(static_cast<int>(gameInfo->version_major)) +
+                "." +
+                std::to_string(static_cast<int>(gameInfo->version_minor)) +
+                std::string(" Beta with OpenCore ") +
                 std::to_string(static_cast<int>(ENGINE_VERSION_MAJOR)) + "." +
                 std::to_string(static_cast<int>(ENGINE_VERSION_MINOR));
     }
 
     SDL_SetWindowTitle(window, title.c_str());
+
+    // 预计在 OpenCore 27.1解决该问题
+    if (gameInfo->nearestScaling)
+    {
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    }
+
+    OpenCoreManagers::SetManager.setTargetWidth(
+        gameInfo->TargetResolutionWidth, gameInfo->TargetResolutionHeight);
+
+    SDL_RenderSetLogicalSize(renderer, gameInfo->TargetResolutionWidth,
+                             gameInfo->TargetResolutionHeight);
 }
 
 void GraphicsManager::CleanUp()

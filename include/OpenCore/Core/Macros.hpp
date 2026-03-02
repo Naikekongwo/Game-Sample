@@ -8,8 +8,7 @@
 #define JSON_PATH "assets/script"
 
 // 图形宏定义
-#define BASE_WINDOW_WIDTH 1920
-#define BASE_WINDOW_HEIGHT 1080
+
 #define fullwidth 1.0f
 #define heightfactor 0.5625f
 #define fullheight 1.0f
@@ -20,12 +19,7 @@
 #define PSP_BASE_WINDOW_WIDTH 480
 #define PSP_BASE_WINDOW_HEIGHT 272
 
-// 版本信息
-#define APP_VERSION_MAJOR 1
-#define APP_VERSION_MINOR 0
-#define BOOL_IS_BETA true
-
 #define ENGINE_VERSION_MAJOR 25
-#define ENGINE_VERSION_MINOR 7
+#define ENGINE_VERSION_MINOR 8
 
 #endif //_MACROS_H_

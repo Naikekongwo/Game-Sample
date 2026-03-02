@@ -24,19 +24,21 @@ void MainStage::setupBackground()
     bg->Configure()
         .Anchor(AnchorPoint::Center)
         .Posite(0.5f, 0.5f)
-        .Scale(fullwidth * 1.1, 0.0f)
+        .Scale(1.1, 0.0f)
         .Follow(30);
     Elements->PushElement(std::move(bg));
     auto bg1 = UI<ImageBoard>("dessert_top", 1, cities_top, 1, 1);
     bg1->Configure()
         .Anchor(AnchorPoint::Center)
         .Posite(0.5f, 0.5f)
-        .Scale(fullwidth * 1.2, 0.0f)
+        .Scale(1.2, 0.0f)
         .Follow(40);
     bg1->Animate()
         .Timer(5.0f)
-        .Move(0.5 * BASE_WINDOW_WIDTH, 1.5 * BASE_WINDOW_HEIGHT,
-              0.5 * BASE_WINDOW_WIDTH, 0.5 * BASE_WINDOW_HEIGHT, 5.0f)
+        .Move(0.5 * OpenCoreManagers::SetManager.getTargetWidth(),
+              1.5 * OpenCoreManagers::SetManager.getTargetHeight(),
+              0.5 * OpenCoreManagers::SetManager.getTargetWidth(),
+              0.5 * OpenCoreManagers::SetManager.getTargetHeight(), 5.0f)
         .Commit();
     Elements->PushElement(std::move(bg1));
     auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);

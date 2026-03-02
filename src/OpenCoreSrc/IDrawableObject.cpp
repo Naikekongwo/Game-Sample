@@ -29,7 +29,8 @@ void IDrawableObject::setAnchor(AnchorPoint anchor)
 // 设置控件的位置
 void IDrawableObject::setPosition(float xPercent, float yPercent)
 {
-    SDL_Rect parentRect{0, 0, BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT};
+    SDL_Rect parentRect{0, 0, OpenCoreManagers::SetManager.getTargetWidth(),
+                        OpenCoreManagers::SetManager.getTargetHeight()};
 
     if (parentContainer != nullptr)
     {
@@ -49,7 +50,8 @@ SDL_Rect IDrawableObject::getPhysicalBounds()
 // 设置控件的大小
 void IDrawableObject::setScale(float w, float h)
 {
-    SDL_Rect parentRect{0, 0, BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT};
+    SDL_Rect parentRect{0, 0, OpenCoreManagers::SetManager.getTargetWidth(),
+                        OpenCoreManagers::SetManager.getTargetHeight()};
 
     if (parentContainer)
     {

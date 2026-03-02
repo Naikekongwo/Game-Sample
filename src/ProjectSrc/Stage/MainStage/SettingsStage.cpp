@@ -22,8 +22,8 @@ void SettingsStage::onEnter()
 
     Container->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(fullwidth * 0.5f, fullheight * 0.5f)
-        .Scale(fullwidth * 0.6f, fullheight * 0.8f)
+        .Posite(0.5f, 0.5f)
+        .Scale(0.6f, 0.8f)
         .Sequence(true)
         .Follow(0)
         .Parent(nullptr);
@@ -112,7 +112,7 @@ void SettingsStage::onEnter()
         .Scale(0.7f, 0.033f)
         .Posite(0.5f, 0.43f);
 
-    // scroll_chunk->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
+    scroll_chunk->bindVariable(OpenCoreManagers::SetManager.getChunkVolume());
 
     Elements->PushElement(std::move(scroll_chunk));
 
@@ -124,7 +124,8 @@ void SettingsStage::onEnter()
         .Scale(0.7f, 0.033f)
         .Posite(0.5f, 0.56f);
 
-    scroll_renderd->bindVariable(OpenCoreManagers::SetManager.getMusicVolume());
+    scroll_renderd->bindVariable(
+        OpenCoreManagers::SetManager.getRenderFactor());
 
     Elements->PushElement(std::move(scroll_renderd));
 
@@ -136,6 +137,7 @@ void SettingsStage::onEnter()
         .Scale(0.0f, 0.053f)
         .Posite(0.5f, 0.61f);
 
+    checkbox->bindVariable(OpenCoreManagers::SetManager.getMultiStatus());
     Elements->PushElement(std::move(checkbox));
 
     auto buttonBorder = UI<ImageBoard>("buttonBorders", 3, button_border, 1, 1);

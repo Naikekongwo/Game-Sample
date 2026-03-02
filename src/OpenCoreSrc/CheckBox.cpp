@@ -20,6 +20,7 @@ void CheckBox::onRender()
 {
     if (Img)
     {
+        refreshStatus();
         Img->onRender();
     }
 }
@@ -86,8 +87,6 @@ void CheckBox::onEnter()
             .Anchor(AnchorPoint::Center)
             .Posite(0.5f, 0.5f)
             .Scale(1.0f, 1.0f);
-
-        Value = make_shared<bool>(false);
 
         refreshStatus();
         status = CheckBoxStatus::Ready;

@@ -23,6 +23,7 @@ class CheckBox : public UIElement
     CheckBox(const string &id, short layer, unique_ptr<Texture> texture);
 
     void handlEvents(SDL_Event &event, float totalTime) override;
+
     // void onUpdate(float totalTime) override;
     void onRender() override;
     bool onDestroy() override;
@@ -36,6 +37,6 @@ class CheckBox : public UIElement
 
   private:
     unique_ptr<ImageBoard> Img;
-    shared_ptr<bool> Value;
+    shared_ptr<bool> Value = std::make_shared<bool>(false);
     CheckBoxStatus status = CheckBoxStatus::Creating;
 };

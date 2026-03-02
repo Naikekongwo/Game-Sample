@@ -26,8 +26,8 @@ void GameplayStage::Init()
 
     background->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5 * fullwidth, 0.5 * fullheight)
-        .Scale(fullwidth, fullheight);
+        .Posite(0.5f, 0.5f)
+        .Scale(1.0f, 1.0f);
 
     Elements->PushElement(std::move(background));
 

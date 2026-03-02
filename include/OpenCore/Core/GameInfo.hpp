@@ -17,6 +17,10 @@ struct GameInfo
     uint8_t version_major = 1;
     uint8_t version_minor = 0;
     bool beta = false;
-
     unique_ptr<Stage> entranceStage;
+
+    int TargetResolutionWidth = 1920;
+    int TargetResolutionHeight = 1080;
+
+    bool nearestScaling = true;
 };

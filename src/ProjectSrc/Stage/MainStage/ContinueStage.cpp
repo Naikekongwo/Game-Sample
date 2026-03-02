@@ -22,8 +22,8 @@ void ContinueStage::onEnter()
 
     baseBG->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(fullwidth * 0.5f, fullheight * 0.5f)
-        .Scale(fullwidth * 0.5f, fullheight * 0.8f)
+        .Posite(0.5f, 0.5f)
+        .Scale(0.5f, 0.8f)
         .Sequence(true)
         .Follow(0)
         .Parent(nullptr);
