@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include <memory>
 
 GameplayStage::GameplayStage(Timer *timer, StageManager *sController)
 {
@@ -34,19 +35,16 @@ void GameplayStage::Init()
 
     sController->removeStage(StageType::overlayStage);
 
-    auto waste = std::make_unique<ImageBoard>("wasteland", 1,
-                                              MakeTexture(1, 1, wasteland));
+    auto mapexp = std::make_unique<MapExplorer>("map", 3);
 
-    waste->Configure()
+    mapexp->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5 * fullwidth, 0.5 * fullheight)
-        .Scale(fullwidth * 0.1, fullwidth * 0.1);
+        .Posite(0.5f, 0.5f)
+        .Scale(1.0f, 1.0f);
 
-    Elements->PushElement(std::move(waste));
+    mapexp->setMap("maps//test_circle_radius.ocmp");
 
-    auto purifier = std::make_unique<PurifierStage>(timer, sController);
-
-    sController->changeStage(std::move(purifier));
+    Elements->PushElement(std::move(mapexp));
 }
 
 void GameplayStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }

@@ -29,12 +29,7 @@ bool GraphicsManager::Init()
         return -1;
     }
 
-    // PSP 平台的 window 和 renderer 初始化方法
-    // window = SDL_CreateWindow(APP_NAME, SDL_WINDOWPOS_UNDEFINED,
-    // SDL_WINDOWPOS_UNDEFINED, 480, 272, SDL_WINDOW_SHOWN); renderer =
-    // SDL_CreateRenderer(window, -1 , SDL_RENDERER_ACCELERATED);
-
-    // 将缩放的品质调为0，这样可以获得最锐利的缩放
+    // 预计在 OpenCore 27.1解决该问题
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
     // 其他平台的初始化方法

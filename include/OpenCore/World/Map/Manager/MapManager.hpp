@@ -6,8 +6,10 @@
 #include <memory>
 #include <unordered_map>
 
+#include "OpenCore/World/Map/Geometry/Classic_Map.hpp"
+#include "OpenCore/World/Map/Geometry/Hybrid_Map.hpp"
 #include "OpenCore/World/Map/Geometry/OpenCoreMap.hpp"
-#include "OpenCore/World/Map/Geometry/OrdMap.hpp"
+
 // #include "OpenCore/Map/Concepts/SnakeMap.hpp"
 
 using std::unique_ptr;

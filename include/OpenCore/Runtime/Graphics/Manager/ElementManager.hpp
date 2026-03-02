@@ -11,8 +11,10 @@
 #include "OpenCore/Runtime/Graphics/UI/CheckBox.hpp"
 #include "OpenCore/Runtime/Graphics/UI/FrameCounter.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ImageBoard.hpp"
+#include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
 #include "OpenCore/Runtime/Graphics/UI/MultiImageBoard.hpp"
 #include "OpenCore/Runtime/Graphics/UI/Scrollbar.hpp"
+
 
 #include "OpenCore/Runtime/Graphics/Sprite/Waterrect.hpp"
 

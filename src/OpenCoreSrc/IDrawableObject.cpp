@@ -38,11 +38,6 @@ void IDrawableObject::setPosition(float xPercent, float yPercent)
 
     AnimeState->Position[0] = parentRect.x + xPercent * parentRect.w;
     AnimeState->Position[1] = parentRect.y + parentRect.h * yPercent;
-
-    SDL_Log("Element id %s, parentcontainer id %s, posite at %d, %d",
-            id.c_str(),
-            ((parentContainer) ? parentContainer->getID().c_str() : "null"),
-            AnimeState->Position[0], AnimeState->Position[1]);
 }
 
 SDL_Rect IDrawableObject::getPhysicalBounds()

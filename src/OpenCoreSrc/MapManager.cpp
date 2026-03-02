@@ -11,6 +11,8 @@ bool MapManager::registerMap(unique_ptr<OpenCoreMap> map)
         return false;
     }
 
+    // map->onEnter();
+
     MapPool_[map->id] = std::move(map);
 
     return true;

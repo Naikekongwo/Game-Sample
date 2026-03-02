@@ -3,6 +3,8 @@
 // OpenCoreMap
 // 基本的地图基类
 
+#include <cstdint>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -11,22 +13,38 @@
 #define SCISSOR_Y 18
 
 #define CHUNK_WIDTH 5
-#define MAP_INFO_LENGTH_BYTE 1
 
 // 地图暂且设定为单文件最多储存16x16个区块的地图
 // 则代表储存区块的长或高需要4位二进制，因故只需要读取一字节作为头数据
+using std::shared_ptr;
 using std::string;
 using std::vector;
 
+struct MapHeader
+{
+    char magic[4];        // 文件标识 "OCMP"
+    uint8_t version;      // 文件版本
+    uint16_t width;       // 地图宽
+    uint16_t height;      // 地图高
+    uint8_t layerCount;   // 图层数量，这里 classicMap = 1
+    uint8_t reserved[25]; // 保留，保证总共32B
+};
+
 struct BlockInfo
 {
-    unsigned char Terrain = 1;
+    uint8_t Terrain = 1;
 
-    BlockInfo(vector<uint8_t> ReadIn)
+    static constexpr size_t getSize() { return sizeof(Terrain); }
+
+    BlockInfo(vector<uint8_t> datas)
     {
-        // 开始顺序读取
-        // Terrain 地形
-        Terrain = ReadIn[0];
+        if (datas.size() > getSize())
+        {
+            throw std::runtime_error(
+                "BlockInfo too big! Are you using new version map?");
+        }
+
+        Terrain = (datas.size() >= 1) ? datas[0] : 0;
     }
 };
 
@@ -47,11 +65,25 @@ class OpenCoreMap
 
     virtual ~OpenCoreMap() {};
 
-    virtual void Init() = 0;
+    virtual void onEnter() = 0;
+
+    virtual uint16_t getMapWidth() const noexcept { return MapWidth; }
+    virtual uint16_t getMapHeight() const noexcept { return MapHeight; }
 
     virtual void onUpdate(float totalTime) = 0;
-    virtual void onRender() = 0;
+
+    virtual void onExit() = 0;
+
+    virtual BlockInfo &getBlockInfo(int offsetX, int offsetY) = 0;
 
     short id;
     string mapPath;
+
+    shared_ptr<uint8_t> WindowWidth = std::make_shared<uint8_t>(16);
+    shared_ptr<uint8_t> WindowHeight = std::make_shared<uint8_t>(9);
+
+    vector<BlockInfo> Data;
+
+    uint16_t MapWidth = 0;
+    uint16_t MapHeight = 0;
 };

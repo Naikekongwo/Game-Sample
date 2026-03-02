@@ -11,10 +11,6 @@
         "path": "assets/audio/bgm_lostworld.mp3",
         "category": "music"
     },
-    "2001": {
-        "path": "assets/backgrounds/menu_ocean.png",
-        "category": "texture"
-    },
     "2002": {
         "path": "assets/ui/Preload_Title.png",
         "category": "texture"
@@ -145,6 +141,10 @@
     },
     "2034": {
         "path": "assets/ui/checkbox_classic.png",
+        "category": "texture"
+    },
+    "2035": {
+        "path": "assets/terrain/terrain_major.png",
         "category": "texture"
     },
     "9001": {
