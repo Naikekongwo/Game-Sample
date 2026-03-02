@@ -40,6 +40,9 @@ bool OpenEngine::Initialize()
     // 引用引擎所有管理类的命名空间
     using namespace OpenCoreManagers;
 
+    // 创建设置管理器
+    (void)SetManager;
+
     // 创建 GFX 实例
     (void)GFXManager;
     // 创建资源管理器实例
@@ -70,6 +73,8 @@ bool OpenEngine::MainLoop()
 
     bool should_close = false;
     SDL_Event event;
+
+    SetManager.RefreshSettings();
 
     sController->changeStage(std::move(gameInfo->entranceStage));
 
@@ -159,14 +164,15 @@ bool OpenEngine::GameRegistry(unique_ptr<GameInfo> gameInfo)
     if (!gameInfo->entranceStage)
     {
         // 空入口
-        SDL_Log("OpenEngine::RegGame() You have a gameInfo that contains no "
-                "stage!");
+        Console_Log(
+            "OpenEngine::RegGame() You have a gameInfo that contains no "
+            "stage!");
         return false;
     }
 
-    SDL_Log("Game %s , Version %d.%d, Has been registered as the game.",
-            gameInfo->gameName.c_str(), gameInfo->version_major,
-            gameInfo->version_minor);
+    Console_Log("Game %s , Version %d.%d, Has been registered as the game.",
+                gameInfo->gameName.c_str(), gameInfo->version_major,
+                gameInfo->version_minor);
 
     this->gameInfo = std::move(gameInfo);
 

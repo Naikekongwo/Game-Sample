@@ -7,8 +7,8 @@ Texture::Texture(uint8_t x, uint8_t y, shared_ptr<SDL_Texture> tex)
     int W, H;
 
     if (!texture)
-        SDL_Log("Texture::Texture() encountered empty texture in the "
-                "initialization.");
+        Console_Log("Texture::Texture() encountered empty texture in the "
+                    "initialization.");
 
     SDL_QueryTexture(texture.get(), NULL, NULL, &W, &H);
 
@@ -17,7 +17,7 @@ Texture::Texture(uint8_t x, uint8_t y, shared_ptr<SDL_Texture> tex)
 
     if (xCount == 0 || yCount == 0)
     {
-        SDL_Log("Texture::Texture() Invalid xCount or yCount value.");
+        Console_Log("Texture::Texture() Invalid xCount or yCount value.");
         return;
     }
 
@@ -32,7 +32,7 @@ SDL_Rect Texture::getSrcRect(uint8_t index)
 
     if (index < 0 || index >= Size())
     {
-        SDL_Log("Texture::getSrcRect() index out of range: %d", index);
+        Console_Log("Texture::getSrcRect() index out of range: %d", index);
         return emptyRect;
     }
 

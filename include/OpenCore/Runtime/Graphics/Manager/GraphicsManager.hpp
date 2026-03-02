@@ -5,9 +5,23 @@
 // 图形核心
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_log.h>
 #include <string>
 
+#include <cstdarg>
 #include <memory>
+
+inline void Console_Log(const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+
+    // 四个参数都提供
+    SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, fmt,
+                    args);
+
+    va_end(args);
+}
 
 class GraphicsManager
 {

@@ -25,7 +25,7 @@ bool GraphicsManager::Init()
 
     if (TTF_Init() == -1)
     {
-        SDL_Log("TTF_Init Error: %s", TTF_GetError());
+        Console_Log("TTF_Init Error: %s", TTF_GetError());
         return -1;
     }
 
@@ -50,8 +50,9 @@ void GraphicsManager::refreshWindowProperties()
 
     if (!gameInfo)
     {
-        SDL_Log("GraphicsManager::Window Encountered a null pointer for game "
-                "info!");
+        Console_Log(
+            "GraphicsManager::Window Encountered a null pointer for game "
+            "info!");
         return;
     }
 
@@ -86,18 +87,18 @@ void GraphicsManager::refreshWindowProperties()
 void GraphicsManager::CleanUp()
 {
     if (!renderer)
-        SDL_Log("GFXManager::CleanUp() failed to destroy a null renderer.");
+        Console_Log("GFXManager::CleanUp() failed to destroy a null renderer.");
     else
         SDL_DestroyRenderer(renderer);
 
     if (!window)
-        SDL_Log("GFXManager::CleanUp() failed to destroy a null window.");
+        Console_Log("GFXManager::CleanUp() failed to destroy a null window.");
     else
         SDL_DestroyWindow(window);
 
-    SDL_Log("GFXManager::CleanUp() has reseted the scale system.");
+    Console_Log("GFXManager::CleanUp() has reseted the scale system.");
 
-    SDL_Log("GFXManager::CleanUp() manage to quit the SDL.");
+    Console_Log("GFXManager::CleanUp() manage to quit the SDL.");
     SDL_Quit();
 }
 
@@ -132,7 +133,7 @@ int GraphicsManager::setOffScreenRender(SDL_Texture *texture)
 {
     if (SDL_SetRenderTarget(renderer, texture) != 0)
     {
-        SDL_Log("Failed to set render target: %s", SDL_GetError());
+        Console_Log("Failed to set render target: %s", SDL_GetError());
         return -1;
     }
 

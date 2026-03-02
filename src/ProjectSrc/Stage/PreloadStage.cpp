@@ -16,7 +16,7 @@ PreloadStage::PreloadStage(Timer *timer, StageManager *sController)
 // 生命周期安全：进入舞台时初始化资源
 void PreloadStage::onEnter()
 {
-    SDL_Log("PreloadStage: onEnter - starting resource load");
+    Console_Log("PreloadStage: onEnter - starting resource load");
 
     LoadingState = OpenCoreManagers::ResManager.LoadResourcesFromJson(10001);
 }
@@ -25,11 +25,11 @@ void PreloadStage::onEnter()
 void PreloadStage::onExit()
 {
     Elements->onDestroy();
-    SDL_Log("PreloadStage: onExit - cleared elements");
+    Console_Log("PreloadStage: onExit - cleared elements");
 }
 
 // 生命周期安全：彻底销毁
-void PreloadStage::onDestroy() { SDL_Log("PreloadStage: onDestroy"); }
+void PreloadStage::onDestroy() { Console_Log("PreloadStage: onDestroy"); }
 
 // 事件传递：顶层拦截
 bool PreloadStage::handlEvents(SDL_Event *event)

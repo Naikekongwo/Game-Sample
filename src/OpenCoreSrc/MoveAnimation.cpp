@@ -20,7 +20,7 @@ void MoveAnimation::onUpdate(float totalTime, AnimationState &state)
 
     if (duration <= 0.0f)
     {
-        SDL_Log(
+        Console_Log(
             "MoveAnimation: duration <= 0, animation failed."); // 持续时间非法
         finished = true;
         return;
@@ -34,8 +34,8 @@ void MoveAnimation::onUpdate(float totalTime, AnimationState &state)
         t = 1.0f;
         finished = !isLooping;
         if (isLooping)
-            startTime = totalTime;                     // 循环则重置起始时间
-        SDL_Log("MoveAnimation: animation finished."); // 动画结束
+            startTime = totalTime;                         // 循环则重置起始时间
+        Console_Log("MoveAnimation: animation finished."); // 动画结束
     }
     // 线性插值计算当前位置
     state.Position[0] = startX + (endX - startX) * t;
@@ -50,5 +50,5 @@ void MoveAnimation::reset(float totalTime, AnimationState &state)
 {
     startTime = totalTime;
     finished = false;
-    SDL_Log("MoveAnimation: reset success.");
+    Console_Log("MoveAnimation: reset success.");
 }

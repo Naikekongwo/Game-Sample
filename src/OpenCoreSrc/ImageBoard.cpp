@@ -13,7 +13,7 @@ ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
     // 获取材质
     if (!texture)
     {
-        SDL_Log("ImageBoard::ImageBoard() encountered a empty texture.");
+        Console_Log("ImageBoard::ImageBoard() encountered a empty texture.");
         return;
         // 如果材质为空，那么我们直接强制返回
     }

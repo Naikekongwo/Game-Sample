@@ -64,7 +64,7 @@ void IDrawableObject::setScale(float w, float h)
         // texture一定要存在才能得到原始尺寸！
         if (!texture->texture)
         {
-            SDL_Log(
+            Console_Log(
                 "Element id %s was a texture less element, so you shouldn't "
                 "use WIDTH/HEIGHT-still in this element.",
                 id.c_str());
@@ -76,8 +76,8 @@ void IDrawableObject::setScale(float w, float h)
         absWidth = (w == 0.0f) ? h * parentRect.h * wph : parentRect.w * w;
         absHeight = (h == 0.0f) ? (w * parentRect.w) / wph : parentRect.h * h;
 
-        SDL_Log("Still id %s, %d, %d, %f", id.c_str(), absWidth, absHeight,
-                wph);
+        Console_Log("Still id %s, %d, %d, %f", id.c_str(), absWidth, absHeight,
+                    wph);
     }
     else
     {
@@ -116,7 +116,7 @@ void IDrawableObject::changeTexture(unique_ptr<Texture> newTexture)
     }
     else
     {
-        SDL_Log("ImageBoard::changeTexture() encountered a empty texture");
+        Console_Log("ImageBoard::changeTexture() encountered a empty texture");
     }
 }
 

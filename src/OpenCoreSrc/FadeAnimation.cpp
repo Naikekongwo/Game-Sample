@@ -20,7 +20,7 @@ void FadeAnimation::onUpdate(float totalTime, AnimationState &state)
 
     if (duration <= 0.0f)
     {
-        SDL_Log(
+        Console_Log(
             "FadeAnimation: duration <= 0, animation failed."); // 持续时间非法
         finished = true;
         return;
@@ -34,8 +34,8 @@ void FadeAnimation::onUpdate(float totalTime, AnimationState &state)
         t = 1.0f;
         finished = !isLooping;
         if (isLooping)
-            startTime = totalTime;                     // 循环则重置起始时间
-        SDL_Log("FadeAnimation: animation finished."); // 动画结束
+            startTime = totalTime;                         // 循环则重置起始时间
+        Console_Log("FadeAnimation: animation finished."); // 动画结束
     }
     // 线性插值计算当前透明度
     state.transparency = startAlpha + (endAlpha - startAlpha) * t;
@@ -49,5 +49,5 @@ void FadeAnimation::reset(float totalTime, AnimationState &state)
 {
     startTime = totalTime;
     finished = false;
-    SDL_Log("FadeAnimation: reset success.");
+    Console_Log("FadeAnimation: reset success.");
 }

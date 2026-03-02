@@ -1,10 +1,6 @@
 #ifndef _RESOURCE_MANAGER_H_
 #define _RESOURCE_MANAGER_H_
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
-
 #include <condition_variable>
 #include <exception>
 #include <fstream>
@@ -23,6 +19,10 @@
 #include "rapidjson/error/en.h"
 #include "rapidjson/filereadstream.h"
 
+#include "OpenCore/Asset/MapLoader.hpp"
+#include "OpenCore/Asset/SoundLoader.hpp"
+#include "OpenCore/Asset/TextureLoader.hpp"
+
 using std::shared_ptr;
 using std::unique_ptr;
 
@@ -33,20 +33,6 @@ struct TaskGuard
     TaskGuard(std::atomic<int> &c) : counter(c) { counter++; }
     ~TaskGuard() { counter--; }
 };
-
-// 对应的删除器
-struct SDLDeleter
-{
-    void operator()(Mix_Music *music) const;
-    void operator()(SDL_Texture *texture) const;
-    void operator()(TTF_Font *font) const;
-    void operator()(Mix_Chunk *chunk) const;
-};
-
-using MusicPtr = unique_ptr<Mix_Music, SDLDeleter>;
-using TexturePtr = unique_ptr<SDL_Texture, SDLDeleter>;
-using FontPtr = unique_ptr<TTF_Font, SDLDeleter>;
-using SoundPtr = unique_ptr<Mix_Chunk, SDLDeleter>;
 
 class ResourceManager
 {
@@ -105,9 +91,7 @@ class ResourceManager
     std::mutex mainThreadQueueMutex_;
     std::queue<std::function<void()>> mainThreadTaskQueue_;
 
-    // 新增测试：加载表面和纹理转换,这个正常不应该在此类中实现
-    SDL_Surface *LoadSurface(const std::string &path);
-    void ConvertSurfaceToTexture(short id, SDL_Surface *surface);
+    void ConvertToTexture(short id, SDL_Surface *surface);
 
     // 资源缓存
     std::mutex musicMutex_;

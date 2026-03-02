@@ -11,29 +11,30 @@ bool ResourceManager::Init()
 
     if (!renderer)
     {
-        SDL_Log("ResourceManager::Init() encountered a null renderer.");
+        Console_Log("ResourceManager::Init() encountered a null renderer.");
         return false;
     }
 
     int result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
     if (!result)
     {
-        SDL_Log("ResourceManager::ResourceManager() failed to initialize "
-                "SDL_Mixer: %s",
-                Mix_GetError());
+        Console_Log("ResourceManager::ResourceManager() failed to initialize "
+                    "SDL_Mixer: %s",
+                    Mix_GetError());
         return false;
     }
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) <
         0)
     {
-        SDL_Log("ResourceManager::ResourceManager() failed to open audio: %s",
-                Mix_GetError());
+        Console_Log(
+            "ResourceManager::ResourceManager() failed to open audio: %s",
+            Mix_GetError());
         return false;
     }
 
-    SDL_Log("ResourceManager::ResourceManager() SDL_Mixer initialized "
-            "successfully.");
+    Console_Log("ResourceManager::ResourceManager() SDL_Mixer initialized "
+                "successfully.");
 
     return true;
 }
@@ -62,14 +63,15 @@ void ResourceManager::LoadMusic(short id, const std::string &path)
     if (musicCache_.count(id))
         return;
 
-    MusicPtr music(Mix_LoadMUS(path.c_str()));
+    MusicPtr music = LoadMusicFromFile(path);
     if (!music)
     {
-        SDL_Log("Mix_LoadMUS failed: %s", Mix_GetError());
+        Console_Log("Mix_LoadMUS failed: %s", Mix_GetError());
         return;
     }
 
-    SDL_Log("ResourceManager::LoadMusic music id %d loaded successfully.", id);
+    Console_Log("ResourceManager::LoadMusic music id %d loaded successfully.",
+                id);
     musicCache_[id] = std::move(music);
 }
 
@@ -81,7 +83,7 @@ Mix_Music *ResourceManager::GetMusic(short id)
 
     if (it == musicCache_.end())
     {
-        SDL_Log("ResourceManager::GetMusic failed to get music id %d", id);
+        Console_Log("ResourceManager::GetMusic failed to get music id %d", id);
         return nullptr;
     }
     return it->second.get();
@@ -95,14 +97,15 @@ void ResourceManager::LoadSound(short id, const std::string &path)
     if (soundCache_.count(id))
         return;
 
-    SoundPtr sound(Mix_LoadWAV(path.c_str()));
+    SoundPtr sound = std::move(LoadSoundFromFile(path));
     if (!sound)
     {
-        SDL_Log("Mix_LoadWAV failed: %s", Mix_GetError());
+        Console_Log("Mix_LoadWAV failed: %s", Mix_GetError());
         return;
     }
 
-    SDL_Log("ResourceManager::LoadSound sound id %d loaded successfully.", id);
+    Console_Log("ResourceManager::LoadSound sound id %d loaded successfully.",
+                id);
 
     soundCache_[id] = std::move(sound);
 }
@@ -115,7 +118,7 @@ Mix_Chunk *ResourceManager::GetSound(short id)
 
     if (it == soundCache_.end())
     {
-        SDL_Log("ResourceManager::GetSound failed to get sound id %d", id);
+        Console_Log("ResourceManager::GetSound failed to get sound id %d", id);
         return nullptr;
     }
     return it->second.get();
@@ -135,14 +138,14 @@ void ResourceManager::LoadTexture(short id, const std::string &path)
     SDL_Surface *surface = LoadSurface(path);
     if (!surface)
     {
-        SDL_Log(
+        Console_Log(
             "ResourceManager::LoadTexture failed to load surface for id: %d",
             id);
         return;
     }
 
     // 转换纹理
-    ConvertSurfaceToTexture(id, surface);
+    ConvertToTexture(id, surface);
 }
 
 // 获取纹理
@@ -153,7 +156,8 @@ shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
 
     if (it == textureCache_.end())
     {
-        SDL_Log("ResourceManager::GetTexture failed to get texture id %d", id);
+        Console_Log("ResourceManager::GetTexture failed to get texture id %d",
+                    id);
         return nullptr;
     }
     return shared_ptr<SDL_Texture>(
@@ -194,11 +198,12 @@ void ResourceManager::LoadFont(short id, const std::string &path, int size)
     FontPtr font(TTF_OpenFont(path.c_str(), size));
     if (!font)
     {
-        SDL_Log("TTF_OpenFont failed: %s", TTF_GetError());
+        Console_Log("TTF_OpenFont failed: %s", TTF_GetError());
         return;
     }
 
-    SDL_Log("ResourceManager::LoadFont font id %d loaded successfully.", id);
+    Console_Log("ResourceManager::LoadFont font id %d loaded successfully.",
+                id);
     fontCache_[id] = std::move(font);
 }
 // 异步字体加载
@@ -220,7 +225,7 @@ TTF_Font *ResourceManager::GetFont(short id)
 
     if (it == fontCache_.end())
     {
-        SDL_Log("ResourceManager::GetFont failed to get font id %d", id);
+        Console_Log("ResourceManager::GetFont failed to get font id %d", id);
         return nullptr;
     }
     return it->second.get();
@@ -270,7 +275,7 @@ std::future<void> ResourceManager::LoadTextureAsync(short id,
 
                     try
                     {
-                        ConvertSurfaceToTexture(id, surface);
+                        ConvertToTexture(id, surface);
                         promise->set_value();
                     }
                     catch (...)
@@ -286,7 +291,7 @@ std::future<void> ResourceManager::LoadTextureAsync(short id,
 // 清理所有资源
 void ResourceManager::ClearAll()
 {
-    SDL_Log("ResourceManager::ClearAll() started");
+    Console_Log("ResourceManager::ClearAll() started");
     StopWorker();
 
     // 处理剩余的主线程任务
@@ -297,25 +302,27 @@ void ResourceManager::ClearAll()
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    SDL_Log("ResourceManager::ClearAll() stopped task queue successfully");
+    Console_Log("ResourceManager::ClearAll() stopped task queue successfully");
 
     {
         std::lock_guard<std::mutex> lock(musicMutex_);
-        SDL_Log("ResourceManager::ClearAll() clearing music cache, count=%d",
-                static_cast<int>(musicCache_.size()));
+        Console_Log(
+            "ResourceManager::ClearAll() clearing music cache, count=%d",
+            static_cast<int>(musicCache_.size()));
         musicCache_.clear();
-        SDL_Log("ResourceManager::ClearAll() cleared music cache");
+        Console_Log("ResourceManager::ClearAll() cleared music cache");
     }
 
     {
         std::lock_guard<std::mutex> lock(textureMutex_);
-        SDL_Log("ResourceManager::ClearAll() clearing texture cache, count=%d",
-                static_cast<int>(textureCache_.size()));
+        Console_Log(
+            "ResourceManager::ClearAll() clearing texture cache, count=%d",
+            static_cast<int>(textureCache_.size()));
         textureCache_.clear();
-        SDL_Log("ResourceManager::ClearAll() cleared texture cache");
+        Console_Log("ResourceManager::ClearAll() cleared texture cache");
     }
 
-    SDL_Log("ResourceManager::ClearAll() finished");
+    Console_Log("ResourceManager::ClearAll() finished");
 }
 
 // 处理主线程任务
@@ -385,105 +392,20 @@ void ResourceManager::StopWorker()
     }
 }
 
-// 加载表面（线程安全）
-SDL_Surface *ResourceManager::LoadSurface(const std::string &path)
-{
-    SDL_Surface *surface = IMG_Load(path.c_str());
-
-    if (!surface)
-    {
-        SDL_Log("IMG_Load failed: %s", IMG_GetError());
-        return nullptr;
-    }
-    SDL_Surface *convertedSurface =
-        SDL_ConvertSurfaceFormat(surface,
-                                 SDL_PIXELFORMAT_ABGR8888, // 或其他需要的格式
-                                 0);
-
-    SDL_FreeSurface(surface);
-
-    if (!convertedSurface)
-    {
-        SDL_Log("SDL_ConvertSurfaceFormat failed: %s", SDL_GetError());
-        return nullptr;
-    }
-
-    SDL_Log("ResourceManager::LoadSurface() %s surface loaded successfully.",
-            path.c_str());
-    return convertedSurface;
-}
-
 // 转换表面为纹理（必须在主线程）
-void ResourceManager::ConvertSurfaceToTexture(short id, SDL_Surface *surface)
+void ResourceManager::ConvertToTexture(short id, SDL_Surface *surface)
 {
-    if (!renderer)
-    {
-        SDL_Log("ResourceManager::ConvertSurfaceToTexture: renderer is null");
-        SDL_FreeSurface(surface);
-        return;
-    }
-
-    // 创建纹理
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    TexturePtr texture = std::move(ConvertSurfaceToTexture(renderer, surface));
 
     if (!texture)
     {
-        SDL_Log("SDL_CreateTextureFromSurface failed: %s", SDL_GetError());
+        Console_Log("Failed to convert surface!");
         return;
     }
-
-    // 存储纹理
-    std::lock_guard<std::mutex> lock(textureMutex_);
-    if (textureCache_.count(id))
-    {
-        SDL_DestroyTexture(texture);
-        SDL_Log("ResourceManager::ConvertSurfaceToTexture: texture id %d "
-                "already exists",
-                id);
-        return;
-    }
-
-    textureCache_[id] = TexturePtr(texture);
-    SDL_Log("ResourceManager: texture id %d converted and stored", id);
+    textureCache_[id] = std::move(texture);
+    Console_Log("ResourceManager: texture id %d converted and stored", id);
 }
 
-// SDL对象删除器
-void SDLDeleter::operator()(Mix_Music *music) const
-{
-    if (music)
-        Mix_FreeMusic(music);
-}
-
-void SDLDeleter::operator()(SDL_Texture *texture) const
-{
-    if (texture)
-        SDL_DestroyTexture(texture);
-}
-
-void SDLDeleter::operator()(TTF_Font *font) const
-{
-    if (font)
-        TTF_CloseFont(font);
-}
-
-void SDLDeleter::operator()(Mix_Chunk *chunk) const
-{
-    if (chunk)
-        Mix_FreeChunk(chunk);
-}
-
-// 通过json进行整个场景的资源加载
-// 新增一些说明，大体上结构是这样的，首先有一个main.json,用于储存场景名称与id的对应关系，当然这个main.json在一定程度上是可有可无的
-// 只是为了方便记忆，即使不用短id修改起来也很方便，只需要修改输入即可，文件的位置在第1步，自行修改即可。对于各个场景的json文件，大致结构如下
-//{
-//     "1001": {
-//         "path": "background.png",
-//         "category": "texture"
-//     }
-// }
-// 第一行是资源的id，值是一个对象包含路径和种类，种类暂时为texture和music，如需增加chunk等，只需在7.4加入对应分支即可
-// 如需单独加载某一类型，只需在7.4去掉其余分支即可
 std::future<void> ResourceManager::LoadResourcesFromJson(short id)
 {
     // 1. 构建文件名
@@ -494,7 +416,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
     FILE *file = fopen(filename.c_str(), "rb");
     if (!file)
     {
-        SDL_Log("Error: JSON file %s does not exist", filename.c_str());
+        Console_Log("Error: JSON file %s does not exist", filename.c_str());
         // 返回一个已经完成的 future（防止外部阻塞）
         std::promise<void> p;
         p.set_value();
@@ -511,8 +433,8 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
     // 4. 检查解析错误
     if (doc.HasParseError())
     {
-        SDL_Log("JSON parse error (%s): %s", filename.c_str(),
-                rapidjson::GetParseError_En(doc.GetParseError()));
+        Console_Log("JSON parse error (%s): %s", filename.c_str(),
+                    rapidjson::GetParseError_En(doc.GetParseError()));
         std::promise<void> p;
         p.set_value();
         return p.get_future();
@@ -521,7 +443,8 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
     // 5. 验证JSON根对象
     if (!doc.IsObject())
     {
-        SDL_Log("Error: JSON root is not an object in %s", filename.c_str());
+        Console_Log("Error: JSON root is not an object in %s",
+                    filename.c_str());
         std::promise<void> p;
         p.set_value();
         return p.get_future();
@@ -540,7 +463,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         }
         catch (...)
         {
-            SDL_Log("Invalid resource ID format: %s", it->name.GetString());
+            Console_Log("Invalid resource ID format: %s", it->name.GetString());
             continue;
         }
 
@@ -549,7 +472,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
             !resObj["path"].IsString() || !resObj.HasMember("category") ||
             !resObj["category"].IsString())
         {
-            SDL_Log("Invalid resource object for ID: %d", resourceId);
+            Console_Log("Invalid resource object for ID: %d", resourceId);
             continue;
         }
 
@@ -572,9 +495,9 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         {
             if (!resObj.HasMember("size") || !resObj["size"].IsInt())
             {
-                SDL_Log("Font resource missing or invalid font size for "
-                        "resource ID: %d",
-                        resourceId);
+                Console_Log("Font resource missing or invalid font size for "
+                            "resource ID: %d",
+                            resourceId);
                 continue;
             }
             int size = resObj["size"].GetInt();
@@ -582,8 +505,8 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         }
         else
         {
-            SDL_Log("Unknown category '%s' for resource ID: %d",
-                    category.c_str(), resourceId);
+            Console_Log("Unknown category '%s' for resource ID: %d",
+                        category.c_str(), resourceId);
         }
     }
 
@@ -596,9 +519,10 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
                               future.wait();
                           }
 
-                          SDL_Log("ResourceManager: Resources loaded from JSON "
-                                  "file %s was finished",
-                                  filename.c_str());
+                          Console_Log(
+                              "ResourceManager: Resources loaded from JSON "
+                              "file %s was finished",
+                              filename.c_str());
                       });
 }
 

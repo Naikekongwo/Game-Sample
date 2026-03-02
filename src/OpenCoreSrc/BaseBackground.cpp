@@ -16,7 +16,7 @@ BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
     // 获取材质
     if (!texture)
     {
-        SDL_Log(
+        Console_Log(
             "BaseBackground::BaseBackground() encountered a empty texture.");
         return;
         // 如果材质为空，那么我们直接强制返回

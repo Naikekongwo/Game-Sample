@@ -73,8 +73,9 @@ bool PurifierStage::buildStage()
                 [](auto &elem)
                 {
                     auto state = elem->getAnimationState();
-                    SDL_Log("Adding fade out effect to %s, transparency, %f",
-                            elem->getID().c_str(), state->transparency);
+                    Console_Log(
+                        "Adding fade out effect to %s, transparency, %f",
+                        elem->getID().c_str(), state->transparency);
                     elem->Animate()
                         .Fade(state->transparency, 0.0f, 5.0f)
                         .Commit();
@@ -99,14 +100,14 @@ bool PurifierStage::buildStage()
 }
 void PurifierStage::onEnter()
 {
-    SDL_Log("PurifierStage::onEnter");
+    Console_Log("PurifierStage::onEnter");
     buildStage();
 }
 
 void PurifierStage::onExit()
 {
     Elements->onDestroy();
-    SDL_Log("PurifierStage::onExit - cleared elements");
+    Console_Log("PurifierStage::onExit - cleared elements");
 }
 
-void PurifierStage::onDestroy() { SDL_Log("PurifierStage::onDestroy"); }
+void PurifierStage::onDestroy() { Console_Log("PurifierStage::onDestroy"); }

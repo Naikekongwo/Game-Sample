@@ -36,16 +36,17 @@ MultiImageBoard::MultiImageBoard(const std::string &id, uint8_t layer,
 {
     this->size = static_cast<size_t>(size);
 
-    SDL_Log("MImageBoard::~() created with size: %d", size);
+    Console_Log("MImageBoard::~() created with size: %d", size);
 }
 
 bool MultiImageBoard::pushImageBoard(vector<unique_ptr<Texture>> &list)
 {
     if (list.size() != size)
     {
-        SDL_Log("MImageBoard::Push... Failed to push texture, it should be %d, "
-                "but it is a %d",
-                static_cast<int>(size), static_cast<int>(list.size()));
+        Console_Log(
+            "MImageBoard::Push... Failed to push texture, it should be %d, "
+            "but it is a %d",
+            static_cast<int>(size), static_cast<int>(list.size()));
         return false;
     }
 
@@ -60,8 +61,8 @@ bool MultiImageBoard::pushImageBoard(vector<unique_ptr<Texture>> &list)
 
         Layers.push_back(std::move(ImgBoard));
 
-        SDL_Log("MImageBoard::Push... successfully pushed a element id %d",
-                iter);
+        Console_Log("MImageBoard::Push... successfully pushed a element id %d",
+                    iter);
         it = list.erase(it);
 
         iter++;
@@ -84,8 +85,8 @@ AnimationPipeline MultiImageBoard::AnimateAt(uint8_t index)
 
 DrawableConfigurator MultiImageBoard::ConfigureAt(uint8_t index)
 {
-    SDL_Log("CONFIGURE:: Now the size is %d, layers size is %d",
-            static_cast<int>(size), static_cast<int>(Layers.size()));
+    Console_Log("CONFIGURE:: Now the size is %d, layers size is %d",
+                static_cast<int>(size), static_cast<int>(Layers.size()));
     if (Layers.size() <= index)
     {
         throw std::out_of_range("Index out of range");

@@ -4,7 +4,7 @@ SDL_Rect Sprite::getLogicalBounds()
 {
     if (!AnimeState)
     {
-        SDL_Log("Sprite::getLogicalBounds() failed: AnimeState is nullptr");
+        Console_Log("Sprite::getLogicalBounds() failed: AnimeState is nullptr");
         return SDL_Rect{0, 0, 0, 0};
     }
 

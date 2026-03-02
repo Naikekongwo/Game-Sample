@@ -31,7 +31,7 @@ void GameplayStage::Init()
 
     Elements->PushElement(std::move(background));
 
-    SDL_Log("尝试添加！");
+    Console_Log("尝试添加！");
 
     sController->removeStage(StageType::overlayStage);
 

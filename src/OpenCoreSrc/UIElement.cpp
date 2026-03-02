@@ -5,7 +5,8 @@ SDL_Rect UIElement::getLogicalBounds()
 {
     if (!AnimeState)
     {
-        SDL_Log("UIElement::getLogicalBounds() failed: AnimeState is nullptr");
+        Console_Log(
+            "UIElement::getLogicalBounds() failed: AnimeState is nullptr");
         return SDL_Rect{0, 0, 0, 0};
     }
 
@@ -71,7 +72,7 @@ UIElement::UIElement(const string &id, short layer, unique_ptr<Texture> texture)
 
     if (!texture)
     {
-        SDL_Log(
+        Console_Log(
             "UIElement id %s encountered a empty texture, but relax, for some "
             "element have child element it's ok to init without texture.",
             id.c_str());
