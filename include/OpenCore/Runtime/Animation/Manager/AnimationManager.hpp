@@ -6,6 +6,8 @@
 
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 
+#include "SDL2/SDL.h"
+
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -16,8 +18,8 @@ using std::vector;
 struct Texture
 {
     // 行数和列数
-    uint8_t xCount = 1;
-    uint8_t yCount = 1;
+    size_t xCount = 1;
+    size_t yCount = 1;
 
     // 贴图的大小
     uint16_t width, height;
@@ -25,7 +27,7 @@ struct Texture
     // 材质
     shared_ptr<SDL_Texture> texture;
 
-    Texture(uint8_t x, uint8_t y, shared_ptr<SDL_Texture> tex);
+    Texture(size_t x, size_t y, shared_ptr<SDL_Texture> tex);
 
     uint16_t Size() const noexcept { return xCount * yCount; }
 
@@ -34,7 +36,8 @@ struct Texture
         return static_cast<float>(width) / static_cast<float>(height);
     }
 
-    SDL_Rect getSrcRect(uint8_t index);
+    SDL_Rect getSubRect(size_t index);
+    SDL_Texture *get() const { return texture.get(); }
 };
 
 class AnimationManager

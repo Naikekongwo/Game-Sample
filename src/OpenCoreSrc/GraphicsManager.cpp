@@ -3,7 +3,10 @@
 
 #include "OpenCore/OpenCore.hpp"
 #include <SDL2/SDL_log.h>
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
+#include <cstddef>
 
 GraphicsManager &GraphicsManager::getInstance()
 {
@@ -100,6 +103,37 @@ void GraphicsManager::CleanUp()
 
     Console_Log("GFXManager::CleanUp() manage to quit the SDL.");
     SDL_Quit();
+}
+
+int GraphicsManager::Draw(SDL_Texture *texture, const Rect *srcRect,
+                          const Rect *dstRect, const double angle,
+                          const Point *center)
+{
+    SDL_Rect source;
+    SDL_Rect destination;
+    SDL_Point point;
+
+    if (!texture)
+    {
+        SDL_Log("GFXManager::Draw Encountered a empty texture.");
+        return -1;
+    }
+    if (srcRect)
+    {
+        source = *srcRect;
+    }
+    if (dstRect)
+    {
+        destination = *dstRect;
+    }
+    if (center)
+    {
+        point = *center;
+    }
+
+    return SDL_RenderCopyEx(renderer, texture, (srcRect) ? &source : nullptr,
+                            (dstRect) ? &destination : nullptr, angle,
+                            (center) ? &point : nullptr, SDL_FLIP_NONE);
 }
 
 int GraphicsManager::RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,

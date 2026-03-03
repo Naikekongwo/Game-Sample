@@ -2,6 +2,8 @@
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
 
+#include "OpenCore/Core/Math/OpenCore_Rect.hpp"
+
 Button::Button(const std::string &id, uint8_t layer,
                unique_ptr<Texture> texture)
     : UIElement(id, layer, std::move(texture))
@@ -10,16 +12,17 @@ Button::Button(const std::string &id, uint8_t layer,
 
 void Button::handlEvents(SDL_Event &event, float totalTime)
 {
-    SDL_Point mousePos{};
-    SDL_Rect bounds = getPhysicalBounds();
+    Point mousePos{};
+    Rect bounds = getPhysicalBounds();
 
     switch (event.type)
     {
     case SDL_MOUSEMOTION:
     {
-        mousePos = {event.motion.x, event.motion.y};
+        mousePos.x = event.motion.x;
+        mousePos.y = event.motion.y;
 
-        if (!SDL_PointInRect(&mousePos, &bounds))
+        if (!PointInRect(mousePos, bounds))
             State = ButtonState::Normal;
         else
             State = (State == ButtonState::Pressed) ? ButtonState::Pressed
@@ -31,9 +34,10 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
     {
         if (event.button.button == SDL_BUTTON_LEFT)
         {
-            mousePos = {event.button.x, event.button.y};
+            mousePos.x = event.button.x;
+            mousePos.y = event.button.y;
 
-            if (SDL_PointInRect(&mousePos, &bounds))
+            if (PointInRect(mousePos, bounds))
             {
                 OpenCoreManagers::SFXManager.playSE(1002);
                 State = ButtonState::Pressed;
@@ -46,10 +50,10 @@ void Button::handlEvents(SDL_Event &event, float totalTime)
     {
         if (event.button.button == SDL_BUTTON_LEFT)
         {
-            mousePos = {event.button.x, event.button.y};
+            mousePos.x = event.button.x;
+            mousePos.y = event.button.y;
 
-            if (SDL_PointInRect(&mousePos, &bounds) &&
-                State == ButtonState::Pressed)
+            if (PointInRect(mousePos, bounds) && State == ButtonState::Pressed)
             {
                 if (onClick)
                     onClick();
@@ -87,24 +91,19 @@ void Button::onRender()
 {
     if (texture->texture)
     {
-        // 渲染函数
-        SDL_SetTextureAlphaMod(texture->texture.get(),
-                               255.0f * AnimeState->transparency);
+        auto Graphics = GraphicsManager::getInstance();
 
-        SDL_Rect dstRect = getLogicalBounds();
+        SDL_SetTextureAlphaMod(texture->get(), AnimeState->getAlpha());
 
-        if (texture->Size() > 1)
-        {
-            // 多帧函数
-            SDL_Rect srcRect = texture->getSrcRect(AnimeState->frameIndex);
-            GraphicsManager::getInstance().RenderCopyEx(
-                texture->texture.get(), &srcRect, &dstRect, AnimeState->angle,
-                NULL, SDL_FLIP_NONE);
-            return;
-        }
-        // 单帧贴图
-        GraphicsManager::getInstance().RenderCopyEx(
-            texture->texture.get(), NULL, &dstRect, AnimeState->angle, NULL,
-            SDL_FLIP_NONE);
+        Rect dRect = getLogicalBounds();
+
+        auto frameIndex = (AnimeState->getFrameIndex() > texture->Size())
+                              ? 0
+                              : AnimeState->getFrameIndex();
+
+        Rect sRect = texture->getSubRect(frameIndex);
+
+        Graphics.Draw(texture->get(), &sRect, &dRect, AnimeState->getAngle(),
+                      NULL);
     }
 }

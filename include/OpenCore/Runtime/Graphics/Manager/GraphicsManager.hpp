@@ -6,6 +6,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_log.h>
+
+#include "OpenCore/Core/Math/OpenCore_Rect.hpp"
 #include <string>
 
 #include <cstdarg>
@@ -47,6 +49,9 @@ class GraphicsManager
     int RenderCopy(SDL_Texture *texture, const SDL_Rect *srcrect,
                    const SDL_Rect *dstrect, const double angle,
                    const SDL_Point *center, const SDL_RendererFlip flip);
+
+    int Draw(SDL_Texture *texture, const Rect *srcRect, const Rect *dstRect,
+             const double angle, const Point *center);
 
     int setOffScreenRender(SDL_Texture *texture);
 

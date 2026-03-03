@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include <algorithm>
 
-Texture::Texture(uint8_t x, uint8_t y, shared_ptr<SDL_Texture> tex)
+Texture::Texture(size_t x, size_t y, shared_ptr<SDL_Texture> tex)
     : xCount(x), yCount(y), texture(tex)
 {
     int W, H;
@@ -25,21 +25,28 @@ Texture::Texture(uint8_t x, uint8_t y, shared_ptr<SDL_Texture> tex)
     height /= yCount;
 }
 
-SDL_Rect Texture::getSrcRect(uint8_t index)
+SDL_Rect Texture::getSubRect(size_t index)
 {
     // 构造一个0矩阵的常量，避免重复生成
     static const SDL_Rect emptyRect{0, 0, 0, 0};
-
     if (index < 0 || index >= Size())
     {
-        Console_Log("Texture::getSrcRect() index out of range: %d", index);
+        Console_Log("Texture::getSubRect() index out of range: %d", index);
         return emptyRect;
     }
 
-    uint8_t col = index % xCount;
-    uint8_t row = index / xCount;
+    if (Size() == 1)
+    {
+        // 一张大图
+        return SDL_Rect{0, 0, width, height};
+    }
+    else
+    {
+        uint8_t col = index % xCount;
+        uint8_t row = index / xCount;
 
-    return SDL_Rect{col * width, row * height, width, height};
+        return SDL_Rect{col * width, row * height, width, height};
+    }
 }
 
 void AnimationManager::onUpdate(float totalTime, AnimationState &state)

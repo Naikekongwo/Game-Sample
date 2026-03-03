@@ -12,40 +12,40 @@ SDL_Rect UIElement::getLogicalBounds()
 
     const auto &state = *AnimeState;
 
-    // 计算基于1920x1080逻辑坐标系的宽高
-    uint16_t logicalWidth = static_cast<uint16_t>(absWidth * state.scale[0]);
-    uint16_t logicalHeight = static_cast<uint16_t>(absHeight * state.scale[1]);
+    // 全程使用 float 计算
+    float logicalWidth = absWidth * state.scale[0];
+    float logicalHeight = absHeight * state.scale[1];
 
-    int16_t logicalX = state.Position[0];
-    int16_t logicalY = state.Position[1];
+    float logicalX = state.Position[0];
+    float logicalY = state.Position[1];
 
-    // 按锚点偏移位置（在1920x1080逻辑坐标系中）
+    // Anchor 偏移（float阶段）
     switch (state.Anchor)
     {
     case AnchorPoint::TopLeft:
         break;
     case AnchorPoint::TopCenter:
-        logicalX -= logicalWidth / 2;
+        logicalX -= logicalWidth * 0.5f;
         break;
     case AnchorPoint::TopRight:
         logicalX -= logicalWidth;
         break;
     case AnchorPoint::MiddleLeft:
-        logicalY -= logicalHeight / 2;
+        logicalY -= logicalHeight * 0.5f;
         break;
     case AnchorPoint::Center:
-        logicalX -= logicalWidth / 2;
-        logicalY -= logicalHeight / 2;
+        logicalX -= logicalWidth * 0.5f;
+        logicalY -= logicalHeight * 0.5f;
         break;
     case AnchorPoint::MiddleRight:
         logicalX -= logicalWidth;
-        logicalY -= logicalHeight / 2;
+        logicalY -= logicalHeight * 0.5f;
         break;
     case AnchorPoint::BottomLeft:
         logicalY -= logicalHeight;
         break;
     case AnchorPoint::BottomCenter:
-        logicalX -= logicalWidth / 2;
+        logicalX -= logicalWidth * 0.5f;
         logicalY -= logicalHeight;
         break;
     case AnchorPoint::BottomRight:
@@ -54,7 +54,11 @@ SDL_Rect UIElement::getLogicalBounds()
         break;
     }
 
-    return SDL_Rect{logicalX, logicalY, logicalWidth, logicalHeight};
+    // 🔥 只在这里做像素对齐
+    return SDL_Rect{static_cast<int>(std::round(logicalX)),
+                    static_cast<int>(std::round(logicalY)),
+                    static_cast<int>(std::round(logicalWidth)),
+                    static_cast<int>(std::round(logicalHeight))};
 }
 
 SDL_Rect UIElement::getPhysicalBounds() { return getLogicalBounds(); }

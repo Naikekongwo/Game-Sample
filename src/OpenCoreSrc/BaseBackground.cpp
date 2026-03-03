@@ -108,7 +108,7 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
     {
         for (int col = 0; col < 3; col++)
         {
-            srcRect = texture->getSrcRect(row * 3 + col);
+            srcRect = texture->getSubRect(row * 3 + col);
 
             // X方向
             if (col == 0)
