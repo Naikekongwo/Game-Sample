@@ -25,21 +25,16 @@ void ImageBoard::onRender()
 {
     auto &GFX = GraphicsManager::getInstance();
     // 渲染函数
-    SDL_SetTextureAlphaMod(texture->texture.get(), AnimeState->getAlpha());
-
-    SDL_Rect dstRect = getLogicalBounds();
-
-    dstRect = magnetRect(dstRect);
-
-    if (texture->Size() > 1)
+    if (texture->get())
     {
-        // 多帧函数
-        SDL_Rect srcRect = texture->getSubRect(AnimeState->frameIndex);
-        GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect,
-                         AnimeState->getAngle(), NULL, SDL_FLIP_NONE);
-        return;
+        SDL_SetTextureAlphaMod(texture->texture.get(), AnimeState->getAlpha());
+
+        Rect dstRect = getLogicalBounds();
+        Rect srcRect = texture->getSubRect(AnimeState->getFrameIndex());
+
+        dstRect = magnetRect(dstRect);
+
+        GFX.Draw(texture->texture.get(), &srcRect, &dstRect,
+                 AnimeState->getAngle(), NULL);
     }
-    // 单帧贴图
-    GFX.RenderCopyEx(texture->texture.get(), NULL, &dstRect,
-                     AnimeState->getAngle(), NULL, SDL_FLIP_NONE);
 }

@@ -31,6 +31,9 @@ void MapExplorer::onEnter()
 
         renderWorker->setScale(widthFactor, 0.0f);
 
+        left_border = (renderWidth - 2) / 2 + 1;
+        up_border = (renderHeight - 1) / 2;
+
         status = MapExpStatus::Ready;
     }
 }
@@ -61,5 +64,13 @@ void MapExplorer::onRender()
             // 绘制格子
             renderWorker->onRender();
         }
+    }
+}
+
+void MapExplorer::onUpdate(float totalTime)
+{
+    if (status == MapExpStatus::Creating)
+    {
+        onEnter();
     }
 }

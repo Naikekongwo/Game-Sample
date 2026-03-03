@@ -22,6 +22,7 @@ class MapExplorer : public UIElement
 
     void onEnter() override;
     void onRender() override;
+    void onUpdate(float totalTime) override;
 
     // 特殊函数
     void setMap(const string &path) { this->mapPath = path; }
