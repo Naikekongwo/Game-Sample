@@ -9,6 +9,8 @@
 
 // 图形宏定义
 
+#define GAME_FRAMERATE 30
+
 #define fullwidth 1.0f
 #define heightfactor 0.5625f
 #define fullheight 1.0f

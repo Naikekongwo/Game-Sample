@@ -13,6 +13,8 @@ enum class MapExpStatus
 class ClassicMap;
 class ImageBoard;
 
+#include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
+
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
 
 class MapExplorer : public UIElement
@@ -24,12 +26,12 @@ class MapExplorer : public UIElement
     void onRender() override;
     void onUpdate(float totalTime) override;
 
+    void handlEvents(SDL_Event &event, float totalTime) override;
+
     // 特殊函数
     void setMap(const string &path) { this->mapPath = path; }
 
   private:
-    int px = 24;
-    int py = 24;
     uint8_t left_border = 7;
     uint8_t up_border = 4;
 
@@ -40,6 +42,9 @@ class MapExplorer : public UIElement
     unique_ptr<ClassicMap> map;
     string mapPath = "maps/paleland.ocmp";
     MapExpStatus status = MapExpStatus::Creating;
+
+    // 临时
+    PhysicalProperties pProperties;
 };
 
 #endif //_MAP_EXPLORER_HPP_

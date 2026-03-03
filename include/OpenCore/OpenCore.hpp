@@ -30,6 +30,8 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 #include "OpenCore/Runtime/Config/SettingsManager.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
 
+#include "OpenCore/Runtime/Gameplay/Entity/Entity.hpp"
+
 #include "OpenCore/World/Map/Manager/MapManager.hpp"
 
 // 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间

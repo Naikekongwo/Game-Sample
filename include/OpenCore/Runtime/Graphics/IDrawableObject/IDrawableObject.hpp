@@ -78,23 +78,18 @@ class IDrawableObject
     DrawableConfigurator Configure();
 
   protected:
-    // ID 已经弃用，改用string代替
     std::string id;
-    // 默认图层
     uint8_t layer = 0;
-    // 动画管理器
     unique_ptr<AnimationManager> AnimeManager;
-    // 动画状态
     unique_ptr<AnimationState> AnimeState;
-    // 元素基础大小
     uint16_t absWidth, absHeight;
-    // 贴图
     unique_ptr<Texture> texture;
-    // 父容器类
     int magnetFactor = 0;
-    // 相对鼠标的移动系数
     bool absolutePosite = true;
     IDrawableObject *parentContainer = nullptr;
+
+    float position_x = 0.0f;
+    float position_y = 0.0f;
 };
 
 #endif //_IDRAWABLE_H_

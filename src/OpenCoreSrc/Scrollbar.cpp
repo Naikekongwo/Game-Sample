@@ -132,9 +132,6 @@ bool Scrollbar::onDestroy() { return true; }
 
 void Scrollbar::onExit()
 {
-    Console_Log("Scrollbar current Position %d %d", AnimeState->Position[0],
-                AnimeState->Position[1]);
-    // 退出之前的准备
     slideBar.reset();
     baseBack.reset();
     value.reset();

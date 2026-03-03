@@ -52,7 +52,7 @@ bool OpenEngine::Initialize()
     // 创建场景控制器实例
     sController = std::make_unique<StageManager>();
     // 创建计时器实例
-    timer = std::make_unique<Timer>(30);
+    timer = std::make_unique<Timer>(GAME_FRAMERATE);
 
     // 初始化 GFX 实例 (若失败直接退出)
     if (!GFXManager.Init())

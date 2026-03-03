@@ -1,4 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
+#include <SDL2/SDL_keycode.h>
 #include <memory>
 
 MapExplorer::MapExplorer(const string &id, short layer)
@@ -32,7 +33,10 @@ void MapExplorer::onEnter()
         renderWorker->setScale(widthFactor, 0.0f);
 
         left_border = (renderWidth - 2) / 2 + 1;
-        up_border = (renderHeight - 1) / 2;
+        up_border = (renderHeight - 1) / 2 + 1;
+
+        Vec2 pos{24, 24};
+        pProperties.setPosition(pos);
 
         status = MapExpStatus::Ready;
     }
@@ -43,25 +47,30 @@ void MapExplorer::onRender()
     if (status != MapExpStatus::Ready)
         return;
 
-    // 遍历屏幕渲染格子
+    Vec2 Position = pProperties.getPosition();
+
+    // 取整数格子索引
+    int center_x = Position.x + 0.5f;
+    int center_y = Position.y + 0.5f;
+
+    float offsetX = Position.x - center_x;
+    float offsetY = Position.y - center_y;
+
     for (int y = -up_border; y <= up_border; ++y)
     {
         for (int x = -left_border; x <= left_border; ++x)
         {
-            int gx = x + px; // 地图坐标
-            int gy = y + py;
+            int gx = x + center_x;
+            int gy = y + center_y;
 
-            // 获取 BlockInfo，越界自动返回 (0,0)
             BlockInfo &info = map->getBlockInfo(gx, gy);
 
-            // 设置渲染位置
-            renderWorker->setPosition(x * widthFactor + 0.5f,
-                                      0.5f + y * heightFactor);
+            // 渲染时加入 sub-grid 偏移
+            renderWorker->setPosition((x - offsetX) * widthFactor + 0.5f,
+                                      (y - offsetY) * heightFactor + 0.5f);
+
             renderWorker->setTransparency(1.0f);
-
             renderWorker->getAnimationState()->frameIndex = info.Terrain;
-
-            // 绘制格子
             renderWorker->onRender();
         }
     }
@@ -72,5 +81,48 @@ void MapExplorer::onUpdate(float totalTime)
     if (status == MapExpStatus::Creating)
     {
         onEnter();
+    }
+    else
+    {
+        pProperties.onUpdate(totalTime);
+    }
+}
+
+void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
+{
+    if (status == MapExpStatus::Ready)
+    {
+        if (event.type == SDL_KEYDOWN)
+        {
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_w:
+            {
+                Vec2 speed{0, 5};
+                pProperties.giveSpeed(speed);
+                break;
+            }
+            case SDLK_s:
+            {
+                Vec2 speed{0, -5};
+                pProperties.giveSpeed(speed);
+                break;
+            }
+            case SDLK_a:
+            {
+                Vec2 speed{5, 0};
+                pProperties.giveSpeed(speed);
+                break;
+            }
+            case SDLK_d:
+            {
+                Vec2 speed{-5, 0};
+                pProperties.giveSpeed(speed);
+                break;
+            }
+            default:
+                break;
+            }
+        }
     }
 }

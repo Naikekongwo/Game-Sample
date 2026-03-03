@@ -61,6 +61,8 @@ class OpenCore_Vec2
         return *this;
     }
 
+    float getLen() { return sqrt(x * x + y * y); }
+
     // 索引访问
     float &operator[](int index)
     {
