@@ -25,6 +25,16 @@ bool Eclipsea::StartUp()
 
     engine.GameRegistry(std::move(eclipseaInfo));
 
+    // 配置生物
+
+    auto &entityReg = engine.getEntityRegister();
+
+    EntityInfo player{1, player_texture};
+
+    entityReg.registerEntity(player);
+
+    // 生物结束
+
     try
     {
         engine.MainLoop();

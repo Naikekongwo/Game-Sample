@@ -29,13 +29,19 @@ void IWorldController::onEnter()
         widthFactor = 1.0f / renderRangeX;
         heightFactor = 1.0f / renderRangeY;
 
-        Vec3 Position{24, 24, 0};
-
-        pProperties.setPosition(Position);
         mapManager->registerClassicMap(1, "maps/test_circle_radius.ocmp");
         mapManager->setCurrentID(1);
 
         tileRenderer->setScale(widthFactor, heightFactor);
+    }
+
+    if (!Entities.contains(1))
+    {
+        auto entityreg = Gameplay::EntityReg;
+        auto player = entityreg.createEntity(1);
+
+        player->enableDrawer(true);
+        Entities[1] = std::move(player);
     }
 }
 
@@ -45,22 +51,27 @@ void IWorldController::Draw()
     if (!mapManager->empty() && mapManager->legal())
     {
         // 不空且当前地图准备好了才允许绘图
+        auto &player = Entities.at(1);
+        auto &pProperties = player->getPhysicalProperties();
+
         Vec3 Position = pProperties.getPosition();
 
         auto map_width = mapManager->getMapWidth();
         auto map_height = mapManager->getMapHeight();
-
-        Console_Log("%d", map_width);
 
         if ((Position.x < 0 or Position.x > map_width) or
             (Position.y > map_height or Position.y < 0))
         {
             Position = {0, 0, 0};
             pProperties.setPosition(Position);
+            Vec3 Speed{0, 0, 0};
+            pProperties.setSpeed(Speed);
         }
 
         int center_x = Position.x + 0.5f;
         int center_y = Position.y + 0.5f;
+
+        Console_Log("%d %d", center_x, center_y);
 
         float offsetX = Position.x - center_x;
         float offsetY = Position.y - center_y;
@@ -84,6 +95,12 @@ void IWorldController::Draw()
                 tileRenderer->setTileType(TileType::Terrain);
                 tileRenderer->setTileID(info.Terrain);
                 tileRenderer->Draw();
+            }
+
+            if (Entities.contains(1))
+            {
+
+                Entities.at(1)->Draw(Position.x, Position.y);
             }
         }
     }
@@ -109,8 +126,10 @@ void IWorldController::Draw()
 
 void IWorldController::onUpdate(float totalTime)
 {
-    // 物理运算
-    pProperties.onUpdate(totalTime);
+    for (auto &entry : Entities)
+    {
+        entry.second->onUpdate(totalTime);
+    }
 
     // 检查地图状态
     if (!mapManager->empty() && !mapManager->legal())

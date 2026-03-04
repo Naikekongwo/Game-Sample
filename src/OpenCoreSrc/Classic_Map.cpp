@@ -15,8 +15,8 @@ BlockInfo &ClassicMap::getBlockInfo(int offsetX, int offsetY)
     // 无需判断该坐标是否存在，因为已经做了判断(返回Rect判断坐标范围的合法程度)
     // 一定要判断！
 
-    if ((offsetX < 0 or offsetX > MapWidth) or
-        (offsetY < 0 or offsetY > MapHeight))
+    if ((offsetX < 0 or offsetX >= MapWidth) or
+        (offsetY < 0 or offsetY >= MapHeight))
     {
         return emptyBlock;
     }

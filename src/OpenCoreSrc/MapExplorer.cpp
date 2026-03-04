@@ -49,25 +49,25 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
             {
             case SDLK_w:
             {
-                Vec3 speed{0, 5, 0};
+                Vec3 speed{0, -5, 0};
                 pProperties.addSpeed(speed);
                 break;
             }
             case SDLK_s:
             {
-                Vec3 speed{0, -5, 0};
+                Vec3 speed{0, 5, 0};
                 pProperties.addSpeed(speed);
                 break;
             }
             case SDLK_a:
             {
-                Vec3 speed{5, 0, 0};
+                Vec3 speed{-5, 0, 0};
                 pProperties.addSpeed(speed);
                 break;
             }
             case SDLK_d:
             {
-                Vec3 speed{-5, 0, 0};
+                Vec3 speed{5, 0, 0};
                 pProperties.addSpeed(speed);
                 break;
             }

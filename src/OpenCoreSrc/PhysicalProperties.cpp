@@ -13,6 +13,15 @@ void PhysicalProperties::onUpdate(float totalTime)
     else
         parseHorizontalMovement(Speed.y, Position.y, deltaTime);
 
+    // 检测速度
+    if (Speed.y > 0.0f)
+        direction = Direction::Down;
+    if (Speed.y < 0.0f)
+        direction = Direction::Up;
+    if (Speed.x > 0.0f)
+        direction = Direction::Right;
+    if (Speed.x < 0.0f)
+        direction = Direction::Left;
     lastTime = totalTime;
 }
 
@@ -24,7 +33,7 @@ void PhysicalProperties::parseHorizontalMovement(float &Speed, float &Pos,
     {
         bool negative = Speed < 0.0f;
         float deltaSpeed = 10.0f * μFactor * deltaTime;
-        float futureSpeed = Speed - (negative ? -deltaSpeed : deltaSpeed);
+        float futureSpeed = Speed + (negative ? -deltaSpeed : deltaSpeed);
 
         // 位移的计算依托于匀变速变形公式 V²₂ - V₁² = 2 * a * x
         float offset =

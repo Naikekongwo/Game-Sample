@@ -8,11 +8,11 @@
 class Mob : public Sprite
 {
   public:
-    Mob()
-    {
-        this->id = "Mob";
-        this->layer = 0;
-    }
+    Mob(short MobTextureID);
+
+    void Draw() override;
+
+    bool onDestroy() override { return true; };
 
   private:
 };

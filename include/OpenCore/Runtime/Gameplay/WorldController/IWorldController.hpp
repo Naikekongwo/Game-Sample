@@ -4,10 +4,14 @@
 // 世界控制器的基类
 
 #include "OpenCore/Runtime/Gameplay/Entity/Entity.hpp"
+#include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
 #include "OpenCore/World/Map/Manager/MapManager.hpp"
 #include <cstdint>
 #include <memory>
+#include <unordered_map>
+
+using std::unordered_map;
 
 class Tile;
 
@@ -20,6 +24,11 @@ class IWorldController
 
     void enablePlayer(bool enabled = true) { renderPlayer = enabled; }
 
+    PhysicalProperties &getProperties()
+    {
+        return Entities.at(1)->getPhysicalProperties();
+    }
+
     // 地图管理器
     unique_ptr<MapManager> mapManager;
     uint8_t renderRangeX = 16;
@@ -29,7 +38,7 @@ class IWorldController
 
     // 是否渲染人物
     bool renderPlayer = true;
-    unique_ptr<Entity> player;
+    unordered_map<short, EntityPtr> Entities;
 
     // 渲染管线
     unique_ptr<Tile> tileRenderer;

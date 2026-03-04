@@ -39,6 +39,10 @@ bool OpenEngine::Initialize()
 {
     // 引用引擎所有管理类的命名空间
     using namespace OpenCoreManagers;
+    using namespace Gameplay;
+
+    // 初始化实体注册器
+    (void)EntityReg;
 
     // 创建设置管理器
     (void)SetManager;

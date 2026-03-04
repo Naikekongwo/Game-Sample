@@ -39,6 +39,8 @@ class PhysicalProperties
         Speed.z += speed.z;
     }
 
+    Direction getDirection() const noexcept { return direction; }
+
     Vec3 getPosition() const { return Position; }
     Vec3 getSpeed() const { return Speed; }
     float getμFactor() const { return μFactor; }
@@ -51,7 +53,7 @@ class PhysicalProperties
     // 物体的位置
     // 物体的朝向
     float density = 1.0f;
-    float μFactor = 0.2f;
+    float μFactor = -0.2f;
     float lastTime = 0.0f;
     Vec3 Speed{0, 0, 0};
     Vec3 Position{0, 0, 0};

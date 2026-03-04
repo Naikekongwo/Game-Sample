@@ -39,7 +39,7 @@
 #define img_multi 2033
 #define img_checkbox 2034
 #define terrain_major 2035
-#define tem_man 2036
+#define player_texture 2036
 
 #define font_normal 9001
 

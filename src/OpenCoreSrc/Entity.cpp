@@ -1,16 +1,29 @@
 #include "OpenCore/OpenCore.hpp"
+#include <SDL2/SDL_ttf.h>
 #include <memory>
+
+void Entity::Configure(const EntityInfo &eInfo)
+{
+    info = eInfo;
+    // 拷贝EntityType
+}
 
 void Entity::createRenderer()
 {
     // 创建一个角色绘制器
-    if (!renderer)
+    if (!renderer && info.EntityTypeID != 0)
     {
-        renderer = std::make_unique<Mob>()
+        renderer = std::make_unique<Mob>(info.TextureID);
+        renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);
+
+        widthRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderWidth();
+        heightRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderHeight();
+
+        renderer->Configure().Scale(info.widthFactor * widthRelative, 0.0f);
     }
 }
 
-void Entity::Draw()
+void Entity::Draw(float cameraPositionX, float cameraPostionY)
 {
     if (drawable)
     {
@@ -19,10 +32,65 @@ void Entity::Draw()
             // 创建renderer
             createRenderer();
         }
+
+        // 开始绘图
+        Vec3 Position = pProperties.getPosition();
+
+        auto renderWidth = *OpenCoreManagers::SetManager.getRenderWidth();
+        auto renderHeight = *OpenCoreManagers::SetManager.getRenderHeight();
+
+        renderWidth = (renderWidth - 2) / 2 + 1;
+        renderHeight = (renderHeight - 1) / 2 + 1;
+
+        if ((abs(cameraPositionX - Position.x) > renderWidth) or
+            (cameraPostionY - Position.y > renderHeight))
+        {
+            // 超出渲染范围
+            return;
+        }
+        else
+        {
+            renderer->setPosition(
+                0.5f + (Position.x - cameraPositionX) * widthRelative,
+                0.5f + (Position.y - cameraPostionY) * heightfactor);
+            renderer->setTransparency(1.0f);
+            switch (pProperties.getDirection())
+            {
+            case Direction::Up:
+            {
+                renderer->getVisualState()->frameIndex = 12;
+                break;
+            }
+            case Direction::Down:
+            {
+                renderer->getVisualState()->frameIndex = 0;
+                break;
+            }
+            case Direction::Left:
+            {
+                renderer->getVisualState()->frameIndex = 4;
+                break;
+            }
+            case Direction::Right:
+            {
+                renderer->getVisualState()->frameIndex = 8;
+                break;
+            }
+            default:
+                break;
+            }
+            renderer->Draw();
+        }
     }
     else if (renderer)
     {
         // 既然不需要渲染，那就不要让renderer占有内存
         renderer.reset();
     }
+}
+
+void Entity::onUpdate(float totalTime)
+{
+    // 刷新
+    pProperties.onUpdate(totalTime);
 }

@@ -6,6 +6,7 @@
 
 // 对于调试模式的宏定义
 
+#include "Runtime/Gameplay/Entity/EntityRegister.hpp"
 enum DebugFlags
 {
     DEBUG_OFF = 0,
@@ -28,6 +29,7 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 #include "OpenCore/Core/Math/OpenCore_Wave.hpp"
 #include "OpenCore/Runtime/Audio/SoundEffectManager.hpp"
 #include "OpenCore/Runtime/Config/SettingsManager.hpp"
+#include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
 #include "OpenCore/Runtime/Gameplay/WorldController/IWorldController.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
 
@@ -44,6 +46,11 @@ inline SettingsManager &SetManager = SettingsManager::getInstance();
 } // namespace OpenCoreManagers
 
 // 游戏对应的模块单例
+
+namespace Gameplay
+{
+inline EntityRegister &EntityReg = EntityRegister::getInstance();
+}
 
 #include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
@@ -88,7 +95,9 @@ class OpenEngine final
     {
         return sController.get();
     }
+
     GameInfo *getGameInfo() { return gameInfo.get(); }
+    EntityRegister &getEntityRegister() { return Gameplay::EntityReg; }
 
   private:
     unique_ptr<GameInfo> gameInfo = std::make_unique<GameInfo>();
