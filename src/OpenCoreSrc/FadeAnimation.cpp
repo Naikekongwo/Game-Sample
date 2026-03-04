@@ -9,7 +9,7 @@ FadeAnimation::FadeAnimation(float startAlpha, float endAlpha, float duration,
 }
 
 // 更新动画状态
-void FadeAnimation::onUpdate(float totalTime, AnimationState &state)
+void FadeAnimation::onUpdate(float totalTime, VisualState &state)
 {
     if (startTime == 0.0f)
     {
@@ -45,7 +45,7 @@ void FadeAnimation::onUpdate(float totalTime, AnimationState &state)
 bool FadeAnimation::isFinished() const { return finished; }
 
 // 重置动画
-void FadeAnimation::reset(float totalTime, AnimationState &state)
+void FadeAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;

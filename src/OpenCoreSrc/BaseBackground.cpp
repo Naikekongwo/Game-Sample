@@ -54,8 +54,7 @@ void BaseBackground::onRender()
     {
         SDL_Rect dstRect = getPhysicalBounds();
         SDL_SetTextureAlphaMod(
-            TextureCache,
-            static_cast<uint8_t>(AnimeState->transparency * 255.0f));
+            TextureCache, static_cast<uint8_t>(VState->transparency * 255.0f));
         OpenCoreManagers::GFXManager.RenderCopy(TextureCache, NULL, &dstRect, 0,
                                                 0, SDL_FLIP_NONE);
     }

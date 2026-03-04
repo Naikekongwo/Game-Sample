@@ -15,9 +15,9 @@ class CollectionAnimation : public IAnimation
     CollectionAnimation(AnimationPipeline *parentPipeline,
                         bool isParalle = true);
 
-    void onUpdate(float totalTime, AnimationState &state) override; // 更新动画
-    bool isFinished() const override;                               // 是否结束
-    void reset(float totalTime, AnimationState &state) override;    // 重置
+    void onUpdate(float totalTime, VisualState &state) override; // 更新动画
+    bool isFinished() const override;                            // 是否结束
+    void reset(float totalTime, VisualState &state) override;    // 重置
     bool isLoop() override { return isLooping; }
 
     AnimationPipeline *Begin();

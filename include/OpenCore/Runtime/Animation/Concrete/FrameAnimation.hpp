@@ -14,13 +14,13 @@ class FrameAnimation : public IAnimation
     FrameAnimation(uint8_t totalFrames, uint8_t FPS, bool isLooping);
     // 构造方法
 
-    void onUpdate(float totalTime, AnimationState &state) override;
+    void onUpdate(float totalTime, VisualState &state) override;
     // 更新动画状态
 
     bool isFinished() const override;
     // 检查动画是否完成
 
-    void reset(float totalTime, AnimationState &state) override;
+    void reset(float totalTime, VisualState &state) override;
     // 重置动画状态
 
     bool isLoop() override { return isLooping; }

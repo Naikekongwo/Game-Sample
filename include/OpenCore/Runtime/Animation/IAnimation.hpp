@@ -6,7 +6,7 @@
 #include <atomic>
 #include <string>
 
-// AnimationState 动画状态
+// VisualState 动画状态
 // 他会返回一系列的状态信息
 // 例如透明度、尺寸、或者是位置等
 enum class AnchorPoint : int
@@ -22,7 +22,7 @@ enum class AnchorPoint : int
     BottomRight
 };
 
-struct AnimationState
+struct VisualState
 {
     // 帧容量
     // 帧引索
@@ -58,9 +58,9 @@ class IAnimation
     void setName(const std::string &n) { name = n; }
     const std::string &getName() const { return name; }
 
-    virtual void onUpdate(float totalTime, AnimationState &state) = 0;
+    virtual void onUpdate(float totalTime, VisualState &state) = 0;
     virtual bool isFinished() const = 0;
-    virtual void reset(float totalTime, AnimationState &state) = 0;
+    virtual void reset(float totalTime, VisualState &state) = 0;
     virtual bool isLoop() = 0;
 
   private:

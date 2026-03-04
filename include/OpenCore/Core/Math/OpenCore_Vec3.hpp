@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include <vector>
 
-
 using std::vector;
 
 class OpenCore_Vec3
@@ -21,33 +20,34 @@ class OpenCore_Vec3
     OpenCore_Vec3(float x_, float y_, float z_) : x(x_), y(y_), z(z_) {}
 
     // 加减
-    OpenCore_Vec3 operator+(const OpenCore_Vec3& other)
+    OpenCore_Vec3 operator+(const OpenCore_Vec3 &other)
     {
         return OpenCore_Vec3(x + other.x, y + other.y, z + other.z);
     }
 
-    OpenCore_Vec3 operator-(const OpenCore_Vec3& other)
+    OpenCore_Vec3 operator-(const OpenCore_Vec3 &other)
     {
         return OpenCore_Vec3(x - other.x, y - other.y, z - other.z);
     }
 
     // 等于
-    OpenCore_Vec3 operator==(const OpenCore_Vec3& other)
+    OpenCore_Vec3 operator==(const OpenCore_Vec3 &other)
     {
         return (x == other.x and y == other.y and z == other.z);
     }
 
     // 点乘（Dot Product） - 返回标量
-    float dot(const OpenCore_Vec3& other) const {
+    float dot(const OpenCore_Vec3 &other) const
+    {
         return x * other.x + y * other.y + z * other.z;
     }
-    
+
     // 叉乘（Cross Product） - 返回向量
-    OpenCore_Vec3 cross(const OpenCore_Vec3& other) const {
-        return OpenCore_Vec3(
-            y * other.z - z * other.y,   // i分量
-            z * other.x - x * other.z,   // j分量  
-            x * other.y - y * other.x    // k分量
+    OpenCore_Vec3 cross(const OpenCore_Vec3 &other) const
+    {
+        return OpenCore_Vec3(y * other.z - z * other.y, // i分量
+                             z * other.x - x * other.z, // j分量
+                             x * other.y - y * other.x  // k分量
         );
     }
 
@@ -59,27 +59,31 @@ class OpenCore_Vec3
     }
 
     // 将自身单位化
-    OpenCore_Vec3& normalize()
+    OpenCore_Vec3 &normalize()
     {
         float len = sqrt(x * x + y * y + z * z);
-        if(len!=0)
+        if (len != 0)
         {
-            x/=len;
-            y/=len;
-            z/=len;
+            x /= len;
+            y /= len;
+            z /= len;
         }
         return *this;
     }
 
     // 索引访问
-    float& operator[](int index)
+    float &operator[](int index)
     {
-        switch(index)
+        switch (index)
         {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default: throw std::out_of_range("Vec3 index of range.");
+        case 0:
+            return x;
+        case 1:
+            return y;
+        case 2:
+            return z;
+        default:
+            throw std::out_of_range("Vec3 index of range.");
         }
     }
 };

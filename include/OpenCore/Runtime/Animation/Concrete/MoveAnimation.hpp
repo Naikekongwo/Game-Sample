@@ -9,11 +9,11 @@ class MoveAnimation : public IAnimation
                   float duration, bool isLooping);
 
     // 更新动画状态
-    void onUpdate(float totalTime, AnimationState &state) override;
+    void onUpdate(float totalTime, VisualState &state) override;
     // 判断动画是否结束
     bool isFinished() const override;
     // 重置动画
-    void reset(float totalTime, AnimationState &state) override;
+    void reset(float totalTime, VisualState &state) override;
     // 是否循环
     bool isLoop() override { return isLooping; }
 

@@ -7,7 +7,7 @@ TimerAnimation::TimerAnimation(float duration)
     this->finished = false;
 }
 
-void TimerAnimation::onUpdate(float totalTime, AnimationState &state)
+void TimerAnimation::onUpdate(float totalTime, VisualState &state)
 {
     if (startTime == 0.0f)
         startTime = totalTime;
@@ -19,7 +19,7 @@ void TimerAnimation::onUpdate(float totalTime, AnimationState &state)
     }
 }
 
-void TimerAnimation::reset(float totalTime, AnimationState &state)
+void TimerAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
 }

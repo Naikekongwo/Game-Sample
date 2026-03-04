@@ -27,14 +27,14 @@ void ImageBoard::onRender()
     // 渲染函数
     if (texture->get())
     {
-        SDL_SetTextureAlphaMod(texture->texture.get(), AnimeState->getAlpha());
+        SDL_SetTextureAlphaMod(texture->texture.get(), VState->getAlpha());
 
         Rect dstRect = getLogicalBounds();
-        Rect srcRect = texture->getSubRect(AnimeState->getFrameIndex());
+        Rect srcRect = texture->getSubRect(VState->getFrameIndex());
 
         dstRect = magnetRect(dstRect);
 
-        GFX.Draw(texture->texture.get(), &srcRect, &dstRect,
-                 AnimeState->getAngle(), NULL);
+        GFX.Draw(texture->texture.get(), &srcRect, &dstRect, VState->getAngle(),
+                 NULL);
     }
 }

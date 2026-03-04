@@ -9,7 +9,7 @@ MoveAnimation::MoveAnimation(int16_t startX, int16_t startY, int16_t endX,
 }
 
 // 更新动画状态
-void MoveAnimation::onUpdate(float totalTime, AnimationState &state)
+void MoveAnimation::onUpdate(float totalTime, VisualState &state)
 {
     if (startTime == 0.0f)
     {
@@ -46,7 +46,7 @@ void MoveAnimation::onUpdate(float totalTime, AnimationState &state)
 bool MoveAnimation::isFinished() const { return finished; }
 
 // 重置动画
-void MoveAnimation::reset(float totalTime, AnimationState &state)
+void MoveAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;

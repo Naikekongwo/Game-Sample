@@ -9,7 +9,7 @@ ScaleAnimation::ScaleAnimation(float startScale, float endScale, float duration,
 }
 
 // 更新动画状态
-void ScaleAnimation::onUpdate(float totalTime, AnimationState &state)
+void ScaleAnimation::onUpdate(float totalTime, VisualState &state)
 {
     if (startTime == 0.0f)
     {
@@ -45,7 +45,7 @@ void ScaleAnimation::onUpdate(float totalTime, AnimationState &state)
 bool ScaleAnimation::isFinished() const { return finished; }
 
 // 重置动画
-void ScaleAnimation::reset(float totalTime, AnimationState &state)
+void ScaleAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;

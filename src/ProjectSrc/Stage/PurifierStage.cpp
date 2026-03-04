@@ -72,7 +72,7 @@ bool PurifierStage::buildStage()
             Elements->forEachElement(
                 [](auto &elem)
                 {
-                    auto state = elem->getAnimationState();
+                    auto state = elem->getVisualState();
                     Console_Log(
                         "Adding fade out effect to %s, transparency, %f",
                         elem->getID().c_str(), state->transparency);

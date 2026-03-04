@@ -9,7 +9,7 @@ FrameAnimation::FrameAnimation(uint8_t totalFrames, uint8_t FPS, bool isLooping)
     this->currentFrame = 0; // 从第一张开始
 }
 
-void FrameAnimation::onUpdate(float totalTime, AnimationState &state)
+void FrameAnimation::onUpdate(float totalTime, VisualState &state)
 {
     if (startTime == 0.0f)
     {
@@ -45,7 +45,7 @@ bool FrameAnimation::isFinished() const
     return (!isLooping && currentFrame >= totalFrames - 1);
 }
 
-void FrameAnimation::reset(float totalTime, AnimationState &state)
+void FrameAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     currentFrame = 0;

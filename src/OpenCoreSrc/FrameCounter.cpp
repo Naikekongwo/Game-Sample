@@ -5,7 +5,7 @@ FrameCounter::FrameCounter(const std::string &id, uint8_t layer,
                            Texture *texture)
     : UIElement(id, layer, nullptr)
 {
-    this->AnimeState = std::make_unique<AnimationState>();
+    this->VState = std::make_unique<VisualState>();
     this->AnimeManager = std::make_unique<AnimationManager>();
 }
 
@@ -50,5 +50,5 @@ void FrameCounter::onUpdate(float totalTime)
         lastTime = totalTime;
     }
 
-    AnimeManager->onUpdate(totalTime, *AnimeState.get());
+    AnimeManager->onUpdate(totalTime, *VState.get());
 }

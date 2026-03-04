@@ -23,7 +23,7 @@ class DrawableConfigurator;
 
 struct Texture;
 
-struct AnimationState;
+struct VisualState;
 
 enum class AnchorPoint : int;
 
@@ -41,11 +41,14 @@ class IDrawableObject
     virtual void onRender() {};
     virtual bool onDestroy() = 0;
 
+    // 从OpenCore 25.9 开始，以Draw替代onRender();
+    virtual void Draw() {};
+
     virtual void onEnter() {};
     virtual void onExit() {};
 
     // 获取逻辑碰撞箱
-    virtual SDL_Rect getLogicalBounds() = 0;
+    virtual SDL_Rect getLogicalBounds();
 
     // 获取实际碰撞箱
     virtual SDL_Rect getPhysicalBounds();
@@ -71,7 +74,7 @@ class IDrawableObject
 
     // 辅助方法
     SDL_Rect magnetRect(const SDL_Rect &srcRect) const;
-    AnimationState *getAnimationState() const { return AnimeState.get(); }
+    VisualState *getVisualState() const { return VState.get(); }
 
     // 配置器方法
     AnimationPipeline Animate();
@@ -81,15 +84,12 @@ class IDrawableObject
     std::string id;
     uint8_t layer = 0;
     unique_ptr<AnimationManager> AnimeManager;
-    unique_ptr<AnimationState> AnimeState;
+    unique_ptr<VisualState> VState;
     uint16_t absWidth, absHeight;
     unique_ptr<Texture> texture;
     int magnetFactor = 0;
     bool absolutePosite = true;
     IDrawableObject *parentContainer = nullptr;
-
-    float position_x = 0.0f;
-    float position_y = 0.0f;
 };
 
 #endif //_IDRAWABLE_H_

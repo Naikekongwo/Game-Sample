@@ -28,9 +28,8 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 #include "OpenCore/Core/Math/OpenCore_Wave.hpp"
 #include "OpenCore/Runtime/Audio/SoundEffectManager.hpp"
 #include "OpenCore/Runtime/Config/SettingsManager.hpp"
+#include "OpenCore/Runtime/Gameplay/WorldController/IWorldController.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
-
-#include "OpenCore/Runtime/Gameplay/Entity/Entity.hpp"
 
 #include "OpenCore/World/Map/Manager/MapManager.hpp"
 
@@ -45,10 +44,6 @@ inline SettingsManager &SetManager = SettingsManager::getInstance();
 } // namespace OpenCoreManagers
 
 // 游戏对应的模块单例
-namespace Gameplay
-{
-inline MapManager &MapMgr = MapManager::getInstance();
-} // namespace Gameplay
 
 #include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"

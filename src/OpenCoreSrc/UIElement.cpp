@@ -3,14 +3,13 @@
 
 SDL_Rect UIElement::getLogicalBounds()
 {
-    if (!AnimeState)
+    if (!VState)
     {
-        Console_Log(
-            "UIElement::getLogicalBounds() failed: AnimeState is nullptr");
+        Console_Log("UIElement::getLogicalBounds() failed: VState is nullptr");
         return SDL_Rect{0, 0, 0, 0};
     }
 
-    const auto &state = *AnimeState;
+    const auto &state = *VState;
 
     // 全程使用 float 计算
     float logicalWidth = absWidth * state.scale[0];

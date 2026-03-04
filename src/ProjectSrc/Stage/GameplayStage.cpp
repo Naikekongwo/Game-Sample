@@ -42,8 +42,6 @@ void GameplayStage::Init()
         .Posite(0.5f, 0.5f)
         .Scale(1.0f, 1.0f);
 
-    mapexp->setMap("maps//test_circle_radius.ocmp");
-
     Elements->PushElement(std::move(mapexp));
 }
 

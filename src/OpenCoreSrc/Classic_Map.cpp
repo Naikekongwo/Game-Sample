@@ -2,11 +2,8 @@
 
 void ClassicMap::onEnter()
 {
-    this->WindowHeight = OpenCoreManagers::SetManager.getRenderHeight();
-    this->WindowWidth = OpenCoreManagers::SetManager.getRenderWidth();
-    // 确认了渲染窗口的大小
-
     LoadMapFromFile(mapPath, Data, MapWidth, MapHeight);
+    status = MapStatus::Loaded;
 }
 
 BlockInfo &ClassicMap::getBlockInfo(int offsetX, int offsetY)
@@ -18,9 +15,10 @@ BlockInfo &ClassicMap::getBlockInfo(int offsetX, int offsetY)
     // 无需判断该坐标是否存在，因为已经做了判断(返回Rect判断坐标范围的合法程度)
     // 一定要判断！
 
-    if (offsetX < 0 or offsetY < 0)
+    if ((offsetX < 0 or offsetX > MapWidth) or
+        (offsetY < 0 or offsetY > MapHeight))
     {
-        return Data[0];
+        return emptyBlock;
     }
 
     // 如果坐标合法，那么开始传输
@@ -32,4 +30,25 @@ BlockInfo &ClassicMap::getBlockInfo(int offsetX, int offsetY)
 
 void ClassicMap::onExit() {}
 
-void ClassicMap::onUpdate(float totalTime) {}
+bool ClassicMap::Activate()
+{
+    switch (status)
+    {
+    case MapStatus::Registered:
+    {
+        // 仅仅注册了，还未加载
+        onEnter();
+        break;
+    }
+    case MapStatus::Loaded:
+    {
+        break;
+    }
+    case MapStatus::Frozen:
+    {
+        break;
+    }
+    default:
+    }
+    return true;
+}

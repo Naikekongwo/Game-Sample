@@ -22,6 +22,13 @@ using std::shared_ptr;
 using std::string;
 using std::vector;
 
+enum class MapStatus
+{
+    Registered,
+    Loaded,
+    Frozen
+};
+
 class OpenCoreMap
 {
   public:
@@ -43,21 +50,20 @@ class OpenCoreMap
 
     virtual uint16_t getMapWidth() const noexcept { return MapWidth; }
     virtual uint16_t getMapHeight() const noexcept { return MapHeight; }
-
-    virtual void onUpdate(float totalTime) = 0;
-
-    virtual void onExit() = 0;
-
     virtual BlockInfo &getBlockInfo(int offsetX, int offsetY) = 0;
+
+    virtual void onUpdate(float totalTime) {};
+    virtual void onExit() = 0;
+    virtual bool ready() { return status == MapStatus::Loaded; }
+    virtual bool Activate() = 0;
 
     short id;
     string mapPath;
-
-    shared_ptr<uint8_t> WindowWidth = std::make_shared<uint8_t>(16);
-    shared_ptr<uint8_t> WindowHeight = std::make_shared<uint8_t>(9);
 
     vector<BlockInfo> Data;
 
     uint16_t MapWidth = 0;
     uint16_t MapHeight = 0;
+
+    MapStatus status = MapStatus::Registered;
 };

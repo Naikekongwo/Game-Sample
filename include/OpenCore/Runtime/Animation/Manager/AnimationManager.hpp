@@ -19,7 +19,7 @@ using std::vector;
 class AnimationManager
 {
   public:
-    void onUpdate(float totalTime, AnimationState &state); // 刷新函数
+    void onUpdate(float totalTime, VisualState &state); // 刷新函数
 
     void pushAnimation(shared_ptr<IAnimation> anime); // 只需传动画指针
 
@@ -29,7 +29,7 @@ class AnimationManager
 
     void clear(); // 清空动画表
 
-    void reset(float totalTime, AnimationState &state); // 重置所有动画
+    void reset(float totalTime, VisualState &state); // 重置所有动画
 
     bool hasAnimation() const { return !Animations.empty(); } // 判断是否存在
 

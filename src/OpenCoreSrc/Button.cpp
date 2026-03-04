@@ -85,7 +85,7 @@ void Button::onUpdate(float totalTime)
     if (stateIndex >= maxFrame)
         stateIndex = 0;
 
-    AnimeState->frameIndex = stateIndex;
+    VState->frameIndex = stateIndex;
 }
 void Button::onRender()
 {
@@ -93,17 +93,16 @@ void Button::onRender()
     {
         auto Graphics = GraphicsManager::getInstance();
 
-        SDL_SetTextureAlphaMod(texture->get(), AnimeState->getAlpha());
+        SDL_SetTextureAlphaMod(texture->get(), VState->getAlpha());
 
         Rect dRect = getLogicalBounds();
 
-        auto frameIndex = (AnimeState->getFrameIndex() > texture->Size())
+        auto frameIndex = (VState->getFrameIndex() > texture->Size())
                               ? 0
-                              : AnimeState->getFrameIndex();
+                              : VState->getFrameIndex();
 
         Rect sRect = texture->getSubRect(frameIndex);
 
-        Graphics.Draw(texture->get(), &sRect, &dRect, AnimeState->getAngle(),
-                      NULL);
+        Graphics.Draw(texture->get(), &sRect, &dRect, VState->getAngle(), NULL);
     }
 }

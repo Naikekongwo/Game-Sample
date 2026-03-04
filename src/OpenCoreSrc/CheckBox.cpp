@@ -12,7 +12,7 @@ void CheckBox::refreshStatus()
 {
     if (Img)
     {
-        Img->getAnimationState()->frameIndex = (*Value) ? 1 : 0;
+        Img->getVisualState()->frameIndex = (*Value) ? 1 : 0;
     }
 }
 

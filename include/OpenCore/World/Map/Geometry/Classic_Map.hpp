@@ -6,15 +6,17 @@
 #include "OpenCoreMap.hpp"
 #include <corecrt.h>
 
+static BlockInfo emptyBlock;
+
 class ClassicMap : public OpenCoreMap
 {
   public:
     ClassicMap(short id, const string &mapPath) : OpenCoreMap(id, mapPath) {};
 
     void onEnter() override;
-
     void onExit() override;
-    void onUpdate(float totalTime) override;
+
+    bool Activate() override;
 
     BlockInfo &getBlockInfo(int offsetX, int offsetY) override;
 };

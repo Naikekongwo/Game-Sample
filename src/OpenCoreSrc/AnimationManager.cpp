@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include <algorithm>
 
-void AnimationManager::onUpdate(float totalTime, AnimationState &state)
+void AnimationManager::onUpdate(float totalTime, VisualState &state)
 {
     vector<size_t> eraseList;
 
@@ -47,7 +47,7 @@ void AnimationManager::setSequence(bool isSequential)
     this->sequential = isSequential;
 }
 
-void AnimationManager::reset(float totalTime, AnimationState &state)
+void AnimationManager::reset(float totalTime, VisualState &state)
 {
     for (auto entry : Animations)
     {

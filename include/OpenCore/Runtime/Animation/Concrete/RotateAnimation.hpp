@@ -9,10 +9,10 @@ class RotateAnimation : public IAnimation
     RotateAnimation(float startAngle, float endAngle, float duration,
                     bool isLooping);
 
-    void onUpdate(float totalTime, AnimationState &state) override; // 更新动画
-    bool isFinished() const override;                               // 是否结束
-    void reset(float totalTime, AnimationState &state) override;    // 重置
-    bool isLoop() override { return isLooping; }                    // 是否循环
+    void onUpdate(float totalTime, VisualState &state) override; // 更新动画
+    bool isFinished() const override;                            // 是否结束
+    void reset(float totalTime, VisualState &state) override;    // 重置
+    bool isLoop() override { return isLooping; }                 // 是否循环
 
   private:
     float startTime = 0.0f;               // 起始时间

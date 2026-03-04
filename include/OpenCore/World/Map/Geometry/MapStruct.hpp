@@ -26,7 +26,9 @@ struct MapHeader
 struct BlockInfo
 {
     // Terrain : 地形
-    uint8_t Terrain = 1;
+    uint8_t Terrain = 2;
+
+    BlockInfo() : Terrain(2) {};
 
     BlockInfo(vector<uint8_t> datas)
     {

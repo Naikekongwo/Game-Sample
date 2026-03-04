@@ -9,7 +9,7 @@ RotateAnimation::RotateAnimation(float startAngle, float endAngle,
 }
 
 // 更新动画状态
-void RotateAnimation::onUpdate(float totalTime, AnimationState &state)
+void RotateAnimation::onUpdate(float totalTime, VisualState &state)
 {
     if (startTime == 0.0f)
     {
@@ -45,7 +45,7 @@ void RotateAnimation::onUpdate(float totalTime, AnimationState &state)
 bool RotateAnimation::isFinished() const { return finished; }
 
 // 重置动画
-void RotateAnimation::reset(float totalTime, AnimationState &state)
+void RotateAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;

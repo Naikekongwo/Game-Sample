@@ -80,3 +80,9 @@ inline bool PointInRect(const Point &point, const Rect &rect)
     return (point.x >= rect.x && point.x < rect.x + rect.w) &&
            (point.y >= rect.y && point.y < rect.y + rect.h);
 }
+
+inline bool visible(const Rect &dstRect, const Rect &window)
+{
+    return !((dstRect.x >= window.w or dstRect.x + dstRect.w <= 0) or
+             (dstRect.y + dstRect.h <= 0 or dstRect.y >= window.h));
+}

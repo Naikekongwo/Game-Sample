@@ -11,7 +11,7 @@ void IDrawableObject::setSequential(bool sequential)
 // 默认的onUpdate方法，即更新动画状态
 void IDrawableObject::onUpdate(float totalTime)
 {
-    AnimeManager->onUpdate(totalTime, *AnimeState);
+    AnimeManager->onUpdate(totalTime, *VState);
 }
 
 // 默认的handlEvents方法，执行空状态
@@ -21,10 +21,7 @@ void IDrawableObject::handlEvents(SDL_Event &event, float totalTime)
 }
 
 // 设置控件的锚点（用于缩放和旋转）
-void IDrawableObject::setAnchor(AnchorPoint anchor)
-{
-    AnimeState->Anchor = anchor;
-}
+void IDrawableObject::setAnchor(AnchorPoint anchor) { VState->Anchor = anchor; }
 
 // 设置控件的位置
 void IDrawableObject::setPosition(float xPercent, float yPercent)
@@ -37,14 +34,73 @@ void IDrawableObject::setPosition(float xPercent, float yPercent)
         parentRect = parentContainer->getLogicalBounds();
     }
 
-    AnimeState->Position[0] = parentRect.x + xPercent * parentRect.w;
-    AnimeState->Position[1] = parentRect.y + parentRect.h * yPercent;
+    VState->Position[0] = parentRect.x + xPercent * parentRect.w;
+    VState->Position[1] = parentRect.y + parentRect.h * yPercent;
 }
 
 SDL_Rect IDrawableObject::getPhysicalBounds()
 {
     return (magnetFactor == 0) ? getLogicalBounds()
                                : magnetRect(getLogicalBounds());
+}
+
+SDL_Rect IDrawableObject::getLogicalBounds()
+{
+    if (!VState)
+    {
+        Console_Log("UIElement::getLogicalBounds() failed: VState is nullptr");
+        return SDL_Rect{0, 0, 0, 0};
+    }
+
+    const auto &state = *VState;
+
+    // 全程使用 float 计算
+    float logicalWidth = absWidth * state.scale[0];
+    float logicalHeight = absHeight * state.scale[1];
+
+    float logicalX = state.Position[0];
+    float logicalY = state.Position[1];
+
+    // Anchor 偏移（float阶段）
+    switch (state.Anchor)
+    {
+    case AnchorPoint::TopLeft:
+        break;
+    case AnchorPoint::TopCenter:
+        logicalX -= logicalWidth * 0.5f;
+        break;
+    case AnchorPoint::TopRight:
+        logicalX -= logicalWidth;
+        break;
+    case AnchorPoint::MiddleLeft:
+        logicalY -= logicalHeight * 0.5f;
+        break;
+    case AnchorPoint::Center:
+        logicalX -= logicalWidth * 0.5f;
+        logicalY -= logicalHeight * 0.5f;
+        break;
+    case AnchorPoint::MiddleRight:
+        logicalX -= logicalWidth;
+        logicalY -= logicalHeight * 0.5f;
+        break;
+    case AnchorPoint::BottomLeft:
+        logicalY -= logicalHeight;
+        break;
+    case AnchorPoint::BottomCenter:
+        logicalX -= logicalWidth * 0.5f;
+        logicalY -= logicalHeight;
+        break;
+    case AnchorPoint::BottomRight:
+        logicalX -= logicalWidth;
+        logicalY -= logicalHeight;
+        break;
+    }
+
+    // 像素对齐
+    return SDL_Rect{static_cast<int>(std::round(logicalX)),
+                    static_cast<int>(std::round(logicalY)),
+                    static_cast<int>(std::round(logicalWidth)),
+                    static_cast<int>(std::round(logicalHeight))};
 }
 
 // 设置控件的大小
@@ -126,7 +182,7 @@ IDrawableObject::IDrawableObject()
     this->layer = 0;
 
     AnimeManager = std::make_unique<AnimationManager>();
-    AnimeState = std::make_unique<AnimationState>();
+    VState = std::make_unique<VisualState>();
 }
 
 void IDrawableObject::setParentContainer(IDrawableObject *parentContainer)
@@ -148,13 +204,13 @@ void IDrawableObject::setParentContainer(IDrawableObject *parentContainer)
 
 void IDrawableObject::setTransparency(float alpha)
 {
-    AnimeState->transparency = alpha;
+    VState->transparency = alpha;
 }
 
 bool IDrawableObject::onDestroy()
 {
     AnimeManager.reset();
-    AnimeState.reset();
+    VState.reset();
 
     texture.reset();
 
