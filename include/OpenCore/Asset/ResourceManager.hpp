@@ -22,21 +22,17 @@
 #include "OpenCore/Asset/MapLoader.hpp"
 #include "OpenCore/Asset/SoundLoader.hpp"
 #include "OpenCore/Asset/TextureLoader.hpp"
+#include "OpenCore/Core/Thread/ThreadManager.hpp"  // 新增
 
 using std::shared_ptr;
 using std::unique_ptr;
 
-// 任务保护
-struct TaskGuard
-{
-    std::atomic<int> &counter;
-    TaskGuard(std::atomic<int> &c) : counter(c) { counter++; }
-    ~TaskGuard() { counter--; }
-};
+// 任务保护（已不再需要，可以移除，但为保持兼容可保留注释）
+// struct TaskGuard { ... };
 
 class ResourceManager
 {
-  public:
+public:
     static ResourceManager &getInstance();
 
     bool Init();
@@ -56,12 +52,11 @@ class ResourceManager
 
     std::future<void> LoadMusicAsync(short id, const std::string &path);
     std::future<void> LoadTextureAsync(short id, const std::string &path);
-    std::future<void> LoadFontAsync(short id, const std::string &path,
-                                    int size);
+    std::future<void> LoadFontAsync(short id, const std::string &path, int size);
     std::future<void> LoadSoundAsync(short id, const std::string &path);
 
     void ClearAll();
-    // 新增：主线程任务处理
+    // 主线程任务处理（现委托给 ThreadManager）
     void ProcessMainThreadTasks();
 
     // 通过json进行整个场景的资源加载
@@ -79,17 +74,24 @@ class ResourceManager
     std::future<void> FreeFontAsync(short id);
     std::future<void> FreeSoundAsync(short id);
 
-  private:
+private:
     SDL_Renderer *renderer = nullptr;
 
-    void StartWorker();
-    void StopWorker();
+    // 移除原有的线程管理成员
+    // void StartWorker();
+    // void StopWorker();
+    // std::thread worker_;
+    // std::atomic<int> activeTasks_;
+    // std::mutex queueMutex_;
+    // std::condition_variable queueCV_;
+    // std::queue<std::function<void()>> taskQueue_;
+    // std::atomic<bool> shouldStop_;
 
     template <typename F> std::future<void> EnqueueTask(F &&f);
 
-    // 主线程任务队列
-    std::mutex mainThreadQueueMutex_;
-    std::queue<std::function<void()>> mainThreadTaskQueue_;
+    // 主线程任务队列已移交 ThreadManager，故移除
+    // std::mutex mainThreadQueueMutex_;
+    // std::queue<std::function<void()>> mainThreadTaskQueue_;
 
     void ConvertToTexture(short id, SDL_Surface *surface);
 
@@ -105,30 +107,13 @@ class ResourceManager
 
     std::mutex fontMutex_;
     std::unordered_map<short, FontPtr> fontCache_;
-
-    // 工作线程
-    std::thread worker_;
-    std::atomic<int> activeTasks_{0};
-    std::mutex queueMutex_;
-    std::condition_variable queueCV_;
-    std::queue<std::function<void()>> taskQueue_;
-    std::atomic<bool> shouldStop_{false};
 };
 
-template <typename F> std::future<void> ResourceManager::EnqueueTask(F &&f)
+template <typename F>
+std::future<void> ResourceManager::EnqueueTask(F &&f)
 {
-    auto task =
-        std::make_shared<std::packaged_task<void()>>(std::forward<F>(f));
-
-    {
-        std::lock_guard<std::mutex> lock(queueMutex_);
-        if (!worker_.joinable())
-            StartWorker();
-        taskQueue_.emplace([task]() { (*task)(); });
-    }
-
-    queueCV_.notify_one();
-    return task->get_future();
-};
+    // 直接使用 ThreadManager 提交任务
+    return ThreadManager::getInstance().submit(std::forward<F>(f));
+}
 
 #endif //_RESOURCE_MANAGER_H_
