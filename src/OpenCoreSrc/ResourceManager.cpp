@@ -1,4 +1,3 @@
-
 #include "OpenCore/OpenCore.hpp"
 
 // 初始化
@@ -24,8 +23,7 @@ bool ResourceManager::Init()
         return false;
     }
 
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) <
-        0)
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) < 0)
     {
         Console_Log(
             "ResourceManager::ResourceManager() failed to open audio: %s",
@@ -70,8 +68,7 @@ void ResourceManager::LoadMusic(short id, const std::string &path)
         return;
     }
 
-    Console_Log("ResourceManager::LoadMusic music id %d loaded successfully.",
-                id);
+    Console_Log("ResourceManager::LoadMusic music id %d loaded successfully.", id);
     musicCache_[id] = std::move(music);
 }
 
@@ -92,7 +89,6 @@ Mix_Music *ResourceManager::GetMusic(short id)
 // 音效加载同步
 void ResourceManager::LoadSound(short id, const std::string &path)
 {
-
     std::lock_guard<std::mutex> lock(soundMutex_);
     if (soundCache_.count(id))
         return;
@@ -104,8 +100,7 @@ void ResourceManager::LoadSound(short id, const std::string &path)
         return;
     }
 
-    Console_Log("ResourceManager::LoadSound sound id %d loaded successfully.",
-                id);
+    Console_Log("ResourceManager::LoadSound sound id %d loaded successfully.", id);
 
     soundCache_[id] = std::move(sound);
 }
@@ -156,8 +151,7 @@ shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
 
     if (it == textureCache_.end())
     {
-        Console_Log("ResourceManager::GetTexture failed to get texture id %d",
-                    id);
+        Console_Log("ResourceManager::GetTexture failed to get texture id %d", id);
         return nullptr;
     }
     return shared_ptr<SDL_Texture>(
@@ -166,28 +160,17 @@ shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
 }
 
 // 异步加载音乐
-std::future<void> ResourceManager::LoadMusicAsync(short id,
-                                                  const std::string &path)
+std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string &path)
 {
-    return EnqueueTask(
-        [this, id, path]
-        {
-            TaskGuard guard(activeTasks_);
-            LoadMusic(id, path);
-        });
+    return EnqueueTask([this, id, path] { LoadMusic(id, path); });
 }
-// 异步加载音效
-std::future<void> ResourceManager::LoadSoundAsync(short id,
-                                                  const std::string &path)
-{
 
-    return EnqueueTask(
-        [this, id, path]
-        {
-            TaskGuard guard(activeTasks_);
-            LoadSound(id, path);
-        });
+// 异步加载音效
+std::future<void> ResourceManager::LoadSoundAsync(short id, const std::string &path)
+{
+    return EnqueueTask([this, id, path] { LoadSound(id, path); });
 }
+
 // 字体加载
 void ResourceManager::LoadFont(short id, const std::string &path, int size)
 {
@@ -202,21 +185,16 @@ void ResourceManager::LoadFont(short id, const std::string &path, int size)
         return;
     }
 
-    Console_Log("ResourceManager::LoadFont font id %d loaded successfully.",
-                id);
+    Console_Log("ResourceManager::LoadFont font id %d loaded successfully.", id);
     fontCache_[id] = std::move(font);
 }
+
 // 异步字体加载
-std::future<void>
-ResourceManager::LoadFontAsync(short id, const std::string &path, int size)
+std::future<void> ResourceManager::LoadFontAsync(short id, const std::string &path, int size)
 {
-    return EnqueueTask(
-        [this, id, path, size]
-        {
-            TaskGuard guard(activeTasks_);
-            LoadFont(id, path, size);
-        });
+    return EnqueueTask([this, id, path, size] { LoadFont(id, path, size); });
 }
+
 // 获取字体
 TTF_Font *ResourceManager::GetFont(short id)
 {
@@ -230,60 +208,45 @@ TTF_Font *ResourceManager::GetFont(short id)
     }
     return it->second.get();
 }
+
 // 异步加载纹理
-std::future<void> ResourceManager::LoadTextureAsync(short id,
-                                                    const std::string &path)
+std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string &path)
 {
     auto promise = std::make_shared<std::promise<void>>();
     std::future<void> future = promise->get_future();
 
-    EnqueueTask(
-        [this, id, path, promise]
+    EnqueueTask([this, id, path, promise]
+    {
+        SDL_Surface *surface = nullptr;
+        try
         {
-            // 在这里不递增 activeTasks_，等到主线程真正执行纹理转换时再递增
-            SDL_Surface *surface = nullptr;
-            try
+            surface = LoadSurface(path);
+            if (!surface)
             {
-                // 1. 在后台线程加载表面
-                surface = LoadSurface(path);
-                if (!surface)
+                throw std::runtime_error("LoadSurface failed");
+            }
+        }
+        catch (...)
+        {
+            promise->set_exception(std::current_exception());
+            return;
+        }
+
+        // 将纹理创建任务提交到主线程队列（通过 ThreadManager）
+        ThreadManager::getInstance().submit_to_main_thread(
+            [this, id, surface, promise]
+            {
+                try
                 {
-                    throw std::runtime_error("LoadSurface failed");
+                    ConvertToTexture(id, surface);
+                    promise->set_value();
                 }
-            }
-            catch (...)
-            {
-                promise->set_exception(std::current_exception());
-                return;
-            }
-
-            // 2. 将实际纹理创建任务放到主线程队列
-            std::lock_guard<std::mutex> lock(mainThreadQueueMutex_);
-            mainThreadTaskQueue_.push(
-                [this, id, surface, promise]
+                catch (...)
                 {
-                    // activeTasks_ 在实际执行点递增/递减，保证异常安全
-                    struct TaskGuard
-                    {
-                        std::atomic<int> &counter;
-                        TaskGuard(std::atomic<int> &c) : counter(c)
-                        {
-                            counter++;
-                        }
-                        ~TaskGuard() { counter--; }
-                    } guard(activeTasks_);
-
-                    try
-                    {
-                        ConvertToTexture(id, surface);
-                        promise->set_value();
-                    }
-                    catch (...)
-                    {
-                        promise->set_exception(std::current_exception());
-                    }
-                });
-        });
+                    promise->set_exception(std::current_exception());
+                }
+            });
+    });
 
     return future;
 }
@@ -292,104 +255,47 @@ std::future<void> ResourceManager::LoadTextureAsync(short id,
 void ResourceManager::ClearAll()
 {
     Console_Log("ResourceManager::ClearAll() started");
-    StopWorker();
 
-    // 处理剩余的主线程任务
-    ProcessMainThreadTasks();
-    // 等待所有任务完成
-    while (activeTasks_.load() > 0)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
+    // 等待所有异步任务完成（包括主线程任务）
+    ThreadManager::getInstance().wait_for_all_tasks();
+    // 处理可能遗留的主线程任务（理论上 wait_for_all_tasks 已包含，但为安全再调用一次）
+    ThreadManager::getInstance().process_main_thread_tasks();
 
     Console_Log("ResourceManager::ClearAll() stopped task queue successfully");
 
     {
         std::lock_guard<std::mutex> lock(musicMutex_);
-        Console_Log(
-            "ResourceManager::ClearAll() clearing music cache, count=%d",
-            static_cast<int>(musicCache_.size()));
+        Console_Log("ResourceManager::ClearAll() clearing music cache, count=%d",
+                    static_cast<int>(musicCache_.size()));
         musicCache_.clear();
         Console_Log("ResourceManager::ClearAll() cleared music cache");
     }
 
     {
+        std::lock_guard<std::mutex> lock(soundMutex_);
+        soundCache_.clear();
+    }
+
+    {
         std::lock_guard<std::mutex> lock(textureMutex_);
-        Console_Log(
-            "ResourceManager::ClearAll() clearing texture cache, count=%d",
-            static_cast<int>(textureCache_.size()));
+        Console_Log("ResourceManager::ClearAll() clearing texture cache, count=%d",
+                    static_cast<int>(textureCache_.size()));
         textureCache_.clear();
         Console_Log("ResourceManager::ClearAll() cleared texture cache");
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(fontMutex_);
+        fontCache_.clear();
     }
 
     Console_Log("ResourceManager::ClearAll() finished");
 }
 
-// 处理主线程任务
+// 处理主线程任务（现直接调用 ThreadManager 的处理函数）
 void ResourceManager::ProcessMainThreadTasks()
 {
-    std::queue<std::function<void()>> tasks;
-    {
-        std::lock_guard<std::mutex> lock(mainThreadQueueMutex_);
-        if (mainThreadTaskQueue_.empty())
-            return;
-        tasks = std::move(mainThreadTaskQueue_);
-        // 清空原队列
-        while (!mainThreadTaskQueue_.empty())
-            mainThreadTaskQueue_.pop();
-    }
-
-    while (!tasks.empty())
-    {
-        tasks.front()();
-        tasks.pop();
-    }
-}
-
-// 启动工作线程
-void ResourceManager::StartWorker()
-{
-    worker_ = std::thread(
-        [this]
-        {
-            while (true)
-            {
-                std::function<void()> task;
-
-                {
-                    std::unique_lock<std::mutex> lock(queueMutex_);
-                    queueCV_.wait(
-                        lock,
-                        [this] { return shouldStop_ || !taskQueue_.empty(); });
-
-                    if (shouldStop_ && taskQueue_.empty())
-                    {
-                        return;
-                    }
-
-                    task = std::move(taskQueue_.front());
-                    taskQueue_.pop();
-                }
-
-                task();
-            }
-        });
-}
-
-// 停止工作线程
-void ResourceManager::StopWorker()
-{
-    {
-        std::lock_guard<std::mutex> lock(queueMutex_);
-        shouldStop_ = true;
-    }
-
-    queueCV_.notify_all();
-
-    if (worker_.joinable())
-    {
-        worker_.join();
-    }
+    ThreadManager::getInstance().process_main_thread_tasks();
 }
 
 // 转换表面为纹理（必须在主线程）
@@ -408,29 +314,23 @@ void ResourceManager::ConvertToTexture(short id, SDL_Surface *surface)
 
 std::future<void> ResourceManager::LoadResourcesFromJson(short id)
 {
-    // 1. 构建文件名
-    std::string filename =
-        "assets/script/STAGE_" + std::to_string(id) + ".json";
+    std::string filename = "assets/script/STAGE_" + std::to_string(id) + ".json";
 
-    // 2. 检查文件是否存在
     FILE *file = fopen(filename.c_str(), "rb");
     if (!file)
     {
         Console_Log("Error: JSON file %s does not exist", filename.c_str());
-        // 返回一个已经完成的 future（防止外部阻塞）
         std::promise<void> p;
         p.set_value();
         return p.get_future();
     }
 
-    // 3. 解析JSON文件
     char readBuffer[65536];
     rapidjson::FileReadStream stream(file, readBuffer, sizeof(readBuffer));
     rapidjson::Document doc;
     doc.ParseStream(stream);
     fclose(file);
 
-    // 4. 检查解析错误
     if (doc.HasParseError())
     {
         Console_Log("JSON parse error (%s): %s", filename.c_str(),
@@ -440,20 +340,16 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         return p.get_future();
     }
 
-    // 5. 验证JSON根对象
     if (!doc.IsObject())
     {
-        Console_Log("Error: JSON root is not an object in %s",
-                    filename.c_str());
+        Console_Log("Error: JSON root is not an object in %s", filename.c_str());
         std::promise<void> p;
         p.set_value();
         return p.get_future();
     }
 
-    // 6. 存储异步任务future
     vector<std::future<void>> futures;
 
-    // 7. 遍历所有资源对象
     for (auto it = doc.MemberBegin(); it != doc.MemberEnd(); ++it)
     {
         short resourceId;
@@ -510,7 +406,6 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         }
     }
 
-    // 8. 返回一个 future 表示所有任务完成
     return std::async(std::launch::async,
                       [futures = std::move(futures), filename]() mutable
                       {
@@ -518,7 +413,6 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
                           {
                               future.wait();
                           }
-
                           Console_Log(
                               "ResourceManager: Resources loaded from JSON "
                               "file %s was finished",
@@ -555,6 +449,7 @@ void ResourceManager::FreeTexture(short id)
         textureCache_.erase(id);
     }
 }
+
 // 释放字体
 void ResourceManager::FreeFont(short id)
 {
@@ -568,40 +463,20 @@ void ResourceManager::FreeFont(short id)
 // 异步释放资源
 std::future<void> ResourceManager::FreeMusicAsync(short id)
 {
-    return EnqueueTask(
-        [this, id]
-        {
-            TaskGuard guard(activeTasks_);
-            FreeMusic(id);
-        });
+    return EnqueueTask([this, id] { FreeMusic(id); });
 }
 
 std::future<void> ResourceManager::FreeTextureAsync(short id)
 {
-    return EnqueueTask(
-        [this, id]
-        {
-            TaskGuard guard(activeTasks_);
-            FreeTexture(id);
-        });
+    return EnqueueTask([this, id] { FreeTexture(id); });
 }
 
 std::future<void> ResourceManager::FreeFontAsync(short id)
 {
-    return EnqueueTask(
-        [this, id]
-        {
-            TaskGuard guard(activeTasks_);
-            FreeFont(id);
-        });
+    return EnqueueTask([this, id] { FreeFont(id); });
 }
 
 std::future<void> ResourceManager::FreeSoundAsync(short id)
 {
-    return EnqueueTask(
-        [this, id]
-        {
-            TaskGuard guard(activeTasks_);
-            FreeSound(id);
-        });
+    return EnqueueTask([this, id] { FreeSound(id); });
 }
