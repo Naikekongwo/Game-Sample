@@ -24,4 +24,9 @@
 #define ENGINE_VERSION_MAJOR 25
 #define ENGINE_VERSION_MINOR 8
 
+// 实体相关
+
+#define ILEGEL_ENTITYTYPE 0
+#define PLAYER_ENTITYTYPE 1
+
 #endif //_MACROS_H_
