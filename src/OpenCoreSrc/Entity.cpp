@@ -6,6 +6,12 @@ void Entity::Configure(const EntityInfo &eInfo)
 {
     info = eInfo;
     // 拷贝EntityType
+    Console_Log("Entities initialized successfully.");
+
+    backpack = Gameplay::WorldController.getInstance().createBackpack(
+        info.backpackCapacity);
+
+    status = EntityStatus::Ready;
 }
 
 void Entity::createRenderer()

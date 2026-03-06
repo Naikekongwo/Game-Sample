@@ -29,7 +29,7 @@ bool Eclipsea::StartUp()
 
     auto &entityReg = engine.getEntityRegister();
 
-    EntityInfo player{PLAYER_ENTITYTYPE, player_texture};
+    EntityInfo player{PLAYER_ENTITYTYPE, player_texture, 8, 1.0f};
 
     entityReg.registerEntity(player);
 

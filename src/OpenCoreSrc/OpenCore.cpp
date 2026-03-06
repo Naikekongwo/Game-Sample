@@ -60,15 +60,21 @@ bool OpenEngine::Initialize()
     // 创建计时器实例
     timer = std::make_unique<Timer>(GAME_FRAMERATE);
 
+    // 初始化物品管理器
+    (void)ItemMgr;
+
     // 初始化 GFX 实例 (若失败直接退出)
     if (!GFXManager.Init())
         return false;
     // 初始化线程管理器
-    ThrManager.start(2,8);
+    ThrManager.start(2, 8);
     // 初始化资源管理器(其初始化时需要renderer，所以必须在GFX之后初始化)
     ResManager.Init();
     // 初始化音效管理器
     SFXManager.Init(&ResManager);
+
+    // 初始化WorldController
+    (void)WorldController;
 
     return true;
     // 初始化成功
@@ -142,6 +148,8 @@ bool OpenEngine::MainLoop()
         sController->onRender();
 
         SDL_RenderPresent(GFXManager.getRenderer());
+
+        Gameplay::WorldController.getInstance().onUpdate(timer->getTotalTime());
 
         SDL_Delay(timer->getDelayTime());
         // 限制帧间隔

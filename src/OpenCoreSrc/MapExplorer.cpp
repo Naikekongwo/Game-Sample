@@ -6,14 +6,16 @@ MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr)
 {
     // 初始化函数
+    Gameplay::WorldController.getInstance().enabled(true);
 }
+
+void MapExplorer::onExit() { Gameplay::WorldController.enabled(false); }
 
 void MapExplorer::onEnter()
 {
     // 正式开始渲染准备
     if (status == MapExpStatus::Creating)
     {
-        worldController.onEnter();
         status = MapExpStatus::Ready;
     }
 }
@@ -25,8 +27,8 @@ void MapExplorer::Draw()
     if (status != MapExpStatus::Ready)
         return;
 
-    // 需要地图浏览器准备完成方可渲染
-    worldController.Draw();
+    auto &World = Gameplay::WorldController.getInstance();
+    World.Draw();
 }
 
 void MapExplorer::onUpdate(float totalTime)
@@ -37,15 +39,16 @@ void MapExplorer::onUpdate(float totalTime)
     }
     else
     {
-        worldController.onUpdate(totalTime);
     }
 }
 
 void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
 {
-    if (status == MapExpStatus::Ready)
+    auto &World = Gameplay::WorldController.getInstance();
+
+    if (status == MapExpStatus::Ready && World.isVisible())
     {
-        auto &pProperties = worldController.getProperties();
+        auto &pProperties = World.getProperties();
         if (event.type == SDL_KEYDOWN)
         {
             switch (event.key.keysym.sym)

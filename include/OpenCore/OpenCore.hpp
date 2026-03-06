@@ -52,7 +52,9 @@ inline SettingsManager &SetManager = SettingsManager::getInstance();
 namespace Gameplay
 {
 inline EntityRegister &EntityReg = EntityRegister::getInstance();
-}
+inline ItemManager &ItemMgr = ItemManager::getInstance();
+inline IWorldController &WorldController = IWorldController::getInstance();
+} // namespace Gameplay
 
 #include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"

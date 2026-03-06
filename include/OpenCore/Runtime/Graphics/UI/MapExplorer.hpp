@@ -29,13 +29,14 @@ class MapExplorer : public UIElement
     void Draw() override;
     void onUpdate(float totalTime) override;
 
+    void onExit() override;
+
     void handlEvents(SDL_Event &event, float totalTime) override;
 
   private:
     float widthFactor = 1.0f;
     float heightFactor = 1.0f;
-    // 临时
-    IWorldController worldController;
+
     MapExpStatus status = MapExpStatus::Creating;
 };
 

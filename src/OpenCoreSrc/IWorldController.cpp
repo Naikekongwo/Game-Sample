@@ -1,54 +1,85 @@
 #include "OpenCore/OpenCore.hpp"
 #include <memory>
 
+IWorldController &IWorldController::getInstance()
+{
+    static IWorldController instance;
+    return instance;
+}
+
+void IWorldController::enabled(bool Visibility)
+{
+    if (status == WorldControllerStatus::Registered)
+    {
+        onEnter();
+    }
+
+    if (Visibility)
+    {
+        status = WorldControllerStatus::Visible;
+    }
+    else
+    {
+        status = WorldControllerStatus::Ready;
+    }
+}
+
 void IWorldController::onEnter()
 {
-    if (!tileRenderer)
+    if (status == WorldControllerStatus::Registered)
     {
-        // 创建Tile的渲染器
-        tileRenderer = std::make_unique<Tile>();
-        tileRenderer->Configure()
-            .Parent(nullptr)
-            .Anchor(AnchorPoint::Center)
-            .Alpha(0.0f);
+        if (!tileRenderer)
+        {
+            // 创建Tile的渲染器
+            tileRenderer = std::make_unique<Tile>();
+            tileRenderer->Configure()
+                .Parent(nullptr)
+                .Anchor(AnchorPoint::Center)
+                .Alpha(0.0f);
+            Console_Log(
+                "IWorldController:: tileRenderer created successfully.");
+            tileRenderer->onEnter();
+        }
 
-        tileRenderer->onEnter();
-    }
+        if (!mapManager)
+        {
+            // 创建地图管理器
+            mapManager = std::make_unique<MapManager>();
 
-    if (!mapManager)
-    {
-        // 创建地图管理器
-        mapManager = std::make_unique<MapManager>();
+            renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
+            renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
 
-        renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
-        renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
+            left_border = (renderRangeX - 2) / 2 + 1;
+            up_border = (renderRangeY - 1) / 2 + 1;
 
-        left_border = (renderRangeX - 2) / 2 + 1;
-        up_border = (renderRangeY - 1) / 2 + 1;
+            widthFactor = 1.0f / renderRangeX;
+            heightFactor = 1.0f / renderRangeY;
 
-        widthFactor = 1.0f / renderRangeX;
-        heightFactor = 1.0f / renderRangeY;
+            mapManager->registerClassicMap(1, "maps/test_circle_radius.ocmp");
+            mapManager->setCurrentID(1);
 
-        mapManager->registerClassicMap(1, "maps/test_circle_radius.ocmp");
-        mapManager->setCurrentID(1);
+            tileRenderer->setScale(widthFactor, heightFactor);
 
-        tileRenderer->setScale(widthFactor, heightFactor);
-    }
+            Console_Log("MapManager initialized successfully.");
+        }
 
-    if (!Entities.contains(1))
-    {
-        auto entityreg = Gameplay::EntityReg;
-        auto player = entityreg.createEntity(1);
+        if (!Entities.contains(1))
+        {
+            auto &entityreg = Gameplay::EntityReg.getInstance();
+            auto player = entityreg.createEntity(1);
 
-        player->enableDrawer(true);
-        Entities[1] = std::move(player);
+            player->enableDrawer(true);
+            Entities[1] = std::move(player);
+        }
+
+        status = WorldControllerStatus::Ready;
     }
 }
 
 void IWorldController::Draw()
 {
     // 首先检查地图状态
-    if (mapManager->legal())
+    if (status == WorldControllerStatus::Visible && mapManager->legal())
     {
         // 不空且当前地图准备好了才允许绘图
         auto &player = Entities.at(1);
@@ -106,21 +137,44 @@ void IWorldController::Draw()
     }
     else
     {
+        if (!mapManager->legal())
+            mapManager->refreshMap();
         Console_Log("WorldController::Failed! the map is not ready!");
     }
 }
 
 void IWorldController::onUpdate(float totalTime)
 {
-    for (auto &entry : Entities)
+    // 可见才更新，否则不会更新
+    if (status == WorldControllerStatus::Visible)
     {
-        entry.second->onUpdate(totalTime);
-    }
+        // 实体状态更新
+        for (auto &entry : Entities)
+        {
+            entry.second->onUpdate(totalTime);
+        }
 
-    // 检查地图状态
-    if (!mapManager->legal())
-    {
-        // 不空但不合法
-        mapManager->refreshMap();
+        // 处理交易数据
+
+        if (!Market.empty())
+        {
+            for (auto &entry : containers)
+            {
+                auto record = Market.front();
+
+                entry.second->onUpdate(record, totalTime);
+            }
+
+            if (Market.front().dealed == true)
+                Market.pop();
+        }
+        // 交易数据处理完毕
+
+        // 检查地图状态
+        if (!mapManager->legal())
+        {
+            // 不空但不合法
+            mapManager->refreshMap();
+        }
     }
 }
