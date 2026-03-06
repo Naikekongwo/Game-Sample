@@ -30,6 +30,7 @@ class Waterrect : public Sprite
 
     void onUpdate(float totalTime) override;
     void onRender() override;
+    void Draw() override; // 新的渲染函数
     bool onDestroy() override;
 
     void setWave(unique_ptr<Wave> newWave);

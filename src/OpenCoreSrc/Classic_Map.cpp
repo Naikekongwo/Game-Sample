@@ -1,9 +1,14 @@
 #include "OpenCore/OpenCore.hpp"
 
-void ClassicMap::onEnter()
+// 地图的入口/又称加载的函数,其返回值代表是否初始化成功
+bool ClassicMap::onEnter()
 {
     LoadMapFromFile(mapPath, Data, MapWidth, MapHeight);
     status = MapStatus::Loaded;
+
+    Console_Log("Map path:%s, width %d height %d Loaded successfully.",
+                mapPath.c_str(), MapWidth, MapHeight);
+    return true;
 }
 
 BlockInfo &ClassicMap::getBlockInfo(int offsetX, int offsetY)
@@ -29,26 +34,3 @@ BlockInfo &ClassicMap::getBlockInfo(int offsetX, int offsetY)
 }
 
 void ClassicMap::onExit() {}
-
-bool ClassicMap::Activate()
-{
-    switch (status)
-    {
-    case MapStatus::Registered:
-    {
-        // 仅仅注册了，还未加载
-        onEnter();
-        break;
-    }
-    case MapStatus::Loaded:
-    {
-        break;
-    }
-    case MapStatus::Frozen:
-    {
-        break;
-    }
-    default:
-    }
-    return true;
-}

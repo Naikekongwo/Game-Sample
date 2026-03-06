@@ -48,7 +48,7 @@ void IWorldController::onEnter()
 void IWorldController::Draw()
 {
     // 首先检查地图状态
-    if (!mapManager->empty() && mapManager->legal())
+    if (mapManager->legal())
     {
         // 不空且当前地图准备好了才允许绘图
         auto &player = Entities.at(1);
@@ -110,20 +110,6 @@ void IWorldController::Draw()
     }
 }
 
-// void IWorldController::registerMap(short id, string path)
-// {
-//     if (mapManager)
-//     {
-//         mapManager->registerClassicMap(id, path);
-//     }
-//     else
-//     {
-//         Console_Log("WorldController::Failed to register map %d, patth %s",
-//         id,
-//                     path.c_str());
-//     }
-// }
-
 void IWorldController::onUpdate(float totalTime)
 {
     for (auto &entry : Entities)
@@ -132,9 +118,9 @@ void IWorldController::onUpdate(float totalTime)
     }
 
     // 检查地图状态
-    if (!mapManager->empty() && !mapManager->legal())
+    if (!mapManager->legal())
     {
         // 不空但不合法
-        mapManager->ActivateMap();
+        mapManager->refreshMap();
     }
 }

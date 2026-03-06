@@ -1,6 +1,9 @@
 #ifndef _OPENCORE_SINEWAVE_HPP_
 #define _OPENCORE_SINEWAVE_HPP_
 
+// SineWave.hpp
+// 正弦波的函数
+
 #include "OpenCore/Core/Math/WaveBase.hpp"
 #include <numbers>
 

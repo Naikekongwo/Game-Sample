@@ -10,8 +10,6 @@
 #include "OpenCore/World/Map/Geometry/Hybrid_Map.hpp"
 #include "OpenCore/World/Map/Geometry/OpenCoreMap.hpp"
 
-// #include "OpenCore/Map/Concepts/SnakeMap.hpp"
-
 using std::unique_ptr;
 
 class MapManager final
@@ -31,6 +29,7 @@ class MapManager final
         return MapPool_.at(currentID)->getMapHeight();
     }
 
+    // 方块信息的转发函数
     BlockInfo &getBlockInfo(int offsetX, int offsetY)
     {
         return MapPool_.at(currentID)->getBlockInfo(offsetX, offsetY);
@@ -39,31 +38,25 @@ class MapManager final
     short getCurrentID() const noexcept { return currentID; }
     void setCurrentID(short id) { currentID = id; }
 
-    // 判断地图管理器是否为空
-    // 判断是否包含某地图
-    // 判断某地图是否准备完毕
-    bool empty() const noexcept { return MapPool_.empty(); }
     bool contains(short mapID) const noexcept
     {
         return MapPool_.contains(mapID);
     }
+
     bool legal() const noexcept
     {
-        if (!contains(currentID) or empty())
+        if (!contains(currentID) or MapPool_.empty())
             return false;
 
         return MapPool_.at(currentID)->ready();
     }
 
-    void ActivateMap()
+    bool refreshMap() const noexcept
     {
-        if (MapPool_.contains(currentID))
-        {
-            if (!MapPool_.at(currentID)->ready())
-            {
-                MapPool_.at(currentID)->Activate();
-            }
-        }
+        if (legal())
+            return false;
+
+        return MapPool_.at(currentID)->onEnter();
     }
 
   private:

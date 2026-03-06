@@ -139,6 +139,15 @@ int GraphicsManager::Draw(SDL_Texture *texture, const Rect *srcRect,
                             (center) ? &point : nullptr, SDL_FLIP_NONE);
 }
 
+int GraphicsManager::DrawSDLGeometry(SDL_Texture *texture,
+                                     const SDL_Vertex *vertices,
+                                     int num_vertices, const int *indices,
+                                     int num_indices)
+{
+    return SDL_RenderGeometry(renderer, texture, vertices, num_vertices,
+                              indices, num_indices);
+}
+
 int GraphicsManager::RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
                                   const SDL_Rect *dstrect, const double angle,
                                   const SDL_Point *center,

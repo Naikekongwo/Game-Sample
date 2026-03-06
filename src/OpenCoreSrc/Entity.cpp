@@ -23,7 +23,7 @@ void Entity::createRenderer()
     }
 }
 
-void Entity::Draw(float cameraPositionX, float cameraPostionY)
+void Entity::Draw(float cameraX, float cameraY)
 {
     if (drawable)
     {
@@ -42,17 +42,16 @@ void Entity::Draw(float cameraPositionX, float cameraPostionY)
         renderWidth = (renderWidth - 2) / 2 + 1;
         renderHeight = (renderHeight - 1) / 2 + 1;
 
-        if ((abs(cameraPositionX - Position.x) > renderWidth) or
-            (cameraPostionY - Position.y > renderHeight))
+        if ((abs(cameraX - Position.x) > renderWidth) or
+            (cameraY - Position.y > renderHeight))
         {
             // 超出渲染范围
             return;
         }
         else
         {
-            renderer->setPosition(
-                0.5f + (Position.x - cameraPositionX) * widthRelative,
-                0.5f + (Position.y - cameraPostionY) * heightfactor);
+            renderer->setPosition(0.5f + (Position.x - cameraX) * widthRelative,
+                                  0.5f + (Position.y - cameraY) * heightfactor);
             renderer->setTransparency(1.0f);
             switch (pProperties.getDirection())
             {

@@ -33,37 +33,40 @@ class OpenCoreMap
 {
   public:
     // 基类注册地图
-    OpenCoreMap(short id, const string &mapPath)
+    explicit OpenCoreMap(short id, const string &mapPath)
+        : id(id), mapPath(mapPath)
     {
         if (id == 0 or mapPath.empty())
         {
             throw std::runtime_error(
                 "Failed to load map, 'cause something was missing or wrong.\n");
         }
-        this->id = id;
-        this->mapPath = mapPath;
     }
 
     virtual ~OpenCoreMap() {};
 
-    virtual void onEnter() = 0;
+    // 地图加载的入口函数
+    // 可以是初始化阶段读取, 也可以是内存冻结之后恢复
+    virtual bool onEnter() = 0;
 
+    // 获取地图的宽高
     virtual uint16_t getMapWidth() const noexcept { return MapWidth; }
     virtual uint16_t getMapHeight() const noexcept { return MapHeight; }
+
+    // 获取指定位置的方块信息
     virtual BlockInfo &getBlockInfo(int offsetX, int offsetY) = 0;
 
     virtual void onUpdate(float totalTime) {};
     virtual void onExit() = 0;
-    virtual bool ready() { return status == MapStatus::Loaded; }
-    virtual bool Activate() = 0;
+
+    // 地图是否已经完整加载到内存中
+    virtual bool ready() const noexcept { return status == MapStatus::Loaded; }
 
     short id;
     string mapPath;
+    MapStatus status = MapStatus::Registered;
 
-    vector<BlockInfo> Data;
-
+  protected:
     uint16_t MapWidth = 0;
     uint16_t MapHeight = 0;
-
-    MapStatus status = MapStatus::Registered;
 };

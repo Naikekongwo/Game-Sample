@@ -13,10 +13,11 @@ class ClassicMap : public OpenCoreMap
   public:
     ClassicMap(short id, const string &mapPath) : OpenCoreMap(id, mapPath) {};
 
-    void onEnter() override;
+    bool onEnter() override;
     void onExit() override;
 
-    bool Activate() override;
-
     BlockInfo &getBlockInfo(int offsetX, int offsetY) override;
+
+  private:
+    vector<BlockInfo> Data;
 };

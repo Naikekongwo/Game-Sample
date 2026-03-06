@@ -3,6 +3,9 @@
 
 #include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
 
+// WaveBase.hpp
+// 波的基类
+
 class WaveBase
 {
   public:

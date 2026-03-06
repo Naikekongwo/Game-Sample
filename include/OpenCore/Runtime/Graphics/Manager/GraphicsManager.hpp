@@ -50,9 +50,6 @@ class GraphicsManager
                    const SDL_Rect *dstrect, const double angle,
                    const SDL_Point *center, const SDL_RendererFlip flip);
 
-    int Draw(SDL_Texture *texture, const Rect *srcRect, const Rect *dstRect,
-             const double angle, const Point *center);
-
     int setOffScreenRender(SDL_Texture *texture);
 
     SDL_Texture *createTexture(uint16_t w, uint16_t h);
@@ -64,6 +61,15 @@ class GraphicsManager
         window.h = TargetWindowHeight;
         return window;
     }
+
+    // OpenCore的渲染方法
+    // 将在27.1版本中取缔DrawSDLGemetry这个非原生函数
+
+    int Draw(SDL_Texture *texture, const Rect *srcRect, const Rect *dstRect,
+             const double angle, const Point *center);
+
+    int DrawSDLGeometry(SDL_Texture *texture, const SDL_Vertex *vertices,
+                        int num_vertices, const int *indices, int num_indices);
 
   private:
     SDL_Window *window;
