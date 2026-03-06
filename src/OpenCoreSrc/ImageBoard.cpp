@@ -21,15 +21,21 @@ ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
     this->texture = std::move(texture);
 }
 
-void ImageBoard::onRender()
+void ImageBoard::onRender() { Draw(); }
+
+void ImageBoard::Draw()
 {
-    auto &GFX = GraphicsManager::getInstance();
-    // 渲染函数
-    if (texture->get())
+    auto &GFX = OpenCoreManagers::GFXManager.getInstance();
+
+    Rect VRect = GFX.getSccissorRect();
+    Rect dstRect = getLogicalBounds();
+    // 在此处不需要进行PhysicalBounds的判断，如果其逻辑位置在屏幕之外，那就没有必要渲染。
+
+    // 确认可见度
+    if (VState->getAlpha() > 0.0f && texture->get() && visible(dstRect, VRect))
     {
         SDL_SetTextureAlphaMod(texture->texture.get(), VState->getAlpha());
 
-        Rect dstRect = getLogicalBounds();
         Rect srcRect = texture->getSubRect(VState->getFrameIndex());
 
         dstRect = magnetRect(dstRect);

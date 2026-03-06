@@ -85,6 +85,9 @@ void GraphicsManager::refreshWindowProperties()
 
     SDL_RenderSetLogicalSize(renderer, gameInfo->TargetResolutionWidth,
                              gameInfo->TargetResolutionHeight);
+
+    TargetWindowWidth = gameInfo->TargetResolutionWidth;
+    TargetWindowHeight = gameInfo->TargetResolutionHeight;
 }
 
 void GraphicsManager::CleanUp()

@@ -25,6 +25,8 @@ class MapExplorer : public UIElement
 
     void onEnter() override;
     void onRender() override;
+    // 渲染函数（新）
+    void Draw() override;
     void onUpdate(float totalTime) override;
 
     void handlEvents(SDL_Event &event, float totalTime) override;

@@ -24,9 +24,18 @@ void MultiImageBoard::onUpdate(float totalTime)
 
 void MultiImageBoard::onRender()
 {
-    for (int i = 0; i < Layers.size(); i++)
+    // for (int i = 0; i < Layers.size(); i++)
+    // {
+    //     Layers[i].get()->onRender();
+    // }
+    Draw();
+}
+
+void MultiImageBoard::Draw()
+{
+    for (auto &entry : Layers)
     {
-        Layers[i].get()->onRender();
+        entry->Draw();
     }
 }
 

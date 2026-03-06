@@ -30,6 +30,8 @@ class BaseBackground : public UIElement
     void onExit() override;
     void onRender() override;
 
+    void Draw() override;
+
     // 特殊函数
     void setNativeScale(uint8_t scale);
 

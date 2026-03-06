@@ -29,6 +29,8 @@ class MultiImageBoard : public UIElement
 
     void onRender() override;
 
+    void Draw() override;
+
     // 配置贴图算法
     bool pushImageBoard(vector<unique_ptr<Texture>> &list);
 

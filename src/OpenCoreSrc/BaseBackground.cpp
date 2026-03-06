@@ -50,13 +50,32 @@ void BaseBackground::onExit()
 
 void BaseBackground::onRender()
 {
-    if (TextureCache)
+    // if (TextureCache)
+    // {
+    //     SDL_Rect dstRect = getPhysicalBounds();
+    //     SDL_SetTextureAlphaMod(
+    //         TextureCache, static_cast<uint8_t>(VState->transparency *
+    //         255.0f));
+    //     OpenCoreManagers::GFXManager.RenderCopy(TextureCache, NULL, &dstRect,
+    //     0,
+    //                                             0, SDL_FLIP_NONE);
+    // }
+    Draw();
+}
+
+void BaseBackground::Draw()
+{
+    auto &GFX = OpenCoreManagers::GFXManager.getInstance();
+
+    Rect logiRect = getLogicalBounds();
+    Rect VRect = GFX.getSccissorRect();
+
+    if (TextureCache && visible(logiRect, VRect) && VState->getAlpha() > 0.0f)
     {
-        SDL_Rect dstRect = getPhysicalBounds();
-        SDL_SetTextureAlphaMod(
-            TextureCache, static_cast<uint8_t>(VState->transparency * 255.0f));
-        OpenCoreManagers::GFXManager.RenderCopy(TextureCache, NULL, &dstRect, 0,
-                                                0, SDL_FLIP_NONE);
+        Rect dstRect = getPhysicalBounds();
+
+        SDL_SetTextureAlphaMod(TextureCache, VState->getAlpha());
+        GFX.Draw(TextureCache, NULL, &dstRect, 0, 0);
     }
 }
 

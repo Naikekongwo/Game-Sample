@@ -57,9 +57,20 @@ class GraphicsManager
 
     SDL_Texture *createTexture(uint16_t w, uint16_t h);
 
+    Rect getSccissorRect() const
+    {
+        Rect window{0, 0, 0, 0};
+        window.w = TargetWindowWidth;
+        window.h = TargetWindowHeight;
+        return window;
+    }
+
   private:
     SDL_Window *window;
     SDL_Renderer *renderer;
+
+    int TargetWindowHeight = 1080;
+    int TargetWindowWidth = 1920;
 };
 
 #endif //_GFXCORE_H_

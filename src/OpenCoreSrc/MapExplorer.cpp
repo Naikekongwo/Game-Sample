@@ -18,11 +18,14 @@ void MapExplorer::onEnter()
     }
 }
 
-void MapExplorer::onRender()
+void MapExplorer::onRender() { Draw(); }
+
+void MapExplorer::Draw()
 {
     if (status != MapExpStatus::Ready)
         return;
 
+    // 需要地图浏览器准备完成方可渲染
     worldController.Draw();
 }
 

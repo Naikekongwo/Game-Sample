@@ -17,6 +17,9 @@ class ImageBoard : public UIElement
 
     // 对于父类的实现
     void onRender() override;
+
+    // 渲染函数（新）
+    void Draw() override;
 };
 
 #endif //_IMAGEBOARD_H_

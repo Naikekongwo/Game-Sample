@@ -87,22 +87,25 @@ void Button::onUpdate(float totalTime)
 
     VState->frameIndex = stateIndex;
 }
-void Button::onRender()
+void Button::onRender() { Draw(); }
+
+void Button::Draw()
 {
-    if (texture->texture)
+    auto &GFX = OpenCoreManagers::GFXManager.getInstance();
+
+    Rect VRect = GFX.getSccissorRect();
+    Rect dstRect = getLogicalBounds();
+
+    if (texture->get() && visible(dstRect, VRect) && VState->getAlpha() > 0.0f)
     {
-        auto Graphics = GraphicsManager::getInstance();
-
         SDL_SetTextureAlphaMod(texture->get(), VState->getAlpha());
-
-        Rect dRect = getLogicalBounds();
 
         auto frameIndex = (VState->getFrameIndex() > texture->Size())
                               ? 0
                               : VState->getFrameIndex();
 
-        Rect sRect = texture->getSubRect(frameIndex);
+        Rect srcRect = texture->getSubRect(frameIndex);
 
-        Graphics.Draw(texture->get(), &sRect, &dRect, VState->getAngle(), NULL);
+        GFX.Draw(texture->get(), &srcRect, &dstRect, VState->getAngle(), NULL);
     }
 }
