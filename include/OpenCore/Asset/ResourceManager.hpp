@@ -22,7 +22,7 @@
 #include "OpenCore/Asset/MapLoader.hpp"
 #include "OpenCore/Asset/SoundLoader.hpp"
 #include "OpenCore/Asset/TextureLoader.hpp"
-#include "OpenCore/Core/Thread/ThreadManager.hpp"  // 新增
+#include "OpenCore/Core/Thread/ThreadManager.hpp" // 新增
 
 using std::shared_ptr;
 using std::unique_ptr;
@@ -32,7 +32,7 @@ using std::unique_ptr;
 
 class ResourceManager
 {
-public:
+  public:
     static ResourceManager &getInstance();
 
     bool Init();
@@ -52,7 +52,8 @@ public:
 
     std::future<void> LoadMusicAsync(short id, const std::string &path);
     std::future<void> LoadTextureAsync(short id, const std::string &path);
-    std::future<void> LoadFontAsync(short id, const std::string &path, int size);
+    std::future<void> LoadFontAsync(short id, const std::string &path,
+                                    int size);
     std::future<void> LoadSoundAsync(short id, const std::string &path);
 
     void ClearAll();
@@ -74,24 +75,10 @@ public:
     std::future<void> FreeFontAsync(short id);
     std::future<void> FreeSoundAsync(short id);
 
-private:
+  private:
     SDL_Renderer *renderer = nullptr;
 
-    // 移除原有的线程管理成员
-    // void StartWorker();
-    // void StopWorker();
-    // std::thread worker_;
-    // std::atomic<int> activeTasks_;
-    // std::mutex queueMutex_;
-    // std::condition_variable queueCV_;
-    // std::queue<std::function<void()>> taskQueue_;
-    // std::atomic<bool> shouldStop_;
-
     template <typename F> std::future<void> EnqueueTask(F &&f);
-
-    // 主线程任务队列已移交 ThreadManager，故移除
-    // std::mutex mainThreadQueueMutex_;
-    // std::queue<std::function<void()>> mainThreadTaskQueue_;
 
     void ConvertToTexture(short id, SDL_Surface *surface);
 
@@ -109,8 +96,7 @@ private:
     std::unordered_map<short, FontPtr> fontCache_;
 };
 
-template <typename F>
-std::future<void> ResourceManager::EnqueueTask(F &&f)
+template <typename F> std::future<void> ResourceManager::EnqueueTask(F &&f)
 {
     // 直接使用 ThreadManager 提交任务
     return ThreadManager::getInstance().submit(std::forward<F>(f));

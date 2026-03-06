@@ -2,7 +2,7 @@
 #define THREAD_MANAGER_HPP
 
 #include <atomic>
-#include <type_traits>
+#include <chrono>
 #include <condition_variable>
 #include <functional>
 #include <future>
@@ -10,22 +10,24 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include <type_traits>
 #include <vector>
-#include <chrono>
 
-enum class TaskPriority {
-    LOW,      // 默认优先级
+enum class TaskPriority
+{
+    LOW, // 默认优先级
     NORMAL,
     HIGH,
     CRITICAL
 };
 
-class ThreadManager {
-public:
-    static ThreadManager& getInstance();
+class ThreadManager
+{
+  public:
+    static ThreadManager &getInstance();
 
-    ThreadManager(const ThreadManager&) = delete;
-    ThreadManager& operator=(const ThreadManager&) = delete;
+    ThreadManager(const ThreadManager &) = delete;
+    ThreadManager &operator=(const ThreadManager &) = delete;
 
     // 启动线程池，可指定最小、最大线程数
     void start(size_t minThreads = 1,
@@ -41,13 +43,13 @@ public:
     void enable_auto_adjust(bool enable);
 
     // 提交任务到工作线程池（默认低优先级）
-    template<typename F, typename... Args>
-    auto submit(F&& f, Args&&... args)
+    template <typename F, typename... Args>
+    auto submit(F &&f, Args &&...args)
         -> std::future<std::invoke_result_t<F, Args...>>;
 
     // 提交指定优先级的任务
-    template<typename F, typename... Args>
-    auto submit_priority(TaskPriority priority, F&& f, Args&&... args)
+    template <typename F, typename... Args>
+    auto submit_priority(TaskPriority priority, F &&f, Args &&...args)
         -> std::future<std::invoke_result_t<F, Args...>>;
 
     // 提交需要在主线程执行的任务
@@ -62,17 +64,20 @@ public:
     // 获取当前活跃任务数（工作线程 + 主线程任务）
     size_t active_task_count() const;
 
-private:
+  private:
     ThreadManager() = default;
     ~ThreadManager();
 
     // 内部任务结构（无取消相关字段）
-    struct Task {
+    struct Task
+    {
         TaskPriority priority;
         std::function<void()> func;
 
-        bool operator<(const Task& other) const {
-            return static_cast<int>(priority) < static_cast<int>(other.priority);
+        bool operator<(const Task &other) const
+        {
+            return static_cast<int>(priority) <
+                   static_cast<int>(other.priority);
         }
     };
 
@@ -107,22 +112,23 @@ private:
 };
 
 // 模板方法实现
-template<typename F, typename... Args>
-auto ThreadManager::submit(F&& f, Args&&... args)
+template <typename F, typename... Args>
+auto ThreadManager::submit(F &&f, Args &&...args)
     -> std::future<std::invoke_result_t<F, Args...>>
 {
-    return submit_priority(TaskPriority::LOW, std::forward<F>(f), std::forward<Args>(args)...);
+    return submit_priority(TaskPriority::LOW, std::forward<F>(f),
+                           std::forward<Args>(args)...);
 }
 
-template<typename F, typename... Args>
-auto ThreadManager::submit_priority(TaskPriority priority, F&& f, Args&&... args)
+template <typename F, typename... Args>
+auto ThreadManager::submit_priority(TaskPriority priority, F &&f,
+                                    Args &&...args)
     -> std::future<std::invoke_result_t<F, Args...>>
 {
     using return_type = typename std::invoke_result_t<F, Args...>;
 
     auto packaged = std::make_shared<std::packaged_task<return_type()>>(
-        std::bind(std::forward<F>(f), std::forward<Args>(args)...)
-    );
+        std::bind(std::forward<F>(f), std::forward<Args>(args)...));
     auto future = packaged->get_future();
 
     {
