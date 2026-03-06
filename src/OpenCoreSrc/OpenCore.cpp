@@ -49,6 +49,8 @@ bool OpenEngine::Initialize()
 
     // 创建 GFX 实例
     (void)GFXManager;
+    // 创建线程管理器实例
+    (void)ThrManager;
     // 创建资源管理器实例
     (void)ResManager;
     // 创建音效管理器实例
@@ -61,7 +63,8 @@ bool OpenEngine::Initialize()
     // 初始化 GFX 实例 (若失败直接退出)
     if (!GFXManager.Init())
         return false;
-
+    // 初始化线程管理器
+    ThrManager.start(2,8);
     // 初始化资源管理器(其初始化时需要renderer，所以必须在GFX之后初始化)
     ResManager.Init();
     // 初始化音效管理器
@@ -127,7 +130,6 @@ bool OpenEngine::MainLoop()
         }
 
         timer->Tick();
-
         ResManager.ProcessMainThreadTasks();
 
         sController->onUpdate();
@@ -157,7 +159,7 @@ bool OpenEngine::CleanUp()
 
     SFXManager.CleanUp();
     ResManager.CleanUp();
-
+    ThrManager.shutdown();
     GFXManager.CleanUp();
 
     return true;
