@@ -18,10 +18,20 @@ void CheckBox::refreshStatus()
 
 void CheckBox::onRender()
 {
+    //if (Img)
+    //{
+    //    refreshStatus();
+    //    Img->onRender();
+    //}
+    Draw();
+}
+
+void CheckBox::Draw()
+{
     if (Img)
     {
-        refreshStatus();
-        Img->onRender();
+        refreshStatus();   
+        Img->Draw();       
     }
 }
 
