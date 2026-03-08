@@ -18,7 +18,6 @@
 #include "OpenCore/Runtime/Graphics/Sprite/Tile.h"
 #include "OpenCore/Runtime/Graphics/Sprite/Waterrect.hpp"
 
-
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/Sprite.hpp"
 

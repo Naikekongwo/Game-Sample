@@ -15,3 +15,6 @@ build/
 assets/assets/raw/
 
 # 屏蔽clang-format
+
+# 屏蔽 Doxygen docs
+docs/

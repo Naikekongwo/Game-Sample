@@ -1,8 +1,16 @@
+/**
+ * @file GraphicsManager.hpp
+ * @author Naikekongwo
+ * @brief
+ * @version 0.1
+ * @date 2026-03-08
+ *
+ * @copyright OpenGames Studio Copyright (c) 2026
+ *
+ */
+
 #ifndef _GFXCORE_H_
 #define _GFXCORE_H_
-
-// GfxManager.hpp
-// 图形核心
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_log.h>
@@ -25,24 +33,65 @@ inline void Console_Log(const char *fmt, ...)
     va_end(args);
 }
 
+/**
+ * @brief 图形模块
+ *
+ */
 class GraphicsManager
 {
   public:
-    // 图形管理器目前已经作为单例存在
+    /**
+     * @brief 获取图形管理器的实例
+     *
+     * @return GraphicsManager&
+     */
     static GraphicsManager &getInstance();
 
-    // 初始化函数
+    /**
+     * @brief 初始化图形管理器
+     *
+     * @return true
+     * @return false
+     */
     bool Init();
 
-    // 重置窗口详情
+    /**
+     * @brief 刷新窗口信息
+     *
+     */
     void refreshWindowProperties();
 
-    // 清理回收的函数
+    /**
+     * @brief 清理回收相关数据
+     *
+     */
     void CleanUp();
 
+    /**
+     * @brief 获取SDL的窗口句柄
+     *
+     * @return SDL_Window*
+     */
     SDL_Window *getWindow() const { return window; }
+
+    /**
+     * @brief 获取SDL的渲染器句柄
+     *
+     * @return SDL_Renderer*
+     */
     SDL_Renderer *getRenderer() const { return renderer; }
 
+    /**
+     * @brief SDL的渲染函数
+     * @deprecated 该函数和SDL紧密联系，已经几近弃用
+     * @param texture SDL纹理
+     * @param srcrect 源纹理上矩形
+     * @param dstrect 目标绘制窗口矩形
+     * @param angle 角度
+     * @param center 中心点
+     * @param flip 翻转
+     * @return int
+     */
     int RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
                      const SDL_Rect *dstrect, const double angle,
                      const SDL_Point *center, const SDL_RendererFlip flip);
@@ -62,12 +111,29 @@ class GraphicsManager
         return window;
     }
 
-    // OpenCore的渲染方法
-    // 将在27.1版本中取缔DrawSDLGemetry这个非原生函数
-
+    /**
+     * @brief OpenCore的原生绘制方法
+     * @todo 纹理需要进行更原生的封装
+     * @param texture 纹理
+     * @param srcRect 源纹理的子矩形
+     * @param dstRect 将要渲染的目标平面上的选定矩形
+     * @param angle 纹理旋转角度
+     * @param center 纹理中心
+     * @return int 执行结果
+     */
     int Draw(SDL_Texture *texture, const Rect *srcRect, const Rect *dstRect,
              const double angle, const Point *center);
 
+    /**
+     * @brief OpenCore的原生顶点渲染方法
+     * @todo 需要进一步原生封装
+     * @param texture 纹理
+     * @param vertices 顶点
+     * @param num_vertices 顶点个数
+     * @param indices 索引
+     * @param num_indices 索引个数
+     * @return int 执行结果
+     */
     int DrawSDLGeometry(SDL_Texture *texture, const SDL_Vertex *vertices,
                         int num_vertices, const int *indices, int num_indices);
 

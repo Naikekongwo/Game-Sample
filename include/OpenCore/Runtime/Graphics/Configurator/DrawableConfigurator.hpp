@@ -1,8 +1,16 @@
+/**
+ * @file DrawableConfigurator.hpp
+ * @author Naikekongwo
+ * @brief
+ * @version 1.0
+ * @date 2025-08-07
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #ifndef _DRAWABLECONFIGURATOR_H_
 #define _DRAWABLECONFIGURATOR_H_
-
-// DrawableConfigurator.h
-// 初始化所有可绘制对象（控件）的部署器类
 
 #include <cstdint>
 

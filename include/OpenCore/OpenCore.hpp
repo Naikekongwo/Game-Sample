@@ -1,10 +1,16 @@
+/**
+ * @file OpenCore.hpp
+ * @author Naikekongwo
+ * @brief OpenCore Engine的主要头文件
+ * @version 1.0
+ * @date 2025-07-26
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #ifndef _OPENCORE_H_
 #define _OPENCORE_H_
-
-// OpenCore.hpp
-// 引擎的核心
-
-// 对于调试模式的宏定义
 
 #include "Runtime/Gameplay/Entity/EntityRegister.hpp"
 enum DebugFlags

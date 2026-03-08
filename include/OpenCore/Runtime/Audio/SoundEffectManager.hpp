@@ -1,3 +1,14 @@
+/**
+ * @file SoundEffectManager.hpp
+ * @author Brid-HT
+ * @brief 音效管理器的头文件
+ * @version 1.0
+ * @date 2025-07-28
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #ifndef SOUNDEFFECT_H
 #define SOUNDEFFECT_H
 
