@@ -14,6 +14,7 @@ class FrameCounter : public UIElement
 
     void handlEvents(SDL_Event &event, float totalTime) override;
     void onRender() override;
+    void Draw() override;
     void onUpdate(float totalTime) override;
 
   private:
