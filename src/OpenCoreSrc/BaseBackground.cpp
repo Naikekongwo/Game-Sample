@@ -48,21 +48,6 @@ void BaseBackground::onExit()
     }
 }
 
-void BaseBackground::onRender()
-{
-    // if (TextureCache)
-    // {
-    //     SDL_Rect dstRect = getPhysicalBounds();
-    //     SDL_SetTextureAlphaMod(
-    //         TextureCache, static_cast<uint8_t>(VState->transparency *
-    //         255.0f));
-    //     OpenCoreManagers::GFXManager.RenderCopy(TextureCache, NULL, &dstRect,
-    //     0,
-    //                                             0, SDL_FLIP_NONE);
-    // }
-    Draw();
-}
-
 void BaseBackground::Draw()
 {
     auto &GFX = OpenCoreManagers::GFXManager.getInstance();

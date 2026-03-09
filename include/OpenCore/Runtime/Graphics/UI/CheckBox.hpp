@@ -25,8 +25,8 @@ class CheckBox : public UIElement
     void handlEvents(SDL_Event &event, float totalTime) override;
 
     // void onUpdate(float totalTime) override;
-    void onRender() override;
-    void Draw() override; 
+
+    void Draw() override;
     bool onDestroy() override;
     void onEnter() override;
     void onExit() override;

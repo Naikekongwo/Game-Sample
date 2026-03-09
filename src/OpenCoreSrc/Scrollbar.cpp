@@ -50,16 +50,6 @@ void Scrollbar::onEnter()
     }
 }
 
-void Scrollbar::onRender()
-{
-    // if (slideBar && baseBack)
-    // {
-    //     baseBack->onRender();
-    //     slideBar->onRender();
-    // }
-    Draw();
-}
-
 void Scrollbar::Draw()
 {
     if (slideBar && baseBack)

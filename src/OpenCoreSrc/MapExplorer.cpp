@@ -20,8 +20,6 @@ void MapExplorer::onEnter()
     }
 }
 
-void MapExplorer::onRender() { Draw(); }
-
 void MapExplorer::Draw()
 {
     if (status != MapExpStatus::Ready)

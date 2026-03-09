@@ -51,18 +51,6 @@ void Waterrect::setWave(unique_ptr<Wave> newWave)
     waveInfo = std::move(newWave);
 }
 
-void Waterrect::onRender()
-{
-    // const auto &GFXManager = OpenCoreManagers::GFXManager;
-
-    // SDL_RenderGeometry(GFXManager.getRenderer(),
-    // this->texture->texture.get(),
-    //                    Vertices.data(), Vertices.size(), indices.data(),
-    //                    indices.size());
-
-    Draw();
-}
-
 void Waterrect::Draw()
 {
     auto &GFX = OpenCoreManagers::GFXManager.getInstance();

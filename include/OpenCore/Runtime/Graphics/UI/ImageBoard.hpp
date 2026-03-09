@@ -16,7 +16,6 @@ class ImageBoard : public UIElement
                unique_ptr<Texture> texture);
 
     // 对于父类的实现
-    void onRender() override;
 
     // 渲染函数（新）
     void Draw() override;

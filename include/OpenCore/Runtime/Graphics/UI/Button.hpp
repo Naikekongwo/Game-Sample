@@ -26,7 +26,7 @@ class Button : public UIElement
     // 实现父类
 
     void handlEvents(SDL_Event &event, float totalTime) override;
-    void onRender() override;
+
     void Draw() override;
     void onUpdate(float totalTime) override;
 

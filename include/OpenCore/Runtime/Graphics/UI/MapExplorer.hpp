@@ -24,7 +24,7 @@ class MapExplorer : public UIElement
     MapExplorer(const string &id, short layer);
 
     void onEnter() override;
-    void onRender() override;
+
     // 渲染函数（新）
     void Draw() override;
     void onUpdate(float totalTime) override;

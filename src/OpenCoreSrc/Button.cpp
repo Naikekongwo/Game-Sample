@@ -87,7 +87,6 @@ void Button::onUpdate(float totalTime)
 
     VState->frameIndex = stateIndex;
 }
-void Button::onRender() { Draw(); }
 
 void Button::Draw()
 {

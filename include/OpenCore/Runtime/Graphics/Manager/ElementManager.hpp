@@ -1,10 +1,18 @@
+/**
+ * @file ElementManager.hpp
+ * @author Naikekkongwo
+ * @brief UI控件管理器的头文件
+ * @version 1.0
+ * @date 2025-08-03
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #ifndef _ELEMENTMANANGER_H_
 #define _ELEMENTMANANGER_H_
 
 #include "OpenCore/Runtime/Graphics/IDrawableObject/IDrawableObject.hpp"
-
-// ElementManager.hpp
-// 元素管理器类
 
 #include "OpenCore/Runtime/Graphics/UI/BaseBackground.hpp"
 #include "OpenCore/Runtime/Graphics/UI/Button.hpp"
@@ -24,6 +32,10 @@
 #include <memory>
 #include <vector>
 
+/**
+ * @brief 元素管理器类
+ *
+ */
 class ElementManager
 {
   public:
@@ -35,6 +47,10 @@ class ElementManager
 
     void onUpdate(float totalTime);
 
+    /**
+     * @brief UI控件的渲染调用联动接口
+     * @todo 需要进行原生化（优化元素成员类直接为UIElement），后更名Draw()方法
+     */
     void onRender();
 
     void onDestroy();
@@ -43,14 +59,13 @@ class ElementManager
 
     bool PushElement(unique_ptr<IDrawableObject> element);
 
-    IDrawableObject *find(const std::string &id)
-        const; // 查找是否存在元素的函数，使用const表示不会修改类状态
+    IDrawableObject *find(const std::string &id) const;
 
     unique_ptr<IDrawableObject> getElement(const std::string &id);
 
     template <typename Func> void forEachElement(Func &&func)
     {
-        for (auto &elem : Elements) // 假设内部存放元素的 vector 名为 elements
+        for (auto &elem : Elements)
         {
             if (elem)
                 func(elem);

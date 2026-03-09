@@ -13,7 +13,7 @@ class FrameCounter : public UIElement
     // 继承
 
     void handlEvents(SDL_Event &event, float totalTime) override;
-    void onRender() override;
+
     void Draw() override;
     void onUpdate(float totalTime) override;
 

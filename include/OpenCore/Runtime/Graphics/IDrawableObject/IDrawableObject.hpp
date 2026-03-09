@@ -38,6 +38,10 @@ class IDrawableObject
     // 处理事件的函数
     virtual void handlEvents(SDL_Event &event, float totalTime);
     virtual void onUpdate(float totalTime);
+    /**
+     * @brief 非原生渲染方法
+     * @deprecated 由于其不安全的特性，已经弃用
+     */
     virtual void onRender() {};
     virtual bool onDestroy() = 0;
 

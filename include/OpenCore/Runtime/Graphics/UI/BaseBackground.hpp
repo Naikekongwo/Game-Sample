@@ -28,7 +28,6 @@ class BaseBackground : public UIElement
     void onUpdate(float totalTime) override;
     void onEnter() override;
     void onExit() override;
-    void onRender() override;
 
     void Draw() override;
 

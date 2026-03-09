@@ -62,7 +62,7 @@ void ElementManager::onRender()
 {
     for (auto &element : Elements)
     {
-        element->onRender();
+        element->Draw();
     }
 }
 

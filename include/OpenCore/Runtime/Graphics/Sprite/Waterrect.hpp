@@ -29,7 +29,7 @@ class Waterrect : public Sprite
     Waterrect(const string &id, short layer, unique_ptr<Texture> texture);
 
     void onUpdate(float totalTime) override;
-    void onRender() override;
+
     void Draw() override; // 新的渲染函数
     bool onDestroy() override;
 

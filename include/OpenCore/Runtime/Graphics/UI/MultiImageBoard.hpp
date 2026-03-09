@@ -27,8 +27,6 @@ class MultiImageBoard : public UIElement
     // 更新算法
     void onUpdate(float totalTime) override;
 
-    void onRender() override;
-
     void Draw() override;
 
     // 配置贴图算法

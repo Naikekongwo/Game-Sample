@@ -21,8 +21,6 @@ ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
     this->texture = std::move(texture);
 }
 
-void ImageBoard::onRender() { Draw(); }
-
 void ImageBoard::Draw()
 {
     auto &GFX = OpenCoreManagers::GFXManager.getInstance();
