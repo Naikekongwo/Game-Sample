@@ -32,13 +32,12 @@ void ImageBoard::Draw()
     // 确认可见度
     if (VState->getAlpha() > 0.0f && texture->get() && visible(dstRect, VRect))
     {
-        SDL_SetTextureAlphaMod(texture->texture.get(), VState->getAlpha());
+        SDL_SetTextureAlphaMod(texture->get(), VState->getAlpha());
 
         Rect srcRect = texture->getSubRect(VState->getFrameIndex());
 
         dstRect = magnetRect(dstRect);
 
-        GFX.Draw(texture->texture.get(), &srcRect, &dstRect, VState->getAngle(),
-                 NULL);
+        GFX.Draw(texture->get(), &srcRect, &dstRect, VState->getAngle(), NULL);
     }
 }

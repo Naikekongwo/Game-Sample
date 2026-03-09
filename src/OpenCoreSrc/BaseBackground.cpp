@@ -98,10 +98,10 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
     GFX.setOffScreenRender(target);
 
     int texW, texH;
-    SDL_QueryTexture(texture->texture.get(), nullptr, nullptr, &texW, &texH);
+    SDL_QueryTexture(texture->get(), nullptr, nullptr, &texW, &texH);
 
-    SDL_Rect srcRect{};
-    SDL_Rect dstRect{};
+    Rect srcRect{};
+    Rect dstRect{};
 
     // 离屏纹理宽高
     int targetW, targetH;
@@ -147,8 +147,7 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
                 dstRect.h = nativeScale;
             }
 
-            GFX.RenderCopyEx(texture->texture.get(), &srcRect, &dstRect, 0.0,
-                             nullptr, SDL_FLIP_NONE);
+            GFX.Draw(texture->get(), &srcRect, &dstRect, 0.0, nullptr);
         }
     }
 

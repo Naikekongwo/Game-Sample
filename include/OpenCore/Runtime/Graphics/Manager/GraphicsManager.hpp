@@ -81,24 +81,6 @@ class GraphicsManager
      */
     SDL_Renderer *getRenderer() const { return renderer; }
 
-    /**
-     * @brief SDL的渲染函数
-     * @deprecated 该函数和SDL紧密联系，已经几近弃用
-     * @param texture SDL纹理
-     * @param srcrect 源纹理上矩形
-     * @param dstrect 目标绘制窗口矩形
-     * @param angle 角度
-     * @param center 中心点
-     * @param flip 翻转
-     * @return int
-     */
-    int RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
-                     const SDL_Rect *dstrect, const double angle,
-                     const SDL_Point *center, const SDL_RendererFlip flip);
-    int RenderCopy(SDL_Texture *texture, const SDL_Rect *srcrect,
-                   const SDL_Rect *dstrect, const double angle,
-                   const SDL_Point *center, const SDL_RendererFlip flip);
-
     int setOffScreenRender(SDL_Texture *texture);
 
     SDL_Texture *createTexture(uint16_t w, uint16_t h);

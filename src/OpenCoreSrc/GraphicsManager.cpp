@@ -148,24 +148,6 @@ int GraphicsManager::DrawSDLGeometry(SDL_Texture *texture,
                               indices, num_indices);
 }
 
-int GraphicsManager::RenderCopyEx(SDL_Texture *texture, const SDL_Rect *srcrect,
-                                  const SDL_Rect *dstrect, const double angle,
-                                  const SDL_Point *center,
-                                  const SDL_RendererFlip flip)
-{
-    return SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center,
-                            flip);
-}
-
-int GraphicsManager::RenderCopy(SDL_Texture *texture, const SDL_Rect *srcrect,
-                                const SDL_Rect *dstrect, const double angle,
-                                const SDL_Point *center,
-                                const SDL_RendererFlip flip)
-{
-    return SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center,
-                            flip);
-}
-
 SDL_Texture *GraphicsManager::createTexture(uint16_t w, uint16_t h)
 {
     SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
