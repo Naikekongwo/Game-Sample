@@ -14,9 +14,12 @@ struct Texture
     uint16_t width, height;
 
     // 材质
-    shared_ptr<SDL_Texture> texture;
+    std::shared_ptr<SDL_Texture> texture;
 
-    Texture(size_t x, size_t y, shared_ptr<SDL_Texture> tex);
+    Texture(size_t x, size_t y, std::shared_ptr<SDL_Texture> tex);
+
+    // 隐式转换为 SDL_Texture*
+    operator SDL_Texture*() const { return texture.get(); }
 
     uint16_t Size() const noexcept { return xCount * yCount; }
 
