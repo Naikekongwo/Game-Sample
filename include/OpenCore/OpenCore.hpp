@@ -1,7 +1,7 @@
 /**
  * @file OpenCore.hpp
  * @author Naikekongwo
- * @brief OpenCore Engine的主要头文件
+ * @brief OpenCore引擎的头文件
  * @version 1.0
  * @date 2025-07-26
  *
