@@ -5,6 +5,22 @@
 
 using std::string;
 
+/**
+ * @brief 从二进制文件加载地图数据。
+ * 
+ * 读取由 MapHeader 和 BlockInfo 数组组成的地图文件。文件格式要求：
+ * - 前 sizeof(MapHeader) 字节为头部信息，包含魔数 "OCMP"、地图宽度和高度。
+ * - 随后是 mapWidth * mapHeight 个连续的 BlockInfo 对象（二进制格式）。
+ * 
+ * @param mapPath 地图文件的路径。
+ * @param datas   [out] 存储读取到的 BlockInfo 对象，按行优先顺序排列。
+ * @param mapWidth [out] 地图宽度（块数）。
+ * @param mapHeight [out] 地图高度（块数）。
+ * 
+ * @throws std::runtime_error 当文件无法打开、读取失败或魔数不匹配时抛出异常。
+ * 
+ * @note BlockInfo 的二进制布局必须与写入时一致，否则数据解析会出错。
+ */
 inline void LoadMapFromFile(const string &mapPath, vector<BlockInfo> &datas,
                             uint16_t &mapWidth, uint16_t &mapHeight)
 {
@@ -12,7 +28,7 @@ inline void LoadMapFromFile(const string &mapPath, vector<BlockInfo> &datas,
     if (!file)
         throw std::runtime_error("Failed to open map file: " + mapPath);
 
-    // 读取地图的头
+    
     MapHeader header;
     file.read(reinterpret_cast<char *>(&header), sizeof(header));
     if (!file)
@@ -25,11 +41,11 @@ inline void LoadMapFromFile(const string &mapPath, vector<BlockInfo> &datas,
         throw std::runtime_error("Invalid map file format");
     }
 
-    // 解析宽高
+    
     mapWidth = header.width;
     mapHeight = header.height;
 
-    // 2. 读取 BlockInfo 数据
+    
     size_t totalBlocks = static_cast<size_t>(mapWidth) * mapHeight;
     datas.reserve(totalBlocks);
 
