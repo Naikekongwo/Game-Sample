@@ -1,11 +1,11 @@
 #include "OpenCore/OpenCore.hpp"
 
-// 初始化
+
 #include <SDL2/SDL_image.h>
 
 bool ResourceManager::Init()
 {
-    // 确保GraphicsManager 一定在其之前进行初始化
+    ///< 确保GraphicsManager 一定在其之前进行初始化
     renderer = OpenCoreManagers::GFXManager.getRenderer();
 
     if (!renderer)
@@ -37,7 +37,7 @@ bool ResourceManager::Init()
     return true;
 }
 
-// 清理
+
 void ResourceManager::CleanUp()
 {
     ClearAll();
@@ -47,14 +47,14 @@ void ResourceManager::CleanUp()
     renderer = nullptr;
 }
 
-// 单例
+
 ResourceManager &ResourceManager::getInstance()
 {
     static ResourceManager instance;
     return instance;
 }
 
-// 音乐加载同步
+
 void ResourceManager::LoadMusic(short id, const std::string &path)
 {
     std::lock_guard<std::mutex> lock(musicMutex_);
@@ -72,7 +72,7 @@ void ResourceManager::LoadMusic(short id, const std::string &path)
     musicCache_[id] = std::move(music);
 }
 
-// 获取音乐
+
 Mix_Music *ResourceManager::GetMusic(short id)
 {
     std::lock_guard<std::mutex> lock(musicMutex_);
@@ -86,7 +86,7 @@ Mix_Music *ResourceManager::GetMusic(short id)
     return it->second.get();
 }
 
-// 音效加载同步
+
 void ResourceManager::LoadSound(short id, const std::string &path)
 {
     std::lock_guard<std::mutex> lock(soundMutex_);
@@ -105,7 +105,7 @@ void ResourceManager::LoadSound(short id, const std::string &path)
     soundCache_[id] = std::move(sound);
 }
 
-// 获取音效
+
 Mix_Chunk *ResourceManager::GetSound(short id)
 {
     std::lock_guard<std::mutex> lock(soundMutex_);
@@ -119,17 +119,17 @@ Mix_Chunk *ResourceManager::GetSound(short id)
     return it->second.get();
 }
 
-// 纹理加载同步
+
 void ResourceManager::LoadTexture(short id, const std::string &path)
 {
-    // 检查是否已加载
+    
     {
         std::lock_guard<std::mutex> lock(textureMutex_);
         if (textureCache_.count(id))
             return;
     }
 
-    // 加载表面
+    
     SDL_Surface *surface = LoadSurface(path);
     if (!surface)
     {
@@ -139,11 +139,11 @@ void ResourceManager::LoadTexture(short id, const std::string &path)
         return;
     }
 
-    // 转换纹理
+    
     ConvertToTexture(id, surface);
 }
 
-// 获取纹理
+
 shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
 {
     std::lock_guard<std::mutex> lock(textureMutex_);
@@ -159,19 +159,19 @@ shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
         [](SDL_Texture *) { /* do nothing, managed by unique_ptr */ });
 }
 
-// 异步加载音乐
+
 std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string &path)
 {
     return EnqueueTask([this, id, path] { LoadMusic(id, path); });
 }
 
-// 异步加载音效
+
 std::future<void> ResourceManager::LoadSoundAsync(short id, const std::string &path)
 {
     return EnqueueTask([this, id, path] { LoadSound(id, path); });
 }
 
-// 字体加载
+
 void ResourceManager::LoadFont(short id, const std::string &path, int size)
 {
     std::lock_guard<std::mutex> lock(fontMutex_);
@@ -189,13 +189,13 @@ void ResourceManager::LoadFont(short id, const std::string &path, int size)
     fontCache_[id] = std::move(font);
 }
 
-// 异步字体加载
+
 std::future<void> ResourceManager::LoadFontAsync(short id, const std::string &path, int size)
 {
     return EnqueueTask([this, id, path, size] { LoadFont(id, path, size); });
 }
 
-// 获取字体
+
 TTF_Font *ResourceManager::GetFont(short id)
 {
     std::lock_guard<std::mutex> lock(fontMutex_);
@@ -209,7 +209,6 @@ TTF_Font *ResourceManager::GetFont(short id)
     return it->second.get();
 }
 
-// 异步加载纹理
 std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string &path)
 {
     auto promise = std::make_shared<std::promise<void>>();
@@ -232,7 +231,7 @@ std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string 
             return;
         }
 
-        // 将纹理创建任务提交到主线程队列（通过 ThreadManager）
+        ///< 将纹理创建任务提交到主线程队列（现通过 ThreadManager）
         ThreadManager::getInstance().submit_to_main_thread(
             [this, id, surface, promise]
             {
@@ -251,14 +250,14 @@ std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string 
     return future;
 }
 
-// 清理所有资源
+
 void ResourceManager::ClearAll()
 {
     Console_Log("ResourceManager::ClearAll() started");
 
-    // 等待所有异步任务完成（包括主线程任务）
+    
     ThreadManager::getInstance().wait_for_all_tasks();
-    // 处理可能遗留的主线程任务（理论上 wait_for_all_tasks 已包含，但为安全再调用一次）
+    
     ThreadManager::getInstance().process_main_thread_tasks();
 
     Console_Log("ResourceManager::ClearAll() stopped task queue successfully");
@@ -292,13 +291,13 @@ void ResourceManager::ClearAll()
     Console_Log("ResourceManager::ClearAll() finished");
 }
 
-// 处理主线程任务（现直接调用 ThreadManager 的处理函数）
+
 void ResourceManager::ProcessMainThreadTasks()
 {
     ThreadManager::getInstance().process_main_thread_tasks();
 }
 
-// 转换表面为纹理（必须在主线程）
+
 void ResourceManager::ConvertToTexture(short id, SDL_Surface *surface)
 {
     TexturePtr texture = std::move(ConvertSurfaceToTexture(renderer, surface));
@@ -420,7 +419,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
                       });
 }
 
-// 释放音乐
+
 void ResourceManager::FreeMusic(short id)
 {
     std::lock_guard<std::mutex> lock(musicMutex_);
@@ -430,7 +429,6 @@ void ResourceManager::FreeMusic(short id)
     }
 }
 
-// 释放音效
 void ResourceManager::FreeSound(short id)
 {
     std::lock_guard<std::mutex> lock(soundMutex_);
@@ -440,7 +438,6 @@ void ResourceManager::FreeSound(short id)
     }
 }
 
-// 释放纹理
 void ResourceManager::FreeTexture(short id)
 {
     std::lock_guard<std::mutex> lock(textureMutex_);
@@ -449,8 +446,6 @@ void ResourceManager::FreeTexture(short id)
         textureCache_.erase(id);
     }
 }
-
-// 释放字体
 void ResourceManager::FreeFont(short id)
 {
     std::lock_guard<std::mutex> lock(fontMutex_);
@@ -460,7 +455,7 @@ void ResourceManager::FreeFont(short id)
     }
 }
 
-// 异步释放资源
+
 std::future<void> ResourceManager::FreeMusicAsync(short id)
 {
     return EnqueueTask([this, id] { FreeMusic(id); });

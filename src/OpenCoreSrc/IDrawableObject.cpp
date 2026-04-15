@@ -2,28 +2,28 @@
 #include "OpenCore/OpenCore.hpp"
 #include <cstdint>
 
-// 设置动画的播放顺序（sequential 为顺序播放，否则为并行）
+
 void IDrawableObject::setSequential(bool sequential)
 {
     AnimeManager->setSequence(sequential);
 }
 
-// 默认的onUpdate方法，即更新动画状态
+
 void IDrawableObject::onUpdate(float totalTime)
 {
     AnimeManager->onUpdate(totalTime, *VState);
 }
 
-// 默认的handlEvents方法，执行空状态
+
 void IDrawableObject::handlEvents(SDL_Event &event, float totalTime)
 {
     // 空置
 }
 
-// 设置控件的锚点（用于缩放和旋转）
+
 void IDrawableObject::setAnchor(AnchorPoint anchor) { VState->Anchor = anchor; }
 
-// 设置控件的位置
+
 void IDrawableObject::setPosition(float xPercent, float yPercent)
 {
     SDL_Rect parentRect{0, 0, OpenCoreManagers::SetManager.getTargetWidth(),
@@ -54,14 +54,14 @@ SDL_Rect IDrawableObject::getLogicalBounds()
 
     const auto &state = *VState;
 
-    // 全程使用 float 计算
+    
     float logicalWidth = absWidth * state.scale[0];
     float logicalHeight = absHeight * state.scale[1];
 
     float logicalX = state.Position[0];
     float logicalY = state.Position[1];
 
-    // Anchor 偏移（float阶段）
+    
     switch (state.Anchor)
     {
     case AnchorPoint::TopLeft:
@@ -96,14 +96,14 @@ SDL_Rect IDrawableObject::getLogicalBounds()
         break;
     }
 
-    // 像素对齐
+    
     return SDL_Rect{static_cast<int>(std::round(logicalX)),
                     static_cast<int>(std::round(logicalY)),
                     static_cast<int>(std::round(logicalWidth)),
                     static_cast<int>(std::round(logicalHeight))};
 }
 
-// 设置控件的大小
+
 void IDrawableObject::setScale(float w, float h)
 {
     SDL_Rect parentRect{0, 0, OpenCoreManagers::SetManager.getTargetWidth(),
@@ -137,13 +137,13 @@ void IDrawableObject::setScale(float w, float h)
     }
     else
     {
-        // 非比例保持
+        
         absWidth = w * parentRect.w;
         absHeight = h * parentRect.h;
     }
 }
 
-// 动画配置器方法
+
 AnimationPipeline IDrawableObject::Animate()
 {
     // return AnimationPipeline(AnimeManager.get());
@@ -151,19 +151,19 @@ AnimationPipeline IDrawableObject::Animate()
     return AnimationPipeline(AnimeManager.get(), nullptr);
 }
 
-// 属性配置器方法
+
 DrawableConfigurator IDrawableObject::Configure()
 {
     return DrawableConfigurator(this);
 }
 
-// 检查动画是否全部完成
+
 bool IDrawableObject::isAnimeFinished() const
 {
     return AnimeManager->isFinished();
 }
 
-// 贴图更新方法
+
 void IDrawableObject::changeTexture(unique_ptr<Texture> newTexture)
 {
     if (newTexture)
@@ -189,11 +189,11 @@ void IDrawableObject::setParentContainer(IDrawableObject *parentContainer)
 {
     if (parentContainer != nullptr)
     {
-        // 有父容器
+        
         absolutePosite = false;
         this->parentContainer = parentContainer;
 
-        // 向上堆叠
+        
         this->layer = parentContainer->getLayer() + 1;
     }
     else
@@ -221,7 +221,7 @@ void IDrawableObject::setMagnetFactor(int Margin) { magnetFactor = Margin; }
 
 SDL_Rect IDrawableObject::magnetRect(const SDL_Rect &srcRect) const
 {
-    // 如果不启用视差，直接返回
+    
     if (magnetFactor == 0)
         return srcRect;
 
@@ -236,15 +236,15 @@ SDL_Rect IDrawableObject::magnetRect(const SDL_Rect &srcRect) const
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
 
-    // 归一化到 -1 ~ 1
+    
     float normX = (mouseX - centerX) / static_cast<float>(centerX);
     float normY = (mouseY - centerY) / static_cast<float>(centerY);
 
-    // 防止鼠标移出窗口导致过大
+    
     normX = std::clamp(normX, -1.0f, 1.0f);
     normY = std::clamp(normY, -1.0f, 1.0f);
 
-    // 计算偏移
+    
     float offsetX = normX * magnetFactor;
     float offsetY = normY * magnetFactor;
 

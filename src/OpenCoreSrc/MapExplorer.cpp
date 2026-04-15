@@ -5,7 +5,7 @@
 MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr)
 {
-    // 初始化函数
+    
     Gameplay::WorldController.getInstance().enabled(true);
 }
 
@@ -13,7 +13,7 @@ void MapExplorer::onExit() { Gameplay::WorldController.enabled(false); }
 
 void MapExplorer::onEnter()
 {
-    // 正式开始渲染准备
+    
     if (status == MapExpStatus::Creating)
     {
         status = MapExpStatus::Ready;

@@ -20,12 +20,12 @@ void Scrollbar::onEnter()
 {
     if (status == ScrollStatus::Creating)
     {
-        // 避免反复初始化
+        
         baseBack =
             UI<BaseBackground>("background", 1, backgroundTexture, NULL, NULL);
         slideBar = UI<ImageBoard>("slideimg", 1, buttonTexture, 1, 1);
 
-        // 部署
+        
         slideBar->Configure()
             .Anchor(AnchorPoint::Center)
             .Parent(this)
@@ -54,7 +54,7 @@ void Scrollbar::Draw()
 {
     if (slideBar && baseBack)
     {
-        // 都存在才会绘制
+        ///< 都存在才会绘制
         baseBack->Draw();
         slideBar->Draw();
     }
@@ -74,13 +74,13 @@ void Scrollbar::handlEvents(SDL_Event &event, float totalTime)
 {
     if (baseBack)
         baseBack->handlEvents(event, totalTime);
-    // 处理点击事件
+    
     SDL_Point mousePos{};
     SDL_Rect bounds = getPhysicalBounds();
 
     switch (event.type)
     {
-        // 鼠标运动时的事件
+        
     case SDL_MOUSEMOTION:
     {
         mousePos = {event.motion.x, event.motion.y};
@@ -90,7 +90,7 @@ void Scrollbar::handlEvents(SDL_Event &event, float totalTime)
         }
 
         if (status == ScrollStatus::Following)
-        // 运动时离开控件
+       
         {
             *value = (mousePos.x - bounds.x) / static_cast<float>(bounds.w);
             UpdateBar();
@@ -105,7 +105,7 @@ void Scrollbar::handlEvents(SDL_Event &event, float totalTime)
 
             if (SDL_PointInRect(&mousePos, &bounds))
             {
-                // 触发拖动条件
+                
                 status = ScrollStatus::Following;
             }
         }
