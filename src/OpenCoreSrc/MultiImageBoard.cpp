@@ -4,7 +4,7 @@
 bool MultiImageBoard::onDestroy()
 {
     auto result = UIElement::onDestroy();
-    // 先执行父类的方法
+
     Layers.clear();
 
     return result;
@@ -16,7 +16,7 @@ void MultiImageBoard::onUpdate(float totalTime)
     {
         for (auto &entry : Layers)
         {
-            // 遍历vector
+            
             entry->onUpdate(totalTime);
         }
     }

@@ -19,7 +19,7 @@ BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
         Console_Log(
             "BaseBackground::BaseBackground() encountered a empty texture.");
         return;
-        // 如果材质为空，那么我们直接强制返回
+        
     }
     this->texture = std::move(texture);
 }
@@ -103,7 +103,7 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
     Rect srcRect{};
     Rect dstRect{};
 
-    // 离屏纹理宽高
+    
     int targetW, targetH;
     SDL_QueryTexture(target, nullptr, nullptr, &targetW, &targetH);
 
@@ -113,7 +113,7 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
         {
             srcRect = texture->getSubRect(row * 3 + col);
 
-            // X方向
+            
             if (col == 0)
             {
                 dstRect.x = 0;
@@ -130,7 +130,7 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
                 dstRect.w = nativeScale;
             }
 
-            // Y方向
+            
             if (row == 0)
             {
                 dstRect.y = 0;

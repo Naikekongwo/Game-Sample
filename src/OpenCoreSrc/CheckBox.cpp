@@ -5,7 +5,7 @@
 CheckBox::CheckBox(const string &id, short layer, unique_ptr<Texture> texture)
     : UIElement(id, layer, std::move(texture))
 {
-    // 初始化函数
+    
 }
 
 void CheckBox::refreshStatus()
@@ -38,7 +38,7 @@ void CheckBox::handlEvents(SDL_Event &event, float totalTime)
 
         switch (event.type)
         {
-            // 鼠标运动时的事件
+            
         case SDL_MOUSEBUTTONDOWN:
         {
             if (event.button.button == SDL_BUTTON_LEFT)
@@ -48,7 +48,7 @@ void CheckBox::handlEvents(SDL_Event &event, float totalTime)
                 if (SDL_PointInRect(&mousePos, &bounds) &&
                     status == CheckBoxStatus::Ready)
                 {
-                    // 触发捕捉条件
+                    
                     status = CheckBoxStatus::Checking;
                 }
             }

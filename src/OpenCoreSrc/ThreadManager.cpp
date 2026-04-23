@@ -149,7 +149,7 @@ void ThreadManager::monitor_loop()
         size_t current = target_thread_count_.load();
         if (newTarget != current)
         {
-            // 直接调整线程数，但保持自动调节标志不变
+            ///< 直接调整线程数，但保持自动调节标志不变
             newTarget = std::clamp(newTarget, min_threads_, max_threads_);
             size_t old = target_thread_count_.exchange(newTarget);
             if (newTarget > old)

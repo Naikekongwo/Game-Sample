@@ -11,14 +11,14 @@ SDL_Rect UIElement::getLogicalBounds()
 
     const auto &state = *VState;
 
-    // 全程使用 float 计算
+   
     float logicalWidth = absWidth * state.scale[0];
     float logicalHeight = absHeight * state.scale[1];
 
     float logicalX = state.Position[0];
     float logicalY = state.Position[1];
 
-    // Anchor 偏移（float阶段）
+    
     switch (state.Anchor)
     {
     case AnchorPoint::TopLeft:
@@ -53,7 +53,7 @@ SDL_Rect UIElement::getLogicalBounds()
         break;
     }
 
-    // 🔥 只在这里做像素对齐
+    
     return SDL_Rect{static_cast<int>(std::round(logicalX)),
                     static_cast<int>(std::round(logicalY)),
                     static_cast<int>(std::round(logicalWidth)),
