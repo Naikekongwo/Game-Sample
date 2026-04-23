@@ -1,7 +1,15 @@
-#pragma once
+/**
+ * @file PhysicalProperties.h
+ * @author your name (you@domain.com)
+ * @brief 物理系统的信息数据结构
+ * @version 0.1
+ * @date 2026-04-23
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 
-// PhysicalProperties
-// 生物的物理属性
+#pragma once
 
 #include "OpenCore/Core/Math/OpenCore_Vec2.hpp"
 #include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
@@ -23,6 +31,10 @@ enum class Direction
 
 static float gravity = -10.0f;
 
+/**
+ * @brief 物理信息类
+ *
+ */
 class PhysicalProperties
 {
   public:

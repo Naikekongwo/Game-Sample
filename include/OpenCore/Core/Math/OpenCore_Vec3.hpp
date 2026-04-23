@@ -1,8 +1,16 @@
+/**
+ * @file OpenCore_Vec3.hpp
+ * @author your name (you@domain.com)
+ * @brief OpenCore引擎定义的三维向量计算类
+ * @version 0.1
+ * @date 2026-04-23
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
+
 #ifndef _OPENCORE_VEC3_HPP_
 #define _OPENCORE_VEC3_HPP_
-
-// OpenCore_Vec3
-// OpenCore引擎定义的三维向量
 
 #include <cmath>
 #include <stdexcept>
@@ -10,6 +18,10 @@
 
 using std::vector;
 
+/**
+ * @brief OpenCore引擎三维向量类
+ *
+ */
 class OpenCore_Vec3
 {
   public:

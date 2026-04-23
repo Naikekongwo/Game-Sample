@@ -28,52 +28,77 @@ void IWorldController::onEnter()
 {
     if (status == WorldControllerStatus::Registered)
     {
-        if (!tileRenderer)
-        {
-            // 创建Tile的渲染器
-            tileRenderer = std::make_unique<Tile>();
-            tileRenderer->Configure()
-                .Parent(nullptr)
-                .Anchor(AnchorPoint::Center)
-                .Alpha(0.0f);
-            Console_Log(
-                "IWorldController:: tileRenderer created successfully.");
-            tileRenderer->onEnter();
-        }
+        bool result = true;
 
-        if (!mapManager)
-        {
-            // 创建地图管理器
-            mapManager = std::make_unique<MapManager>();
+        result &= generateTileRenderer();
 
-            renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
-            renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
+        result &= generateMapManager();
 
-            left_border = (renderRangeX - 2) / 2 + 1;
-            up_border = (renderRangeY - 1) / 2 + 1;
+        result &= generateTheMan();
 
-            widthFactor = 1.0f / renderRangeX;
-            heightFactor = 1.0f / renderRangeY;
-
-            mapManager->registerClassicMap(1, "maps/test_circle_radius.ocmp");
-            mapManager->setCurrentID(1);
-
-            tileRenderer->setScale(widthFactor, heightFactor);
-
-            Console_Log("MapManager initialized successfully.");
-        }
-
-        if (!Entities.contains(1))
-        {
-            auto &entityreg = Gameplay::EntityReg.getInstance();
-            auto player = entityreg.createEntity(1);
-
-            player->enableDrawer(true);
-            Entities[1] = std::move(player);
-        }
+        if (!result)
+            Console_Log("IWorldController::"
+                        "世界控制器在初始化（onEnter）时出现了问题。\n");
 
         status = WorldControllerStatus::Ready;
     }
+}
+
+bool IWorldController::generateMapManager()
+{
+    if (mapManager != nullptr)
+        return true;
+
+    mapManager = std::make_unique<MapManager>();
+
+    renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
+    renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
+
+    left_border = (renderRangeX - 2) / 2 + 1;
+    up_border = (renderRangeY - 1) / 2 + 1;
+
+    widthFactor = 1.0f / renderRangeX;
+    heightFactor = 1.0f / renderRangeY;
+
+    // 注册一个默认的地图文件
+    mapManager->registerClassicMap(1, "maps/test_circle_radius.ocmp");
+    mapManager->setCurrentID(1);
+
+    tileRenderer->setScale(widthFactor, heightFactor);
+
+    Console_Log("IWorldController::地图管理器初始化成功");
+
+    return (mapManager != nullptr);
+}
+
+bool IWorldController::generateTileRenderer()
+{
+    if (tileRenderer != nullptr)
+        return true;
+
+    // 创建Tile的渲染器
+    tileRenderer = std::make_unique<Tile>();
+    tileRenderer->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::Center)
+        .Alpha(0.0f);
+    Console_Log("IWorldController:: tileRenderer created successfully.");
+    tileRenderer->onEnter();
+
+    return (tileRenderer != nullptr);
+}
+
+bool IWorldController::generateTheMan()
+{
+    if (Entities.contains(1))
+        return true;
+    auto &entityreg = Gameplay::EntityReg.getInstance();
+    auto player = entityreg.createEntity(1);
+
+    player->enableDrawer(true);
+    Entities[1] = std::move(player);
+
+    return Entities.contains(1);
 }
 
 void IWorldController::Draw()

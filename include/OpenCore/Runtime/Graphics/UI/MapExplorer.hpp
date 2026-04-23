@@ -1,8 +1,15 @@
+/**
+ * @file MapExplorer.hpp
+ * @author your name (you@domain.com)
+ * @brief 地图浏览器类的头文件
+ * @version 0.1
+ * @date 2026-04-23
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 #ifndef _MAP_EXPLORER_HPP_
 #define _MAP_EXPLORER_HPP_
-
-// MapExplorer.hpp
-// 地图窗口的UI控件
 
 enum class MapExpStatus
 {
@@ -18,6 +25,10 @@ class ImageBoard;
 #include "OpenCore/Runtime/Gameplay/WorldController/IWorldController.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
 
+/**
+ * @brief 地图浏览器类
+ *
+ */
 class MapExplorer : public UIElement
 {
   public:

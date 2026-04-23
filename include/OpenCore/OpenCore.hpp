@@ -42,8 +42,10 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 #include "OpenCore/Core/Thread/ThreadManager.hpp"
 #include "OpenCore/World/Map/Manager/MapManager.hpp"
 
-// 内核所对应的在整个游戏生命周期中只可能出现一次的管理器（即单例）的命名空间
-
+/**
+ * @brief 负责内核部分的单例管理器类
+ *
+ */
 namespace OpenCoreManagers
 {
 inline ThreadManager &ThrManager = ThreadManager::getInstance();
@@ -53,22 +55,33 @@ inline SoundEffectManager &SFXManager = SoundEffectManager::getInstance();
 inline SettingsManager &SetManager = SettingsManager::getInstance();
 } // namespace OpenCoreManagers
 
-// 游戏对应的模块单例
-
+/**
+ * @brief 游戏运行时的其他控制类
+ *
+ */
 namespace Gameplay
 {
 inline EntityRegister &EntityReg = EntityRegister::getInstance();
 inline ItemManager &ItemMgr = ItemManager::getInstance();
 inline IWorldController &WorldController = IWorldController::getInstance();
 } // namespace Gameplay
-
 #include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Runtime/Graphics/Configurator/DrawableConfigurator.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/ElementManager.hpp"
 #include "OpenCore/World/Stage/StageManager.hpp"
 
-// 模板
+/**
+ * @brief 创建材质的模板
+ *
+ * @tparam T
+ * @param id
+ * @param layer
+ * @param texID
+ * @param frameX
+ * @param frameY
+ * @return unique_ptr<T>
+ */
 template <typename T>
 unique_ptr<T> UI(const std::string &id, uint8_t layer, short texID,
                  short frameX, short frameY);
@@ -85,6 +98,10 @@ using std::make_shared;
 using std::shared_ptr;
 using std::string;
 
+/**
+ * @brief OpenCore的引擎主类
+ *
+ */
 class OpenEngine final
 {
   public:

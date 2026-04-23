@@ -1,7 +1,15 @@
 #pragma once
 
-// IWorldController.hpp
-// 世界控制器的基类
+/**
+ * @file IWorldController.hpp
+ * @author Naikekongwo
+ * @brief 世界控制器的头文件
+ * @version 0.1
+ * @date 2026-04-23
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 
 #include "OpenCore/Runtime/Gameplay/Backpack/Backpack.hpp"
 #include "OpenCore/Runtime/Gameplay/Entity/Entity.hpp"
@@ -26,6 +34,10 @@ enum class WorldControllerStatus
     Visible
 };
 
+/**
+ * @brief 世界控制器类
+ *
+ */
 class IWorldController
 {
   public:
@@ -37,19 +49,39 @@ class IWorldController
 
     void enabled(bool Visibility = true);
 
-    // 记录一次物品交换
+    /**
+     * @brief 记录物品的交换
+     *
+     * @param record
+     */
     void RecordItemExchange(const ItemExchangeRecord &record)
     {
         Market.push(record);
     }
 
+    /**
+     * @brief 是否启用主角玩家
+     *
+     * @param enabled
+     */
     void enablePlayer(bool enabled = true) { renderPlayer = enabled; }
 
+    /**
+     * @brief 获取玩家的物理信息
+     *
+     * @return PhysicalProperties&
+     */
     PhysicalProperties &getProperties()
     {
         return Entities.at(1)->getPhysicalProperties();
     }
 
+    /**
+     * @brief 创建背包（按照容量）
+     *
+     * @param backpackCapacity
+     * @return BackPtr
+     */
     BackPtr createBackpack(short backpackCapacity)
     {
         BackPtr backpack = std::make_shared<Backpack>(backpackCapacity);
@@ -62,32 +94,52 @@ class IWorldController
         return backpack;
     }
 
+    /**
+     * @brief 设置可见性
+     *
+     * @return true
+     * @return false
+     */
     bool isVisible() const noexcept
     {
         return status == WorldControllerStatus::Visible;
     }
 
+  private:
+    /**
+     * @brief 构建并初始化 MapManager对象
+     *
+     */
+    bool generateMapManager();
+
+    /**
+     * @brief 构建并初始化地图块渲染工具 tileRenderer 对象
+     *
+     */
+    bool generateTileRenderer();
+
+    /**
+     * @brief 初始化主角的实体
+     *
+     */
+    bool generateTheMan();
+
   protected:
-    // 地图管理器
     unique_ptr<MapManager> mapManager;
     uint8_t renderRangeX = 16;
     uint8_t renderRangeY = 9;
     uint8_t left_border = 7;
     uint8_t up_border = 4;
 
-    // 物品管理器
     queue<ItemExchangeRecord> Market;
     unordered_map<short, BackPtr> containers;
     int BackpackCounts = 1;
 
-    // 是否渲染人物
     bool renderPlayer = true;
     unordered_map<short, EntityPtr> Entities;
 
-    // 状态
     WorldControllerStatus status = WorldControllerStatus::Registered;
 
-    // 渲染管线
     unique_ptr<Tile> tileRenderer;
     float widthFactor = 1.0f;
     float heightFactor = 1.0f;
