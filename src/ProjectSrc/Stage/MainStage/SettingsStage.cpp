@@ -212,3 +212,7 @@ bool SettingsStage::handlEvents(SDL_Event *event)
 void SettingsStage::onDestroy() {}
 
 void SettingsStage::onRender() { Elements->onRender(); }
+
+bool SettingsStage::parseEvents(Event *event) { return true; }
+
+void SettingsStage::initializeComponents() {}

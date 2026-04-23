@@ -55,3 +55,7 @@ bool GameplayStage::handlEvents(SDL_Event *event)
     return true;
     // 暂时没有动作
 }
+
+void GameplayStage::initializeComponents() {}
+
+bool GameplayStage::parseEvents(Event *event) { return true; }

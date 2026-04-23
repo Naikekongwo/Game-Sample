@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include <SDL2/SDL_main.h>
 #include <functional>
 #include <memory>
 
@@ -187,3 +188,7 @@ bool MainStage::handlEvents(SDL_Event *event)
     Elements->handlEvents(*event, timer->getTotalTime());
     return true;
 }
+
+void MainStage::initializeComponents() {}
+
+bool MainStage::parseEvents(Event *event) { return true; }

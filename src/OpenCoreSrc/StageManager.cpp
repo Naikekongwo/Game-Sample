@@ -119,3 +119,20 @@ bool StageManager::handlEvents(SDL_Event *event)
     }
     return true;
 }
+
+bool StageManager::parseEvent(Event *event)
+{
+    if (!event)
+        return false;
+
+    for (auto it = stageContainer.rbegin(); it != stageContainer.rend(); ++it)
+    {
+        if (*it)
+        {
+            (*it)->parseEvents(event);
+            break;
+        }
+    }
+
+    return true;
+}

@@ -37,6 +37,8 @@ class PreloadStage : public Stage
 
     // 基类接口
     bool handlEvents(SDL_Event *event) override;
+    bool parseEvents(Event *event) override;
+    void initializeComponents() override;
     void onUpdate() override;
     void onRender() override;
 

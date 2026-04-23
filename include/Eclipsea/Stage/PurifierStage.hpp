@@ -19,6 +19,8 @@ class PurifierStage : public OverlayStage
     PurifierStage(Timer *timer, StageManager *sController);
 
     bool handlEvents(SDL_Event *event) override;
+    bool parseEvents(Event *event) override;
+    void initializeComponents() override;
     void onUpdate() override;
     void onRender() override;
 

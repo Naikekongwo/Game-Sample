@@ -111,3 +111,7 @@ void PurifierStage::onExit()
 }
 
 void PurifierStage::onDestroy() { Console_Log("PurifierStage::onDestroy"); }
+
+bool PurifierStage::parseEvents(Event *event) { return true; }
+
+void PurifierStage::initializeComponents() {}

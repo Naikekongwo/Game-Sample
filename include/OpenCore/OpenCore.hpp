@@ -39,6 +39,8 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
 
+#include "OpenCore/Core/Event/EventManager.hpp"
+
 #include "OpenCore/Core/Thread/ThreadManager.hpp"
 #include "OpenCore/World/Map/Manager/MapManager.hpp"
 
@@ -50,6 +52,7 @@ namespace OpenCoreManagers
 {
 inline ThreadManager &ThrManager = ThreadManager::getInstance();
 inline ResourceManager &ResManager = ResourceManager::getInstance();
+inline EventManager &EvtManager = EventManager::GetInstance();
 inline GraphicsManager &GFXManager = GraphicsManager::getInstance();
 inline SoundEffectManager &SFXManager = SoundEffectManager::getInstance();
 inline SettingsManager &SetManager = SettingsManager::getInstance();

@@ -29,4 +29,7 @@
 #define ILEGEL_ENTITYTYPE 0
 #define PLAYER_ENTITYTYPE 1
 
+#define RENDER_RANGE_X 16
+#define RENDER_RANGE_Y 9
+
 #endif //_MACROS_H_

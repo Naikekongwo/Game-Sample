@@ -51,6 +51,8 @@ bool OpenEngine::Initialize()
 
     // 创建 GFX 实例
     (void)GFXManager;
+    // 创建事件管理器实例
+    (void)EvtManager;
     // 创建线程管理器实例
     (void)ThrManager;
     // 创建资源管理器实例
@@ -98,7 +100,8 @@ bool OpenEngine::MainLoop()
     using namespace OpenCoreManagers;
 
     bool should_close = false;
-    SDL_Event event;
+    // SDL_Event event;
+    Event event;
 
     SetManager.RefreshSettings();
 
@@ -107,15 +110,16 @@ bool OpenEngine::MainLoop()
     while (!should_close)
     {
         // 事件处理
-        while (SDL_PollEvent(&event))
+        // while (SDL_PollEvent(&event))
+        while (EvtManager.PollEvent(event))
         {
-            switch (event.type)
+            switch (event.GetSDLEvent().type)
             {
             case SDL_QUIT:
                 should_close = true;
                 break;
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_F11)
+                if (event.GetSDLEvent().key.keysym.sym == SDLK_F11)
                 {
                     Uint32 flags = SDL_GetWindowFlags(GFXManager.getWindow());
                     if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
@@ -130,7 +134,7 @@ bool OpenEngine::MainLoop()
                 }
                 break;
             case SDL_WINDOWEVENT:
-                switch (event.window.event)
+                switch (event.GetSDLEvent().window.event)
                 {
                 case SDL_WINDOWEVENT_RESIZED:
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -158,7 +162,8 @@ bool OpenEngine::MainLoop()
             default:
                 break;
             }
-            sController->handlEvents(&event);
+            SDL_Event evt = event.GetSDLEvent();
+            sController->handlEvents(&evt);
         }
 
         timer->Tick();

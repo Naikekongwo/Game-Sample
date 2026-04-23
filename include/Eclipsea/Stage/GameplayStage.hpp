@@ -16,11 +16,15 @@ class GameplayStage : public BaseStage
     GameplayStage(Timer *timer, StageManager *sController);
 
     // 完成继承
-    bool handlEvents(SDL_Event *event);
+    bool handlEvents(SDL_Event *event) override;
 
-    void onUpdate();
+    bool parseEvents(Event *event) override;
 
-    void onRender();
+    void initializeComponents() override;
+
+    void onUpdate() override;
+
+    void onRender() override;
 
     // 准备函数
     void Init();

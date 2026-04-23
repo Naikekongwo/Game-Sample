@@ -20,6 +20,8 @@ class SettingsStage : public TopStage
     void onEnter() override;
     void onUpdate() override;
     bool handlEvents(SDL_Event *event) override;
+    bool parseEvents(Event *event) override;
+    void initializeComponents() override;
     void onExit() override;
     void onDestroy() override;
     void onRender() override;

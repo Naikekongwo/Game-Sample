@@ -12,6 +12,8 @@
 
 using std::unique_ptr;
 
+class Event;
+
 enum StageCommandType : uint8_t
 {
     Add,
@@ -43,8 +45,24 @@ class StageManager
     // 销毁某场景
     void removeStage(StageType sType);
 
-    // 处理事件的公共接口
+    /**
+     * @brief 处理事件的公共接口
+     * @deprecated 旧的SDL_Event
+     * @todo 该接口依赖于旧的SDL_Event，应当删除
+     * @param event
+     * @return true
+     * @return false
+     */
     bool handlEvents(SDL_Event *event);
+
+    /**
+     * @brief OpenCore的事件处理方法
+     *
+     * @param event
+     * @return true
+     * @return false
+     */
+    bool parseEvent(Event *event);
 
     // 更新逻辑（在这里应用所有延迟操作）
     void onUpdate();

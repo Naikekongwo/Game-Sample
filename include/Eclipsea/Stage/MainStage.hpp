@@ -26,6 +26,9 @@ class MainStage : public OverlayStage
     // 完成继承
     bool handlEvents(SDL_Event *event) override;
 
+    bool parseEvents(Event *event) override;
+
+    void initializeComponents() override;
     void onEnter() override;
     void onExit() override;
 

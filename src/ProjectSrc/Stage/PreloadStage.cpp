@@ -311,3 +311,7 @@ void PreloadStage::handleTitleSequence()
         break;
     }
 }
+
+void PreloadStage::initializeComponents() {}
+
+bool PreloadStage::parseEvents(Event *event) { return true; }

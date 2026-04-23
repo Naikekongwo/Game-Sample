@@ -85,3 +85,7 @@ bool ContinueStage::handlEvents(SDL_Event *event)
 void ContinueStage::onDestroy() {}
 
 void ContinueStage::onRender() { Elements->onRender(); }
+
+void ContinueStage::initializeComponents() {}
+
+bool ContinueStage::parseEvents(Event *event) { return true; }

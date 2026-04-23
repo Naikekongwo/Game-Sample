@@ -17,6 +17,8 @@
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
 #include "OpenCore/World/Map/Manager/MapManager.hpp"
 
+#include "OpenCore/Core/Macros.hpp"
+
 #include <cstdint>
 #include <memory>
 #include <queue>
@@ -45,6 +47,7 @@ class WorldController
 
     void onUpdate(float totalTime);
     void onEnter();
+
     void Draw();
 
     void enabled(bool Visibility = true);
@@ -126,10 +129,10 @@ class WorldController
 
   protected:
     unique_ptr<MapManager> mapManager;
-    uint8_t renderRangeX = 16;
-    uint8_t renderRangeY = 9;
-    uint8_t left_border = 7;
-    uint8_t up_border = 4;
+    uint8_t renderRangeX = RENDER_RANGE_X;
+    uint8_t renderRangeY = RENDER_RANGE_Y;
+    uint8_t left_border = renderRangeX / 2 - 1;
+    uint8_t up_border = (renderRangeY - 1) / 2;
 
     queue<ItemExchangeRecord> Market;
     unordered_map<short, BackPtr> containers;
