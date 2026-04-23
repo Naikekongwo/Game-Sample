@@ -8,8 +8,9 @@ void Entity::Configure(const EntityInfo &eInfo)
     // 拷贝EntityType
     Console_Log("Entities initialized successfully.");
 
-    backpack = Gameplay::MainWorldController.getInstance().createBackpack(
-        info.backpackCapacity);
+    backpack =
+        OpenEngine::getInstance().getServerWorldController()->createBackpack(
+            info.backpackCapacity);
 
     status = EntityStatus::Ready;
 }

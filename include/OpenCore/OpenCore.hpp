@@ -23,7 +23,7 @@ enum DebugFlags
     DEBUG_COPYRIGHT = 1 << 4
 };
 
-constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
+constexpr int DEBUG_MODE = DEBUG_COPYRIGHT;
 
 #include "OpenCore/Core/Macros.hpp"
 #include "OpenCore/Core/Timer.hpp"
@@ -66,7 +66,6 @@ namespace Gameplay
 {
 inline EntityRegister &EntityReg = EntityRegister::getInstance();
 inline ItemManager &ItemMgr = ItemManager::getInstance();
-inline WorldController &MainWorldController = WorldController::getInstance();
 } // namespace Gameplay
 #include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
@@ -128,11 +127,21 @@ class OpenEngine final
 
     GameInfo *getGameInfo() { return gameInfo.get(); }
     EntityRegister &getEntityRegister() { return Gameplay::EntityReg; }
+    WorldController *getServerWorldController()
+    {
+        return ServerWorldController.get();
+    }
 
   private:
     unique_ptr<GameInfo> gameInfo = std::make_unique<GameInfo>();
     unique_ptr<StageManager> sController;
     unique_ptr<Timer> timer;
+
+    /**
+     * @brief 本地游戏世界控制器
+     *
+     */
+    unique_ptr<WorldController> ServerWorldController;
 };
 
 #endif //_OPENCORE_H_

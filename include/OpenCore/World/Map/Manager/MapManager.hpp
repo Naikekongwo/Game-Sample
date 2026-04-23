@@ -15,9 +15,9 @@ using std::unique_ptr;
 class MapManager final
 {
   public:
-    bool registerClassicMap(short id, string path);
-    bool registerMap(unique_ptr<OpenCoreMap> map);
-    bool downloadMap(OpenCoreMap *map);
+    bool loadClassicMap(short id, string path);
+    bool addMap(unique_ptr<OpenCoreMap> map);
+    bool saveMap(OpenCoreMap *map);
 
     // 获取地图相关信息的函数
     uint16_t getMapWidth() const noexcept
@@ -43,7 +43,7 @@ class MapManager final
         return MapPool_.contains(mapID);
     }
 
-    bool legal() const noexcept
+    bool isReady() const noexcept
     {
         if (!contains(currentID) or MapPool_.empty())
             return false;
@@ -51,9 +51,9 @@ class MapManager final
         return MapPool_.at(currentID)->ready();
     }
 
-    bool refreshMap() const noexcept
+    bool initCurrentMap() const noexcept
     {
-        if (legal())
+        if (isReady())
             return false;
 
         return MapPool_.at(currentID)->onEnter();

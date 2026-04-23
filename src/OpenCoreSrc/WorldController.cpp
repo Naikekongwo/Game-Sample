@@ -1,12 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
 #include <memory>
 
-WorldController &WorldController::getInstance()
-{
-    static WorldController instance;
-    return instance;
-}
-
 void WorldController::enabled(bool Visibility)
 {
     if (status == WorldControllerStatus::Registered)
@@ -30,10 +24,9 @@ void WorldController::onEnter()
     {
         bool result = true;
 
+        // 连续初始化
         result &= generateTileRenderer();
-
         result &= generateMapManager();
-
         result &= generateTheMan();
 
         if (!result)
@@ -46,6 +39,8 @@ void WorldController::onEnter()
 
 bool WorldController::generateMapManager()
 {
+    if (!tileRenderer)
+        return false;
     if (mapManager != nullptr)
         return true;
 
@@ -61,7 +56,7 @@ bool WorldController::generateMapManager()
     heightFactor = 1.0f / renderRangeY;
 
     // 注册一个默认的地图文件
-    mapManager->registerClassicMap(1, "maps/test_circle_radius.ocmp");
+    mapManager->loadClassicMap(1, "maps/test_circle_radius.ocmp");
     mapManager->setCurrentID(1);
 
     tileRenderer->setScale(widthFactor, heightFactor);
@@ -104,7 +99,7 @@ bool WorldController::generateTheMan()
 void WorldController::Draw()
 {
     // 首先检查地图状态
-    if (status == WorldControllerStatus::Visible && mapManager->legal())
+    if (status == WorldControllerStatus::Visible && mapManager->isReady())
     {
         // 不空且当前地图准备好了才允许绘图
         auto &player = Entities.at(1);
@@ -152,18 +147,17 @@ void WorldController::Draw()
                 tileRenderer->setTileID(info.Terrain);
                 tileRenderer->Draw();
             }
+        }
+        if (Entities.contains(1))
+        {
 
-            if (Entities.contains(1))
-            {
-
-                Entities.at(1)->Draw(Position.x, Position.y);
-            }
+            Entities.at(1)->Draw(Position.x, Position.y);
         }
     }
     else
     {
-        if (!mapManager->legal())
-            mapManager->refreshMap();
+        if (!mapManager->isReady())
+            mapManager->initCurrentMap();
         Console_Log("WorldController::Failed! the map is not ready!");
     }
 }
@@ -196,10 +190,10 @@ void WorldController::onUpdate(float totalTime)
         // 交易数据处理完毕
 
         // 检查地图状态
-        if (!mapManager->legal())
+        if (!mapManager->isReady())
         {
             // 不空但不合法
-            mapManager->refreshMap();
+            mapManager->initCurrentMap();
         }
     }
 }

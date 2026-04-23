@@ -43,7 +43,7 @@ enum class WorldControllerStatus
 class WorldController
 {
   public:
-    static WorldController &getInstance();
+    // static WorldController &getInstance();
 
     void onUpdate(float totalTime);
     void onEnter();

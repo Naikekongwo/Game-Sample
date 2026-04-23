@@ -6,10 +6,13 @@ MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr)
 {
 
-    Gameplay::MainWorldController.getInstance().enabled(true);
+    OpenEngine::getInstance().getServerWorldController()->enabled(true);
 }
 
-void MapExplorer::onExit() { Gameplay::MainWorldController.enabled(false); }
+void MapExplorer::onExit()
+{
+    OpenEngine::getInstance().getServerWorldController()->enabled(false);
+}
 
 void MapExplorer::onEnter()
 {
@@ -25,8 +28,8 @@ void MapExplorer::Draw()
     if (status != MapExpStatus::Ready)
         return;
 
-    auto &World = Gameplay::MainWorldController.getInstance();
-    World.Draw();
+    auto World = OpenEngine::getInstance().getServerWorldController();
+    World->Draw();
 }
 
 void MapExplorer::onUpdate(float totalTime)
@@ -42,11 +45,11 @@ void MapExplorer::onUpdate(float totalTime)
 
 void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
 {
-    auto &World = Gameplay::MainWorldController.getInstance();
+    auto World = OpenEngine::getInstance().getServerWorldController();
 
-    if (status == MapExpStatus::Ready && World.isVisible())
+    if (status == MapExpStatus::Ready && World->isVisible())
     {
-        auto &pProperties = World.getProperties();
+        auto &pProperties = World->getProperties();
         if (event.type == SDL_KEYDOWN)
         {
             switch (event.key.keysym.sym)

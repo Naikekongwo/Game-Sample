@@ -4,14 +4,14 @@
 
 // 来实现地图的管理器吧
 
-bool MapManager::registerClassicMap(short id, string path)
+bool MapManager::loadClassicMap(short id, string path)
 {
     auto map = std::make_unique<ClassicMap>(id, path);
 
-    return registerMap(std::move(map));
+    return addMap(std::move(map));
 }
 
-bool MapManager::registerMap(unique_ptr<OpenCoreMap> map)
+bool MapManager::addMap(unique_ptr<OpenCoreMap> map)
 {
     if (MapPool_.contains(map->id))
     {
@@ -21,4 +21,4 @@ bool MapManager::registerMap(unique_ptr<OpenCoreMap> map)
     MapPool_[map->id] = std::move(map);
     return true;
 }
-bool MapManager::downloadMap(OpenCoreMap *map) { return true; }
+bool MapManager::saveMap(OpenCoreMap *map) { return true; }

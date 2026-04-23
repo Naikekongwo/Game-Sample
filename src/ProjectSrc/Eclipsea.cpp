@@ -20,7 +20,7 @@ bool Eclipsea::StartUp()
     auto sController = engine.getStageController();
 
     auto eclipseaInfo = std::make_unique<GameInfo>(
-        "Eclipsea", 1, 2, true,
+        "Eclipsea", 1, 8, true,
         std::make_unique<PreloadStage>(timer, sController), 1920, 1080, true);
 
     engine.GameRegistry(std::move(eclipseaInfo));
