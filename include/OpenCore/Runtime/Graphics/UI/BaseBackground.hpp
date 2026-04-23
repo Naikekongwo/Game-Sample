@@ -1,7 +1,7 @@
 /**
  * @file BaseBackground.hpp
  * @brief 背景层 UI 控件，支持九宫格拉伸缩放。
- * 
+ *
  * 提供基于九宫格（3x3 网格）的纹理绘制，可指定原生缩放像素大小，
  * 用于实现可拉伸的背景、面板等元素。
  */
@@ -19,20 +19,20 @@ using std::string;
  */
 enum class BaseBackgroundStatus
 {
-    empty,  ///< 未生成缓存纹理
-    ready   ///< 缓存纹理已准备就绪
+    empty, ///< 未生成缓存纹理
+    ready  ///< 缓存纹理已准备就绪
 };
 
 /**
  * @class BaseBackground
  * @brief 可九宫格拉伸的背景 UI 控件。
- * 
+ *
  * 继承自 UIElement，通过 3x3 网格划分原始纹理，根据目标矩形尺寸和
  * nativeScale 自动拉伸四个边和中间区域，实现无失真缩放。
  */
 class BaseBackground : public UIElement
 {
-public:
+  public:
     /**
      * @brief 构造背景控件。
      * @param id      唯一标识符。
@@ -54,9 +54,8 @@ public:
      */
     void setNativeScale(uint8_t scale);
 
-private:
-    uint8_t nativeScale = 60;                    ///< 九宫格边角缩放基数（像素）
+  private:
+    uint8_t nativeScale = 60; ///< 九宫格边角缩放基数（像素）
     BaseBackgroundStatus status = BaseBackgroundStatus::empty; ///< 当前状态
-    SDL_Texture *TextureCache = nullptr;         ///< 离屏缓存纹理指针
-};
+    SDL_Texture *TextureCache = nullptr; ///< 离屏缓存纹理指针
 };

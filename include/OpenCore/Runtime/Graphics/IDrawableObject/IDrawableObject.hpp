@@ -1,14 +1,12 @@
 /**
  * @file IDrawable.hpp
  * @brief 可绘制对象的基类接口。
- * 
+ *
  * 定义了所有可绘制对象的基本行为：事件处理、更新、渲染、生命周期回调、
  * 碰撞箱、动画管理、配置接口等。
  */
 #ifndef _IDRAWABLE_H_
 #define _IDRAWABLE_H_
-
-
 
 #include <SDL2/SDL.h>
 #include <memory>
@@ -35,14 +33,13 @@ enum class AnchorPoint : int;
 /**
  * @class IDrawableObject
  * @brief 可绘制对象的抽象基类。
- * 
+ *
  * 所有需要在场景中显示、具有位置、缩放、透明度、动画等属性的对象都应继承此类。
  * 提供统一的生命周期管理、碰撞箱获取、属性设置以及动画和配置器入口。
  */
 class IDrawableObject
 {
   public:
-    
     IDrawableObject();
 
     virtual ~IDrawableObject() = default;
@@ -167,7 +164,6 @@ class IDrawableObject
      */
     VisualState *getVisualState() const { return VState.get(); }
 
-    
     /**
      * @brief 获取动画管道对象，用于链式定义动画。
      * @return AnimationPipeline 对象（临时值）。
@@ -180,16 +176,15 @@ class IDrawableObject
     DrawableConfigurator Configure();
 
   protected:
-  std::string id;                             ///< 对象唯一标识符
-    uint8_t layer = 0;                          ///< 渲染图层（0 最低）
-    unique_ptr<AnimationManager> AnimeManager;  ///< 动画管理器
-    unique_ptr<VisualState> VState;             ///< 视觉状态（位置、缩放等）
-    uint16_t absWidth, absHeight;               ///< 原始宽高（像素）
-    unique_ptr<Texture> texture;                ///< 当前纹理
-    int magnetFactor = 0;                       ///< 磁吸因子（像素）
-    bool absolutePosite = true;                 ///< 位置是否基于绝对坐标（否则为相对父容器）
+    std::string id;                            ///< 对象唯一标识符
+    uint8_t layer = 0;                         ///< 渲染图层（0 最低）
+    unique_ptr<AnimationManager> AnimeManager; ///< 动画管理器
+    unique_ptr<VisualState> VState;            ///< 视觉状态（位置、缩放等）
+    uint16_t absWidth, absHeight;              ///< 原始宽高（像素）
+    unique_ptr<Texture> texture;               ///< 当前纹理
+    int magnetFactor = 0;                      ///< 磁吸因子（像素）
+    bool absolutePosite = true; ///< 位置是否基于绝对坐标（否则为相对父容器）
     IDrawableObject *parentContainer = nullptr; ///< 父容器指针
-    std::string id;
 };
 
 #endif //_IDRAWABLE_H_
