@@ -10,7 +10,7 @@
 #define _MAP_EXPLORER_HPP_
 
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
-#include "OpenCore/Runtime/Gameplay/WorldController/IWorldController.hpp"
+#include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
 
 /**

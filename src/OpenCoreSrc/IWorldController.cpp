@@ -1,13 +1,13 @@
 #include "OpenCore/OpenCore.hpp"
 #include <memory>
 
-IWorldController &IWorldController::getInstance()
+WorldController &WorldController::getInstance()
 {
-    static IWorldController instance;
+    static WorldController instance;
     return instance;
 }
 
-void IWorldController::enabled(bool Visibility)
+void WorldController::enabled(bool Visibility)
 {
     if (status == WorldControllerStatus::Registered)
     {
@@ -24,7 +24,7 @@ void IWorldController::enabled(bool Visibility)
     }
 }
 
-void IWorldController::onEnter()
+void WorldController::onEnter()
 {
     if (status == WorldControllerStatus::Registered)
     {
@@ -37,14 +37,14 @@ void IWorldController::onEnter()
         result &= generateTheMan();
 
         if (!result)
-            Console_Log("IWorldController::"
+            Console_Log("WorldController::"
                         "世界控制器在初始化（onEnter）时出现了问题。\n");
 
         status = WorldControllerStatus::Ready;
     }
 }
 
-bool IWorldController::generateMapManager()
+bool WorldController::generateMapManager()
 {
     if (mapManager != nullptr)
         return true;
@@ -66,12 +66,12 @@ bool IWorldController::generateMapManager()
 
     tileRenderer->setScale(widthFactor, heightFactor);
 
-    Console_Log("IWorldController::地图管理器初始化成功");
+    Console_Log("WorldController::地图管理器初始化成功");
 
     return (mapManager != nullptr);
 }
 
-bool IWorldController::generateTileRenderer()
+bool WorldController::generateTileRenderer()
 {
     if (tileRenderer != nullptr)
         return true;
@@ -82,13 +82,13 @@ bool IWorldController::generateTileRenderer()
         .Parent(nullptr)
         .Anchor(AnchorPoint::Center)
         .Alpha(0.0f);
-    Console_Log("IWorldController:: tileRenderer created successfully.");
+    Console_Log("WorldController:: tileRenderer created successfully.");
     tileRenderer->onEnter();
 
     return (tileRenderer != nullptr);
 }
 
-bool IWorldController::generateTheMan()
+bool WorldController::generateTheMan()
 {
     if (Entities.contains(1))
         return true;
@@ -101,7 +101,7 @@ bool IWorldController::generateTheMan()
     return Entities.contains(1);
 }
 
-void IWorldController::Draw()
+void WorldController::Draw()
 {
     // 首先检查地图状态
     if (status == WorldControllerStatus::Visible && mapManager->legal())
@@ -168,7 +168,7 @@ void IWorldController::Draw()
     }
 }
 
-void IWorldController::onUpdate(float totalTime)
+void WorldController::onUpdate(float totalTime)
 {
     // 可见才更新，否则不会更新
     if (status == WorldControllerStatus::Visible)

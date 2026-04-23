@@ -76,7 +76,7 @@ bool OpenEngine::Initialize()
     SFXManager.Init(&ResManager);
 
     // 初始化WorldController
-    (void)WorldController;
+    (void)MainWorldController;
 
     return true;
     // 初始化成功
@@ -175,7 +175,8 @@ bool OpenEngine::MainLoop()
 
         SDL_RenderPresent(GFXManager.getRenderer());
 
-        Gameplay::WorldController.getInstance().onUpdate(timer->getTotalTime());
+        Gameplay::MainWorldController.getInstance().onUpdate(
+            timer->getTotalTime());
 
         SDL_Delay(timer->getDelayTime());
         // 限制帧间隔

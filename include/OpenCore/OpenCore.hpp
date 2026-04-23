@@ -36,7 +36,7 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 #include "OpenCore/Runtime/Audio/SoundEffectManager.hpp"
 #include "OpenCore/Runtime/Config/SettingsManager.hpp"
 #include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
-#include "OpenCore/Runtime/Gameplay/WorldController/IWorldController.hpp"
+#include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
 
 #include "OpenCore/Core/Thread/ThreadManager.hpp"
@@ -63,7 +63,7 @@ namespace Gameplay
 {
 inline EntityRegister &EntityReg = EntityRegister::getInstance();
 inline ItemManager &ItemMgr = ItemManager::getInstance();
-inline IWorldController &WorldController = IWorldController::getInstance();
+inline WorldController &MainWorldController = WorldController::getInstance();
 } // namespace Gameplay
 #include "OpenCore/Runtime/Animation/AnimationPipeline.hpp"
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"

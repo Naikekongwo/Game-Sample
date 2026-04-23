@@ -5,15 +5,15 @@
 MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr)
 {
-    
-    Gameplay::WorldController.getInstance().enabled(true);
+
+    Gameplay::MainWorldController.getInstance().enabled(true);
 }
 
-void MapExplorer::onExit() { Gameplay::WorldController.enabled(false); }
+void MapExplorer::onExit() { Gameplay::MainWorldController.enabled(false); }
 
 void MapExplorer::onEnter()
 {
-    
+
     if (status == MapExpStatus::Creating)
     {
         status = MapExpStatus::Ready;
@@ -25,7 +25,7 @@ void MapExplorer::Draw()
     if (status != MapExpStatus::Ready)
         return;
 
-    auto &World = Gameplay::WorldController.getInstance();
+    auto &World = Gameplay::MainWorldController.getInstance();
     World.Draw();
 }
 
@@ -42,7 +42,7 @@ void MapExplorer::onUpdate(float totalTime)
 
 void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
 {
-    auto &World = Gameplay::WorldController.getInstance();
+    auto &World = Gameplay::MainWorldController.getInstance();
 
     if (status == MapExpStatus::Ready && World.isVisible())
     {

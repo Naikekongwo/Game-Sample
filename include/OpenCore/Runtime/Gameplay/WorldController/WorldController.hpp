@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * @file IWorldController.hpp
+ * @file WorldController.hpp
  * @author Naikekongwo
  * @brief 世界控制器的头文件
  * @version 0.1
@@ -38,10 +38,10 @@ enum class WorldControllerStatus
  * @brief 世界控制器类
  *
  */
-class IWorldController
+class WorldController
 {
   public:
-    static IWorldController &getInstance();
+    static WorldController &getInstance();
 
     void onUpdate(float totalTime);
     void onEnter();
