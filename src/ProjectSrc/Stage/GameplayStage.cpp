@@ -40,7 +40,11 @@ void GameplayStage::Init()
     mapexp->Configure()
         .Anchor(AnchorPoint::Center)
         .Posite(0.5f, 0.5f)
-        .Scale(1.0f, 1.0f);
+        .Scale(1.0f, 1.0f)
+        .Alpha(1.0f);
+
+    mapexp->setWorldController(
+        OpenEngine::getInstance().getServerWorldController());
 
     Elements->PushElement(std::move(mapexp));
 }

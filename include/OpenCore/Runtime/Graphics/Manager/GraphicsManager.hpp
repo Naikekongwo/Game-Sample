@@ -21,6 +21,13 @@
 #include <cstdarg>
 #include <memory>
 
+enum class RenderViewport
+{
+    Fullscreen,
+    Left,
+    Right,
+};
+
 inline void Console_Log(const char *fmt, ...)
 {
     va_list args;
@@ -35,7 +42,7 @@ inline void Console_Log(const char *fmt, ...)
 
 /**
  * @brief 图形模块
- *
+ * @todo 急需加入视窗裁切的相关方法
  */
 class GraphicsManager
 {
@@ -125,6 +132,8 @@ class GraphicsManager
 
     int TargetWindowHeight = 1080;
     int TargetWindowWidth = 1920;
+
+    RenderViewport rView = RenderViewport::Fullscreen;
 };
 
 #endif //_GFXCORE_H_

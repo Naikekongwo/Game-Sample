@@ -21,9 +21,11 @@
 
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <queue>
 #include <unordered_map>
 
+using std::optional;
 using std::queue;
 using std::unordered_map;
 
@@ -43,14 +45,8 @@ enum class WorldControllerStatus
 class WorldController
 {
   public:
-    // static WorldController &getInstance();
-
     void onUpdate(float totalTime);
     void onEnter();
-
-    void Draw();
-
-    void enabled(bool Visibility = true);
 
     /**
      * @brief 记录物品的交换
@@ -60,23 +56,6 @@ class WorldController
     void RecordItemExchange(const ItemExchangeRecord &record)
     {
         Market.push(record);
-    }
-
-    /**
-     * @brief 是否启用主角玩家
-     *
-     * @param enabled
-     */
-    void enablePlayer(bool enabled = true) { renderPlayer = enabled; }
-
-    /**
-     * @brief 获取玩家的物理信息
-     *
-     * @return PhysicalProperties&
-     */
-    PhysicalProperties &getProperties()
-    {
-        return Entities.at(1)->getPhysicalProperties();
     }
 
     /**
@@ -99,7 +78,7 @@ class WorldController
 
     /**
      * @brief 设置可见性
-     *
+     * @deprecated 不合适
      * @return true
      * @return false
      */
@@ -107,6 +86,38 @@ class WorldController
     {
         return status == WorldControllerStatus::Visible;
     }
+
+    /**
+     * @brief 获取对应ID的实体的物理信息
+     * @brief 只允许返回副本，不允许返回引用，防止越界修改
+     * @return PhysicalProperties
+     */
+    optional<PhysicalProperties> queryPhysicalProp(short EntityIndex);
+
+    /**
+     * @brief 获取地图管理器的状态
+     *
+     * @return true
+     * @return false
+     */
+    bool isMapReady() const noexcept { return mapManager->isReady(); }
+
+    /**
+     * @brief 查询BLOCK信息
+     *
+     * @param x
+     * @param y
+     * @return optional<BlockInfo>
+     */
+    optional<BlockInfo> queryBlockInfo(int gx, int gy);
+
+    /**
+     * @brief 初始化当前地图
+     *
+     * @return true
+     * @return false
+     */
+    bool initMap() { return mapManager->initCurrentMap(); }
 
   private:
     /**
@@ -116,12 +127,6 @@ class WorldController
     bool generateMapManager();
 
     /**
-     * @brief 构建并初始化地图块渲染工具 tileRenderer 对象
-     *
-     */
-    bool generateTileRenderer();
-
-    /**
      * @brief 初始化主角的实体
      *
      */
@@ -129,21 +134,12 @@ class WorldController
 
   protected:
     unique_ptr<MapManager> mapManager;
-    uint8_t renderRangeX = RENDER_RANGE_X;
-    uint8_t renderRangeY = RENDER_RANGE_Y;
-    uint8_t left_border = renderRangeX / 2 - 1;
-    uint8_t up_border = (renderRangeY - 1) / 2;
 
     queue<ItemExchangeRecord> Market;
     unordered_map<short, BackPtr> containers;
     int BackpackCounts = 1;
 
-    bool renderPlayer = true;
     unordered_map<short, EntityPtr> Entities;
 
     WorldControllerStatus status = WorldControllerStatus::Registered;
-
-    unique_ptr<Tile> tileRenderer;
-    float widthFactor = 1.0f;
-    float heightFactor = 1.0f;
 };

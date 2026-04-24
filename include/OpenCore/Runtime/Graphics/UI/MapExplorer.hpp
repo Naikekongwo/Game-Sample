@@ -12,6 +12,7 @@
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
+#include <memory>
 
 /**
  * @enum MapExpStatus
@@ -21,6 +22,14 @@ enum class MapExpStatus
 {
     Creating, ///< 创建中，尚未完成初始化
     Ready     ///< 就绪，可正常绘制与交互
+};
+
+enum class ViewportType
+{
+    Fullscreen,
+    LeftHalf,
+    RightHalf,
+    Free
 };
 
 class ClassicMap;
@@ -48,10 +57,38 @@ class MapExplorer : public UIElement
     void onExit() override;
     void handlEvents(SDL_Event &event, float totalTime) override;
 
+    /**
+     * @brief 设置地图窗口的世界绑定
+     *
+     * @param wrdController
+     * @return true
+     * @return false
+     */
+    bool setWorldController(WorldController *wrdController);
+
+    /**
+     * @brief 设置地图管理器的视口
+     *
+     * @param vType
+     */
+    void setExplorerViewPort(ViewportType vType);
+
   private:
     float widthFactor = 1.0f;  ///< 宽度缩放因子（当前未使用）
     float heightFactor = 1.0f; ///< 高度缩放因子（当前未使用）
     MapExpStatus status = MapExpStatus::Creating; ///< 当前状态
+
+    WorldController *m_wrdController = nullptr;  // 世界控制器
+    short m_focusEntityIndex = ENTITY_PLAYER_ID; // 焦点角色ID
+
+    ViewportType vType = ViewportType::Fullscreen; // 视口类型
+
+    uint8_t renderRangeX = RENDER_RANGE_X; // 渲染范围X
+    uint8_t renderRangeY = RENDER_RANGE_Y; // 渲染范围Y
+
+    unique_ptr<Tile> tileRenderer;
+
+    void initComponents();
 };
 
 #endif //_MAP_EXPLORER_HPP_

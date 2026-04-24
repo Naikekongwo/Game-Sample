@@ -107,6 +107,8 @@ bool OpenEngine::MainLoop()
 
     sController->changeStage(std::move(gameInfo->entranceStage));
 
+    ServerWorldController->onEnter();
+
     while (!should_close)
     {
         // 事件处理

@@ -10,6 +10,8 @@
 
 #include <memory>
 
+#define ENTITY_PLAYER_ID 1
+
 class Sprite;
 
 using std::string;
