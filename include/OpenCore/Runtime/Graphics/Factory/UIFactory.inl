@@ -2,6 +2,7 @@
 // UI的工厂方法
 #pragma once
 #include "OpenCore/OpenCore.hpp"
+#include <memory>
 
 // 通用版本
 template <typename T>
@@ -50,6 +51,14 @@ inline unique_ptr<CheckBox> UI<CheckBox>(const std::string &id, uint8_t layer,
         id, layer,
         std::move(std::make_unique<Texture>(
             1, 2, OpenCoreManagers::ResManager.GetTexture(TexID))));
+}
+
+template <>
+inline unique_ptr<TextArea> UI<TextArea>(const std::string &id, uint8_t layer,
+                                         short fontID, short reserve1,
+                                         short reserve0)
+{
+    return std::make_unique<TextArea>(id, layer, fontID);
 }
 
 // 特化版本：MultiImageBoard

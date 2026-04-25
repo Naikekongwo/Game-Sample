@@ -22,6 +22,7 @@
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
 #include "OpenCore/Runtime/Graphics/UI/MultiImageBoard.hpp"
 #include "OpenCore/Runtime/Graphics/UI/Scrollbar.hpp"
+#include "OpenCore/Runtime/Graphics/UI/TextArea.hpp"
 
 #include "OpenCore/Runtime/Graphics/Sprite/Tile.h"
 #include "OpenCore/Runtime/Graphics/Sprite/Waterrect.hpp"
