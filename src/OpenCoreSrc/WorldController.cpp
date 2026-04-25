@@ -13,8 +13,7 @@ void WorldController::onEnter()
         result &= generateTheMan();
 
         if (!result)
-            LOG("WorldController::"
-                "世界控制器在初始化（onEnter）时出现了问题。\n");
+            LOG("世界控制器在初始化时出现了问题");
 
         status = WorldControllerStatus::Ready;
     }
@@ -31,7 +30,7 @@ bool WorldController::generateMapManager()
     mapManager->loadClassicMap(1, "maps/test_circle_radius.ocmp");
     mapManager->setCurrentID(1);
 
-    LOG("WorldController::地图管理器初始化成功");
+    LOG("地图管理器初始化成功");
 
     return (mapManager != nullptr);
 }

@@ -11,10 +11,6 @@
 
 #pragma once
 
-// Debugger.hpp
-#include <utility>
-#pragma once
-
 #include <SDL2/SDL_log.h>
 #include <format>
 #include <source_location>

@@ -6,17 +6,14 @@ bool EntityRegister::registerEntity(const EntityInfo &eInfo)
     // 注册
     if (containsEntity(eInfo.EntityTypeID))
     {
-        LOG("EntityRegister::registerEntity failed to register 'cas "
-            "there's already one.");
+        LOG("发现重复的实体词条，注册失败");
         return false;
     }
 
     EntityList[eInfo.EntityTypeID] = eInfo;
     // 注册成功
 
-    LOG("EntityRegister::registerEntity Entity type ID : {} was "
-        "successfully registered.",
-        eInfo.EntityTypeID);
+    LOG("注册成功，实体类型: {}", eInfo.EntityTypeID);
 
     return true;
 }
@@ -28,8 +25,9 @@ EntityPtr EntityRegister::createEntity(short EntityTypeID)
     // 检查是否已经注册
     if (!containsEntity(EntityTypeID))
     {
-        LOG("EntityRegister::createEntity() failed to create entity "
-            "because it refers to a entity info that not exists.");
+        LOG("创建实体失败，该EntityTypeID指向一个未注册或者不存在的实体, "
+            "实体类型ID:{}",
+            EntityTypeID);
         return nullptr;
     }
     // 开始配置Entity

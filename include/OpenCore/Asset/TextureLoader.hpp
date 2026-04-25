@@ -54,7 +54,7 @@ inline SDL_Surface *LoadSurface(const string &path)
 
     if (!surface)
     {
-        LOG("IMG_Load failed: {}", IMG_GetError());
+        LOG("表面加载失败 {}", IMG_GetError());
         return nullptr;
     }
     SDL_Surface *convertedSurface =
@@ -66,13 +66,11 @@ inline SDL_Surface *LoadSurface(const string &path)
 
     if (!convertedSurface)
     {
-        LOG("{}", SDL_GetError());
+        LOG("SDL出现致命错误 错误代码:{}", SDL_GetError());
         return nullptr;
     }
 
-    LOG("OKOK");
-
-    LOG("{} surface loaded successfully.", path.c_str());
+    LOG("表面已经成功加载到内存 源路径:{}", path.c_str());
     return convertedSurface;
 }
 /**
@@ -93,7 +91,7 @@ inline TexturePtr ConvertSurfaceToTexture(SDL_Renderer *renderer,
 {
     if (!renderer)
     {
-        LOG("renderer is null");
+        LOG("渲染器为空，无法转换表面");
         SDL_FreeSurface(surface);
         return nullptr;
     }
@@ -104,7 +102,7 @@ inline TexturePtr ConvertSurfaceToTexture(SDL_Renderer *renderer,
 
     if (!texture)
     {
-        LOG("SDL_CreateTextureFromSurface failed: {}", SDL_GetError());
+        LOG("创建纹理时遇到错误 {}", SDL_GetError());
         return nullptr;
     }
 

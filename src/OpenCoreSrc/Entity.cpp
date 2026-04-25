@@ -6,7 +6,7 @@ void Entity::Configure(const EntityInfo &eInfo)
 {
     info = eInfo;
     // 拷贝EntityType
-    LOG("Entities initialized successfully.");
+    LOG("实体部署成功，实体类型：{}", info.EntityTypeID);
 
     backpack =
         OpenEngine::getInstance().getServerWorldController()->createBackpack(

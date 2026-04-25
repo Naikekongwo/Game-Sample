@@ -9,29 +9,25 @@ bool ResourceManager::Init()
 
     if (!renderer)
     {
-        LOG("ResourceManager::Init() encountered a null renderer.");
+        LOG("在初始化时访问到了空的渲染器");
         return false;
     }
 
     int result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
     if (!result)
     {
-        LOG("ResourceManager::ResourceManager() failed to initialize "
-            "SDL_Mixer: {}",
-            Mix_GetError());
+        LOG("初始化SDL_Mix失败，错误代码： {}", Mix_GetError());
         return false;
     }
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) <
         0)
     {
-        LOG("ResourceManager::ResourceManager() failed to open audio: {}",
-            Mix_GetError());
+        LOG("无法打开音频设备，错误代码:{}", Mix_GetError());
         return false;
     }
 
-    LOG("ResourceManager::ResourceManager() SDL_Mixer initialized "
-        "successfully.");
+    LOG("SDL_Mixer音频模块初始化成功");
 
     return true;
 }
@@ -60,11 +56,12 @@ void ResourceManager::LoadMusic(short id, const std::string &path)
     MusicPtr music = LoadMusicFromFile(path);
     if (!music)
     {
-        LOG("Mix_LoadMUS failed: {}", Mix_GetError());
+        LOG("音乐加载失败，路径: {}, 错误代码: {}", path.c_str(),
+            Mix_GetError());
         return;
     }
 
-    LOG("ResourceManager::LoadMusic music id {} loaded successfully.", id);
+    LOG("音乐加载成功，ID:{}", id);
     musicCache_[id] = std::move(music);
 }
 
@@ -75,7 +72,7 @@ Mix_Music *ResourceManager::GetMusic(short id)
 
     if (it == musicCache_.end())
     {
-        LOG("ResourceManager::GetMusic failed to get music id {}", id);
+        LOG("无法找到音乐对象，ID: {}", id);
         return nullptr;
     }
     return it->second.get();
@@ -90,7 +87,8 @@ void ResourceManager::LoadSound(short id, const std::string &path)
     SoundPtr sound = std::move(LoadSoundFromFile(path));
     if (!sound)
     {
-        LOG("Mix_LoadWAV failed: {}", Mix_GetError());
+        LOG("加载音效文件时失败，路径: {}，错误代码:{}", path.c_str(),
+            Mix_GetError());
         return;
     }
 

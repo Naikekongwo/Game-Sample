@@ -211,12 +211,11 @@ bool OpenEngine::GameRegistry(unique_ptr<GameInfo> gameInfo)
     if (!gameInfo->entranceStage)
     {
         // 空入口
-        LOG("OpenEngine::RegGame() You have a gameInfo that contains no "
-            "stage!");
+        LOG("游戏信息中未进行入口场景的注册！");
         return false;
     }
 
-    LOG("Game {} , Version {}.{}, Has been registered as the game.",
+    LOG("游戏名称: {} , 版本 {}.{}, 已经成功的注册到引擎中",
         gameInfo->gameName.c_str(), gameInfo->version_major,
         gameInfo->version_minor);
 

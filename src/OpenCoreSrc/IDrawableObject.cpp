@@ -43,7 +43,7 @@ SDL_Rect IDrawableObject::getLogicalBounds()
 {
     if (!VState)
     {
-        LOG("UIElement::getLogicalBounds() failed: VState is nullptr");
+        LOG("获取逻辑骨架失败，因为VisualState尚未初始化");
         return SDL_Rect{0, 0, 0, 0};
     }
 
@@ -111,8 +111,8 @@ void IDrawableObject::setScale(float w, float h)
         // texture一定要存在才能得到原始尺寸！
         if (!texture->texture)
         {
-            LOG("Element id {} was a texture less element, so you shouldn't "
-                "use WIDTH/HEIGHT-still in this element.",
+            LOG("该元素是一个无需纹理的元素，所以你不应该对本元素使用固定宽高比"
+                "的属性 元素ID:{}",
                 id.c_str());
             return;
         }
@@ -122,7 +122,8 @@ void IDrawableObject::setScale(float w, float h)
         absWidth = (w == 0.0f) ? h * parentRect.h * wph : parentRect.w * w;
         absHeight = (h == 0.0f) ? (w * parentRect.w) / wph : parentRect.h * h;
 
-        LOG("Still id {}, {}, {}, {}", id.c_str(), absWidth, absHeight, wph);
+        LOG("元素为固定宽高比 ID:{}, {}, {}, {}", id.c_str(), absWidth,
+            absHeight, wph);
     }
     else
     {
@@ -157,7 +158,7 @@ void IDrawableObject::changeTexture(unique_ptr<Texture> newTexture)
     }
     else
     {
-        LOG("ImageBoard::changeTexture() encountered a empty texture");
+        LOG("传入的新纹理非法");
     }
 }
 

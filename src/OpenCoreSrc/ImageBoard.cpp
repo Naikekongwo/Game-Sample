@@ -12,7 +12,7 @@ ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
 
     if (!texture)
     {
-        LOG("ImageBoard::ImageBoard() encountered a empty texture.");
+        LOG("初始化纹理时遇到空纹理");
         return;
     }
 

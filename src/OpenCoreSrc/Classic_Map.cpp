@@ -6,8 +6,8 @@ bool ClassicMap::onEnter()
     LoadMapFromFile(mapPath, Data, MapWidth, MapHeight);
     status = MapStatus::Loaded;
 
-    LOG("Map path:{}, width {} height {} Loaded successfully.", mapPath.c_str(),
-        MapWidth, MapHeight);
+    LOG("地图加载成功 路径: {}，宽:{}，高:{}", mapPath.c_str(), MapWidth,
+        MapHeight);
     return true;
 }
 

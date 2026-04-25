@@ -16,7 +16,7 @@ BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
     // 获取材质
     if (!texture)
     {
-        LOG("BaseBackground::BaseBackground() encountered a empty texture.");
+        LOG("参数中的纹理非法");
         return;
     }
     this->texture = std::move(texture);

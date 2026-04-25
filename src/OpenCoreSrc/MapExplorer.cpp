@@ -9,7 +9,7 @@ MapExplorer::MapExplorer(const string &id, short layer)
 
     renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
     renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
-    LOG("A");
+    LOG("初始化成功");
 }
 
 void MapExplorer::onExit()
@@ -24,13 +24,12 @@ void MapExplorer::onEnter()
     {
         initComponents();
         status = MapExpStatus::Ready;
-        LOG("B");
+        LOG("状态从创建态更新到准备态");
     }
 }
 
 void MapExplorer::Draw()
 {
-    LOG("C");
     if (status != MapExpStatus::Ready)
         return;
 
@@ -39,36 +38,15 @@ void MapExplorer::Draw()
 
     // <新的自绘制逻辑>
 
-    LOG("ControllerStatus {}", (m_wrdController == nullptr) ? 0 : 1);
-
     // 首先检查地图状态
     if (VState->getAlpha() > 0.0f && m_wrdController->isMapReady())
     {
-
-        // 不空且当前地图准备好了才允许绘图
-        // auto &player = Entities.at(1);
-        // auto &pProperties = player->getPhysicalProperties();
-
-        // Vec3 Position = pProperties.getPosition();
-
-        // auto map_width = mapManager->getMapWidth();
-        // auto map_height = mapManager->getMapHeight();
-
-        // if ((Position.x < 0 or Position.x > map_width) or
-        //     (Position.y > map_height or Position.y < 0))
-        // {
-        //     Position = {0, 0, 0};
-        //     pProperties.setPosition(Position);
-        //     Vec3 Speed{0, 0, 0};
-        //     pProperties.setSpeed(Speed);
-        // }
-        // //先放弃实体渲染
 
         auto cameraProp =
             m_wrdController->queryPhysicalProp(m_focusEntityIndex);
         if (cameraProp == std::nullopt)
         {
-            LOG("MapExplorer::Draw() 重心不存在");
+            LOG("渲染的焦点实体物理信息并不存在");
             return;
         }
 
@@ -76,8 +54,6 @@ void MapExplorer::Draw()
 
         int center_x = Position.x + 0.5f;
         int center_y = Position.y + 0.5f;
-
-        LOG("{} {}", center_x, center_y);
 
         float offsetX = Position.x - center_x;
         float offsetY = Position.y - center_y;
@@ -109,22 +85,13 @@ void MapExplorer::Draw()
                 tileRenderer->Draw();
             }
         }
-        // if (Entities.contains(1))
-        // {
-
-        //     Entities.at(1)->Draw(Position.x, Position.y);
-        // }
-        // 实体不应当拥有渲染方法
     }
     else
     {
         if (!m_wrdController->isMapReady())
             m_wrdController->initMap();
-        LOG("WorldController::Failed! the map is not ready!");
+        LOG("世界控制器尚未准备完毕");
     }
-    LOG("d");
-    // <新的自绘制逻辑>
-    // World->Draw();
 }
 
 void MapExplorer::onUpdate(float totalTime)
@@ -143,56 +110,7 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
     if (m_wrdController == nullptr)
         return;
 
-    auto World = m_wrdController;
-
-    if (status == MapExpStatus::Ready && World->isVisible())
-    {
-        auto pProperties = World->queryPhysicalProp(ENTITY_PLAYER_ID);
-        if (pProperties == std::nullopt)
-        {
-            LOG("MapExplorer::handlEvents empty player properties.\n");
-            return;
-        }
-        if (event.type == SDL_KEYDOWN)
-        {
-            switch (event.key.keysym.sym)
-            {
-            case SDLK_w:
-            {
-                Vec3 speed{0, -5, 0};
-                pProperties->addSpeed(speed);
-                break;
-            }
-            case SDLK_s:
-            {
-                Vec3 speed{0, 5, 0};
-                pProperties->addSpeed(speed);
-                break;
-            }
-            case SDLK_a:
-            {
-                Vec3 speed{-5, 0, 0};
-                pProperties->addSpeed(speed);
-                break;
-            }
-            case SDLK_d:
-            {
-                Vec3 speed{5, 0, 0};
-                pProperties->addSpeed(speed);
-                break;
-            }
-            case SDLK_SPACE:
-            {
-                LOG("Fuck");
-                Vec3 speed{0, 0, 5};
-                pProperties->addSpeed(speed);
-                break;
-            }
-            default:
-                break;
-            }
-        }
-    }
+    // 暂时为空
 }
 
 bool MapExplorer::setWorldController(WorldController *wrdController)
@@ -209,8 +127,8 @@ void MapExplorer::setExplorerViewPort(ViewportType vType)
 {
     this->vType = vType;
 
-    renderRangeX = OpenCoreManagers::SetManager.getRenderWidth().use_count();
-    renderRangeY = OpenCoreManagers::SetManager.getRenderHeight().use_count();
+    renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
+    renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
 
     if (vType != ViewportType::Fullscreen && vType != ViewportType::Free)
     {
@@ -229,7 +147,7 @@ void MapExplorer::initComponents()
         .Parent(nullptr)
         .Anchor(AnchorPoint::Center)
         .Alpha(0.0f);
-    LOG("MapExplorer:: tileRenderer created successfully.");
+    LOG("地图单位渲染器创建成功");
     tileRenderer->onEnter();
 
     // 初始化Tile的大小
