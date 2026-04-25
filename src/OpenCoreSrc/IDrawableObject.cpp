@@ -2,27 +2,22 @@
 #include "OpenCore/OpenCore.hpp"
 #include <cstdint>
 
-
 void IDrawableObject::setSequential(bool sequential)
 {
     AnimeManager->setSequence(sequential);
 }
-
 
 void IDrawableObject::onUpdate(float totalTime)
 {
     AnimeManager->onUpdate(totalTime, *VState);
 }
 
-
 void IDrawableObject::handlEvents(SDL_Event &event, float totalTime)
 {
     // 空置
 }
 
-
 void IDrawableObject::setAnchor(AnchorPoint anchor) { VState->Anchor = anchor; }
-
 
 void IDrawableObject::setPosition(float xPercent, float yPercent)
 {
@@ -48,20 +43,18 @@ SDL_Rect IDrawableObject::getLogicalBounds()
 {
     if (!VState)
     {
-        Console_Log("UIElement::getLogicalBounds() failed: VState is nullptr");
+        LOG("UIElement::getLogicalBounds() failed: VState is nullptr");
         return SDL_Rect{0, 0, 0, 0};
     }
 
     const auto &state = *VState;
 
-    
     float logicalWidth = absWidth * state.scale[0];
     float logicalHeight = absHeight * state.scale[1];
 
     float logicalX = state.Position[0];
     float logicalY = state.Position[1];
 
-    
     switch (state.Anchor)
     {
     case AnchorPoint::TopLeft:
@@ -96,13 +89,11 @@ SDL_Rect IDrawableObject::getLogicalBounds()
         break;
     }
 
-    
     return SDL_Rect{static_cast<int>(std::round(logicalX)),
                     static_cast<int>(std::round(logicalY)),
                     static_cast<int>(std::round(logicalWidth)),
                     static_cast<int>(std::round(logicalHeight))};
 }
-
 
 void IDrawableObject::setScale(float w, float h)
 {
@@ -120,8 +111,7 @@ void IDrawableObject::setScale(float w, float h)
         // texture一定要存在才能得到原始尺寸！
         if (!texture->texture)
         {
-            Console_Log(
-                "Element id %s was a texture less element, so you shouldn't "
+            LOG("Element id {} was a texture less element, so you shouldn't "
                 "use WIDTH/HEIGHT-still in this element.",
                 id.c_str());
             return;
@@ -132,17 +122,15 @@ void IDrawableObject::setScale(float w, float h)
         absWidth = (w == 0.0f) ? h * parentRect.h * wph : parentRect.w * w;
         absHeight = (h == 0.0f) ? (w * parentRect.w) / wph : parentRect.h * h;
 
-        Console_Log("Still id %s, %d, %d, %f", id.c_str(), absWidth, absHeight,
-                    wph);
+        LOG("Still id {}, {}, {}, {}", id.c_str(), absWidth, absHeight, wph);
     }
     else
     {
-        
+
         absWidth = w * parentRect.w;
         absHeight = h * parentRect.h;
     }
 }
-
 
 AnimationPipeline IDrawableObject::Animate()
 {
@@ -151,18 +139,15 @@ AnimationPipeline IDrawableObject::Animate()
     return AnimationPipeline(AnimeManager.get(), nullptr);
 }
 
-
 DrawableConfigurator IDrawableObject::Configure()
 {
     return DrawableConfigurator(this);
 }
 
-
 bool IDrawableObject::isAnimeFinished() const
 {
     return AnimeManager->isFinished();
 }
-
 
 void IDrawableObject::changeTexture(unique_ptr<Texture> newTexture)
 {
@@ -172,7 +157,7 @@ void IDrawableObject::changeTexture(unique_ptr<Texture> newTexture)
     }
     else
     {
-        Console_Log("ImageBoard::changeTexture() encountered a empty texture");
+        LOG("ImageBoard::changeTexture() encountered a empty texture");
     }
 }
 
@@ -189,11 +174,10 @@ void IDrawableObject::setParentContainer(IDrawableObject *parentContainer)
 {
     if (parentContainer != nullptr)
     {
-        
+
         absolutePosite = false;
         this->parentContainer = parentContainer;
 
-        
         this->layer = parentContainer->getLayer() + 1;
     }
     else
@@ -221,7 +205,7 @@ void IDrawableObject::setMagnetFactor(int Margin) { magnetFactor = Margin; }
 
 SDL_Rect IDrawableObject::magnetRect(const SDL_Rect &srcRect) const
 {
-    
+
     if (magnetFactor == 0)
         return srcRect;
 
@@ -236,15 +220,12 @@ SDL_Rect IDrawableObject::magnetRect(const SDL_Rect &srcRect) const
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
 
-    
     float normX = (mouseX - centerX) / static_cast<float>(centerX);
     float normY = (mouseY - centerY) / static_cast<float>(centerY);
 
-    
     normX = std::clamp(normX, -1.0f, 1.0f);
     normY = std::clamp(normY, -1.0f, 1.0f);
 
-    
     float offsetX = normX * magnetFactor;
     float offsetY = normY * magnetFactor;
 

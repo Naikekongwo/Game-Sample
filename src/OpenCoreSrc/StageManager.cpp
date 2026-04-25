@@ -6,8 +6,8 @@ void StageManager::changeStage(unique_ptr<Stage> newStage)
 {
     if (!newStage)
     {
-        Console_Log("StageManager::changeStage encountered a nulllptr in "
-                    "pushing stage.");
+        LOG("StageManager::changeStage encountered a nulllptr in "
+            "pushing stage.");
         return;
     }
     commandQueue.push(std::make_unique<StageCommand>(
@@ -46,8 +46,8 @@ void StageManager::processCommandQueue()
     bool output = !commandQueue.empty();
 
     if (output)
-        Console_Log("processCommandQueue start, queue size = %d",
-                    (int)commandQueue.size());
+        LOG("processCommandQueue start, queue size = {}",
+            (int)commandQueue.size());
 
     while (!commandQueue.empty())
     {
@@ -62,7 +62,7 @@ void StageManager::processCommandQueue()
         switch (task->opt)
         {
         case StageCommandType::Add:
-            Console_Log("Adding stage to index %zu", index);
+            LOG("Adding stage to index %zu", index);
             if (stageContainer[index])
             {
                 stageContainer[index]->onExit();
@@ -75,7 +75,7 @@ void StageManager::processCommandQueue()
             break;
 
         case StageCommandType::Remove:
-            Console_Log("Removing stage at index %zu", index);
+            LOG("Removing stage at index %zu", index);
             if (stageContainer[index])
             {
                 stageContainer[index]->onExit();
@@ -91,8 +91,8 @@ void StageManager::processCommandQueue()
     }
 
     if (output)
-        Console_Log("processCommandQueue end, queue size = %d",
-                    (int)commandQueue.size());
+        LOG("processCommandQueue end, queue size = {}",
+            (int)commandQueue.size());
 }
 
 void StageManager::onRender()

@@ -73,8 +73,7 @@ bool PurifierStage::buildStage()
                 [](auto &elem)
                 {
                     auto state = elem->getVisualState();
-                    Console_Log(
-                        "Adding fade out effect to %s, transparency, %f",
+                    LOG("Adding fade out effect to {}, transparency, {}",
                         elem->getID().c_str(), state->transparency);
                     elem->Animate()
                         .Fade(state->transparency, 0.0f, 5.0f)
@@ -100,17 +99,17 @@ bool PurifierStage::buildStage()
 }
 void PurifierStage::onEnter()
 {
-    Console_Log("PurifierStage::onEnter");
+    LOG("PurifierStage::onEnter");
     buildStage();
 }
 
 void PurifierStage::onExit()
 {
     Elements->onDestroy();
-    Console_Log("PurifierStage::onExit - cleared elements");
+    LOG("PurifierStage::onExit - cleared elements");
 }
 
-void PurifierStage::onDestroy() { Console_Log("PurifierStage::onDestroy"); }
+void PurifierStage::onDestroy() { LOG("PurifierStage::onDestroy"); }
 
 bool PurifierStage::parseEvents(Event *event) { return true; }
 

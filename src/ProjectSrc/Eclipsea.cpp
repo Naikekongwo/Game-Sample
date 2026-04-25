@@ -12,7 +12,7 @@ bool Eclipsea::StartUp()
 
     if (!engine.Initialize())
     {
-        Console_Log("Engine initialization was failed.");
+        LOG("Engine initialization was failed.");
         return false;
     }
 
@@ -42,7 +42,7 @@ bool Eclipsea::StartUp()
     }
     catch (std::exception e)
     {
-        Console_Log("The engine exited with error : %s", e.what());
+        LOG("The engine exited with error : {}", e.what());
         return false;
     }
 

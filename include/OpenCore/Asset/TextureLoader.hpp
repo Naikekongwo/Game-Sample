@@ -15,6 +15,7 @@
 #include "OpenCore/Core/Helpers/Debugger.hpp"
 
 #include <memory>
+#include <source_location>
 #include <string>
 
 using std::string;
@@ -45,7 +46,7 @@ using FontPtr = unique_ptr<TTF_Font, TextureDeleter>;
  * @return SDL_Surface* 转换后的表面指针，失败时返回 nullptr。
  *         调用者负责在不再需要时调用 SDL_FreeSurface 释放。
  *
- * @note 若加载或转换失败，会通过 Console_Log 输出错误信息。
+ * @note 若加载或转换失败，会通过 Log 输出错误信息。
  */
 inline SDL_Surface *LoadSurface(const string &path)
 {
@@ -53,7 +54,7 @@ inline SDL_Surface *LoadSurface(const string &path)
 
     if (!surface)
     {
-        Console_Log("IMG_Load failed: %s", IMG_GetError());
+        LOG("IMG_Load failed: {}", IMG_GetError());
         return nullptr;
     }
     SDL_Surface *convertedSurface =
@@ -65,13 +66,13 @@ inline SDL_Surface *LoadSurface(const string &path)
 
     if (!convertedSurface)
     {
-        Console_Log("SDL_ConvertSurfaceFormat failed: %s", SDL_GetError());
+        LOG("{}", SDL_GetError());
         return nullptr;
     }
 
-    Console_Log(
-        "ResourceManager::LoadSurface() %s surface loaded successfully.",
-        path.c_str());
+    LOG("OKOK");
+
+    LOG("{} surface loaded successfully.", path.c_str());
     return convertedSurface;
 }
 /**
@@ -92,8 +93,7 @@ inline TexturePtr ConvertSurfaceToTexture(SDL_Renderer *renderer,
 {
     if (!renderer)
     {
-        Console_Log(
-            "ResourceManager::ConvertSurfaceToTexture: renderer is null");
+        LOG("renderer is null");
         SDL_FreeSurface(surface);
         return nullptr;
     }
@@ -104,7 +104,7 @@ inline TexturePtr ConvertSurfaceToTexture(SDL_Renderer *renderer,
 
     if (!texture)
     {
-        Console_Log("SDL_CreateTextureFromSurface failed: %s", SDL_GetError());
+        LOG("SDL_CreateTextureFromSurface failed: {}", SDL_GetError());
         return nullptr;
     }
 

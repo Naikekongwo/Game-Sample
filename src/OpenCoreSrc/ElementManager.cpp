@@ -30,15 +30,11 @@ bool ElementManager::PushElement(unique_ptr<IDrawableObject> element)
                   [](const unique_ptr<IDrawableObject> &a,
                      const unique_ptr<IDrawableObject> &b)
                   { return a->getLayer() < b->getLayer(); });
-        Console_Log(
-            "ElementManager::PushElement() successfully pushed a element id %s",
-            id.c_str());
+        LOG("successfully pushed a element id {}", id.c_str());
         return true;
     }
 
-    Console_Log(
-        "ElementManager::PushElement() the element is already existed! %s",
-        id.c_str());
+    LOG("the element is already existed! {}", id.c_str());
     return false;
 }
 
@@ -70,9 +66,9 @@ unique_ptr<IDrawableObject> ElementManager::getElement(const std::string &id)
 {
     if (find(id) == nullptr)
     {
-        Console_Log("ElementManager::getElement() failed to get element : %s, "
-                    "because we cannot find it.",
-                    id.c_str());
+        LOG("failed to get element : {}, "
+            "because we cannot find it.",
+            id.c_str());
         return nullptr;
     }
 

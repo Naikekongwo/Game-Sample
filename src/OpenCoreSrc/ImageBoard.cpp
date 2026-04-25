@@ -10,12 +10,10 @@ ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
     this->id = id;
     this->layer = layer;
 
-
     if (!texture)
     {
-        Console_Log("ImageBoard::ImageBoard() encountered a empty texture.");
+        LOG("ImageBoard::ImageBoard() encountered a empty texture.");
         return;
-        
     }
 
     this->texture = std::move(texture);

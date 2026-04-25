@@ -14,8 +14,7 @@ bool Stage::transferElementTo(Stage *destStage, const std::string &id)
     if (srcElements->find(id) == nullptr)
     {
         // 本场景不存在该元素
-        Console_Log(
-            "Stage::transferE... failed to transfer a element to certain "
+        LOG("Stage::transferE... failed to transfer a element to certain "
             "stage because it didn't exist.");
         return false;
     }
@@ -30,8 +29,8 @@ bool Stage::transferElementTo(Stage *destStage, const std::string &id)
 
 void Stage::onDestroy()
 {
-    Console_Log("Stage::onDestroy() The %d stage is going to destroy.",
-                stageType);
+    LOG("Stage::onDestroy() The {} stage is going to destroy.",
+        (uint8_t)stageType);
     Elements.reset();
 }
 

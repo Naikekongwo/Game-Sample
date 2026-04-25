@@ -9,7 +9,7 @@ Waterrect::Waterrect(const string &id, short layer, unique_ptr<Texture> texture)
 
     if (!texture)
     {
-        Console_Log("Waterrect() Encountered a empty texture.");
+        LOG("Waterrect() Encountered a empty texture.");
         return;
     }
 

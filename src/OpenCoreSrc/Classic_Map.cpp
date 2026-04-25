@@ -6,8 +6,8 @@ bool ClassicMap::onEnter()
     LoadMapFromFile(mapPath, Data, MapWidth, MapHeight);
     status = MapStatus::Loaded;
 
-    Console_Log("Map path:%s, width %d height %d Loaded successfully.",
-                mapPath.c_str(), MapWidth, MapHeight);
+    LOG("Map path:{}, width {} height {} Loaded successfully.", mapPath.c_str(),
+        MapWidth, MapHeight);
     return true;
 }
 

@@ -9,7 +9,7 @@ MapExplorer::MapExplorer(const string &id, short layer)
 
     renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
     renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
-    Console_Log("A");
+    LOG("A");
 }
 
 void MapExplorer::onExit()
@@ -24,13 +24,13 @@ void MapExplorer::onEnter()
     {
         initComponents();
         status = MapExpStatus::Ready;
-        Console_Log("B");
+        LOG("B");
     }
 }
 
 void MapExplorer::Draw()
 {
-    Console_Log("C");
+    LOG("C");
     if (status != MapExpStatus::Ready)
         return;
 
@@ -39,7 +39,7 @@ void MapExplorer::Draw()
 
     // <新的自绘制逻辑>
 
-    Console_Log("ControllerStatus %d", (m_wrdController == nullptr) ? 0 : 1);
+    LOG("ControllerStatus {}", (m_wrdController == nullptr) ? 0 : 1);
 
     // 首先检查地图状态
     if (VState->getAlpha() > 0.0f && m_wrdController->isMapReady())
@@ -68,7 +68,7 @@ void MapExplorer::Draw()
             m_wrdController->queryPhysicalProp(m_focusEntityIndex);
         if (cameraProp == std::nullopt)
         {
-            Console_Log("MapExplorer::Draw() 重心不存在");
+            LOG("MapExplorer::Draw() 重心不存在");
             return;
         }
 
@@ -77,7 +77,7 @@ void MapExplorer::Draw()
         int center_x = Position.x + 0.5f;
         int center_y = Position.y + 0.5f;
 
-        Console_Log("%d %d", center_x, center_y);
+        LOG("{} {}", center_x, center_y);
 
         float offsetX = Position.x - center_x;
         float offsetY = Position.y - center_y;
@@ -120,9 +120,9 @@ void MapExplorer::Draw()
     {
         if (!m_wrdController->isMapReady())
             m_wrdController->initMap();
-        Console_Log("WorldController::Failed! the map is not ready!");
+        LOG("WorldController::Failed! the map is not ready!");
     }
-    Console_Log("d");
+    LOG("d");
     // <新的自绘制逻辑>
     // World->Draw();
 }
@@ -150,7 +150,7 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
         auto pProperties = World->queryPhysicalProp(ENTITY_PLAYER_ID);
         if (pProperties == std::nullopt)
         {
-            Console_Log("MapExplorer::handlEvents empty player properties.\n");
+            LOG("MapExplorer::handlEvents empty player properties.\n");
             return;
         }
         if (event.type == SDL_KEYDOWN)
@@ -183,7 +183,7 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
             }
             case SDLK_SPACE:
             {
-                Console_Log("Fuck");
+                LOG("Fuck");
                 Vec3 speed{0, 0, 5};
                 pProperties->addSpeed(speed);
                 break;
@@ -229,7 +229,7 @@ void MapExplorer::initComponents()
         .Parent(nullptr)
         .Anchor(AnchorPoint::Center)
         .Alpha(0.0f);
-    Console_Log("MapExplorer:: tileRenderer created successfully.");
+    LOG("MapExplorer:: tileRenderer created successfully.");
     tileRenderer->onEnter();
 
     // 初始化Tile的大小

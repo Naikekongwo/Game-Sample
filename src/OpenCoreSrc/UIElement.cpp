@@ -5,20 +5,18 @@ SDL_Rect UIElement::getLogicalBounds()
 {
     if (!VState)
     {
-        Console_Log("UIElement::getLogicalBounds() failed: VState is nullptr");
+        LOG("UIElement::getLogicalBounds() failed: VState is nullptr");
         return SDL_Rect{0, 0, 0, 0};
     }
 
     const auto &state = *VState;
 
-   
     float logicalWidth = absWidth * state.scale[0];
     float logicalHeight = absHeight * state.scale[1];
 
     float logicalX = state.Position[0];
     float logicalY = state.Position[1];
 
-    
     switch (state.Anchor)
     {
     case AnchorPoint::TopLeft:
@@ -53,7 +51,6 @@ SDL_Rect UIElement::getLogicalBounds()
         break;
     }
 
-    
     return SDL_Rect{static_cast<int>(std::round(logicalX)),
                     static_cast<int>(std::round(logicalY)),
                     static_cast<int>(std::round(logicalWidth)),
@@ -75,8 +72,7 @@ UIElement::UIElement(const string &id, short layer, unique_ptr<Texture> texture)
 
     if (!texture)
     {
-        Console_Log(
-            "UIElement id %s encountered a empty texture, but relax, for some "
+        LOG("UIElement id {} encountered a empty texture, but relax, for some "
             "element have child element it's ok to init without texture.",
             id.c_str());
     }

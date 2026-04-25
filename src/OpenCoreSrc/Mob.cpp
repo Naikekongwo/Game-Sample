@@ -13,7 +13,7 @@ Mob::Mob(short TextureID)
         4, 4, OpenCoreManagers::ResManager.GetTexture(TextureID));
     // 定义了该MOB的纹理
 
-    Console_Log("Mob created!");
+    LOG("Mob created!");
 }
 
 void Mob::Draw()

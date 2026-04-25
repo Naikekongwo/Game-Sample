@@ -153,7 +153,7 @@ bool OpenEngine::MainLoop()
             //     {
             //     case SDL_CONTROLLER_BUTTON_B:
             //     {
-            //         SDL_Log("OK");
+            //         SDL_LOG("OK");
             //         SDL_GameControllerRumble(controller, 8000, 4000, 1000);
             //         break;
             //     }
@@ -211,15 +211,14 @@ bool OpenEngine::GameRegistry(unique_ptr<GameInfo> gameInfo)
     if (!gameInfo->entranceStage)
     {
         // 空入口
-        Console_Log(
-            "OpenEngine::RegGame() You have a gameInfo that contains no "
+        LOG("OpenEngine::RegGame() You have a gameInfo that contains no "
             "stage!");
         return false;
     }
 
-    Console_Log("Game %s , Version %d.%d, Has been registered as the game.",
-                gameInfo->gameName.c_str(), gameInfo->version_major,
-                gameInfo->version_minor);
+    LOG("Game {} , Version {}.{}, Has been registered as the game.",
+        gameInfo->gameName.c_str(), gameInfo->version_major,
+        gameInfo->version_minor);
 
     this->gameInfo = std::move(gameInfo);
 

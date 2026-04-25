@@ -11,8 +11,8 @@ bool SoundEffectManager::Init(ResourceManager *resManager)
 {
     if (!resManager)
     {
-        Console_Log("SFXManager::Init() failed to init, encountering a null "
-                    "resource manager.");
+        LOG("SFXManager::Init() failed to init, encountering a null "
+            "resource manager.");
         return false;
     }
 
@@ -38,7 +38,7 @@ void SoundEffectManager::playSE(int id, int loops)
 {
     if (!resourceManager)
     {
-        Console_Log("SFXManager::playSE() resource manager is null");
+        LOG("SFXManager::playSE() resource manager is null");
         return;
     }
 
@@ -46,7 +46,7 @@ void SoundEffectManager::playSE(int id, int loops)
     Mix_Chunk *chunk = resourceManager->GetSound(id);
     if (!chunk)
     {
-        Console_Log("SFXManager::playSE() failed to get sound effect %d", id);
+        LOG("SFXManager::playSE() failed to get sound effect {}", id);
         return;
     }
 
@@ -62,9 +62,9 @@ void SoundEffectManager::playSE(int id, int loops)
     }
     else
     {
-        Console_Log("SFXManager::playSE() failed to play sound effect %d, no "
-                    "available channels",
-                    id);
+        LOG("SFXManager::playSE() failed to play sound effect {}, no "
+            "available channels",
+            id);
     }
 }
 
@@ -129,8 +129,7 @@ void SoundEffectManager::setAllSEVolume(int volume)
 bool SoundEffectManager::loadBGM(int id)
 {
     bgm = resourceManager->GetMusic(id);
-    Console_Log("SFXManager::loadBGM() loading music from memory %d",
-                (bgm != nullptr));
+    LOG("SFXManager::loadBGM() loading music from memory {}", (bgm != nullptr));
     return bgm != nullptr;
 }
 

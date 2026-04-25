@@ -20,8 +20,7 @@ void MoveAnimation::onUpdate(float totalTime, VisualState &state)
 
     if (duration <= 0.0f)
     {
-        Console_Log(
-            "MoveAnimation: duration <= 0, animation failed."); // 持续时间非法
+        LOG("MoveAnimation: duration <= 0, animation failed."); // 持续时间非法
         finished = true;
         return;
     }
@@ -34,8 +33,8 @@ void MoveAnimation::onUpdate(float totalTime, VisualState &state)
         t = 1.0f;
         finished = !isLooping;
         if (isLooping)
-            startTime = totalTime;                         // 循环则重置起始时间
-        Console_Log("MoveAnimation: animation finished."); // 动画结束
+            startTime = totalTime;                 // 循环则重置起始时间
+        LOG("MoveAnimation: animation finished."); // 动画结束
     }
     // 线性插值计算当前位置
     state.Position[0] = startX + (endX - startX) * t;
@@ -50,5 +49,5 @@ void MoveAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;
-    Console_Log("MoveAnimation: reset success.");
+    LOG("MoveAnimation: reset success.");
 }

@@ -6,17 +6,17 @@ bool EntityRegister::registerEntity(const EntityInfo &eInfo)
     // 注册
     if (containsEntity(eInfo.EntityTypeID))
     {
-        Console_Log("EntityRegister::registerEntity failed to register 'cas "
-                    "there's already one.");
+        LOG("EntityRegister::registerEntity failed to register 'cas "
+            "there's already one.");
         return false;
     }
 
     EntityList[eInfo.EntityTypeID] = eInfo;
     // 注册成功
 
-    Console_Log("EntityRegister::registerEntity Entity type ID : %d was "
-                "successfully registered.",
-                eInfo.EntityTypeID);
+    LOG("EntityRegister::registerEntity Entity type ID : {} was "
+        "successfully registered.",
+        eInfo.EntityTypeID);
 
     return true;
 }
@@ -28,8 +28,8 @@ EntityPtr EntityRegister::createEntity(short EntityTypeID)
     // 检查是否已经注册
     if (!containsEntity(EntityTypeID))
     {
-        Console_Log("EntityRegister::createEntity() failed to create entity "
-                    "because it refers to a entity info that not exists.");
+        LOG("EntityRegister::createEntity() failed to create entity "
+            "because it refers to a entity info that not exists.");
         return nullptr;
     }
     // 开始配置Entity

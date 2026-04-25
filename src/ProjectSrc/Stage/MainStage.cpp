@@ -132,7 +132,7 @@ void MainStage::setupButtons()
     continueButton->setOnClick(
         [this]()
         {
-            Console_Log("Continue button clicked");
+            LOG("Continue button clicked");
             auto continues =
                 std::make_unique<ContinueStage>(timer, sController);
             sController->changeStage(std::move(continues));
@@ -142,7 +142,7 @@ void MainStage::setupButtons()
     settingButton->setOnClick(
         [this]()
         {
-            Console_Log("Setting button clicked");
+            LOG("Setting button clicked");
             auto settings = std::make_unique<SettingsStage>(timer, sController);
             sController->changeStage(std::move(settings));
             // TODO: 打开设置界面

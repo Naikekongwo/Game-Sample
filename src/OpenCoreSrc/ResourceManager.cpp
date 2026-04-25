@@ -1,6 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
 
-
 #include <SDL2/SDL_image.h>
 
 bool ResourceManager::Init()
@@ -10,33 +9,32 @@ bool ResourceManager::Init()
 
     if (!renderer)
     {
-        Console_Log("ResourceManager::Init() encountered a null renderer.");
+        LOG("ResourceManager::Init() encountered a null renderer.");
         return false;
     }
 
     int result = Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
     if (!result)
     {
-        Console_Log("ResourceManager::ResourceManager() failed to initialize "
-                    "SDL_Mixer: %s",
-                    Mix_GetError());
-        return false;
-    }
-
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) < 0)
-    {
-        Console_Log(
-            "ResourceManager::ResourceManager() failed to open audio: %s",
+        LOG("ResourceManager::ResourceManager() failed to initialize "
+            "SDL_Mixer: {}",
             Mix_GetError());
         return false;
     }
 
-    Console_Log("ResourceManager::ResourceManager() SDL_Mixer initialized "
-                "successfully.");
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 2048) <
+        0)
+    {
+        LOG("ResourceManager::ResourceManager() failed to open audio: {}",
+            Mix_GetError());
+        return false;
+    }
+
+    LOG("ResourceManager::ResourceManager() SDL_Mixer initialized "
+        "successfully.");
 
     return true;
 }
-
 
 void ResourceManager::CleanUp()
 {
@@ -47,13 +45,11 @@ void ResourceManager::CleanUp()
     renderer = nullptr;
 }
 
-
 ResourceManager &ResourceManager::getInstance()
 {
     static ResourceManager instance;
     return instance;
 }
-
 
 void ResourceManager::LoadMusic(short id, const std::string &path)
 {
@@ -64,14 +60,13 @@ void ResourceManager::LoadMusic(short id, const std::string &path)
     MusicPtr music = LoadMusicFromFile(path);
     if (!music)
     {
-        Console_Log("Mix_LoadMUS failed: %s", Mix_GetError());
+        LOG("Mix_LoadMUS failed: {}", Mix_GetError());
         return;
     }
 
-    Console_Log("ResourceManager::LoadMusic music id %d loaded successfully.", id);
+    LOG("ResourceManager::LoadMusic music id {} loaded successfully.", id);
     musicCache_[id] = std::move(music);
 }
-
 
 Mix_Music *ResourceManager::GetMusic(short id)
 {
@@ -80,12 +75,11 @@ Mix_Music *ResourceManager::GetMusic(short id)
 
     if (it == musicCache_.end())
     {
-        Console_Log("ResourceManager::GetMusic failed to get music id %d", id);
+        LOG("ResourceManager::GetMusic failed to get music id {}", id);
         return nullptr;
     }
     return it->second.get();
 }
-
 
 void ResourceManager::LoadSound(short id, const std::string &path)
 {
@@ -96,15 +90,14 @@ void ResourceManager::LoadSound(short id, const std::string &path)
     SoundPtr sound = std::move(LoadSoundFromFile(path));
     if (!sound)
     {
-        Console_Log("Mix_LoadWAV failed: %s", Mix_GetError());
+        LOG("Mix_LoadWAV failed: {}", Mix_GetError());
         return;
     }
 
-    Console_Log("ResourceManager::LoadSound sound id %d loaded successfully.", id);
+    LOG("ResourceManager::LoadSound sound id {} loaded successfully.", id);
 
     soundCache_[id] = std::move(sound);
 }
-
 
 Mix_Chunk *ResourceManager::GetSound(short id)
 {
@@ -113,36 +106,31 @@ Mix_Chunk *ResourceManager::GetSound(short id)
 
     if (it == soundCache_.end())
     {
-        Console_Log("ResourceManager::GetSound failed to get sound id %d", id);
+        LOG("ResourceManager::GetSound failed to get sound id {}", id);
         return nullptr;
     }
     return it->second.get();
 }
 
-
 void ResourceManager::LoadTexture(short id, const std::string &path)
 {
-    
+
     {
         std::lock_guard<std::mutex> lock(textureMutex_);
         if (textureCache_.count(id))
             return;
     }
 
-    
     SDL_Surface *surface = LoadSurface(path);
     if (!surface)
     {
-        Console_Log(
-            "ResourceManager::LoadTexture failed to load surface for id: %d",
+        LOG("ResourceManager::LoadTexture failed to load surface for id: {}",
             id);
         return;
     }
 
-    
     ConvertToTexture(id, surface);
 }
-
 
 shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
 {
@@ -151,7 +139,7 @@ shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
 
     if (it == textureCache_.end())
     {
-        Console_Log("ResourceManager::GetTexture failed to get texture id %d", id);
+        LOG("ResourceManager::GetTexture failed to get texture id {}", id);
         return nullptr;
     }
     return shared_ptr<SDL_Texture>(
@@ -159,18 +147,17 @@ shared_ptr<SDL_Texture> ResourceManager::GetTexture(short id)
         [](SDL_Texture *) { /* do nothing, managed by unique_ptr */ });
 }
 
-
-std::future<void> ResourceManager::LoadMusicAsync(short id, const std::string &path)
+std::future<void> ResourceManager::LoadMusicAsync(short id,
+                                                  const std::string &path)
 {
     return EnqueueTask([this, id, path] { LoadMusic(id, path); });
 }
 
-
-std::future<void> ResourceManager::LoadSoundAsync(short id, const std::string &path)
+std::future<void> ResourceManager::LoadSoundAsync(short id,
+                                                  const std::string &path)
 {
     return EnqueueTask([this, id, path] { LoadSound(id, path); });
 }
-
 
 void ResourceManager::LoadFont(short id, const std::string &path, int size)
 {
@@ -181,20 +168,19 @@ void ResourceManager::LoadFont(short id, const std::string &path, int size)
     FontPtr font(TTF_OpenFont(path.c_str(), size));
     if (!font)
     {
-        Console_Log("TTF_OpenFont failed: %s", TTF_GetError());
+        LOG("TTF_OpenFont failed: {}", TTF_GetError());
         return;
     }
 
-    Console_Log("ResourceManager::LoadFont font id %d loaded successfully.", id);
+    LOG("ResourceManager::LoadFont font id {} loaded successfully.", id);
     fontCache_[id] = std::move(font);
 }
 
-
-std::future<void> ResourceManager::LoadFontAsync(short id, const std::string &path, int size)
+std::future<void>
+ResourceManager::LoadFontAsync(short id, const std::string &path, int size)
 {
     return EnqueueTask([this, id, path, size] { LoadFont(id, path, size); });
 }
-
 
 TTF_Font *ResourceManager::GetFont(short id)
 {
@@ -203,71 +189,71 @@ TTF_Font *ResourceManager::GetFont(short id)
 
     if (it == fontCache_.end())
     {
-        Console_Log("ResourceManager::GetFont failed to get font id %d", id);
+        LOG("ResourceManager::GetFont failed to get font id {}", id);
         return nullptr;
     }
     return it->second.get();
 }
 
-std::future<void> ResourceManager::LoadTextureAsync(short id, const std::string &path)
+std::future<void> ResourceManager::LoadTextureAsync(short id,
+                                                    const std::string &path)
 {
     auto promise = std::make_shared<std::promise<void>>();
     std::future<void> future = promise->get_future();
 
-    EnqueueTask([this, id, path, promise]
-    {
-        SDL_Surface *surface = nullptr;
-        try
+    EnqueueTask(
+        [this, id, path, promise]
         {
-            surface = LoadSurface(path);
-            if (!surface)
+            SDL_Surface *surface = nullptr;
+            try
             {
-                throw std::runtime_error("LoadSurface failed");
+                surface = LoadSurface(path);
+                if (!surface)
+                {
+                    throw std::runtime_error("LoadSurface failed");
+                }
             }
-        }
-        catch (...)
-        {
-            promise->set_exception(std::current_exception());
-            return;
-        }
-
-        ///< 将纹理创建任务提交到主线程队列（现通过 ThreadManager）
-        ThreadManager::getInstance().submit_to_main_thread(
-            [this, id, surface, promise]
+            catch (...)
             {
-                try
+                promise->set_exception(std::current_exception());
+                return;
+            }
+
+            ///< 将纹理创建任务提交到主线程队列（现通过 ThreadManager）
+            ThreadManager::getInstance().submit_to_main_thread(
+                [this, id, surface, promise]
                 {
-                    ConvertToTexture(id, surface);
-                    promise->set_value();
-                }
-                catch (...)
-                {
-                    promise->set_exception(std::current_exception());
-                }
-            });
-    });
+                    try
+                    {
+                        ConvertToTexture(id, surface);
+                        promise->set_value();
+                    }
+                    catch (...)
+                    {
+                        promise->set_exception(std::current_exception());
+                    }
+                });
+        });
 
     return future;
 }
 
-
 void ResourceManager::ClearAll()
 {
-    Console_Log("ResourceManager::ClearAll() started");
+    LOG("ResourceManager::ClearAll() started");
 
-    
     ThreadManager::getInstance().wait_for_all_tasks();
-    
+
     ThreadManager::getInstance().process_main_thread_tasks();
 
-    Console_Log("ResourceManager::ClearAll() stopped task queue successfully");
+    LOG("ResourceManager::ClearAll() stopped task queue successfully");
 
     {
         std::lock_guard<std::mutex> lock(musicMutex_);
-        Console_Log("ResourceManager::ClearAll() clearing music cache, count=%d",
-                    static_cast<int>(musicCache_.size()));
+        LOG("ResourceManager::ClearAll() clearing music cache, count={}",
+            static_cast<int>(musicCache_.size()));
         musicCache_.clear();
-        Console_Log("ResourceManager::ClearAll() cleared music cache");
+        LOG("ResourceManager::ClearAll() cleared music cache");
     }
 
     {
@@ -277,10 +263,10 @@ void ResourceManager::ClearAll()
 
     {
         std::lock_guard<std::mutex> lock(textureMutex_);
-        Console_Log("ResourceManager::ClearAll() clearing texture cache, count=%d",
-                    static_cast<int>(textureCache_.size()));
+        LOG("ResourceManager::ClearAll() clearing texture cache, count={}",
+            static_cast<int>(textureCache_.size()));
         textureCache_.clear();
-        Console_Log("ResourceManager::ClearAll() cleared texture cache");
+        LOG("ResourceManager::ClearAll() cleared texture cache");
     }
 
     {
@@ -288,15 +274,13 @@ void ResourceManager::ClearAll()
         fontCache_.clear();
     }
 
-    Console_Log("ResourceManager::ClearAll() finished");
+    LOG("ResourceManager::ClearAll() finished");
 }
-
 
 void ResourceManager::ProcessMainThreadTasks()
 {
     ThreadManager::getInstance().process_main_thread_tasks();
 }
-
 
 void ResourceManager::ConvertToTexture(short id, SDL_Surface *surface)
 {
@@ -304,21 +288,22 @@ void ResourceManager::ConvertToTexture(short id, SDL_Surface *surface)
 
     if (!texture)
     {
-        Console_Log("Failed to convert surface!");
+        LOG("Failed to convert surface!");
         return;
     }
     textureCache_[id] = std::move(texture);
-    Console_Log("ResourceManager: texture id %d converted and stored", id);
+    LOG("ResourceManager: texture id {} converted and stored", id);
 }
 
 std::future<void> ResourceManager::LoadResourcesFromJson(short id)
 {
-    std::string filename = "assets/script/STAGE_" + std::to_string(id) + ".json";
+    std::string filename =
+        "assets/script/STAGE_" + std::to_string(id) + ".json";
 
     FILE *file = fopen(filename.c_str(), "rb");
     if (!file)
     {
-        Console_Log("Error: JSON file %s does not exist", filename.c_str());
+        LOG("Error: JSON file {} does not exist", filename.c_str());
         std::promise<void> p;
         p.set_value();
         return p.get_future();
@@ -332,8 +317,8 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
 
     if (doc.HasParseError())
     {
-        Console_Log("JSON parse error (%s): %s", filename.c_str(),
-                    rapidjson::GetParseError_En(doc.GetParseError()));
+        LOG("JSON parse error ({}): {}", filename.c_str(),
+            rapidjson::GetParseError_En(doc.GetParseError()));
         std::promise<void> p;
         p.set_value();
         return p.get_future();
@@ -341,7 +326,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
 
     if (!doc.IsObject())
     {
-        Console_Log("Error: JSON root is not an object in %s", filename.c_str());
+        LOG("Error: JSON root is not an object in {}", filename.c_str());
         std::promise<void> p;
         p.set_value();
         return p.get_future();
@@ -358,7 +343,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         }
         catch (...)
         {
-            Console_Log("Invalid resource ID format: %s", it->name.GetString());
+            LOG("Invalid resource ID format: {}", it->name.GetString());
             continue;
         }
 
@@ -367,7 +352,7 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
             !resObj["path"].IsString() || !resObj.HasMember("category") ||
             !resObj["category"].IsString())
         {
-            Console_Log("Invalid resource object for ID: %d", resourceId);
+            LOG("Invalid resource object for ID: {}", resourceId);
             continue;
         }
 
@@ -390,9 +375,9 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         {
             if (!resObj.HasMember("size") || !resObj["size"].IsInt())
             {
-                Console_Log("Font resource missing or invalid font size for "
-                            "resource ID: %d",
-                            resourceId);
+                LOG("Font resource missing or invalid font size for "
+                    "resource ID: {}",
+                    resourceId);
                 continue;
             }
             int size = resObj["size"].GetInt();
@@ -400,8 +385,8 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
         }
         else
         {
-            Console_Log("Unknown category '%s' for resource ID: %d",
-                        category.c_str(), resourceId);
+            LOG("Unknown category '{}' for resource ID: {}", category.c_str(),
+                resourceId);
         }
     }
 
@@ -412,13 +397,11 @@ std::future<void> ResourceManager::LoadResourcesFromJson(short id)
                           {
                               future.wait();
                           }
-                          Console_Log(
-                              "ResourceManager: Resources loaded from JSON "
-                              "file %s was finished",
+                          LOG("ResourceManager: Resources loaded from JSON "
+                              "file {} was finished",
                               filename.c_str());
                       });
 }
-
 
 void ResourceManager::FreeMusic(short id)
 {
@@ -454,7 +437,6 @@ void ResourceManager::FreeFont(short id)
         fontCache_.erase(id);
     }
 }
-
 
 std::future<void> ResourceManager::FreeMusicAsync(short id)
 {

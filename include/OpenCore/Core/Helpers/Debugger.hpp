@@ -11,21 +11,47 @@
 
 #pragma once
 
+// Debugger.hpp
+#include <utility>
+#pragma once
+
 #include <SDL2/SDL_log.h>
+#include <format>
+#include <source_location>
+#include <string>
 
 #include "OpenCore/Core/Macros.hpp"
 
-inline void Console_Log(const char *fmt, ...)
+using std::format;
+using std::source_location;
+using std::string;
+using std::vformat;
+
+/**
+ * @brief 自动填充路径的日志打印方法(带参数)
+ *
+ */
+template <typename... Args>
+inline void AutoLog(const source_location &location, const char *fmt,
+                    Args &&...args)
 {
 #if defined(LOG_ENABLED)
-    va_list args;
-    va_start(args, fmt);
+    string msgBody = vformat(fmt, std::make_format_args(args...));
 
-    // 四个参数都提供
-    SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, fmt,
-                    args);
+    string funcName = location.function_name();
+    size_t leftLimit = funcName.find_last_of('\(');
+    string leftPart = funcName.substr(0, leftLimit);
+    size_t funcStart = leftPart.find_last_of(' ');
+    string prefix = format(
+        "{}() ", funcName.substr(funcStart + 1, leftLimit - funcStart - 1));
 
-    va_end(args);
+    // 删除类型名称得到方法名称，作为前缀
+
+    msgBody = prefix + msgBody;
+
+    SDL_Log("%s", msgBody.c_str());
 #endif
-    // 此处为宏，如果没有LOG_ENABLED宏存在，那么就在编译阶段优化这个函数
 }
+
+#define LOG(fmt, ...)                                                          \
+    AutoLog(std::source_location::current(), fmt, ##__VA_ARGS__)

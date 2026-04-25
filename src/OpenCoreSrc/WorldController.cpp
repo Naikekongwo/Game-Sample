@@ -13,8 +13,8 @@ void WorldController::onEnter()
         result &= generateTheMan();
 
         if (!result)
-            Console_Log("WorldController::"
-                        "世界控制器在初始化（onEnter）时出现了问题。\n");
+            LOG("WorldController::"
+                "世界控制器在初始化（onEnter）时出现了问题。\n");
 
         status = WorldControllerStatus::Ready;
     }
@@ -31,7 +31,7 @@ bool WorldController::generateMapManager()
     mapManager->loadClassicMap(1, "maps/test_circle_radius.ocmp");
     mapManager->setCurrentID(1);
 
-    Console_Log("WorldController::地图管理器初始化成功");
+    LOG("WorldController::地图管理器初始化成功");
 
     return (mapManager != nullptr);
 }
@@ -75,7 +75,7 @@ bool WorldController::generateTheMan()
 //         int center_x = Position.x + 0.5f;
 //         int center_y = Position.y + 0.5f;
 
-//         Console_Log("%d %d", center_x, center_y);
+//         LOG("{} {}", center_x, center_y);
 
 //         float offsetX = Position.x - center_x;
 //         float offsetY = Position.y - center_y;
@@ -111,7 +111,7 @@ bool WorldController::generateTheMan()
 //     {
 //         if (!mapManager->isReady())
 //             mapManager->initCurrentMap();
-//         Console_Log("WorldController::Failed! the map is not ready!");
+//         LOG("WorldController::Failed! the map is not ready!");
 //     }
 // }
 
