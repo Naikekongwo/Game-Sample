@@ -32,4 +32,8 @@
 #define RENDER_RANGE_X 16
 #define RENDER_RANGE_Y 9
 
+// DEBUG部分
+// LOG_ENABLED ：日志打印的开关宏
+#define LOG_ENABLED
+
 #endif //_MACROS_H_

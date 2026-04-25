@@ -39,6 +39,8 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN;
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
 
+#include "OpenCore/Core/Helpers/Debugger.hpp"
+
 #include "OpenCore/Core/Event/EventManager.hpp"
 
 #include "OpenCore/Core/Thread/ThreadManager.hpp"

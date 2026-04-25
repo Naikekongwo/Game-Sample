@@ -118,7 +118,7 @@ int GraphicsManager::Draw(SDL_Texture *texture, const Rect *srcRect,
 
     if (!texture)
     {
-        SDL_Log("GFXManager::Draw Encountered a empty texture.");
+        Console_Log("GFXManager::Draw Encountered a empty texture.");
         return -1;
     }
     if (srcRect)
