@@ -151,6 +151,10 @@
         "path": "assets/entity/player_texture.png",
         "category": "texture"
     },
+    "2037": {
+        "path": "assets/ui/stage/continue_title.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

@@ -1,9 +1,10 @@
 #pragma once
 
-// SettingsStage.hpp
-// 设置页面
+// ContinueStage.hpp
+// 继续页面
 
 #include "OpenCore/World/Stage/TopStage.hpp"
+#include <memory>
 
 enum class ContinuePhase
 {
@@ -21,6 +22,7 @@ class ContinueStage : public TopStage
     void onUpdate() override;
     bool handlEvents(SDL_Event *event) override;
     bool parseEvents(Event *event) override;
+
     void initializeComponents() override;
     void onExit() override;
     void onDestroy() override;

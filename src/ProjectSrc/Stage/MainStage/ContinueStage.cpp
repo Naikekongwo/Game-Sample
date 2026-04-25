@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include <cstddef>
 #include <memory>
 
 ContinueStage::ContinueStage(Timer *timer, StageManager *sController)
@@ -12,44 +13,7 @@ ContinueStage::ContinueStage(Timer *timer, StageManager *sController)
     this->stageType = StageType::topStage;
 }
 
-void ContinueStage::onEnter()
-{
-    // 初始化设置页面，首先创建baseBackground
-    auto baseBG = UI<BaseBackground>("set_background", 0, background_purifier,
-                                     NULL, NULL);
-
-    baseBG->setNativeScale(60);
-
-    baseBG->Configure()
-        .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(0.5f, 0.8f)
-        .Sequence(true)
-        .Follow(0)
-        .Parent(nullptr);
-
-    Elements->PushElement(std::move(baseBG));
-
-    // 返回按钮
-    auto backButton = UI<Button>("backButton", 1, img_BackButton, 1, 3);
-    backButton->Configure()
-        .Scale(0.03f, 0.03f)
-        .Posite(0.72f, 0.08f)
-        .Anchor(AnchorPoint::Center)
-        .Sequence(false)
-        .Parent(nullptr);
-
-    // 点击回调
-    backButton->setOnClick(
-        [this]()
-        {
-            if (phase != ContinuePhase::Ready)
-                return; // 防止多次点击
-            phase = ContinuePhase::Exiting;
-        });
-    Elements->PushElement(std::move(backButton));
-    // 将元素添加进入
-}
+void ContinueStage::onEnter() { initializeComponents(); }
 
 void ContinueStage::onUpdate()
 {
@@ -86,6 +50,93 @@ void ContinueStage::onDestroy() {}
 
 void ContinueStage::onRender() { Elements->onRender(); }
 
-void ContinueStage::initializeComponents() {}
-
 bool ContinueStage::parseEvents(Event *event) { return true; }
+
+void ContinueStage::initializeComponents()
+{
+    // 初始化设置页面，首先创建窗体的轮廓
+    auto Container =
+        UI<BaseBackground>("set_background", 0, stone_background, NULL, NULL);
+    Container->setNativeScale(128);
+
+    Container->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Posite(0.5f, 0.5f)
+        .Scale(0.6f, 0.8f)
+        .Sequence(true)
+        .Follow(0)
+        .Parent(nullptr);
+
+    // 左侧地图的容器
+    auto MapInfoDiv =
+        UI<BaseBackground>("mapInfoDiv", 1, img_itemcontain, NULL, NULL);
+
+    MapInfoDiv->setNativeScale(20);
+
+    MapInfoDiv->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopRight)
+        .Scale(0.3f, 0.75f)
+        .Posite(0.35f, 0.15f);
+
+    Elements->PushElement(std::move(MapInfoDiv));
+
+    // 右侧地图信息的容器
+    auto InfoDiv =
+        UI<BaseBackground>("infoDiv", 1, img_itemcontain, NULL, NULL);
+
+    InfoDiv->setNativeScale(20);
+
+    InfoDiv->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Scale(0.58f, 0.75f)
+        .Posite(0.37f, 0.15f);
+
+    Elements->PushElement(std::move(InfoDiv));
+
+    // 标题
+    auto titleLabel =
+        UI<ImageBoard>("titleLabel", 99, stage_continue_title, 1, 1);
+
+    titleLabel->Configure()
+        .Anchor(AnchorPoint::TopCenter)
+        .Parent(Container.get())
+        .Scale(0.113f, 0.0f)
+        .Posite(0.5f, 0.05f);
+
+    Elements->PushElement(std::move(titleLabel));
+
+    auto buttonBorder = UI<ImageBoard>("buttonBorders", 3, button_border, 1, 1);
+    buttonBorder->Configure()
+        .Parent(Container.get())
+        .Scale(0.06f, 0.0f)
+        .Posite(0.92f, 0.08f)
+        .Anchor(AnchorPoint::Center)
+        .Sequence(false);
+
+    Elements->PushElement(std::move(buttonBorder));
+
+    // 返回按钮
+    auto backButton = UI<Button>("backButton", 3, img_BackButton, 1, 3);
+    backButton->Configure()
+        .Parent(Container.get())
+        .Scale(0.05f, 0.0f)
+        .Posite(0.92f, 0.08f)
+        .Anchor(AnchorPoint::Center)
+        .Sequence(false);
+
+    // 点击回调
+    backButton->setOnClick(
+        [this]()
+        {
+            if (phase != ContinuePhase::Ready)
+                return; // 防止多次点击
+            phase = ContinuePhase::Exiting;
+        });
+    Elements->PushElement(std::move(backButton));
+    // 将元素添加进入
+
+    // 将背景推送
+    Elements->PushElement(std::move(Container));
+}

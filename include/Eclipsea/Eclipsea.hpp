@@ -40,6 +40,7 @@
 #define img_checkbox 2034
 #define terrain_major 2035
 #define player_texture 2036
+#define stage_continue_title 2037
 
 #define font_normal 9001
 
