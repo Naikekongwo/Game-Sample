@@ -93,7 +93,7 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
     if (!target)
         return false;
 
-    GFX.setOffScreenRender(target);
+    GFX.setRenderTarget(target);
 
     int texW, texH;
     SDL_QueryTexture(texture->get(), nullptr, nullptr, &texW, &texH);
@@ -146,7 +146,7 @@ bool BaseBackground::generateTexture(SDL_Texture *target)
         }
     }
 
-    GFX.setOffScreenRender(nullptr);
+    GFX.setRenderTarget(nullptr);
 
     status = BaseBackgroundStatus::ready;
     return true;

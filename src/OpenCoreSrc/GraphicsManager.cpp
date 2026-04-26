@@ -156,7 +156,7 @@ SDL_Texture *GraphicsManager::createTexture(uint16_t w, uint16_t h)
     return texture;
 }
 
-int GraphicsManager::setOffScreenRender(SDL_Texture *texture)
+int GraphicsManager::setRenderTarget(SDL_Texture *texture)
 {
     if (SDL_SetRenderTarget(renderer, texture) != 0)
     {

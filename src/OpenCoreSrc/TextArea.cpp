@@ -31,7 +31,7 @@ void TextArea::Draw()
 
     auto GFX = OpenCoreManagers::GFXManager.getInstance();
 
-    GFX.Draw(m_textureCache->get(), nullptr, &dstRect, 0.0f, 0.0f);
+    GFX.Draw(m_textureCache->get(), nullptr, &dstRect, 0.0f, nullptr);
     // <渲染逻辑>
 }
 
@@ -60,7 +60,7 @@ void TextArea::refreshTextureCache()
     if (!target)
         return;
 
-    GFX.setOffScreenRender(target);
+    GFX.setRenderTarget(target);
 
     int texW, texH;
     SDL_QueryTexture(texture->get(), nullptr, nullptr, &texW, &texH);
@@ -79,6 +79,5 @@ void TextArea::refreshTextureCache()
     }
 
     // <渲染字体的具体方法>
-
-    GFX.setOffScreenRender(nullptr);
+    GFX.setRenderTarget(nullptr);
 }

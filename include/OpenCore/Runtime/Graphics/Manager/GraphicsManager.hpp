@@ -76,7 +76,13 @@ class GraphicsManager
      */
     SDL_Renderer *getRenderer() const { return renderer; }
 
-    int setOffScreenRender(SDL_Texture *texture);
+    /**
+     * @brief 设置渲染目标
+     * @details 当texture为nullptr时候渲染到屏幕上，否则就是在纹理上绘制
+     * @param texture
+     * @return int
+     */
+    int setRenderTarget(SDL_Texture *texture);
 
     SDL_Texture *createTexture(uint16_t w, uint16_t h);
 
