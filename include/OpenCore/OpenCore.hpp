@@ -144,6 +144,7 @@ class OpenEngine final
      *
      */
     unique_ptr<WorldController> ServerWorldController;
+
 };
 
 #endif //_OPENCORE_H_
