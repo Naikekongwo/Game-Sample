@@ -1,4 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
+#include <memory>
 
 Texture::Texture(size_t x, size_t y, shared_ptr<SDL_Texture> tex)
     : xCount(x), yCount(y), texture(tex)
@@ -22,6 +23,45 @@ Texture::Texture(size_t x, size_t y, shared_ptr<SDL_Texture> tex)
 
     width /= xCount;
     height /= yCount;
+}
+
+Texture::Texture()
+{
+    width = 1;
+    height = 1;
+
+    xCount = 1;
+    yCount = 1;
+}
+
+bool Texture::configure(size_t rows, size_t cols,
+                        shared_ptr<SDL_Texture> texture)
+{
+    if (texture == nullptr)
+        return false;
+
+    int W, H;
+
+    if (!texture)
+        LOG("部署时候遇到空的纹理，该方法不应该传入空纹理");
+
+    this->texture = texture;
+
+    SDL_QueryTexture(texture.get(), NULL, NULL, &W, &H);
+
+    width = static_cast<uint16_t>(W);
+    height = static_cast<uint16_t>(H);
+
+    if (xCount == 0 || yCount == 0)
+    {
+        LOG("纹理网格参数非法，其不应为0 宽高: {} {}", xCount, yCount);
+        return false;
+    }
+
+    width /= xCount;
+    height /= yCount;
+
+    return true;
 }
 
 SDL_Rect Texture::getSubRect(size_t index)

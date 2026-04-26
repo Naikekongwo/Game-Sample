@@ -40,13 +40,25 @@ class TextArea : public UIElement
      */
     void setText(const string &textContent);
 
+    /**
+     * @brief 设置字体大小
+     *
+     * @param fontSize
+     */
+    void setFontSize(short fontSize);
+
     void onUpdate(float totalTime) override {};
 
   private:
     short fontID = 9001;
+    short m_fontSize = 20;
 
     unique_ptr<Texture> m_textureCache;
     string m_textContent;
 
+    /**
+     * @brief 重新刷新纹理缓存
+     *
+     */
     void refreshTextureCache();
 };
