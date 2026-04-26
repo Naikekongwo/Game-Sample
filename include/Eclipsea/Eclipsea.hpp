@@ -46,6 +46,7 @@
 
 #include "OpenCore/OpenCore.hpp"
 
+#include "Stage/DualGameplayStage.hpp"
 #include "Stage/GameplayStage.hpp"
 #include "Stage/MainStage.hpp"
 #include "Stage/PreloadStage.hpp"
