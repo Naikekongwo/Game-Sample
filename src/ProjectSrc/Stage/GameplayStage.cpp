@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
 #include <memory>
 
 GameplayStage::GameplayStage(Timer *timer, StageManager *sController)
@@ -45,6 +46,9 @@ void GameplayStage::Init()
 
     mapexp->setWorldController(
         OpenEngine::getInstance().getServerWorldController());
+
+    mapexp->onEnter();
+    mapexp->setExplorerViewPort(ViewportType::LeftHalf);
 
     Elements->PushElement(std::move(mapexp));
 }

@@ -61,6 +61,18 @@ inline unique_ptr<TextArea> UI<TextArea>(const std::string &id, uint8_t layer,
     return std::make_unique<TextArea>(id, layer, fontID);
 }
 
+template <>
+inline unique_ptr<ItemContainer> UI<ItemContainer>(const std::string &id,
+                                                   uint8_t layer, short texID,
+                                                   short cols, short rows)
+{
+    return std::make_unique<ItemContainer>(
+        id, layer,
+        std::move(std::make_unique<Texture>(
+            1, 1, OpenCoreManagers::ResManager.GetTexture(texID))),
+        cols, rows);
+}
+
 // 特化版本：MultiImageBoard
 template <>
 inline unique_ptr<MultiImageBoard>
