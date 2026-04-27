@@ -9,6 +9,7 @@
 #ifndef _MAP_EXPLORER_HPP_
 #define _MAP_EXPLORER_HPP_
 
+#include "ItemContainer.hpp"
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
@@ -87,6 +88,8 @@ class MapExplorer : public UIElement
     uint8_t renderRangeY = RENDER_RANGE_Y; // 渲染范围Y
 
     unique_ptr<Tile> tileRenderer;
+
+    unique_ptr<ItemContainer> m_itemContainer;
 
     void initComponents();
 };

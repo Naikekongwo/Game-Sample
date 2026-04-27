@@ -155,6 +155,10 @@
         "path": "assets/ui/stage/continue_title.png",
         "category": "texture"
     },
+    "2038": {
+        "path": "assets/items/bottle.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

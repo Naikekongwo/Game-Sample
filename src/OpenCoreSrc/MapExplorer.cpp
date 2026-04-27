@@ -1,4 +1,6 @@
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
 #include <SDL2/SDL_keycode.h>
 #include <memory>
 #include <optional>
@@ -85,6 +87,8 @@ void MapExplorer::Draw()
                 tileRenderer->Draw();
             }
         }
+
+        m_itemContainer->Draw();
     }
     else
     {
@@ -155,4 +159,20 @@ void MapExplorer::initComponents()
     heightFactor = 1.0f / renderRangeY;
 
     tileRenderer->setScale(widthFactor, heightFactor);
+
+    m_itemContainer = UI<ItemContainer>("itemContainer", 99, 2027, 8, 1);
+    m_itemContainer->setParentContainer(this);
+
+    m_itemContainer->Configure()
+        .Anchor(AnchorPoint::BottomCenter)
+        .Scale(0.533f, 0.1185f)
+        .Posite(0.5f, 0.95f)
+        .Alpha(1.0f)
+        .Follow(2);
+
+    m_itemContainer->setSize(1, 8);
+
+    m_itemContainer->onEnter();
+
+    LOG("物品栏创建成功");
 }
