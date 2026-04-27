@@ -1,7 +1,9 @@
+#include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
 #include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_render.h>
 #include <memory>
 #include <optional>
 
@@ -52,6 +54,36 @@ void MapExplorer::Draw()
             return;
         }
 
+        // <开始绘制>
+
+        SDL_Rect rect{0, 0, 1920, 1080};
+
+        float viewportX = 0.0f;
+
+        switch (vType)
+        {
+        case ViewportType::LeftHalf:
+        {
+            viewportX -= 0.25f;
+            rect.x = 0;
+            rect.y = 0;
+            rect.w = 960;
+            rect.h = 1080;
+            break;
+        }
+        case ViewportType::RightHalf:
+        {
+            viewportX += 0.25f;
+            rect.x = 960;
+            rect.y = 0;
+            rect.w = 960;
+            rect.h = 1080;
+            break;
+        }
+        default:
+            break;
+        }
+
         auto Position = cameraProp->getPosition();
 
         int center_x = Position.x + 0.5f;
@@ -77,7 +109,7 @@ void MapExplorer::Draw()
 
                 // 渲染时加入 sub-grid 偏移
                 tileRenderer->setPosition(
-                    (x - offsetX) * widthFactor + 0.5f,
+                    (x - offsetX) * widthFactor + 0.5f + viewportX,
                     (y - offsetY + Position.z) * heightFactor + 0.5f);
 
                 tileRenderer->setTransparency(1.0f);
@@ -87,8 +119,11 @@ void MapExplorer::Draw()
                 tileRenderer->Draw();
             }
         }
-
+        m_itemContainer->setPosition(0.5f + viewportX, 0.95f);
         m_itemContainer->Draw();
+
+        SDL_RenderSetClipRect(
+            OpenCoreManagers::GFXManager.getInstance().getRenderer(), nullptr);
     }
     else
     {
@@ -137,6 +172,11 @@ void MapExplorer::setExplorerViewPort(ViewportType vType)
     if (vType != ViewportType::Fullscreen && vType != ViewportType::Free)
     {
         renderRangeX *= 0.5;
+
+        // widthFactor = 1.0f / renderRangeX;
+        // heightFactor = 1.0f / renderRangeY;
+
+        // tileRenderer->setScale(widthFactor, heightFactor);
     }
 }
 
