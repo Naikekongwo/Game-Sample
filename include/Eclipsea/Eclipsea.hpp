@@ -43,6 +43,7 @@
 #define stage_continue_title 2037
 
 #define chao_texture 2039
+#define img_healthbar 2040
 
 #define font_normal 9001
 

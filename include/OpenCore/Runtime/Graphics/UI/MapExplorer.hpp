@@ -13,6 +13,7 @@
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
+#include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
 #include <memory>
 
 /**
@@ -90,6 +91,8 @@ class MapExplorer : public UIElement
     unique_ptr<Tile> tileRenderer;
 
     unique_ptr<ItemContainer> m_itemContainer;
+
+    unique_ptr<HealthBar> m_healthbar;
 
     void initComponents();
 };

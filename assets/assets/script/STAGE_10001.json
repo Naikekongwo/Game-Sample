@@ -36,7 +36,7 @@
         "category": "texture"
     },
     "2008": {
-        "path": "assets/ui/Button_Start.png",
+        "path": "assets/ui/main/Button_Start.png",
         "category": "texture"
     },
     "2009": {
@@ -44,11 +44,11 @@
         "category": "texture"
     },
     "2010": {
-        "path": "assets/ui/Button_Continue.png",
+        "path": "assets/ui/main/Button_Continue.png",
         "category": "texture"
     },
     "2011": {
-        "path": "assets/ui/Button_Settings.png",
+        "path": "assets/ui/main/Button_Settings.png",
         "category": "texture"
     },
     "2012": {
@@ -64,7 +64,7 @@
         "category": "texture"
     },
     "2015": {
-        "path": "assets/ui/Button_Back.png",
+        "path": "assets/ui/settings/Button_Back.png",
         "category": "texture"
     },
     "2016": {
@@ -104,7 +104,7 @@
         "category": "texture"
     },
     "2025": {
-        "path": "assets/ui/Button_Create.png",
+        "path": "assets/ui/main/Button_Create.png",
         "category": "texture"
     },
     "2026": {
@@ -161,6 +161,14 @@
     },
     "2039": {
         "path": "assets/entity/chao_texture.png",
+        "category": "texture"
+    },
+    "2040": {
+        "path": "assets/ui/gameplay/healthbar.png",
+        "category": "texture"
+    },
+    "2041": {
+        "path": "assets/ui/gameplay/healthbar_back.png",
         "category": "texture"
     },
     "9001": {

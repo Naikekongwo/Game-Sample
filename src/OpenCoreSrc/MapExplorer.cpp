@@ -1,6 +1,7 @@
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_render.h>
@@ -146,6 +147,8 @@ void MapExplorer::Draw()
         m_itemContainer->setPosition(0.5f + viewportX, 0.95f);
         m_itemContainer->Draw();
 
+        m_healthbar->Draw();
+
         SDL_RenderSetClipRect(
             OpenCoreManagers::GFXManager.getInstance().getRenderer(), nullptr);
     }
@@ -237,6 +240,17 @@ void MapExplorer::initComponents()
 
     m_itemContainer->setSize(1, 8);
     m_itemContainer->onEnter();
+
+    // 初始化生命值
+
+    m_healthbar = std::make_unique<HealthBar>();
+
+    m_healthbar->onEnter();
+    m_healthbar->Configure()
+        .Parent(this)
+        .Anchor(AnchorPoint::TopRight)
+        .Scale(0.0f, 0.16f)
+        .Posite(0.95f, 0.055f);
 
     LOG("物品栏创建成功");
 }
