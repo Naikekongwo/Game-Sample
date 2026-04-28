@@ -1,37 +1,64 @@
 #pragma once
 
-// Item.hpp
-// 物品的基类
+#include <string>
+#include <memory>
+#include "OpenCore/Runtime/Gameplay/Backpack/Iteminfo.hpp"
+#include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
 
-#include <cstdint>
+using std::string;
+using std::unique_ptr;
 
-#define ILEGAL_ITEM 0
+class ItemSprite;          // 前向声明
+class Entity;              // 前向声明（用于 owner 指针）
+
+enum class ItemStatus
+{
+    Registered,            // 已注册
+    Drawable,              // 可绘制
+    Ready                  // 完全就绪
+};
 
 class Item
 {
-  public:
+public:
     Item() = default;
+    virtual ~Item();
 
-    Item(short ID, uint8_t maxAmount) : ID(ID), maxAmount(maxAmount) {}
+    Item(Item&&) = default;
+    Item& operator=(Item&&) = default;
+    
+    const std::string &getID() const noexcept { return id; }
+    unsigned int getTypeID() const noexcept { return typeID; }
+    unsigned int getStatueID() const noexcept { return statueID; }
 
-    short getID() const noexcept { return ID; }
-    uint8_t getAmount() const noexcept { return Amount; }
+    void Spawn(Entity* newOwner = nullptr);   // 绑定归属实体
+    void onUpdate(float totalTime);
+    void Draw(float cameraX, float cameraY);
+    void enableDrawer(bool enabled = true);
+    void createRenderer();
 
-    bool setAmount(uint8_t amount) const noexcept
-    {
-        if (amount >= 0 && amount <= maxAmount)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+    void Configure(const ItemInfo &itemInfo);
 
-  protected:
-    short ID = 0;
-    uint8_t Amount = 1;
+    bool Ready() const noexcept { return status >= ItemStatus::Drawable; }
 
-    uint8_t maxAmount = 0;
+protected:
+    // 状态 ID 变化时的钩子，派生类可重写
+    virtual void onStatueIDChanged(unsigned int oldID, unsigned int newID) {};
+
+private:
+    string id;                      // 物品实例的唯一 ID
+    unsigned int typeID = 0;        // 物品类型 ID
+    unsigned int statueID = 0;      // 物品状态 ID（控制纹理/表现）
+    Entity* owner = nullptr;        // 所属实体（如有）
+
+    unique_ptr<ItemSprite> renderer;
+    bool drawable = false;
+    ItemInfo info;
+    ItemStatus status = ItemStatus::Registered;
+
+    float widthRelative = 1.0f;     // 屏幕宽度缩放因子
+    float heightRelative = 1.0f;    // 屏幕高度缩放因子
+
+    // 辅助函数：安全获取世界坐标
+    OpenCore_Vec3 GetPosition() const;
 };

@@ -14,6 +14,20 @@ ItemSprite::ItemSprite()
     onEnter();
 }
 
+ItemSprite::ItemSprite(short textureID) 
+{
+    this->id = "null";
+    this->layer = 0;  // 适当层级
+
+    this->VState = std::make_unique<VisualState>();
+    this->AnimeManager = std::make_unique<AnimationManager>();
+
+    this->texture = std::make_unique<Texture>(
+        4, 4, OpenCoreManagers::ResManager.GetTexture(textureID));
+
+    LOG("物品精灵创建成功，纹理ID:{}", textureID);
+}
+
 void ItemSprite::onEnter()
 {
     texture = std::make_unique<Texture>(

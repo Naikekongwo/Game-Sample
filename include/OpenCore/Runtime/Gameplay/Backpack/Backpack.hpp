@@ -1,22 +1,25 @@
 #pragma once
 
-// Backpack.hpp
-// 控制实体携带的物品的类
-
-#include <memory>
-#include <stdexcept>
 #include <vector>
-
-using std::shared_ptr;
-using std::vector;
-
+#include <memory>
+#include "Item.hpp"
 #include "ItemManager.hpp"
 
-// 物品交换记录
-// 包含了物品的ID、数量、原始背包ID、目标背包ID和是否完成
+using std::vector;
+using std::shared_ptr;
+
+// 单个背包槽位
+struct BackpackSlot
+{
+    Item item;          // 该堆叠的代表物品（用于渲染等）
+    uint8_t count = 1;  // 当前堆叠数量
+};
+
+// 物品交换记录（保留原设计，后续可配合 onUpdate 完善）
 struct ItemExchangeRecord
 {
     short ItemTypeID = 0;
+    short statueID = 0;
     short ItemAmount = 0;
 
     short srcBackpackID = 0;
@@ -27,45 +30,38 @@ struct ItemExchangeRecord
 
 class Backpack final
 {
-  public:
-    // 初始化
-    Backpack(short capacity) : BackpackCapacity(capacity)
-    {
-        if (capacity == 0)
-        {
-            throw std::runtime_error(
-                "Backpack::~ Failed to create backpack, the capacity is null!");
-            return;
-        }
-    }
+public:
+    explicit Backpack(short capacity, short id = 0);
+    ~Backpack() = default;
 
-    void onUpdate(ItemExchangeRecord &record, float totalTime)
-    {
-        if (record.srcBackpackID == this->BackpackID)
-        {
-            // 此为给予方
-        }
-        else if (record.dstBackpackID == this->BackpackID)
-        {
-            // 此为接收方
-        }
-        else
-        {
-        }
-    }
+    // 添加指定类型和状态的物品（数量可选）
+    bool AddItem(short typeID, unsigned int statueID, uint8_t amount = 1);
+    // 移除指定类型和状态的物品
+    bool RemoveItem(short typeID, unsigned int statueID, uint8_t amount = 1);
+    // 放入一个具体的 Item 对象（相当于 AddItem(item.getTypeID(), item.getStatueID(), 1)）
+    bool pushItem(Item& item);
 
-    bool AddItem(short ItemTypeID, short ItemAmount);
-    bool RemoveItem(short ItemTypeId, short ItemAmount);
-    bool pushItem(Item item);
+    // 整理背包：合并相同 type+statue 的相邻槽位，并排序（此处仅作示例）
     void resortBackpack();
 
-    void setBackpackID(short ID) { BackpackID = ID; }
+    // ID 设置 / 获取
+    void setBackpackID(short id) { BackpackID = id; }
     short getBackpackID() const noexcept { return BackpackID; }
 
-  private:
+    // 槽位数量
+    size_t getSlotCount() const noexcept { return slots_.size(); }
+    short getCapacity() const noexcept { return BackpackCapacity; }
+
+    // 处理交换记录（基础框架）
+    void onUpdate(ItemExchangeRecord &record, float totalTime);
+
+private:
+    // 查找相同 typeID 和 statueID 的槽位，返回下标，若无则返回 -1
+    int findSlot(short typeID, unsigned int statueID) const;
+
     short BackpackID = 0;
-    vector<Item> itemPool_;
     short BackpackCapacity = 0;
+    vector<BackpackSlot> slots_;
 };
 
 using BackPtr = shared_ptr<Backpack>;
