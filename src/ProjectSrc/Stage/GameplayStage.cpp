@@ -39,34 +39,34 @@ void GameplayStage::Init()
 
     auto mapexp = std::make_unique<MapExplorer>("map", 3);
 
-    // mapexp->Configure()
-    //     .Anchor(AnchorPoint::Center)
-    //     .Posite(0.5f, 0.5f)
-    //     .Scale(1.0f, 1.0f)
-    //     .Alpha(1.0f);
-
-    // mapexp->setWorldController(
-    //     OpenEngine::getInstance().getServerWorldController());
-
-    // mapexp->onEnter();
-    // mapexp->setExplorerViewPort(ViewportType::Fullscreen);
-
     mapexp->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.25f, 0.5f)
-        .Scale(0.5f, 1.0f)
+        .Posite(0.5f, 0.5f)
+        .Scale(1.0f, 1.0f)
         .Alpha(1.0f);
 
     mapexp->setWorldController(
         OpenEngine::getInstance().getServerWorldController());
 
     mapexp->onEnter();
-    mapexp->setExplorerViewPort(ViewportType::RightHalf);
+    mapexp->setExplorerViewPort(ViewportType::Fullscreen);
+
+    // mapexp->Configure()
+    //     .Anchor(AnchorPoint::Center)
+    //     .Posite(0.25f, 0.5f)
+    //     .Scale(0.5f, 1.0f)
+    //     .Alpha(1.0f);
+
+    // mapexp->setWorldController(
+    //     OpenEngine::getInstance().getServerWorldController());
+
+    // mapexp->onEnter();
+    // mapexp->setExplorerViewPort(ViewportType::RightHalf);
 
     Elements->PushElement(std::move(mapexp));
 
-    auto gameplay = std::make_unique<PurifierStage>(timer, sController);
-    sController->changeStage(std::move(gameplay));
+    // auto gameplay = std::make_unique<PurifierStage>(timer, sController);
+    // sController->changeStage(std::move(gameplay));
 }
 
 void GameplayStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
