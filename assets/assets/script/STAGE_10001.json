@@ -159,6 +159,10 @@
         "path": "assets/items/bottle.png",
         "category": "texture"
     },
+    "2039": {
+        "path": "assets/entity/chao_texture.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

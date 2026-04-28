@@ -7,12 +7,15 @@
 #include <memory>
 #include <optional>
 
+#include "Eclipsea/Eclipsea.hpp"
+
 MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr)
 {
 
     renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
     renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
+
     LOG("初始化成功");
 }
 
@@ -84,6 +87,9 @@ void MapExplorer::Draw()
             break;
         }
 
+        SDL_RenderSetClipRect(
+            OpenCoreManagers::GFXManager.getInstance().getRenderer(), &rect);
+
         auto Position = cameraProp->getPosition();
 
         int center_x = Position.x + 0.5f;
@@ -119,6 +125,24 @@ void MapExplorer::Draw()
                 tileRenderer->Draw();
             }
         }
+
+        vector<Entity *> Entities;
+
+        // <TODO>
+        auto chao = m_wrdController->queryPhysicalProp(2);
+        if (chao != std::nullopt)
+        {
+            Vec3 pos{2, 0, 0};
+            chao->setPosition(pos);
+        }
+
+        m_wrdController->getEntities(Entities);
+
+        for (auto ptr : Entities)
+        {
+            ptr->Draw(Position.x, Position.y, viewportX);
+        }
+
         m_itemContainer->setPosition(0.5f + viewportX, 0.95f);
         m_itemContainer->Draw();
 
@@ -204,6 +228,7 @@ void MapExplorer::initComponents()
     m_itemContainer->setParentContainer(this);
 
     m_itemContainer->Configure()
+        .Parent(this)
         .Anchor(AnchorPoint::BottomCenter)
         .Scale(0.533f, 0.1185f)
         .Posite(0.5f, 0.95f)
@@ -211,7 +236,6 @@ void MapExplorer::initComponents()
         .Follow(2);
 
     m_itemContainer->setSize(1, 8);
-
     m_itemContainer->onEnter();
 
     LOG("物品栏创建成功");

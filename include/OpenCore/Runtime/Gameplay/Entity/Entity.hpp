@@ -30,6 +30,8 @@ class Entity
     void Spawn(Vec3 Position);
     void onUpdate(float totalTime);
     void Draw(float cameraX, float cameraY);
+
+    void Draw(float cameraX, float cameraY, float offsetX);
     void enableDrawer(bool enabled = true)
     {
         drawable = enabled;

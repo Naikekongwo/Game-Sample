@@ -1,4 +1,6 @@
+#include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
 #include <memory>
 #include <optional>
 
@@ -39,11 +41,25 @@ bool WorldController::generateTheMan()
 {
     if (Entities.contains(1))
         return true;
-    auto &entityreg = Gameplay::EntityReg.getInstance();
-    auto player = entityreg.createEntity(1);
+    else
+    {
+        auto &entityreg = Gameplay::EntityReg.getInstance();
+        auto player = entityreg.createEntity(1);
 
-    player->enableDrawer(true);
-    Entities[1] = std::move(player);
+        player->enableDrawer(true);
+        Entities[1] = std::move(player);
+    }
+
+    if (Entities.contains(2))
+        return true;
+    else
+    {
+        auto &entityreg = Gameplay::EntityReg.getInstance();
+        auto player = entityreg.createEntity(2);
+
+        player->enableDrawer(true);
+        Entities[2] = std::move(player);
+    }
 
     return Entities.contains(1);
 }
@@ -150,7 +166,7 @@ void WorldController::onUpdate(float totalTime)
     }
 }
 
-optional<PhysicalProperties>
+optional<PhysicalProperties &>
 WorldController::queryPhysicalProp(short EntityIndex)
 {
     if (Entities.contains(EntityIndex))
@@ -170,4 +186,22 @@ optional<BlockInfo> WorldController::queryBlockInfo(int gx, int gy)
     }
 
     return std::nullopt;
+}
+
+Entity *WorldController::getEntityByID(short id)
+{
+    if (!Entities.contains(id))
+        return nullptr;
+
+    return Entities.at(id).get();
+}
+
+void WorldController::getEntities(vector<Entity *> &list)
+{
+    list.clear();
+    list.reserve(Entities.size());
+    for (const auto &[id, ePtr] : Entities)
+    {
+        list.push_back(ePtr.get());
+    }
 }

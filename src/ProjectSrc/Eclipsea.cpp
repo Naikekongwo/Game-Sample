@@ -33,6 +33,12 @@ bool Eclipsea::StartUp()
 
     entityReg.registerEntity(player);
 
+    auto &entityReg1 = engine.getEntityRegister();
+
+    EntityInfo player1{2, chao_texture, 8, 1.0f};
+
+    entityReg.registerEntity(player1);
+
     // 生物结束
 
     try

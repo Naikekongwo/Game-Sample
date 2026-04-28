@@ -41,6 +41,7 @@ class ItemContainer : public UIElement
     void setSize(short row, short col);
 
   private:
+    float maxHeight = 1.0f;
     short rows = 1;
     short columns = 1;
     weak_ptr<Backpack> m_backpack;

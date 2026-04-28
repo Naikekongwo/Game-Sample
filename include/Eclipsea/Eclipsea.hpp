@@ -42,6 +42,8 @@
 #define player_texture 2036
 #define stage_continue_title 2037
 
+#define chao_texture 2039
+
 #define font_normal 9001
 
 #include "OpenCore/OpenCore.hpp"

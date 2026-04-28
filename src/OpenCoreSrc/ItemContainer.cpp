@@ -1,3 +1,4 @@
+#include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
@@ -56,6 +57,8 @@ void ItemContainer::Draw()
 
     Rect bounds = getLogicalBounds();
 
+    LOG("窗体 {} {} {} {}", bounds.x, bounds.y, bounds.w, bounds.h);
+
     float offsetX = 0.0f;
     float offsetY = 0.0f;
 
@@ -100,6 +103,8 @@ void ItemContainer::setSize(short row, short col)
 
     absHeight = heightFactor * row;
     absWidth = col * heightFactor;
+
+    LOG("{} {}", absWidth, absHeight);
 }
 
 void ItemContainer::onEnter()
@@ -113,4 +118,20 @@ void ItemContainer::onEnter()
         .Alpha(1.0f)
         .Scale(0.0f, 0.9f)
         .Posite(0.5f, 0.5f);
+
+    if (parentContainer)
+    {
+        LOG("有父组件");
+        Rect bounds = parentContainer->getLogicalBounds();
+
+        LOG("{} {} {} {}", bounds.x, bounds.y, bounds.w, bounds.h);
+        LOG("{}", absWidth);
+
+        if (absWidth > bounds.w)
+        {
+            float newWidth = bounds.w * 0.8f;
+            absHeight = newWidth * (static_cast<float>(absHeight) / absWidth);
+            absWidth = newWidth;
+        }
+    }
 }
