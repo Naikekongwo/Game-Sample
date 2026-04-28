@@ -20,7 +20,8 @@ struct MapHeader
     uint16_t width;
     uint16_t height;
     uint8_t layerCount;
-    uint8_t reserved[25];
+    uint8_t blockSize;
+    uint8_t reserved[24];
 };
 
 struct BlockInfo

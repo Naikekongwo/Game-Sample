@@ -15,6 +15,7 @@ struct MapInfo
     uint16_t height;    // 地图高度（块数）
     uint8_t version;    // 地图格式版本
     uint8_t layerCount; // 地图层级数
+    uint8_t blockSize;  // 地图单元大小
 };
 
 /**
@@ -55,13 +56,16 @@ inline void LoadMapFromFile(const string &mapPath, vector<BlockInfo> &datas,
     mapWidth = header.width;
     mapHeight = header.height;
 
+    if (header.blockSize == 0)
+        header.blockSize = 1;
+
     // LOG("版本:{}, 层级:{}, 宽:{}, 高:{}, 魔数:{}", header.version,
     //     header.layerCount, header.width, header.height, header.magic);
 
     size_t totalBlocks = static_cast<size_t>(mapWidth) * mapHeight;
     datas.reserve(totalBlocks);
 
-    std::vector<uint8_t> buffer(sizeof(BlockInfo));
+    std::vector<uint8_t> buffer(sizeof(header.blockSize));
     for (size_t i = 0; i < totalBlocks; ++i)
     {
         file.read(reinterpret_cast<char *>(buffer.data()), buffer.size());
@@ -99,6 +103,7 @@ inline MapInfo LoadMapInfo(const std::string &mapPath)
     info.height = header.height;
     info.version = header.version;
     info.layerCount = header.layerCount;
+    info.blockSize = header.blockSize;
 
     return info;
 }
