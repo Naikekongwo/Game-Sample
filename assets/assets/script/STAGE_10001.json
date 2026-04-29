@@ -80,7 +80,7 @@
         "category": "texture"
     },
     "2019": {
-        "path": "assets/items/purifier.png",
+        "path": "assets/ui/purifier/purifier.png",
         "category": "texture"
     },
     "2020": {
@@ -169,6 +169,14 @@
     },
     "2041": {
         "path": "assets/ui/gameplay/healthbar_back.png",
+        "category": "texture"
+    },
+    "2042": {
+        "path": "assets/effects/waterparticles.png",
+        "category": "texture"
+    },
+    "2043": {
+        "path": "assets/ui/purifier/purifier_background.png",
         "category": "texture"
     },
     "9001": {

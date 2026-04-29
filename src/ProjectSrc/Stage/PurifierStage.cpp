@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Graphics/UI/ImageBoard.hpp"
 
 PurifierStage::PurifierStage(Timer *timer, StageManager *sController)
 {
@@ -42,25 +43,24 @@ void PurifierStage::onRender() { Elements->onRender(); }
 bool PurifierStage::buildStage()
 {
     // 背景
-    auto stageBg =
-        UI<BaseBackground>("purSbg", 0, background_purifier, NULL, NULL);
-    stageBg->setNativeScale(60);
+    auto stageBg = UI<BaseBackground>("purSbg", 0, 2043, NULL, NULL);
+    stageBg->setNativeScale(120);
     stageBg->Configure()
-        .Scale(0.82f, 0.5f)
-        .Anchor(AnchorPoint::Center)
         .Parent(nullptr)
-        .Posite(0.5f, 0.28f)
+        .Scale(0.82f, 0.95f)
+        .Anchor(AnchorPoint::Center)
+        .Posite(0.5f, 0.5f)
         .Sequence(true);
     Elements->PushElement(std::move(stageBg));
 
     // 返回按钮
     auto backButton = UI<Button>("backButton", 1, img_BackButton, 1, 3);
     backButton->Configure()
-        .Scale(0.03f, 0.03f)
-        .Posite(0.88f, 0.05f)
+        .Parent(nullptr)
         .Anchor(AnchorPoint::Center)
-        .Sequence(false)
-        .Parent(nullptr);
+        .Scale(0.03f, 0.0f)
+        .Posite(0.87f, 0.1f)
+        .Sequence(false);
 
     // 点击回调
     backButton->setOnClick(
@@ -76,7 +76,7 @@ bool PurifierStage::buildStage()
                     LOG("Adding fade out effect to {}, transparency, {}",
                         elem->getID().c_str(), state->transparency);
                     elem->Animate()
-                        .Fade(state->transparency, 0.0f, 5.0f)
+                        .Fade(state->transparency, 0.0f, 0.1f)
                         .Commit();
                 });
         });
@@ -87,13 +87,26 @@ bool PurifierStage::buildStage()
     auto purifierbody = UI<ImageBoard>("purifier_body", 1, item_purifier, 1, 1);
 
     purifierbody->Configure()
-        .Scale(0.146f, 0.182f)
+        .Parent(nullptr)
+        .Scale(0.146f, 0.323f)
         .Anchor(AnchorPoint::TopLeft)
         .Posite(0.2f, 0.08f)
-        .Sequence(false)
-        .Parent(nullptr);
+        .Sequence(false);
 
     Elements->PushElement(std::move(purifierbody));
+
+    auto effect = UI<ImageBoard>("purifier_effect", 2, 2042, 5, 9);
+
+    effect->Configure()
+        .Parent(nullptr)
+        .Scale(0.146f, 0.0f)
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.2f, 0.08f)
+        .Sequence(false);
+
+    effect->Animate().Frame(45, 15, true).Commit();
+
+    Elements->PushElement(std::move(effect));
 
     return true;
 }

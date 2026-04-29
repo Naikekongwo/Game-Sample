@@ -65,8 +65,8 @@ void GameplayStage::Init()
 
     Elements->PushElement(std::move(mapexp));
 
-    // auto gameplay = std::make_unique<PurifierStage>(timer, sController);
-    // sController->changeStage(std::move(gameplay));
+    auto gameplay = std::make_unique<PurifierStage>(timer, sController);
+    sController->changeStage(std::move(gameplay));
 }
 
 void GameplayStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
