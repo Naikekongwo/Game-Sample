@@ -57,8 +57,6 @@ void ItemContainer::Draw()
 
     Rect bounds = getLogicalBounds();
 
-    LOG("窗体 {} {} {} {}", bounds.x, bounds.y, bounds.w, bounds.h);
-
     float offsetX = 0.0f;
     float offsetY = 0.0f;
 
