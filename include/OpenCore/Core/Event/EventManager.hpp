@@ -11,6 +11,11 @@
 #pragma once
 #include <SDL2/SDL.h>
 
+
+enum class InputMode {
+    KeyboardMouse,
+    Gamepad
+};
 class Event
 {
   public:
@@ -51,9 +56,33 @@ class EventManager
     // 推送自定义事件到 SDL 事件队列
     void PushEvent(const Event &event);
 
+    // 查询当前输入模式
+    InputMode GetInputMode() const;
+
+    // 允许外部强制设置
+    void SetInputMode(InputMode mode);
+
+    bool GetAllowtoDivertMod() const;
+
+    void SetAllowtoDivertMod( bool allowtoDivertMod);
+
+    // 在事件循环结束后调用，根据本帧标志更新 m_inputMode
+    void EndFrame();
+
+
+
+
   private:
     EventManager() = default;
     ~EventManager() = default;
     EventManager(const EventManager &) = delete;
     EventManager &operator=(const EventManager &) = delete;
+    // 根据事件类型更新 m_inputMode
+    void UpdateInputMode(const Event& event);
+    InputMode m_inputMode = InputMode::KeyboardMouse;  // 默认键鼠模式
+    int allowtoDivertMod = 0; // 允许切换输入模式(默认不允许，1为允许)
+    // 帧标志：本帧是否有对应设备事件
+    bool m_hasKMEvent = false;   // Keyboard/Mouse
+    bool m_hasGamepadEvent = false;
+
 };

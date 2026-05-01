@@ -168,6 +168,8 @@ bool OpenEngine::MainLoop()
             sController->handlEvents(&evt);
         }
 
+        EvtManager.EndFrame();
+
         timer->Tick();
         ResManager.ProcessMainThreadTasks();
 
