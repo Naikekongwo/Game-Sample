@@ -243,7 +243,8 @@ void MapExplorer::initComponents()
 
     // 初始化生命值
 
-    m_healthbar = std::make_unique<HealthBar>();
+    m_healthbar =
+        std::make_unique<HealthBar>("map_hp", 99, MakeTexture(1, 2, 2040));
 
     m_healthbar->onEnter();
     m_healthbar->Configure()

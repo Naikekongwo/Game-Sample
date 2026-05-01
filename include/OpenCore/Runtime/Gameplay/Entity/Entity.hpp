@@ -24,6 +24,12 @@ enum EntityStatus
     Ready
 };
 
+struct EntityProperties
+{
+    PhysicalProperties *pProperties;
+    EntityInfo *EntityInfo;
+};
+
 class Entity
 {
   public:

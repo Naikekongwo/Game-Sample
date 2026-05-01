@@ -13,10 +13,16 @@
 #include "OpenCore/Runtime/Graphics/IDrawableObject/Sprite.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ImageBoard.hpp"
 
+#include <memory>
+
+using std::shared_ptr;
+using std::string_view;
+using std::weak_ptr;
+
 class HealthBar : public Sprite
 {
   public:
-    HealthBar();
+    HealthBar(string_view id, short layer, unique_ptr<Texture> texture);
     ~HealthBar() override = default;
 
     void onEnter() override;
@@ -25,8 +31,6 @@ class HealthBar : public Sprite
     bool onDestroy() override { return true; };
 
   private:
-    // 正常来说，其不应该持有这个
-    short texID = 2040;
-    short backID = 2041;
-    unique_ptr<Texture> backBuffer;
+    // 生命值比例
+    weak_ptr<float> m_healthPercent;
 };

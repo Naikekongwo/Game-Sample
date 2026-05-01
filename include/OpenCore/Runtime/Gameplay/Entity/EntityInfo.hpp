@@ -13,5 +13,6 @@ struct EntityInfo
     uint8_t backpackCapacity = 0;
 
     // widthFactor的因数是一格的宽度
+    // 这个因数代表这个实体有几格宽
     float widthFactor = 1.0f;
 };
