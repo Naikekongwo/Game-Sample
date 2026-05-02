@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OpenCore/Runtime/Graphics/IDrawableObject/Sprite.hpp"
+#include "OpenCore/World/Map/Geometry/MapStruct.hpp"
 #include <memory>
 
 enum class TileType

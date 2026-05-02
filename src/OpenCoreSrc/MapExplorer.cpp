@@ -124,7 +124,7 @@ void MapExplorer::Draw()
                 if (bInfo == std::nullopt)
                     continue;
 
-                // 渲染时加入 sub-grid 偏移
+                // <Terrain纹理板块>
                 tileRenderer->setPosition(
                     (x - offsetX) * widthFactor + 0.5f + viewportX,
                     (y - offsetY + Position.z) * heightFactor + 0.5f);
@@ -134,6 +134,7 @@ void MapExplorer::Draw()
                 tileRenderer->setTileType(TileType::Terrain);
                 tileRenderer->setTileID(bInfo->Terrain);
                 tileRenderer->Draw();
+                // <Terrain纹理板块>
             }
         }
 
