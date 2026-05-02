@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OpenCore/Core/Math/OpenCore_Rect.hpp"
 #include <SDL2/SDL.h>
 #include <memory>
 using std::shared_ptr;
@@ -42,6 +43,7 @@ struct Texture
     }
 
     SDL_Rect getSubRect(size_t index);
+    Rect getSubRect(size_t startIndex, size_t endIndex);
     SDL_Texture *get() const { return texture.get(); }
 
     /**

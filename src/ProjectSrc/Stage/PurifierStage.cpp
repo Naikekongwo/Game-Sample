@@ -43,7 +43,7 @@ void PurifierStage::onRender() { Elements->onRender(); }
 bool PurifierStage::buildStage()
 {
     // 背景
-    auto stageBg = UI<BaseBackground>("purSbg", 0, 2043, NULL, NULL);
+    auto stageBg = UI<BaseBackground>("purSbg", 0, ui_bg_purifier, NULL, NULL);
     stageBg->setNativeScale(120);
     stageBg->Configure()
         .Parent(nullptr)
@@ -95,7 +95,8 @@ bool PurifierStage::buildStage()
 
     Elements->PushElement(std::move(purifierbody));
 
-    auto effect = UI<ImageBoard>("purifier_effect", 2, 2042, 5, 9);
+    auto effect =
+        UI<ImageBoard>("purifier_effect", 2, effects_water_bubbles, 5, 9);
 
     effect->Configure()
         .Parent(nullptr)

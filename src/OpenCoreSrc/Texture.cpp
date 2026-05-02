@@ -1,3 +1,4 @@
+#include "OpenCore/Runtime/Graphics/IDrawableObject/Texture.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <memory>
 
@@ -86,4 +87,29 @@ SDL_Rect Texture::getSubRect(size_t index)
 
         return SDL_Rect{col * width, row * height, width, height};
     }
+}
+
+Rect Texture::getSubRect(size_t startIndex, size_t endIndex)
+{
+    static const Rect emptyRect{0, 0, 0, 0};
+    // 获取多个子区块
+    if (startIndex == endIndex)
+        return getSubRect(startIndex);
+
+    if (startIndex < 0 || endIndex < 0 || endIndex >= Size() || Size() == 1)
+    {
+        LOG("Texture::getSubRect() index out of range: {}, {}", startIndex,
+            endIndex);
+        return Rect{0, 0, width * 1.0f, height * 1.0f};
+    }
+
+    Rect result;
+
+    uint8_t col = startIndex % xCount;
+    uint8_t row = startIndex / xCount;
+
+    uint8_t endCol = (endIndex - startIndex) % xCount + 1;
+    uint8_t endRow = (endIndex - startIndex) / xCount + 1;
+
+    return SDL_Rect{col * width, row * height, endCol * width, endRow * height};
 }

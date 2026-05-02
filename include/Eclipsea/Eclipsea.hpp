@@ -43,7 +43,9 @@
 #define stage_continue_title 2037
 
 #define chao_texture 2039
-#define img_healthbar 2040
+#define ui_img_healthbar 2040
+#define effects_water_bubbles 2042
+#define ui_bg_purifier 2043
 
 #define font_normal 9001
 
