@@ -28,9 +28,11 @@ class HealthBar : public Sprite
     void onEnter() override;
     void Draw() override;
 
+    void setHealth(float healthPercent) { m_healthPercent = healthPercent; }
+
     bool onDestroy() override { return true; };
 
   private:
     // 生命值比例
-    weak_ptr<float> m_healthPercent;
+    float m_healthPercent;
 };

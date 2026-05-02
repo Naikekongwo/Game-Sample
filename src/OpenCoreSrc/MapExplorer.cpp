@@ -3,6 +3,7 @@
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_render.h>
 #include <memory>
@@ -31,6 +32,15 @@ void MapExplorer::onEnter()
     if (status == MapExpStatus::Creating)
     {
         initComponents();
+
+        // <TODO>
+        auto chao = m_wrdController->queryPhysicalProp(2);
+        if (chao != std::nullopt)
+        {
+            Vec3 pos{2, 0, 0};
+            chao->setPosition(pos);
+        }
+
         status = MapExpStatus::Ready;
         LOG("状态从创建态更新到准备态");
     }
@@ -129,24 +139,25 @@ void MapExplorer::Draw()
 
         vector<Entity *> Entities;
 
-        // <TODO>
-        auto chao = m_wrdController->queryPhysicalProp(2);
-        if (chao != std::nullopt)
-        {
-            Vec3 pos{2, 0, 0};
-            chao->setPosition(pos);
-        }
-
         m_wrdController->getEntities(Entities);
 
         for (auto ptr : Entities)
         {
-            ptr->Draw(Position.x, Position.y, viewportX);
+            auto ePos = ptr->getPhysicalProperties().getPosition();
+            Vec3 absPos;
+
+            absPos.x = (ePos.x - Position.x) * widthFactor + viewportX + 0.5f;
+            absPos.y = (ePos.y - Position.y) * heightFactor + 0.5f;
+            absPos.z = 0;
+
+            ptr->Draw(absPos);
         }
 
-        m_itemContainer->setPosition(0.5f + viewportX, 0.95f);
         m_itemContainer->Draw();
 
+        m_healthbar->setHealth(
+            m_wrdController->getEntityByID(m_focusEntityIndex)
+                ->getHealthPercent());
         m_healthbar->Draw();
 
         SDL_RenderSetClipRect(
@@ -176,7 +187,67 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
     if (m_wrdController == nullptr)
         return;
 
-    // 暂时为空
+    if (event.type != SDL_KEYDOWN && event.type != SDL_KEYUP)
+    {
+        return;
+    }
+
+    if (vType == ViewportType::Fullscreen || vType == ViewportType::LeftHalf)
+    {
+        switch (event.key.keysym.sym)
+        {
+        case SDLK_w:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, -2, 0));
+            break;
+        }
+        case SDLK_a:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(-2, 0, 0));
+            break;
+        }
+        case SDLK_d:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(2, 0, 0));
+            break;
+        }
+        case SDLK_s:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, 2, 0));
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    else
+    {
+        switch (event.key.keysym.sym)
+        {
+        case SDLK_UP:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, -2, 0));
+            break;
+        }
+        case SDLK_LEFT:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(-2, 0, 0));
+            break;
+        }
+        case SDLK_RIGHT:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(2, 0, 0));
+            break;
+        }
+        case SDLK_DOWN:
+        {
+            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, 2, 0));
+            break;
+        }
+        default:
+            break;
+        }
+    }
 }
 
 bool MapExplorer::setWorldController(WorldController *wrdController)
@@ -185,6 +256,8 @@ bool MapExplorer::setWorldController(WorldController *wrdController)
         return false;
 
     this->m_wrdController = wrdController;
+
+    wrdController->EnableUpdate();
 
     return true;
 }
@@ -230,6 +303,8 @@ void MapExplorer::initComponents()
     m_itemContainer = UI<ItemContainer>("itemContainer", 99, 2027, 8, 1);
     m_itemContainer->setParentContainer(this);
 
+    auto thing = m_wrdController;
+
     m_itemContainer->Configure()
         .Parent(this)
         .Anchor(AnchorPoint::BottomCenter)
@@ -238,7 +313,9 @@ void MapExplorer::initComponents()
         .Alpha(1.0f)
         .Follow(2);
 
-    m_itemContainer->setSize(1, 8);
+    m_itemContainer->setBackpack(
+        m_wrdController->getBackpackByEntityID(m_focusEntityIndex));
+    m_itemContainer->setIndexRange(std::make_pair(0, 7));
     m_itemContainer->onEnter();
 
     // 初始化生命值

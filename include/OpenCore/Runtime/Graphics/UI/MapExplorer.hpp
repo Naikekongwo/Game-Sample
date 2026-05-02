@@ -75,6 +75,12 @@ class MapExplorer : public UIElement
      */
     void setExplorerViewPort(ViewportType vType);
 
+    bool setIndex(short ID)
+    {
+        m_focusEntityIndex = ID;
+        return true;
+    }
+
   private:
     float widthFactor = 1.0f;  ///< 宽度缩放因子（当前未使用）
     float heightFactor = 1.0f; ///< 高度缩放因子（当前未使用）
@@ -89,9 +95,7 @@ class MapExplorer : public UIElement
     uint8_t renderRangeY = RENDER_RANGE_Y; // 渲染范围Y
 
     unique_ptr<Tile> tileRenderer;
-
     unique_ptr<ItemContainer> m_itemContainer;
-
     unique_ptr<HealthBar> m_healthbar;
 
     void initComponents();

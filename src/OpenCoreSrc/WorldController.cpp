@@ -1,6 +1,9 @@
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
+#include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Gameplay/Backpack/Backpack.hpp"
 #include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
+#include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
 #include <memory>
 #include <optional>
 
@@ -204,4 +207,44 @@ void WorldController::getEntities(vector<Entity *> &list)
     {
         list.push_back(ePtr.get());
     }
+}
+
+BackPtr WorldController::getBackpackByEntityID(short id)
+{
+    auto entity = getEntityByID(id);
+
+    if (!entity)
+    {
+        LOG("尝试获取的实体对象并不存在, ID {}", id);
+        return nullptr;
+    }
+
+    auto backpack = entity->getBackpack();
+    return backpack;
+}
+
+BackPtr WorldController::getBackpackByID(short id)
+{
+    if (!containers.contains(id))
+    {
+        LOG("所请求的背包并不存在， ID {}", id);
+        return nullptr;
+    }
+
+    return containers.at(id);
+}
+
+bool WorldController::regMovement(short entityID, Vec3 Speed)
+{
+    auto entity = getEntityByID(entityID);
+    if (!entity)
+        return false;
+
+    auto &pProperties = entity->getPhysicalProperties();
+
+    pProperties.setSpeed(Speed);
+
+    LOG("设置成功");
+
+    return true;
 }

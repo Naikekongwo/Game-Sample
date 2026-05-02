@@ -3,7 +3,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include <cmath>
 
-void HealthBar::onEnter() { m_healthPercent = make_shared<float>(0.5f); }
+void HealthBar::onEnter() {}
 
 void HealthBar::Draw()
 {
@@ -32,9 +32,9 @@ void HealthBar::Draw()
     //     LOG("血量绑定的对象已经悬空 ID {}", id);
     //     return;
     // }
-    cutRect.x += dstRect.w * (1 - 0.5f);
+    cutRect.x += dstRect.w * (1 - m_healthPercent);
     // x向后推
-    cutRect.w = (0.5f) * dstRect.w;
+    cutRect.w = (m_healthPercent)*dstRect.w;
     // w缩小
 
     // 渲染血量

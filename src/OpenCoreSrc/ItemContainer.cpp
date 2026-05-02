@@ -2,30 +2,23 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Gameplay/Backpack/ItemManager.hpp"
 #include <cstdint>
+#include <stdexcept>
 
-ItemContainer::ItemContainer(const string &id, uint8_t layer,
+ItemContainer::ItemContainer(string_view id, uint8_t layer,
                              unique_ptr<Texture> texture, short col, short row)
-    : UIElement(id, layer, std::move(texture))
+    : UIElement(id.data(), layer, std::move(texture))
 {
-    // 初始化
-
-    if (!texture)
-    {
-        LOG("物品栏初始化时遇到错误，其纹理不应当是空的！ ID {}", id);
-        return;
-    }
-
     if (col * row == 0)
     {
         LOG("物品栏初始化失败，不允许容量为0");
         return;
     }
 
-    columns = col;
-    rows = row;
+    m_columns = col;
 
-    LOG("物品栏初始化成功, ID {}", id);
+    LOG("物品栏初始化成功, ID {}, 指定列数 {}", id, m_columns);
 }
 
 void ItemContainer::setBackpack(shared_ptr<Backpack> backpack)
@@ -42,7 +35,6 @@ void ItemContainer::setBackpack(shared_ptr<Backpack> backpack)
 
 void ItemContainer::Draw()
 {
-    // 自绘制逻辑
     if (VState->getAlpha() <= 0.0f)
     {
         return;
@@ -53,6 +45,15 @@ void ItemContainer::Draw()
         return;
     }
 
+    auto backpack = m_backpack.lock();
+    if (!backpack)
+    {
+        LOG("所绑定的背包已经悬空，无法绘制 {}", id);
+        return;
+    }
+
+    // 以上是检查绘制状态，避免进行不必要的绘制
+
     auto GFX = OpenCoreManagers::GFXManager.getInstance();
 
     Rect bounds = getLogicalBounds();
@@ -60,14 +61,14 @@ void ItemContainer::Draw()
     float offsetX = 0.0f;
     float offsetY = 0.0f;
 
-    float width = bounds.w / columns;
-    float height = bounds.h / rows;
+    short rows = backpack->getCapacity() / m_columns;
 
-    LOG("{} {} {} {}", offsetX, offsetY, width, height);
+    float width = bounds.w / m_columns;
+    float height = bounds.h / rows;
 
     for (int i = 0; i < rows; i++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int j = 0; j < m_columns; j++)
         {
 
             // 第i行，第j列
@@ -81,28 +82,9 @@ void ItemContainer::Draw()
         }
     }
 
-    m_item->Draw();
-}
+    // throw std::runtime_error("OK");
 
-void ItemContainer::setSize(short row, short col)
-{
-    if (row * col == 0)
-    {
-        LOG("输入的行列容量为空！");
-        return;
-    }
-
-    // 计算出当前的单位高度
-
-    float heightFactor = static_cast<float>(absHeight) / row;
-
-    rows = row;
-    columns = col;
-
-    absHeight = heightFactor * row;
-    absWidth = col * heightFactor;
-
-    LOG("{} {}", absWidth, absHeight);
+    // m_item->Draw();
 }
 
 void ItemContainer::onEnter()
@@ -117,19 +99,47 @@ void ItemContainer::onEnter()
         .Scale(0.0f, 0.9f)
         .Posite(0.5f, 0.5f);
 
+    auto backpack = m_backpack.lock();
+    if (!backpack)
+    {
+        LOG("背包已经悬空, id {}", id);
+        return;
+    }
+
     if (parentContainer)
     {
         LOG("有父组件");
         Rect bounds = parentContainer->getLogicalBounds();
+        Rect self_bounds = getLogicalBounds();
 
         LOG("{} {} {} {}", bounds.x, bounds.y, bounds.w, bounds.h);
         LOG("{}", absWidth);
 
-        if (absWidth > bounds.w)
-        {
-            float newWidth = bounds.w * 0.8f;
-            absHeight = newWidth * (static_cast<float>(absHeight) / absWidth);
-            absWidth = newWidth;
-        }
+        // <根据父容器来Resize>
+        float newWidth = bounds.w * (self_bounds.w / bounds.w);
+        absHeight = (newWidth / m_columns) *
+                    (backpack->getCapacity() / static_cast<float>(m_columns));
+        absWidth = newWidth;
     }
+}
+
+void ItemContainer::setIndexRange(pair<uint8_t, uint8_t> indexRange)
+{
+    // 设置物品栏的对应索引
+    auto backpack = m_backpack.lock();
+    if (!backpack)
+    {
+        LOG("引用的背包已经悬空，ID {}", id);
+        return;
+    }
+
+    if (indexRange.second >= backpack->getCapacity())
+    {
+        // Index out of range
+        // 超出了背包的容量
+        LOG("输入的index索引范围超出了背包的极限, ID{}", id);
+        return;
+    }
+
+    this->m_indexRange = indexRange;
 }

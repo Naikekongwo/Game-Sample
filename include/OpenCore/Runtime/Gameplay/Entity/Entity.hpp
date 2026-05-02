@@ -8,6 +8,7 @@
 
 #include "EntityInfo.hpp"
 
+#include <cstdint>
 #include <memory>
 
 #define ENTITY_PLAYER_ID 1
@@ -37,7 +38,7 @@ class Entity
     void onUpdate(float totalTime);
     void Draw(float cameraX, float cameraY);
 
-    void Draw(float cameraX, float cameraY, float offsetX);
+    void Draw(const Vec3 &absPos);
     void enableDrawer(bool enabled = true)
     {
         drawable = enabled;
@@ -51,6 +52,11 @@ class Entity
 
     PhysicalProperties &getPhysicalProperties() { return pProperties; }
     BackPtr &getBackpack() { return backpack; }
+
+    float getHealthPercent() noexcept
+    {
+        return (maxHealth == 0) ? 1.0f : (health * 1.0f / maxHealth);
+    }
 
   private:
     // 实体带有自我ID
@@ -67,6 +73,9 @@ class Entity
 
     // 状态
     EntityStatus status = EntityStatus::Registered;
+
+    uint8_t health = 125;
+    uint8_t maxHealth = 255;
 
     // 渲染参数
     float widthRelative = 1.0f;

@@ -30,70 +30,41 @@ void Entity::createRenderer()
     }
 }
 
-void Entity::Draw(float cameraX, float cameraY, float offsetX)
+void Entity::Draw(const Vec3 &absPos)
 {
-    if (drawable)
+    if (!drawable)
+        return;
+
+    if (!renderer)
+        createRenderer();
+
+    // 更新 world state
+    Vec3 Position = pProperties.getPosition();
+
+    // 只负责动画方向（这是Entity自己的逻辑）
+    switch (pProperties.getDirection())
     {
-        if (!renderer)
-        {
-            // 创建renderer
-            createRenderer();
-        }
-
-        // 开始绘图
-        Vec3 Position = pProperties.getPosition();
-
-        auto renderWidth = *OpenCoreManagers::SetManager.getRenderWidth();
-        auto renderHeight = *OpenCoreManagers::SetManager.getRenderHeight();
-
-        renderWidth = (renderWidth - 2) / 2 + 1;
-        renderHeight = (renderHeight - 1) / 2 + 1;
-
-        if ((abs(cameraX - Position.x) > renderWidth) or
-            (cameraY - Position.y > renderHeight))
-        {
-            // 超出渲染范围
-            return;
-        }
-        else
-        {
-            renderer->setPosition(
-                0.5f + (Position.x - cameraX) * widthRelative + offsetX,
-                0.5f + (Position.y - cameraY) * heightfactor);
-            renderer->setTransparency(1.0f);
-            switch (pProperties.getDirection())
-            {
-            case Direction::Up:
-            {
-                renderer->getVisualState()->frameIndex = 12;
-                break;
-            }
-            case Direction::Down:
-            {
-                renderer->getVisualState()->frameIndex = 0;
-                break;
-            }
-            case Direction::Left:
-            {
-                renderer->getVisualState()->frameIndex = 4;
-                break;
-            }
-            case Direction::Right:
-            {
-                renderer->getVisualState()->frameIndex = 8;
-                break;
-            }
-            default:
-                break;
-            }
-            renderer->Draw();
-        }
+    case Direction::Up:
+        renderer->getVisualState()->frameIndex = 12;
+        break;
+    case Direction::Down:
+        renderer->getVisualState()->frameIndex = 0;
+        break;
+    case Direction::Left:
+        renderer->getVisualState()->frameIndex = 4;
+        break;
+    case Direction::Right:
+        renderer->getVisualState()->frameIndex = 8;
+        break;
+    default:
+        break;
     }
-    else if (renderer)
-    {
-        // 既然不需要渲染，那就不要让renderer占有内存
-        renderer.reset();
-    }
+
+    // ⭐关键：只接收已经算好的 screen 坐标
+    renderer->setPosition(absPos.x, absPos.y);
+
+    renderer->setTransparency(1.0f);
+    renderer->Draw();
 }
 
 void Entity::Draw(float cameraX, float cameraY)

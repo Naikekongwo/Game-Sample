@@ -122,6 +122,13 @@ class WorldController
     Entity *getEntityByID(short id);
     void getEntities(vector<Entity *> &list);
 
+    BackPtr getBackpackByID(short id);
+    BackPtr getBackpackByEntityID(short id);
+
+    bool regMovement(short entityID, Vec3 Speed);
+
+    void EnableUpdate() { status = WorldControllerStatus::Visible; }
+
   private:
     /**
      * @brief 构建并初始化 MapManager对象
@@ -136,6 +143,11 @@ class WorldController
     bool generateTheMan();
 
   protected:
+    /**
+     * @brief 世界控制器的地图管理器
+     * @details
+     * 这个成员一定是是用独占指针来管理的，只有世界控制器才有地图的访问权限
+     */
     unique_ptr<MapManager> mapManager;
 
     queue<ItemExchangeRecord> Market;
