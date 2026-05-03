@@ -112,7 +112,7 @@ void MapExplorer::Draw()
         auto left_border = (renderRangeX / 2);
         auto up_border = (renderRangeY - 1) / 2;
 
-        for (int y = -up_border; y <= up_border; ++y)
+        for (int y = -up_border - 1; y <= up_border + 1; ++y)
         {
             for (int x = -left_border; x <= left_border; ++x)
             {
