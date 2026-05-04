@@ -1,27 +1,29 @@
 #include "OpenCore/OpenCore.hpp"
 #include <cmath>
-
 void PhysicalProperties::onUpdate(float totalTime)
 {
     float deltaTime = totalTime - lastTime;
+    if (deltaTime <= 0.0f) {
+        lastTime = totalTime;
+        return;
+    }
+
+    // 1. 根据目标速度平滑加速/减速（水平）
+    applyMoveControl(deltaTime);
+
+    // 2. 垂直运动与落地检测
     parseVerticalMovement(Speed.z, Position.z, deltaTime);
 
-    if (Speed.x != 0.0f)
-    {
-        parseHorizontalMovement(Speed.x, Position.x, deltaTime);
-    }
-    else
-        parseHorizontalMovement(Speed.y, Position.y, deltaTime);
+    // 3. 摩擦力处理（两轴都处理，消除原单轴分支）
+    parseHorizontalMovement(Speed.x, Position.x, deltaTime);
+    parseHorizontalMovement(Speed.y, Position.y, deltaTime);
 
-    // 检测速度
-    if (Speed.y > 0.0f)
-        direction = Direction::Down;
-    if (Speed.y < 0.0f)
-        direction = Direction::Up;
-    if (Speed.x > 0.0f)
-        direction = Direction::Right;
-    if (Speed.x < 0.0f)
-        direction = Direction::Left;
+    // 4. 更新朝向
+    if (Speed.x > 0.1f) direction = Direction::Right;
+    else if (Speed.x < -0.1f) direction = Direction::Left;
+    else if (Speed.y > 0.1f) direction = Direction::Down;
+    else if (Speed.y < -0.1f) direction = Direction::Up;
+
     lastTime = totalTime;
 }
 
@@ -82,4 +84,33 @@ void PhysicalProperties::parseVerticalMovement(float &Speed, float &Pos,
     {
         Pos = 0.0f;
     }
+}
+
+void PhysicalProperties::applyMoveControl(float deltaTime)
+{
+    if (deltaTime <= 0.0f) return;
+
+    // 仅处理水平面 (x, y)，保持垂直速度不变
+    Vec3 target = desiredVelocity;
+    target.z = 0.0f;
+
+    auto applyAxis = [&](float cur, float tgt) -> float {
+        float diff = tgt - cur;
+        // 理想加速度 = 增益 * 误差
+        float ideal = accelGain * diff;
+        // 限制在最大加速度范围内
+        float accel = std::clamp(ideal, -maxAccelParam, maxAccelParam);
+        // 本帧速度变化量
+        float delta = accel * deltaTime;
+        // 避免超调：变化量不得超过剩余差值
+        if (diff > 0.0f)
+            delta = std::min(delta, diff);
+        else if (diff < 0.0f)
+            delta = std::max(delta, diff);
+        return cur + delta;
+    };
+
+    Speed.x = applyAxis(Speed.x, target.x);
+    Speed.y = applyAxis(Speed.y, target.y);
+    // Speed.z 不动
 }

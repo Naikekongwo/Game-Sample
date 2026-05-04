@@ -40,6 +40,14 @@ class PhysicalProperties
   public:
     void onUpdate(float totalTime);
 
+    // 新增：设置期望水平速度（世界x, y平面）
+    void setDesiredVelocity(const Vec3& vel) { desiredVelocity = vel; }
+
+    void setAccelParams(float maxAccel, float gain) {
+        maxAccelParam = maxAccel;
+        accelGain     = gain;
+    }
+
     void setPosition(const Vec3 &position) { Position = position; }
     void setSpeed(const Vec3 &speed) { Speed = speed; }
     void setμFactor(const float &factor) { μFactor = factor; }
@@ -71,7 +79,12 @@ class PhysicalProperties
     Vec3 Position{0, 0, 0};
     Direction direction = Direction::Down;
 
-    // 物理函数
+    // 新增平滑加速相关
+    Vec3 desiredVelocity{0,0,0};
+    float maxAccelParam = 15.0f;   // 最大加速度（单位/s²）,控制起步/刹车的最大加速度，数值越大响应越灵敏，但过高会显得突跳,12.0 ~ 20.0
+    float accelGain     = 10.0f;   // 趋近增益,接近目标速度时的柔和度，数值越大尾部越“硬”，过小则感觉迟滞,8.0 ~ 15.0
+  
     void parseHorizontalMovement(float &Speed, float &Pos, float deltaTime);
     void parseVerticalMovement(float &Speed, float &Pos, float deltaTime);
+    void applyMoveControl(float deltaTime);
 };

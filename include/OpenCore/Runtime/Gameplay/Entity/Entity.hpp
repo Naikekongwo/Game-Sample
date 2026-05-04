@@ -58,6 +58,16 @@ class Entity
         return (maxHealth == 0) ? 1.0f : (health * 1.0f / maxHealth);
     }
 
+    // 提供给输入系统的接口
+    void setDesiredVelocity(const Vec3& vel) {
+        pProperties.setDesiredVelocity(vel);
+    }
+
+    // 也可保留一个配置接口供蓝图/调试使用
+    void configMoveParams(float maxAccel, float gain) {
+        pProperties.setAccelParams(maxAccel, gain);
+    }
+
   private:
     // 实体带有自我ID
     // 实体内置一个物理信息表
