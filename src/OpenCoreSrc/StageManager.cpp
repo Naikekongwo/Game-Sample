@@ -113,8 +113,8 @@ bool StageManager::handlEvents(SDL_Event *event)
     {
         if (*it)
         {
-            (*it)->handlEvents(event);
-            break;
+            if ((*it)->handlEvents(event))
+                break;
         }
     }
     return true;

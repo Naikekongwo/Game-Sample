@@ -196,66 +196,35 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
         return;
 
     if (event.type != SDL_KEYDOWN && event.type != SDL_KEYUP)
-    {
         return;
-    }
+
+    Vec3 velocity{0, 0, 0};
+    bool isKeyDown = (event.type == SDL_KEYDOWN);
 
     if (vType == ViewportType::Fullscreen || vType == ViewportType::LeftHalf)
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_w:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, -2, 0));
-            break;
-        }
-        case SDLK_a:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(-2, 0, 0));
-            break;
-        }
-        case SDLK_d:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(2, 0, 0));
-            break;
-        }
-        case SDLK_s:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, 2, 0));
-            break;
-        }
-        default:
-            break;
+        case SDLK_w: if (isKeyDown) velocity = Vec3(0, -3, 0); break;
+        case SDLK_a: if (isKeyDown) velocity = Vec3(-3, 0, 0); break;
+        case SDLK_d: if (isKeyDown) velocity = Vec3(3, 0, 0); break;
+        case SDLK_s: if (isKeyDown) velocity = Vec3(0, 3, 0); break;
+        default: return;
         }
     }
     else
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_UP:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, -2, 0));
-            break;
-        }
-        case SDLK_LEFT:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(-2, 0, 0));
-            break;
-        }
-        case SDLK_RIGHT:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(2, 0, 0));
-            break;
-        }
-        case SDLK_DOWN:
-        {
-            m_wrdController->regMovement(m_focusEntityIndex, Vec3(0, 2, 0));
-            break;
-        }
-        default:
-            break;
+        case SDLK_UP:    if (isKeyDown) velocity = Vec3(0, -3, 0); break;
+        case SDLK_LEFT:  if (isKeyDown) velocity = Vec3(-3, 0, 0); break;
+        case SDLK_RIGHT: if (isKeyDown) velocity = Vec3(3, 0, 0); break;
+        case SDLK_DOWN:  if (isKeyDown) velocity = Vec3(0, 3, 0); break;
+        default: return;
         }
     }
+
+    m_wrdController->regMovement(m_focusEntityIndex, velocity);
 }
 
 bool MapExplorer::setWorldController(WorldController *wrdController)

@@ -8,8 +8,12 @@ void PhysicalProperties::onUpdate(float totalTime)
         return;
     }
 
-    // 1. 根据目标速度平滑加速/减速（水平）
-    applyMoveControl(deltaTime);
+    // 1. 有输入时根据目标速度平滑加速，无输入时只靠摩擦力自然减速
+    bool hasInput = (desiredVelocity.x != 0.0f || desiredVelocity.y != 0.0f);
+    if (hasInput)
+    {
+        applyMoveControl(deltaTime);
+    }
 
     // 2. 垂直运动与落地检测
     parseVerticalMovement(Speed.z, Position.z, deltaTime);
@@ -56,8 +60,7 @@ void PhysicalProperties::parseHorizontalMovement(float &Speed, float &Pos,
     }
     else
     {
-        // 若速度为0，则对齐
-        Pos = std::round(Pos);
+        // 速度为0时不对齐，避免位置跳变
     }
 }
 

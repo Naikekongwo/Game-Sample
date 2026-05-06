@@ -241,7 +241,7 @@ bool WorldController::regMovement(short entityID, Vec3 Speed)
 
     auto &pProperties = entity->getPhysicalProperties();
 
-    pProperties.setSpeed(Speed);
+    pProperties.setDesiredVelocity(Speed);
 
     LOG("设置成功");
 

@@ -93,7 +93,6 @@ bool GameplayStage::handlEvents(SDL_Event *event)
 {
     Elements->handlEvents(*event, timer->getTotalTime());
     return true;
-    // 暂时没有动作
 }
 
 void GameplayStage::initializeComponents() {}

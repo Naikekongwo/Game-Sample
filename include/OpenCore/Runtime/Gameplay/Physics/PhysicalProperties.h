@@ -73,7 +73,7 @@ class PhysicalProperties
     // 物体的位置
     // 物体的朝向
     float density = 1.0f;
-    float μFactor = -0.2f;
+    float μFactor = -0.6f;
     float lastTime = 0.0f;
     Vec3 Speed{0, 0, 0};
     Vec3 Position{0, 0, 0};
