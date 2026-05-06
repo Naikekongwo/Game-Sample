@@ -179,6 +179,10 @@
         "path": "assets/ui/purifier/purifier_background.png",
         "category": "texture"
     },
+    "2044": {
+        "path": "assets/terrain/terrain.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",

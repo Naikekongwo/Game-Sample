@@ -123,6 +123,9 @@ void MapExplorer::Draw()
 
                 if (bInfo == std::nullopt)
                     continue;
+                if (bInfo->Terrain == bInfo->STRuct &&
+                    bInfo->Terrain == bInfo->Access)
+                    continue;
 
                 // <Terrain纹理板块>
                 tileRenderer->setPosition(
@@ -135,6 +138,10 @@ void MapExplorer::Draw()
                 tileRenderer->setTileID(bInfo->Terrain);
                 tileRenderer->Draw();
                 // <Terrain纹理板块>
+
+                tileRenderer->setTileType(TileType::Terrain);
+                tileRenderer->setTileID(bInfo->STRuct);
+                tileRenderer->Draw();
             }
         }
 

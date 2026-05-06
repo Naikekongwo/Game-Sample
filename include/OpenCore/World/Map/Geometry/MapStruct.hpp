@@ -28,6 +28,9 @@ struct BlockInfo
 {
     // Terrain : 地形
     uint8_t Terrain = 2;
+    uint8_t STRuct = 2;
+    uint8_t Entity = 2;
+    uint8_t Access = 2;
 
     BlockInfo() : Terrain(2) {};
 
@@ -40,5 +43,8 @@ struct BlockInfo
         }
 
         Terrain = (datas.size() >= 1) ? datas[0] : 0;
+        STRuct = (datas.size() >= 2) ? datas[1] : 0;
+        Entity = (datas.size() >= 3) ? datas[2] : 0;
+        Access = (datas.size() >= 4) ? datas[3] : 0;
     }
 };

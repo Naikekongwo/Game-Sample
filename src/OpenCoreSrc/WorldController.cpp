@@ -32,7 +32,7 @@ bool WorldController::generateMapManager()
     mapManager = std::make_unique<MapManager>();
 
     // 注册一个默认的地图文件
-    mapManager->loadClassicMap(1, "maps/test_circle_radius.ocmp");
+    mapManager->loadClassicMap(1, "maps/test_newTemple.ocmp");
     mapManager->setCurrentID(1);
 
     LOG("地图管理器初始化成功");

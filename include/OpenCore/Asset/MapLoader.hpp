@@ -65,7 +65,7 @@ inline void LoadMapFromFile(const string &mapPath, vector<BlockInfo> &datas,
     size_t totalBlocks = static_cast<size_t>(mapWidth) * mapHeight;
     datas.reserve(totalBlocks);
 
-    std::vector<uint8_t> buffer(sizeof(header.blockSize));
+    std::vector<uint8_t> buffer(header.blockSize);
     for (size_t i = 0; i < totalBlocks; ++i)
     {
         file.read(reinterpret_cast<char *>(buffer.data()), buffer.size());

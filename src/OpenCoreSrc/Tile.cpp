@@ -1,4 +1,5 @@
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Graphics/IDrawableObject/Texture.hpp"
 #include <memory>
 
 Tile::Tile()
@@ -14,8 +15,11 @@ Tile::Tile()
 void Tile::onEnter()
 {
     // 初始化纹理库
+    // TerrainTiles = std::make_unique<Texture>(
+    //     16, 16, OpenCoreManagers::ResManager.GetTexture(2035));
+
     TerrainTiles = std::make_unique<Texture>(
-        16, 16, OpenCoreManagers::ResManager.GetTexture(2035));
+        8, 8, OpenCoreManagers::ResManager.GetTexture(2044));
 }
 
 void Tile::Draw()
