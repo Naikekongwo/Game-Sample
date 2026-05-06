@@ -35,7 +35,7 @@ void MapExplorer::onEnter()
 
         // <TODO>
         auto chao = m_wrdController->queryPhysicalProp(2);
-        if (chao != std::nullopt)
+        if (chao != nullptr)
         {
             Vec3 pos{2, 0, 0};
             chao->setPosition(pos);
@@ -62,7 +62,7 @@ void MapExplorer::Draw()
 
         auto cameraProp =
             m_wrdController->queryPhysicalProp(m_focusEntityIndex);
-        if (cameraProp == std::nullopt)
+        if (cameraProp == nullptr)
         {
             LOG("渲染的焦点实体物理信息并不存在");
             return;

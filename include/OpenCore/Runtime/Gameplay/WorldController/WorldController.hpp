@@ -92,7 +92,7 @@ class WorldController
      * @brief 只允许返回副本，不允许返回引用，防止越界修改
      * @return PhysicalProperties
      */
-    optional<PhysicalProperties &> queryPhysicalProp(short EntityIndex);
+    PhysicalProperties* queryPhysicalProp(short EntityIndex);
 
     /**
      * @brief 获取地图管理器的状态

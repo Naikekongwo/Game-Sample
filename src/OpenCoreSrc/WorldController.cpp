@@ -169,16 +169,15 @@ void WorldController::onUpdate(float totalTime)
     }
 }
 
-optional<PhysicalProperties &>
+PhysicalProperties*
 WorldController::queryPhysicalProp(short EntityIndex)
 {
     if (Entities.contains(EntityIndex))
     {
-        return Entities.at(EntityIndex)->getPhysicalProperties();
+        return &Entities.at(EntityIndex)->getPhysicalProperties();
     }
 
-    // 为空时返回 nullopt
-    return std::nullopt;
+    return nullptr;
 }
 
 optional<BlockInfo> WorldController::queryBlockInfo(int gx, int gy)
