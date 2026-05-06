@@ -19,8 +19,11 @@ void HealthBar::Draw()
     // <渲染逻辑开始>
 
     Rect dstRect = getLogicalBounds();
+
     Rect frameRect = texture->getSubRect(0);
     Rect valueRect = texture->getSubRect(1);
+    Rect wellRect = texture->getSubRect(2);
+    Rect goodRect = texture->getSubRect(3);
 
     auto GFX = OpenCoreManagers::GFXManager.getInstance();
 
@@ -38,7 +41,18 @@ void HealthBar::Draw()
     // w缩小
 
     // 渲染血量
-    GFX.Draw(texture->get(), &valueRect, &cutRect, 0.0f, nullptr);
+    if (m_healthPercent < 0.5)
+    {
+        GFX.Draw(texture->get(), &valueRect, &cutRect, 0.0f, nullptr);
+    }
+    else if (m_healthPercent < 0.7)
+    {
+        GFX.Draw(texture->get(), &wellRect, &cutRect, 0.0f, nullptr);
+    }
+    else
+    {
+        GFX.Draw(texture->get(), &goodRect, &cutRect, 0.0f, nullptr);
+    }
 
     // 渲染框架
     GFX.Draw(texture->get(), &frameRect, &dstRect, 0.0f, nullptr);

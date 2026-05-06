@@ -1,4 +1,5 @@
 #include "Eclipsea/Eclipsea.hpp"
+#include "Eclipsea/Stage/WorldEditorStage.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <SDL2/SDL_main.h>
 #include <functional>
@@ -96,6 +97,14 @@ void MainStage::setupButtons()
             .Posite(0.72f, 0.58f)
             .Scale(0.156f, 0.0416f * widthheight)
             .Sequence(true);
+
+        worldbutton->setOnClick(
+            [this]()
+            {
+                auto worlde =
+                    std::make_unique<WorldEditorStage>(timer, sController);
+                sController->changeStage(std::move(worlde));
+            });
 
         Elements->PushElement(std::move(worldbutton));
     }
