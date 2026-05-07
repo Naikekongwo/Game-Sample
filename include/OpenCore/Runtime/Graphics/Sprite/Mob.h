@@ -4,6 +4,9 @@
 // 生物的渲染类
 
 #include "OpenCore//Runtime//Graphics//IDrawableObject//Sprite.hpp"
+#include <memory>
+
+using std::shared_ptr;
 
 class Mob : public Sprite
 {
@@ -15,4 +18,5 @@ class Mob : public Sprite
     bool onDestroy() override { return true; };
 
   private:
+    shared_ptr<Texture> shadow;
 };

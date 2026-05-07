@@ -53,20 +53,19 @@ class Entity
     PhysicalProperties &getPhysicalProperties() { return pProperties; }
     BackPtr &getBackpack() { return backpack; }
 
-    float getHealthPercent() noexcept
-    {
-        return (maxHealth == 0) ? 1.0f : (health * 1.0f / maxHealth);
-    }
-
     // 提供给输入系统的接口
-    void setDesiredVelocity(const Vec3& vel) {
+    void setDesiredVelocity(const Vec3 &vel)
+    {
         pProperties.setDesiredVelocity(vel);
     }
 
     // 也可保留一个配置接口供蓝图/调试使用
-    void configMoveParams(float maxAccel, float gain) {
+    void configMoveParams(float maxAccel, float gain)
+    {
         pProperties.setAccelParams(maxAccel, gain);
     }
+
+    shared_ptr<float> getHealthHook() { return m_healthPercent; }
 
   private:
     // 实体带有自我ID
@@ -84,10 +83,12 @@ class Entity
     // 状态
     EntityStatus status = EntityStatus::Registered;
 
-    uint8_t health = 125;
+    shared_ptr<float> m_healthPercent;
     uint8_t maxHealth = 255;
 
     // 渲染参数
     float widthRelative = 1.0f;
     float heightRelative = 1.0f;
+
+    float lastTime = 0.0f;
 };

@@ -183,9 +183,13 @@
         "path": "assets/terrain/terrain.png",
         "category": "texture"
     },
+    "2045": {
+        "path": "assets/entity/entity_shadow.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",
-        "size": 24
+        "size": 72
     }
 }

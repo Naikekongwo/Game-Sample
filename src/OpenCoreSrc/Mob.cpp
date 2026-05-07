@@ -23,12 +23,28 @@ void Mob::Draw()
         auto info = OpenEngine::getInstance().getGameInfo();
 
         Rect dstRect = getLogicalBounds();
+        Rect shadowRect = {dstRect.x, dstRect.y + 0.5f * (dstRect.h), dstRect.w,
+                           dstRect.h * 0.5f};
         Rect windowRect{0, 0, static_cast<float>(info->TargetResolutionWidth),
                         static_cast<float>(info->TargetResolutionHeight)};
 
         if (visible(dstRect, windowRect) && VState->getAlpha() > 0.0f)
         {
             auto GFX = OpenCoreManagers::GFXManager.getInstance();
+
+            // 渲染影子
+            if (!shadow)
+            {
+                shadow = make_shared<Texture>(
+                    1, 1,
+                    OpenCoreManagers::ResManager.getInstance().GetTexture(
+                        2045));
+            }
+
+            GFX.Draw(shadow->get(), nullptr, &shadowRect, 0.0f, nullptr);
+
+            // 渲染实体
+
             Rect srcRect = texture->getSubRect(VState->getFrameIndex());
             GFX.Draw(texture->get(), &srcRect, &dstRect, 0.0f, nullptr);
         }

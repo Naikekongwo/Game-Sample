@@ -2,6 +2,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <cmath>
+#include <memory>
 
 void HealthBar::onEnter() {}
 
@@ -14,6 +15,11 @@ void HealthBar::Draw()
     {
         LOG("空纹理");
         return;
+    }
+
+    if (!m_healthPercent)
+    {
+        m_healthPercent = std::make_shared<float>(1.0f);
     }
 
     // <渲染逻辑开始>
@@ -29,23 +35,23 @@ void HealthBar::Draw()
 
     // 渲染血量
     Rect cutRect = dstRect;
-    // auto health = m_healthPercent.lock();
+    // auto health = *m_healthPercent.lock();
     // if (!health)
     // {
     //     LOG("血量绑定的对象已经悬空 ID {}", id);
     //     return;
     // }
-    cutRect.x += dstRect.w * (1 - m_healthPercent);
+    cutRect.x += dstRect.w * (1 - *m_healthPercent);
     // x向后推
-    cutRect.w = (m_healthPercent)*dstRect.w;
+    cutRect.w = (*m_healthPercent) * dstRect.w;
     // w缩小
 
     // 渲染血量
-    if (m_healthPercent < 0.5)
+    if (*m_healthPercent < 0.5)
     {
         GFX.Draw(texture->get(), &valueRect, &cutRect, 0.0f, nullptr);
     }
-    else if (m_healthPercent < 0.7)
+    else if (*m_healthPercent < 0.7)
     {
         GFX.Draw(texture->get(), &wellRect, &cutRect, 0.0f, nullptr);
     }

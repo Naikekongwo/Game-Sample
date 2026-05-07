@@ -12,6 +12,8 @@ void Entity::Configure(const EntityInfo &eInfo)
         OpenEngine::getInstance().getServerWorldController()->createBackpack(
             info.backpackCapacity);
 
+    m_healthPercent = std::make_shared<float>(1.0f);
+
     status = EntityStatus::Ready;
 }
 
@@ -136,4 +138,13 @@ void Entity::onUpdate(float totalTime)
 {
     // 刷新
     pProperties.onUpdate(totalTime);
+
+    // 刷新血量
+
+    *m_healthPercent -= 0.05f * (totalTime - lastTime);
+
+    if (*m_healthPercent <= 0.0f)
+        *m_healthPercent = 1.0f;
+
+    lastTime = totalTime;
 }

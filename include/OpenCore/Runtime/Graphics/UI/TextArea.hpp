@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
 
 #include <memory>
@@ -29,7 +30,7 @@ class TextArea : public UIElement
   public:
     TextArea(const string &id, uint8_t layer, short fontID);
 
-    void handlEvents(SDL_Event &event, float totalTime) override {};
+    void handlEvents(SDL_Event &event, float totalTime) override;
 
     void Draw() override;
 
@@ -53,7 +54,9 @@ class TextArea : public UIElement
     short fontID = 9001;
     short m_fontSize = 20;
 
-    unique_ptr<Texture> m_textureCache;
+    AnchorPoint textAnchor = AnchorPoint::MiddleLeft;
+
+    SDL_Texture *m_textureCache;
     string m_textContent;
 
     /**

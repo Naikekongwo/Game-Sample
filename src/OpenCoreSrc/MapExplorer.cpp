@@ -165,7 +165,7 @@ void MapExplorer::Draw()
 
         m_healthbar->setHealth(
             m_wrdController->getEntityByID(m_focusEntityIndex)
-                ->getHealthPercent());
+                ->getHealthHook());
         m_healthbar->Draw();
 
         SDL_RenderSetClipRect(
@@ -205,22 +205,48 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_w: if (isKeyDown) velocity = Vec3(0, -3, 0); break;
-        case SDLK_a: if (isKeyDown) velocity = Vec3(-3, 0, 0); break;
-        case SDLK_d: if (isKeyDown) velocity = Vec3(3, 0, 0); break;
-        case SDLK_s: if (isKeyDown) velocity = Vec3(0, 3, 0); break;
-        default: return;
+        case SDLK_w:
+            if (isKeyDown)
+                velocity = Vec3(0, -3, 0);
+            break;
+        case SDLK_a:
+            if (isKeyDown)
+                velocity = Vec3(-3, 0, 0);
+            break;
+        case SDLK_d:
+            if (isKeyDown)
+                velocity = Vec3(3, 0, 0);
+            break;
+        case SDLK_s:
+            if (isKeyDown)
+                velocity = Vec3(0, 3, 0);
+            break;
+        default:
+            return;
         }
     }
     else
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_UP:    if (isKeyDown) velocity = Vec3(0, -3, 0); break;
-        case SDLK_LEFT:  if (isKeyDown) velocity = Vec3(-3, 0, 0); break;
-        case SDLK_RIGHT: if (isKeyDown) velocity = Vec3(3, 0, 0); break;
-        case SDLK_DOWN:  if (isKeyDown) velocity = Vec3(0, 3, 0); break;
-        default: return;
+        case SDLK_UP:
+            if (isKeyDown)
+                velocity = Vec3(0, -3, 0);
+            break;
+        case SDLK_LEFT:
+            if (isKeyDown)
+                velocity = Vec3(-3, 0, 0);
+            break;
+        case SDLK_RIGHT:
+            if (isKeyDown)
+                velocity = Vec3(3, 0, 0);
+            break;
+        case SDLK_DOWN:
+            if (isKeyDown)
+                velocity = Vec3(0, 3, 0);
+            break;
+        default:
+            return;
         }
     }
 

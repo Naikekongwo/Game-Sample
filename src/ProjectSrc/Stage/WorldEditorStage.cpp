@@ -42,7 +42,7 @@ void WorldEditorStage::Init()
     mapexp->Configure()
         .Anchor(AnchorPoint::Center)
         .Posite(0.5f, 0.5f)
-        .Scale(1.0f, 1.0f)
+        .Scale(0.9f, 0.9f)
         .Alpha(1.0f);
 
     mapexp->setWorldController(

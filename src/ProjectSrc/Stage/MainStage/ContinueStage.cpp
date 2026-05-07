@@ -1,5 +1,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Graphics/UI/TextArea.hpp"
 #include <cstddef>
 #include <memory>
 
@@ -94,6 +96,19 @@ void ContinueStage::initializeComponents()
         .Posite(0.37f, 0.15f);
 
     Elements->PushElement(std::move(InfoDiv));
+
+    auto textDemo = UI<TextArea>("textDemo", 50, 9001, NULL, NULL);
+
+    textDemo->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::Center)
+        .Alpha(1.0f)
+        .Scale(1.0f, 0.2f)
+        .Posite(0.5f, 0.5f);
+
+    textDemo->setText("Super Huge Dick");
+
+    Elements->PushElement(std::move(textDemo));
 
     // 标题
     auto titleLabel =
