@@ -112,16 +112,19 @@ void ContinueStage::initializeComponents()
     Elements->PushElement(std::move(textDemo));
 
     // 标题
-    auto titleLabel =
-        UI<ImageBoard>("titleLabel", 99, stage_continue_title, 1, 1);
+    auto title = UI<TextArea>("title", 99, 9002, NULL, NULL);
 
-    titleLabel->Configure()
+    title->Configure()
         .Anchor(AnchorPoint::TopCenter)
         .Parent(Container.get())
-        .Scale(0.113f, 0.0f)
+        .Scale(0.226f, 0.0717f)
         .Posite(0.5f, 0.05f);
 
-    Elements->PushElement(std::move(titleLabel));
+    title->setText("本地存档");
+    title->setFontSize(62);
+    title->setShadow(true, 2);
+
+    Elements->PushElement(std::move(title));
 
     auto buttonBorder = UI<ImageBoard>("buttonBorders", 3, button_border, 1, 1);
     buttonBorder->Configure()

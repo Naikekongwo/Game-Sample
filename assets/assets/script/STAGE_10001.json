@@ -115,28 +115,8 @@
         "path": "assets/ui/item_container.png",
         "category": "texture"
     },
-    "2028": {
-        "path": "assets/ui/settings/settings_title.png",
-        "category": "texture"
-    },
-    "2029": {
-        "path": "assets/ui/settings/tem_musicvolume.png",
-        "category": "texture"
-    },
-    "2030": {
-        "path": "assets/ui/settings/tem_chunkvolume.png",
-        "category": "texture"
-    },
     "2031": {
         "path": "assets/ui/pad_copyright.png",
-        "category": "texture"
-    },
-    "2032": {
-        "path": "assets/ui/settings/tem_renderdistance.png",
-        "category": "texture"
-    },
-    "2033": {
-        "path": "assets/ui/settings/tem_multiplayer.png",
         "category": "texture"
     },
     "2034": {
@@ -151,10 +131,6 @@
         "path": "assets/entity/player_texture.png",
         "category": "texture"
     },
-    "2037": {
-        "path": "assets/ui/stage/continue_title.png",
-        "category": "texture"
-    },
     "2038": {
         "path": "assets/items/bottle.png",
         "category": "texture"
@@ -165,10 +141,6 @@
     },
     "2040": {
         "path": "assets/ui/gameplay/healthbar.png",
-        "category": "texture"
-    },
-    "2041": {
-        "path": "assets/ui/gameplay/healthbar_back.png",
         "category": "texture"
     },
     "2042": {

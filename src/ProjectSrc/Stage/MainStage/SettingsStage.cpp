@@ -43,16 +43,30 @@ void SettingsStage::onEnter()
 
     Elements->PushElement(std::move(background_large));
 
-    auto settingtitle =
-        UI<ImageBoard>("settingtitle", 99, img_settingstitle, 1, 1);
+    // auto settingtitle =
+    //     UI<ImageBoard>("settingtitle", 99, img_settingstitle, 1, 1);
 
-    settingtitle->Configure()
+    // settingtitle->Configure()
+    //     .Anchor(AnchorPoint::TopCenter)
+    //     .Parent(Container.get())
+    //     .Scale(0.113f, 0.0f)
+    //     .Posite(0.5f, 0.05f);
+
+    // Elements->PushElement(std::move(settingtitle));
+
+    auto title = UI<TextArea>("settingtitle", 99, 9002, NULL, NULL);
+
+    title->Configure()
         .Anchor(AnchorPoint::TopCenter)
         .Parent(Container.get())
-        .Scale(0.113f, 0.0f)
+        .Scale(0.113f, 0.0717f)
         .Posite(0.5f, 0.05f);
 
-    Elements->PushElement(std::move(settingtitle));
+    title->setText("设置");
+    title->setFontSize(62);
+    title->setShadow(true, 2);
+
+    Elements->PushElement(std::move(title));
 
     // 选项名称
 
