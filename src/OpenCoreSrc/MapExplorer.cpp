@@ -198,57 +198,40 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
     if (event.type != SDL_KEYDOWN && event.type != SDL_KEYUP)
         return;
 
-    Vec3 velocity{0, 0, 0};
+    if (event.key.repeat)
+        return;
+
     bool isKeyDown = (event.type == SDL_KEYDOWN);
 
     if (vType == ViewportType::Fullscreen || vType == ViewportType::LeftHalf)
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_w:
-            if (isKeyDown)
-                velocity = Vec3(0, -3, 0);
-            break;
-        case SDLK_a:
-            if (isKeyDown)
-                velocity = Vec3(-3, 0, 0);
-            break;
-        case SDLK_d:
-            if (isKeyDown)
-                velocity = Vec3(3, 0, 0);
-            break;
-        case SDLK_s:
-            if (isKeyDown)
-                velocity = Vec3(0, 3, 0);
-            break;
-        default:
-            return;
+        case SDLK_w: m_moveUp    = isKeyDown; break;
+        case SDLK_a: m_moveLeft  = isKeyDown; break;
+        case SDLK_d: m_moveRight = isKeyDown; break;
+        case SDLK_s: m_moveDown  = isKeyDown; break;
+        default: return;
         }
     }
     else
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_UP:
-            if (isKeyDown)
-                velocity = Vec3(0, -3, 0);
-            break;
-        case SDLK_LEFT:
-            if (isKeyDown)
-                velocity = Vec3(-3, 0, 0);
-            break;
-        case SDLK_RIGHT:
-            if (isKeyDown)
-                velocity = Vec3(3, 0, 0);
-            break;
-        case SDLK_DOWN:
-            if (isKeyDown)
-                velocity = Vec3(0, 3, 0);
-            break;
-        default:
-            return;
+        case SDLK_UP:    m_moveUp    = isKeyDown; break;
+        case SDLK_LEFT:  m_moveLeft  = isKeyDown; break;
+        case SDLK_RIGHT: m_moveRight = isKeyDown; break;
+        case SDLK_DOWN:  m_moveDown  = isKeyDown; break;
+        default: return;
         }
     }
+
+    // 根据所有当前按住的键计算合成速度
+    Vec3 velocity{0, 0, 0};
+    if (m_moveUp)    velocity.y -= 3;
+    if (m_moveDown)  velocity.y += 3;
+    if (m_moveLeft)  velocity.x -= 3;
+    if (m_moveRight) velocity.x += 3;
 
     m_wrdController->regMovement(m_focusEntityIndex, velocity);
 }
