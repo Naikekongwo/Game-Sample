@@ -1,5 +1,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Graphics/UI/TextArea.hpp"
 #include <cstddef>
 #include <memory>
 
@@ -54,40 +56,58 @@ void SettingsStage::onEnter()
 
     // 选项名称
 
-    auto musicV = UI<ImageBoard>("musicvol", 3, img_musicvolume, 1, 1);
-    auto SFXV = UI<ImageBoard>("sfxVol", 3, img_sfxvolume, 1, 1);
+    auto musicTitle = UI<TextArea>("musicVol", 3, 9002, NULL, NULL);
+    auto soundTitle = UI<TextArea>("soundVol", 3, 9002, NULL, NULL);
 
-    musicV->Configure()
+    musicTitle->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
         .Posite(0.14f, 0.22f)
-        .Scale(0.246f, 0.0f);
+        .Scale(0.5f, 0.0425f);
 
-    SFXV->Configure()
+    musicTitle->setText("音乐音量");
+    musicTitle->setFontSize(36);
+    musicTitle->setShadow(true, 2);
+
+    soundTitle->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
         .Posite(0.14f, 0.35f)
-        .Scale(0.246f, 0.0f);
+        .Scale(0.5f, 0.0425f);
 
-    Elements->PushElement(std::move(musicV));
-    Elements->PushElement(std::move(SFXV));
+    soundTitle->setText("音效音量");
+    soundTitle->setFontSize(36);
+    soundTitle->setShadow(true, 2);
 
-    auto renderD = UI<ImageBoard>("renderd", 3, img_renderd, 1, 1);
-    auto Multi = UI<ImageBoard>("multi", 3, img_multi, 1, 1);
+    // Elements->PushElement(std::move(musicV));
+    Elements->PushElement(std::move(musicTitle));
+    Elements->PushElement(std::move(soundTitle));
 
-    renderD->Configure()
+    auto Multi = UI<TextArea>("multiTitle", 3, 9002, NULL, NULL);
+
+    auto renderTitle = UI<TextArea>("renderTitle", 3, 9002, NULL, NULL);
+
+    renderTitle->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
         .Posite(0.14f, 0.48f)
-        .Scale(0.0f, 0.053f);
+        .Scale(0.25f, 0.053f);
+
+    renderTitle->setText("渲染距离");
+    renderTitle->setFontSize(36);
+    renderTitle->setShadow(true, 2);
 
     Multi->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
         .Posite(0.14f, 0.61f)
-        .Scale(0.0f, 0.053f);
+        .Scale(0.25f, 0.053f);
 
-    Elements->PushElement(std::move(renderD));
+    Multi->setText("渲染距离");
+    Multi->setFontSize(36);
+    Multi->setShadow(true, 2);
+
+    Elements->PushElement(std::move(renderTitle));
     Elements->PushElement(std::move(Multi));
 
     // 选项名称结束
@@ -135,7 +155,7 @@ void SettingsStage::onEnter()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
         .Scale(0.0f, 0.053f)
-        .Posite(0.5f, 0.61f);
+        .Posite(0.27f, 0.61f);
 
     checkbox->bindVariable(OpenCoreManagers::SetManager.getMultiStatus());
     Elements->PushElement(std::move(checkbox));

@@ -33,13 +33,12 @@ class TextArea : public UIElement
     void handlEvents(SDL_Event &event, float totalTime) override;
 
     void Draw() override;
-
     /**
      * @brief 设置文本框显示的内容
      *
      * @param textContent
      */
-    void setText(const string &textContent);
+    void setText(std::string_view textContent);
 
     /**
      * @brief 设置字体大小
@@ -47,14 +46,17 @@ class TextArea : public UIElement
      * @param fontSize
      */
     void setFontSize(short fontSize);
-
     void onUpdate(float totalTime) override {};
+
+    void setShadow(bool enableTag, int shadowOffset);
 
   private:
     short fontID = 9001;
     short m_fontSize = 20;
 
-    AnchorPoint textAnchor = AnchorPoint::MiddleLeft;
+    bool m_shadowEnable = true;
+    uint8_t m_shadowOffset = 2;
+    uint8_t transparency = 176;
 
     SDL_Texture *m_textureCache;
     string m_textContent;

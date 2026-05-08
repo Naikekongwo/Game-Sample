@@ -56,6 +56,8 @@ if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build
     )
+
+
 endif()
 
 if(PSP)

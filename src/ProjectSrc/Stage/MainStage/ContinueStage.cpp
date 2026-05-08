@@ -107,6 +107,7 @@ void ContinueStage::initializeComponents()
         .Posite(0.5f, 0.5f);
 
     textDemo->setText("Super Huge Dick");
+    textDemo->setShadow(true, 20);
 
     Elements->PushElement(std::move(textDemo));
 

@@ -6,6 +6,8 @@
 #include "Stage.hpp"
 #include "TopStage.hpp"
 
+#include "ScriptStage.hpp"
+
 #include <array>
 #include <memory>
 #include <queue>

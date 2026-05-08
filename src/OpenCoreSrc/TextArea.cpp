@@ -3,8 +3,10 @@
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/Texture.hpp"
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_ttf.h>
 #include <memory>
+#include <string>
 
 TextArea::TextArea(const string &id, uint8_t layer, short fontID)
     : UIElement(id, layer, nullptr)
@@ -33,15 +35,15 @@ void TextArea::Draw()
 
     // <渲染逻辑>
 
-    Rect dstRect = getLogicalBounds();
-
     auto GFX = OpenCoreManagers::GFXManager.getInstance();
+
+    Rect dstRect = getLogicalBounds();
 
     GFX.Draw(m_textureCache, nullptr, &dstRect, 0.0f, nullptr);
     // <渲染逻辑>
 }
 
-void TextArea::setText(const string &textContent)
+void TextArea::setText(string_view textContent)
 {
     // 设置后刷新缓存
     m_textContent = textContent;
@@ -78,27 +80,45 @@ void TextArea::refreshTextureCache()
 
     SDL_Surface *text = TTF_RenderUTF8_Blended(font, m_textContent.c_str(),
                                                {255, 255, 255, 255});
-
-    SDL_Texture *textures =
+    SDL_Texture *textBuffer =
         SDL_CreateTextureFromSurface(GFX.getRenderer(), text);
 
-    if (!textures)
+    if (!textBuffer)
     {
         LOG("Failed to generate text texture");
     }
+
+    SDL_FreeSurface(text);
 
     // 此处已经知道了目标的尺寸为loRect.w x loRect.h
 
     int texW, texH;
 
-    SDL_QueryTexture(textures, nullptr, nullptr, &texW, &texH);
+    SDL_QueryTexture(textBuffer, nullptr, nullptr, &texW, &texH);
 
-    Rect dstRect = {0, 0, loRect.h * (texW * 1.0f / texH), loRect.h};
+    Rect dstRect = {0, 0, m_fontSize * (texW * 1.0f / texH), m_fontSize * 1.0f};
 
-    GFX.Draw(textures, nullptr, &dstRect, 0.0f, nullptr);
+    if (m_shadowEnable)
+    {
+        SDL_Surface *shadowSurface = TTF_RenderUTF8_Blended(
+            font, m_textContent.c_str(), {0, 0, 0, transparency});
 
-    SDL_DestroyTexture(textures);
-    SDL_FreeSurface(text);
+        SDL_Texture *shadowBuffer =
+            SDL_CreateTextureFromSurface(GFX.getRenderer(), shadowSurface);
+
+        Rect shadowRect = dstRect;
+        shadowRect.x += m_shadowOffset;
+        shadowRect.y += m_shadowOffset;
+
+        GFX.Draw(shadowBuffer, nullptr, &shadowRect, 0.0f, nullptr);
+
+        SDL_FreeSurface(shadowSurface);
+        SDL_DestroyTexture(shadowBuffer);
+    }
+
+    GFX.Draw(textBuffer, nullptr, &dstRect, 0.0f, nullptr);
+
+    SDL_DestroyTexture(textBuffer);
 
     // <渲染字体的具体方法>
     GFX.setRenderTarget(nullptr);
@@ -120,4 +140,15 @@ void TextArea::handlEvents(SDL_Event &event, float totalTime)
     default:
         break;
     }
+}
+
+void TextArea::setShadow(bool enableTag, int shadowOffset)
+{
+    this->m_shadowEnable = enableTag;
+
+    this->m_shadowOffset =
+        (shadowOffset <= 0 | shadowOffset > 255) ? 5 : shadowOffset;
+
+    LOG("调整了阴影选项，当前状态为{}，阴影位移为 {}",
+        (enableTag) ? "开" : "关", m_shadowOffset);
 }
