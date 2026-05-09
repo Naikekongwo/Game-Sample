@@ -8,21 +8,22 @@ void PhysicalProperties::onUpdate(float totalTime)
         return;
     }
 
-    // 1. 有输入时根据目标速度平滑加速，无输入时只靠摩擦力自然减速
     bool hasInput = (desiredVelocity.x != 0.0f || desiredVelocity.y != 0.0f);
     if (hasInput)
     {
+        // 有输入：平滑加速到目标速度
         applyMoveControl(deltaTime);
     }
+    else
+    {
+        // 无输入：平滑靠拢到运动方向上的整数坐标
+        smoothStop(deltaTime);
+    }
 
-    // 2. 垂直运动与落地检测
+    // 垂直运动与落地检测
     parseVerticalMovement(Speed.z, Position.z, deltaTime);
 
-    // 3. 摩擦力处理（两轴都处理，消除原单轴分支）
-    parseHorizontalMovement(Speed.x, Position.x, deltaTime);
-    parseHorizontalMovement(Speed.y, Position.y, deltaTime);
-
-    // 4. 更新朝向
+    // 更新朝向
     if (Speed.x > 0.1f) direction = Direction::Right;
     else if (Speed.x < -0.1f) direction = Direction::Left;
     else if (Speed.y > 0.1f) direction = Direction::Down;
@@ -31,7 +32,7 @@ void PhysicalProperties::onUpdate(float totalTime)
     lastTime = totalTime;
 }
 
-// 处理平面移动的函数
+// 处理平面移动的函数（保留但不再被 onUpdate 调用）
 void PhysicalProperties::parseHorizontalMovement(float &Speed, float &Pos,
                                                  float deltaTime)
 {
@@ -41,15 +42,11 @@ void PhysicalProperties::parseHorizontalMovement(float &Speed, float &Pos,
         float deltaSpeed = 10.0f * μFactor * deltaTime;
         float futureSpeed = Speed + (negative ? -deltaSpeed : deltaSpeed);
 
-        // 位移的计算依托于匀变速变形公式 V²₂ - V₁² = 2 * a * x
         float offset =
             (pow(futureSpeed, 2) - pow(Speed, 2)) / (2 * μFactor * 10.0f);
         if (negative)
             offset = -offset;
 
-        // futureSpeed 是推断出来的速度
-        // 这里的判断是判断速度是否反向
-        // 摩擦力不可能使速度反向，所以如果反向则立即归零
         if ((futureSpeed < 0.0f && !negative) ||
             (futureSpeed > 0.0f && negative))
             Speed = 0.0f;
@@ -60,7 +57,7 @@ void PhysicalProperties::parseHorizontalMovement(float &Speed, float &Pos,
     }
     else
     {
-        // 速度为0时不对齐，避免位置跳变
+        Pos = std::round(Pos);
     }
 }
 
@@ -116,4 +113,47 @@ void PhysicalProperties::applyMoveControl(float deltaTime)
     Speed.x = applyAxis(Speed.x, target.x);
     Speed.y = applyAxis(Speed.y, target.y);
     // Speed.z 不动
+
+    Position.x += Speed.x * deltaTime;
+    Position.y += Speed.y * deltaTime;
+}
+
+void PhysicalProperties::smoothStop(float deltaTime)
+{
+    auto stopAxis = [&](float &speed, float &pos) {
+        if (speed == 0.0f) return;
+
+        float target = (speed > 0.0f) ? std::ceil(pos) : std::floor(pos);
+        float remaining = target - pos;
+
+        if (std::abs(remaining) < 0.001f) {
+            pos = target;
+            speed = 0.0f;
+            return;
+        }
+
+        // a = -v² / (2d) : 恰好停在 target 所需的恒定加速度
+        float required = -(speed * speed) / (2.0f * remaining);
+        float accel = std::clamp(required, -stopSmoothFactor, stopSmoothFactor);
+
+        float prevSpeed = speed;
+        speed += accel * deltaTime;
+
+        // 防止速度过零回弹
+        if ((prevSpeed > 0.0f && speed < 0.0f) ||
+            (prevSpeed < 0.0f && speed > 0.0f))
+            speed = 0.0f;
+
+        pos += speed * deltaTime;
+
+        // 防止离散积分导致的位置越过目标
+        if ((prevSpeed > 0.0f && pos > target) ||
+            (prevSpeed < 0.0f && pos < target)) {
+            pos = target;
+            speed = 0.0f;
+        }
+    };
+
+    stopAxis(Speed.x, Position.x);
+    stopAxis(Speed.y, Position.y);
 }

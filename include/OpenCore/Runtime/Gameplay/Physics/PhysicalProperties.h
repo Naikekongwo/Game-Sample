@@ -83,8 +83,10 @@ class PhysicalProperties
     Vec3 desiredVelocity{0,0,0};
     float maxAccelParam = 15.0f;   // 最大加速度（单位/s²）,控制起步/刹车的最大加速度，数值越大响应越灵敏，但过高会显得突跳,12.0 ~ 20.0
     float accelGain     = 10.0f;   // 趋近增益,接近目标速度时的柔和度，数值越大尾部越“硬”，过小则感觉迟滞,8.0 ~ 15.0
-  
+    float stopSmoothFactor = 10.0f; // 停止时向整数坐标平滑靠拢的速度，值越大越快
+
     void parseHorizontalMovement(float &Speed, float &Pos, float deltaTime);
     void parseVerticalMovement(float &Speed, float &Pos, float deltaTime);
     void applyMoveControl(float deltaTime);
+    void smoothStop(float deltaTime);
 };
