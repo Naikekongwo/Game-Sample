@@ -24,12 +24,12 @@
 #include "OpenCore/Runtime/Graphics/UI/MultiImageBoard.hpp"
 #include "OpenCore/Runtime/Graphics/UI/Scrollbar.hpp"
 #include "OpenCore/Runtime/Graphics/UI/TextArea.hpp"
+#include "OpenCore/Runtime/Graphics/UI/TypeWriter.hpp"
 
 #include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/ItemSprite.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/Tile.h"
 #include "OpenCore/Runtime/Graphics/Sprite/Waterrect.hpp"
-
 
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/Sprite.hpp"

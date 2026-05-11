@@ -62,6 +62,14 @@ inline unique_ptr<TextArea> UI<TextArea>(const std::string &id, uint8_t layer,
 }
 
 template <>
+inline unique_ptr<TypeWriter> UI<TypeWriter>(const std::string &id,
+                                             uint8_t layer, short fontID,
+                                             short reserve1, short reserve0)
+{
+    return std::make_unique<TypeWriter>(id, layer, fontID);
+}
+
+template <>
 inline unique_ptr<ItemContainer> UI<ItemContainer>(const std::string &id,
                                                    uint8_t layer, short texID,
                                                    short cols, short rows)

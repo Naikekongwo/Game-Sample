@@ -1,7 +1,9 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "Eclipsea/Stage/PurifierStage.hpp"
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
+#include "OpenCore/Runtime/Graphics/UI/TypeWriter.hpp"
 #include <memory>
 
 GameplayStage::GameplayStage(Timer *timer, StageManager *sController)
@@ -52,6 +54,19 @@ void GameplayStage::Init()
     mapexp->setExplorerViewPort(ViewportType::Fullscreen);
 
     Elements->PushElement(std::move(mapexp));
+
+    auto tpwt = UI<TypeWriter>("typeWriter", 99, 9002, NULL, NULL);
+
+    tpwt->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::TopCenter)
+        .Posite(0.5f, 0.5f)
+        .Scale(1.0f, 0.5f);
+
+    tpwt->setFontSize(40);
+    tpwt->setText("这是来自OpenCore引擎的一条消息\n这非常棒");
+
+    Elements->PushElement(std::move(tpwt));
 }
 
 void GameplayStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
