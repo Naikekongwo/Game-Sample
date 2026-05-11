@@ -58,6 +58,7 @@
 #include "Stage/PurifierStage.hpp"
 #include "Stage/WorldEditorStage.hpp"
 
+#include "Stage/Story/StoryStage.hpp"
 
 #include "Stage/MainStage/ContinueStage.hpp"
 #include "Stage/MainStage/SettingsStage.hpp"

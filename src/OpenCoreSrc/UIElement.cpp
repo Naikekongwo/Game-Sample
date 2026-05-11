@@ -1,5 +1,7 @@
 
 #include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
 
 SDL_Rect UIElement::getLogicalBounds()
 {

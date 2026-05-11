@@ -63,8 +63,13 @@ class IAnimation
     virtual void reset(float totalTime, VisualState &state) = 0;
     virtual bool isLoop() = 0;
 
+    virtual bool getReady() { return isReady; }
+    virtual void setReady() { isReady = true; }
+
   private:
     std::string name; // 动画名称
+
+    bool isReady = false;
 };
 
 #endif //_IANIMATION_H_

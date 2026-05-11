@@ -46,15 +46,19 @@ class TextArea : public UIElement
      * @param fontSize
      */
     void setFontSize(short fontSize);
-    void onUpdate(float totalTime) override {};
-
+    void onUpdate(float totalTime) override;
     void setShadow(bool enableTag, int shadowOffset);
+
+    void alignCenter(bool tag) { m_aligncenter = tag; }
 
   private:
     short fontID = 9001;
     short m_fontSize = 20;
 
     bool m_shadowEnable = true;
+    bool m_aligncenter = false;
+
+    bool m_valid = true;
     uint8_t m_shadowOffset = 2;
     uint8_t transparency = 176;
 

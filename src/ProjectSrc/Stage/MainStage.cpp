@@ -141,11 +141,14 @@ void MainStage::setupButtons()
     continueButton->setOnClick(
         [this]()
         {
-            LOG("Continue button clicked");
-            auto continues =
-                std::make_unique<ContinueStage>(timer, sController);
-            sController->changeStage(std::move(continues));
+            // LOG("Continue button clicked");
+            // auto continues =
+            //     std::make_unique<ContinueStage>(timer, sController);
+            // sController->changeStage(std::move(continues));
             // TODO: 可以加读取存档逻辑
+
+            auto story = std::make_unique<StoryStage>(timer, sController);
+            sController->changeStage(std::move(story));
         });
 
     settingButton->setOnClick(

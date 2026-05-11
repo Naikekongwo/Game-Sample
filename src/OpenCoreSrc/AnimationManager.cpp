@@ -8,15 +8,24 @@ void AnimationManager::onUpdate(float totalTime, VisualState &state)
     for (size_t i = 0; i < Animations.size(); ++i)
     {
         auto &anime = Animations[i];
+
+        if (!anime->getReady())
+        {
+            anime->reset(totalTime, state);
+            anime->setReady();
+        }
+
         anime->onUpdate(totalTime, state);
 
         if (!anime->isLoop() && anime->isFinished())
         {
             eraseList.push_back(i);
+            // 也重置第二个动画
         }
         else if (sequential)
         {
             // 顺序模式下，一旦遇到未完成动画就跳出，后续动画不执行
+
             break;
         }
     }

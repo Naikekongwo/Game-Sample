@@ -1,3 +1,4 @@
+#include "OpenCore/Asset/ResourceManager.hpp"
 #include "OpenCore/Core/Helpers/Debugger.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
@@ -13,10 +14,25 @@ TextArea::TextArea(const string &id, uint8_t layer, short fontID)
 {
     this->fontID = fontID;
     LOG("文本框创建，字体代号:{}", fontID);
+
+    this->AnimeManager = std::make_unique<AnimationManager>();
+}
+
+void TextArea::onUpdate(float totalTime)
+{
+    if (!isAnimeFinished())
+    {
+        AnimeManager->onUpdate(totalTime, *VState.get());
+        refreshTextureCache();
+    }
 }
 
 void TextArea::Draw()
 {
+    if (!m_valid)
+    {
+        refreshTextureCache();
+    }
     // 检查是否需要显示
     if (m_textContent.empty())
     {
@@ -25,7 +41,7 @@ void TextArea::Draw()
     // 检查缓存
     if (!m_textContent.empty() && m_textureCache == nullptr)
     {
-        refreshTextureCache();
+        m_valid = false;
     }
     if (VState->getAlpha() <= 0.0f)
     {
@@ -47,14 +63,14 @@ void TextArea::setText(string_view textContent)
 {
     // 设置后刷新缓存
     m_textContent = textContent;
-    refreshTextureCache();
+    m_valid = false;
 }
 
 void TextArea::setFontSize(short fontSize)
 {
     // 设置字号后刷新缓存
     m_fontSize = fontSize;
-    refreshTextureCache();
+    m_valid = false;
 }
 
 void TextArea::refreshTextureCache()
@@ -78,8 +94,10 @@ void TextArea::refreshTextureCache()
         return;
     }
 
+    uint8_t textAlpha = VState->getAlpha();
+
     SDL_Surface *text = TTF_RenderUTF8_Blended(font, m_textContent.c_str(),
-                                               {255, 255, 255, 255});
+                                               {255, 255, 255, textAlpha});
     SDL_Texture *textBuffer =
         SDL_CreateTextureFromSurface(GFX.getRenderer(), text);
 
@@ -98,10 +116,17 @@ void TextArea::refreshTextureCache()
 
     Rect dstRect = {0, 0, m_fontSize * (texW * 1.0f / texH), m_fontSize * 1.0f};
 
+    if (m_aligncenter)
+    {
+        dstRect.x = (loRect.w - dstRect.w) * 0.5f;
+        dstRect.y = (loRect.h - dstRect.h) * 0.5f;
+    }
+
     if (m_shadowEnable)
     {
+        uint8_t shadowAlpha = VState->getAlpha() * transparency;
         SDL_Surface *shadowSurface = TTF_RenderUTF8_Blended(
-            font, m_textContent.c_str(), {0, 0, 0, transparency});
+            font, m_textContent.c_str(), {0, 0, 0, shadowAlpha});
 
         SDL_Texture *shadowBuffer =
             SDL_CreateTextureFromSurface(GFX.getRenderer(), shadowSurface);
@@ -134,7 +159,7 @@ void TextArea::handlEvents(SDL_Event &event, float totalTime)
     {
         if (event.window.event == SDL_WINDOWEVENT_RESIZED)
         {
-            refreshTextureCache();
+            m_valid = false;
         }
     }
     default:

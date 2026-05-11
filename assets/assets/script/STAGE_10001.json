@@ -159,6 +159,18 @@
         "path": "assets/entity/entity_shadow.png",
         "category": "texture"
     },
+    "3001": {
+        "path": "assets/story/img_plane.png",
+        "category": "texture"
+    },
+    "3002": {
+        "path": "assets/story/img_ruinedcity.png",
+        "category": "texture"
+    },
+    "3003": {
+        "path": "assets/story/img_starsky.png",
+        "category": "texture"
+    },
     "9001": {
         "path": "assets/ui/font/OpenCoreFont.ttf",
         "category": "font",
