@@ -48,5 +48,8 @@ class DualGameplayStage : public BaseStage
     void onUpdate() override;
     void onRender() override;
 
-    void onEnter() override;
+    void onEnter() override {};
+
+    // 准备函数
+    void Init();
 };
