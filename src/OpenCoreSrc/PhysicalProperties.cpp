@@ -7,6 +7,7 @@ void PhysicalProperties::onUpdate(float totalTime)
         lastTime = totalTime;
         return;
     }
+    if (deltaTime > 0.1f) deltaTime = 0.1f; // 防止长时间暂停后物理爆炸
 
     // 逐轴独立处理：有输入 → 加速，无输入 → 平滑靠拢整数坐标
     auto processAxis = [&](float &speed, float &pos, float desired) {
