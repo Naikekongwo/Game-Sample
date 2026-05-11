@@ -87,6 +87,4 @@ class PhysicalProperties
 
     void parseHorizontalMovement(float &Speed, float &Pos, float deltaTime);
     void parseVerticalMovement(float &Speed, float &Pos, float deltaTime);
-    void applyMoveControl(float deltaTime);
-    void smoothStop(float deltaTime);
 };

@@ -7,18 +7,58 @@ void PhysicalProperties::onUpdate(float totalTime)
         lastTime = totalTime;
         return;
     }
+    if (deltaTime > 0.1f) deltaTime = 0.1f; // 防止长时间暂停后物理爆炸
 
-    bool hasInput = (desiredVelocity.x != 0.0f || desiredVelocity.y != 0.0f);
-    if (hasInput)
-    {
-        // 有输入：平滑加速到目标速度
-        applyMoveControl(deltaTime);
-    }
-    else
-    {
-        // 无输入：平滑靠拢到运动方向上的整数坐标
-        smoothStop(deltaTime);
-    }
+    // 逐轴独立处理：有输入 → 加速，无输入 → 平滑靠拢整数坐标
+    auto processAxis = [&](float &speed, float &pos, float desired) {
+        if (desired != 0.0f) {
+            // ---- 加速到目标速度 ----
+            float diff = desired - speed;
+            float ideal = accelGain * diff;
+            float accel = std::clamp(ideal, -maxAccelParam, maxAccelParam);
+            float delta = accel * deltaTime;
+            if (diff > 0.0f)
+                delta = std::min(delta, diff);
+            else if (diff < 0.0f)
+                delta = std::max(delta, diff);
+            speed += delta;
+            pos += speed * deltaTime;
+        } else if (speed != 0.0f) {
+            // ---- 平滑靠拢到运动方向上的整数坐标 ----
+            float target = (speed > 0.0f) ? std::ceil(pos) : std::floor(pos);
+            float remaining = target - pos;
+
+            if (std::abs(remaining) < 0.001f) {
+                pos = target;
+                speed = 0.0f;
+                return;
+            }
+
+            // a = -v² / (2d) : 恰好停在 target 所需的恒定加速度
+            float required = -(speed * speed) / (2.0f * remaining);
+            float accel = std::clamp(required, -stopSmoothFactor, stopSmoothFactor);
+
+            float prevSpeed = speed;
+            speed += accel * deltaTime;
+
+            // 防止速度过零回弹
+            if ((prevSpeed > 0.0f && speed < 0.0f) ||
+                (prevSpeed < 0.0f && speed > 0.0f))
+                speed = 0.0f;
+
+            pos += speed * deltaTime;
+
+            // 防止离散积分导致的位置越过目标
+            if ((prevSpeed > 0.0f && pos > target) ||
+                (prevSpeed < 0.0f && pos < target)) {
+                pos = target;
+                speed = 0.0f;
+            }
+        }
+    };
+
+    processAxis(Speed.x, Position.x, desiredVelocity.x);
+    processAxis(Speed.y, Position.y, desiredVelocity.y);
 
     // 垂直运动与落地检测
     parseVerticalMovement(Speed.z, Position.z, deltaTime);
@@ -86,74 +126,3 @@ void PhysicalProperties::parseVerticalMovement(float &Speed, float &Pos,
     }
 }
 
-void PhysicalProperties::applyMoveControl(float deltaTime)
-{
-    if (deltaTime <= 0.0f) return;
-
-    // 仅处理水平面 (x, y)，保持垂直速度不变
-    Vec3 target = desiredVelocity;
-    target.z = 0.0f;
-
-    auto applyAxis = [&](float cur, float tgt) -> float {
-        float diff = tgt - cur;
-        // 理想加速度 = 增益 * 误差
-        float ideal = accelGain * diff;
-        // 限制在最大加速度范围内
-        float accel = std::clamp(ideal, -maxAccelParam, maxAccelParam);
-        // 本帧速度变化量
-        float delta = accel * deltaTime;
-        // 避免超调：变化量不得超过剩余差值
-        if (diff > 0.0f)
-            delta = std::min(delta, diff);
-        else if (diff < 0.0f)
-            delta = std::max(delta, diff);
-        return cur + delta;
-    };
-
-    Speed.x = applyAxis(Speed.x, target.x);
-    Speed.y = applyAxis(Speed.y, target.y);
-    // Speed.z 不动
-
-    Position.x += Speed.x * deltaTime;
-    Position.y += Speed.y * deltaTime;
-}
-
-void PhysicalProperties::smoothStop(float deltaTime)
-{
-    auto stopAxis = [&](float &speed, float &pos) {
-        if (speed == 0.0f) return;
-
-        float target = (speed > 0.0f) ? std::ceil(pos) : std::floor(pos);
-        float remaining = target - pos;
-
-        if (std::abs(remaining) < 0.001f) {
-            pos = target;
-            speed = 0.0f;
-            return;
-        }
-
-        // a = -v² / (2d) : 恰好停在 target 所需的恒定加速度
-        float required = -(speed * speed) / (2.0f * remaining);
-        float accel = std::clamp(required, -stopSmoothFactor, stopSmoothFactor);
-
-        float prevSpeed = speed;
-        speed += accel * deltaTime;
-
-        // 防止速度过零回弹
-        if ((prevSpeed > 0.0f && speed < 0.0f) ||
-            (prevSpeed < 0.0f && speed > 0.0f))
-            speed = 0.0f;
-
-        pos += speed * deltaTime;
-
-        // 防止离散积分导致的位置越过目标
-        if ((prevSpeed > 0.0f && pos > target) ||
-            (prevSpeed < 0.0f && pos < target)) {
-            pos = target;
-            speed = 0.0f;
-        }
-    };
-
-    stopAxis(Speed.x, Position.x);
-    stopAxis(Speed.y, Position.y);
-}

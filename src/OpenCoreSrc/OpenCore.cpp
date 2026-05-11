@@ -100,6 +100,8 @@ bool OpenEngine::MainLoop()
     using namespace OpenCoreManagers;
 
     bool should_close = false;
+    bool isMinimized = false;
+    bool hasFocus = true;
     // SDL_Event event;
     Event event;
 
@@ -131,7 +133,7 @@ bool OpenEngine::MainLoop()
                     else
                     {
                         SDL_SetWindowFullscreen(GFXManager.getWindow(),
-                                                SDL_WINDOW_FULLSCREEN);
+                                                SDL_WINDOW_FULLSCREEN_DESKTOP);
                     }
                 }
                 break;
@@ -140,10 +142,19 @@ bool OpenEngine::MainLoop()
                 {
                 case SDL_WINDOWEVENT_RESIZED:
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
-                {
                     break;
-                    // 注: data1 和 data2 分别是窗口的宽和高
-                }
+                case SDL_WINDOWEVENT_MINIMIZED:
+                    isMinimized = true;
+                    break;
+                case SDL_WINDOWEVENT_RESTORED:
+                    isMinimized = false;
+                    break;
+                case SDL_WINDOWEVENT_FOCUS_LOST:
+                    hasFocus = false;
+                    break;
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    hasFocus = true;
+                    break;
                 default:
                     break;
                 }
@@ -172,6 +183,12 @@ bool OpenEngine::MainLoop()
 
         timer->Tick();
         ResManager.ProcessMainThreadTasks();
+
+        if (isMinimized)
+        {
+            SDL_Delay(100);
+            continue;
+        }
 
         sController->onUpdate();
 
