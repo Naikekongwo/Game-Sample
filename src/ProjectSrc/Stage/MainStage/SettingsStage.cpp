@@ -117,7 +117,7 @@ void SettingsStage::onEnter()
         .Posite(0.14f, 0.61f)
         .Scale(0.25f, 0.053f);
 
-    Multi->setText("渲染距离");
+    Multi->setText("本地主机");
     Multi->setFontSize(36);
     Multi->setShadow(true, 2);
 
@@ -203,6 +203,74 @@ void SettingsStage::onEnter()
         });
     Elements->PushElement(std::move(backButton));
     // 将元素添加进入
+
+    auto writerTitle = UI<TextArea>("writerTitle", 3, 9002, NULL, NULL);
+
+    writerTitle->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.74f)
+        .Scale(0.25f, 0.053f);
+
+    writerTitle->setText("鸣 谢");
+    writerTitle->setFontSize(36);
+    writerTitle->setShadow(true, 2);
+
+    auto shaoyang = UI<TextArea>("shaoyang", 3, 9002, NULL, NULL);
+
+    shaoyang->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.237f, 0.68f)
+        .Scale(0.25f, 0.12f);
+
+    shaoyang->setText("开发 刘绍阳");
+    shaoyang->setFontSize(30);
+    shaoyang->setShadow(true, 2);
+
+    auto qiyuan = UI<TextArea>("qiyuan", 3, 9002, NULL, NULL);
+
+    qiyuan->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.237f, 0.73f)
+        .Scale(0.25f, 0.12f);
+
+    qiyuan->setText("开发 刘骐源");
+    qiyuan->setFontSize(30);
+    qiyuan->setShadow(true, 2);
+
+    auto huangteng = UI<TextArea>("huangteng", 3, 9002, NULL, NULL);
+
+    huangteng->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.237f, 0.78f)
+        .Scale(0.25f, 0.12f);
+
+    huangteng->setText("艺术 黄腾");
+    huangteng->setFontSize(30);
+    huangteng->setShadow(true, 2);
+
+    Elements->PushElement(std::move(writerTitle));
+    Elements->PushElement(std::move(shaoyang));
+    Elements->PushElement(std::move(qiyuan));
+    Elements->PushElement(std::move(huangteng));
+
+    auto copyr = UI<TextArea>("settingcopyr", 99, 9001, NULL, NULL);
+
+    copyr->Configure()
+        .Anchor(AnchorPoint::BottomCenter)
+        .Parent(Container.get())
+        .Scale(0.9f, 0.0717f)
+        .Posite(0.5f, 0.95f);
+
+    copyr->setText("OpenCore 2026 & OpenGames Studio's Works");
+    copyr->setFontSize(36);
+    copyr->setShadow(true, 2);
+    copyr->alignCenter(true);
+
+    Elements->PushElement(std::move(copyr));
 
     // 将背景推送
     Elements->PushElement(std::move(Container));
