@@ -13,6 +13,7 @@
 
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
+#include "OpenCore/Runtime/Graphics/UI/BaseBackground.hpp"
 
 #include <memory>
 #include <string>
@@ -56,6 +57,7 @@ class TypeWriter : public UIElement
      * @param textContent
      */
     void setText(std::string_view textContent);
+    string getText() { return m_textContent; }
 
     /**
      * @brief 设置字体大小
@@ -93,6 +95,8 @@ class TypeWriter : public UIElement
     short m_fontSize = 20;
     short lineGap = 2;
 
+    SDL_Color fontColor{255, 255, 255, 255};
+
     bool m_textureValid = false;
     bool m_shadowEnable = true;
     bool m_aligncenter = false;
@@ -108,5 +112,5 @@ class TypeWriter : public UIElement
     TypeWriterStatus status = TypeWriterStatus::Creating;
     TypeWriterMode mode = TypeWriterMode::TypeWriter;
 
-    float m_startTime = 0.0f;
+    unique_ptr<BaseBackground> m_baseBackground;
 };

@@ -11,6 +11,10 @@
         "path": "assets/audio/bgm_lostworld.mp3",
         "category": "music"
     },
+    "1004": {
+        "path": "assets/audio/bgm_someoneinthedark.mp3",
+        "category": "music"
+    },
     "2002": {
         "path": "assets/ui/Preload_Title.png",
         "category": "texture"
@@ -157,6 +161,10 @@
     },
     "2045": {
         "path": "assets/entity/entity_shadow.png",
+        "category": "texture"
+    },
+    "2046": {
+        "path": "assets/ui/background_typewriter",
         "category": "texture"
     },
     "3001": {

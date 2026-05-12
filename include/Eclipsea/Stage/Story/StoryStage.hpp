@@ -29,6 +29,8 @@ class StoryStage : public OverlayStage
     void onRender() override;
 
   private:
+    short stageIndex = 0;
+
     StoryStatus sStatus = StoryStatus::Loading;
 
     void func_intro();

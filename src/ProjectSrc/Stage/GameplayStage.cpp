@@ -54,23 +54,6 @@ void GameplayStage::Init()
     mapexp->setExplorerViewPort(ViewportType::Fullscreen);
 
     Elements->PushElement(std::move(mapexp));
-
-    auto tpwt = UI<TypeWriter>("typeWriter", 99, 9002, NULL, NULL);
-
-    tpwt->Configure()
-        .Parent(nullptr)
-        .Anchor(AnchorPoint::TopCenter)
-        .Posite(0.5f, 0.5f)
-        .Scale(1.0f, 0.5f);
-
-    tpwt->setFontSize(40);
-    tpwt->setText("公元 2300年 "
-                  "X市\n地球水资源危机已经进入终末期，先前对生态恢复抱有幻想的"
-                  "科学家十不存一，甚至极大多数已经登上了早些时候的诺亚13号飞船"
-                  "。\n地球即将进入无人居住的窘态。");
-    tpwt->alignCenter(true);
-
-    Elements->PushElement(std::move(tpwt));
 }
 
 void GameplayStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
