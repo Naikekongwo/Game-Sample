@@ -29,8 +29,10 @@ class TextArea : public UIElement
 {
   public:
     TextArea(const string &id, uint8_t layer, short fontID);
+    ~TextArea() override;
 
     void handlEvents(SDL_Event &event, float totalTime) override;
+    bool onDestroy() override;
 
     void Draw() override;
     /**

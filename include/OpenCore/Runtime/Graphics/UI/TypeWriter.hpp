@@ -46,8 +46,10 @@ class TypeWriter : public UIElement
 {
   public:
     TypeWriter(string_view id, uint8_t layer, short fontID);
+    ~TypeWriter() override;
 
     void handlEvents(SDL_Event &event, float totalTime) override;
+    bool onDestroy() override;
 
     void Draw() override;
     /**

@@ -7,20 +7,7 @@ ImageBoard::ImageBoard(const std::string &id, uint8_t layer,
                        unique_ptr<Texture> texture)
     : UIElement(id, layer, std::move(texture))
 {
-
-    this->id = id;
-    this->layer = layer;
-
-    if (!texture)
-    {
-        LOG("初始化纹理时遇到空纹理");
-        return;
-    }
-
-    this->texture = std::move(texture);
-
-    this->AnimeManager = std::make_unique<AnimationManager>();
-    this->VState = std::make_unique<VisualState>();
+    // id、layer、texture、AnimeManager、VState 均已在基类链中正确初始化
 }
 
 void ImageBoard::Draw()
