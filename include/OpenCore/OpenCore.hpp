@@ -23,7 +23,7 @@ enum DebugFlags
     DEBUG_COPYRIGHT = 1 << 4
 };
 
-constexpr int DEBUG_MODE = DEBUG_COPYRIGHT;
+constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN | DEBUG_MAP;
 
 #include "OpenCore/Core/Macros.hpp"
 #include "OpenCore/Core/Timer.hpp"
