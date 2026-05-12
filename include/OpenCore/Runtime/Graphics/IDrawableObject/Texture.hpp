@@ -44,6 +44,8 @@ struct Texture
 
     SDL_Rect getSubRect(size_t index);
     Rect getSubRect(size_t startIndex, size_t endIndex);
+    /// @brief 以 startIndex 为左上角，提取 cols 列 × rows 行的子矩形
+    Rect getSubRect(size_t startIndex, uint8_t cols, uint8_t rows);
     SDL_Texture *get() const { return texture.get(); }
 
     /**

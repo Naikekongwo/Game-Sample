@@ -9,17 +9,23 @@ BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
                                unique_ptr<Texture> texture)
     : UIElement(id, layer, std::move(texture))
 {
+    // id、layer、texture 均已在 UIElement 初始化列表中正确设置
+}
 
-    this->id = id;
-    this->layer = layer;
+BaseBackground::~BaseBackground()
+{
+    if (TextureCache)
+        SDL_DestroyTexture(TextureCache);
+}
 
-    // 获取材质
-    if (!texture)
+bool BaseBackground::onDestroy()
+{
+    if (TextureCache)
     {
-        LOG("参数中的纹理非法");
-        return;
+        SDL_DestroyTexture(TextureCache);
+        TextureCache = nullptr;
     }
-    this->texture = std::move(texture);
+    return UIElement::onDestroy();
 }
 
 void BaseBackground::onUpdate(float totalTime)

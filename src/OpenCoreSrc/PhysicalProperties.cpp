@@ -1,5 +1,22 @@
 #include "OpenCore/OpenCore.hpp"
 #include <cmath>
+
+std::vector<std::pair<int, int>> PhysicalProperties::getOccupiedTiles() const
+{
+    std::vector<std::pair<int, int>> tiles;
+    tiles.reserve(tileWidth * tileHeight);
+
+    // Position 为实体锚点（底部中心），换算到所占瓦片的左上角
+    int baseX = static_cast<int>(std::floor(Position.x));
+    int baseY = static_cast<int>(std::floor(Position.z > 0.0f ? Position.z : 0.0f));
+
+    for (uint8_t dy = 0; dy < tileHeight; ++dy)
+        for (uint8_t dx = 0; dx < tileWidth; ++dx)
+            tiles.emplace_back(baseX + dx, baseY - dy);
+
+    return tiles;
+}
+
 void PhysicalProperties::onUpdate(float totalTime)
 {
     float deltaTime = totalTime - lastTime;

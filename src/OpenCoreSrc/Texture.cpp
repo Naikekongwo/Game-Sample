@@ -113,3 +113,33 @@ Rect Texture::getSubRect(size_t startIndex, size_t endIndex)
 
     return SDL_Rect{col * width, row * height, endCol * width, endRow * height};
 }
+
+Rect Texture::getSubRect(size_t startIndex, uint8_t cols, uint8_t rows)
+{
+    static const Rect emptyRect{0, 0, 0, 0};
+    if (startIndex >= Size())
+    {
+        LOG("Texture::getSubRect() startIndex out of range: {}", startIndex);
+        return emptyRect;
+    }
+    if (cols == 0 || rows == 0)
+    {
+        LOG("Texture::getSubRect() cols or rows is 0");
+        return emptyRect;
+    }
+
+    uint8_t col = startIndex % xCount;
+    uint8_t row = startIndex / xCount;
+
+    if (col + cols > xCount)
+    {
+        LOG("Texture::getSubRect() cols exceed texture columns: {} + {} > {}",
+            col, cols, xCount);
+        cols = xCount - col;
+    }
+
+    return Rect{static_cast<float>(col * width),
+                static_cast<float>(row * height),
+                static_cast<float>(cols * width),
+                static_cast<float>(rows * height)};
+}

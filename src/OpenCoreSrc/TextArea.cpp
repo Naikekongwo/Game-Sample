@@ -14,8 +14,22 @@ TextArea::TextArea(const string &id, uint8_t layer, short fontID)
 {
     this->fontID = fontID;
     LOG("文本框创建，字体代号:{}", fontID);
+}
 
-    this->AnimeManager = std::make_unique<AnimationManager>();
+TextArea::~TextArea()
+{
+    if (m_textureCache)
+        SDL_DestroyTexture(m_textureCache);
+}
+
+bool TextArea::onDestroy()
+{
+    if (m_textureCache)
+    {
+        SDL_DestroyTexture(m_textureCache);
+        m_textureCache = nullptr;
+    }
+    return UIElement::onDestroy();
 }
 
 void TextArea::onUpdate(float totalTime)
@@ -75,7 +89,6 @@ void TextArea::setFontSize(short fontSize)
 
 void TextArea::refreshTextureCache()
 {
-    // 刷新缓存
     Rect loRect = getLogicalBounds();
     auto &GFX = GraphicsManager::getInstance();
 
@@ -86,11 +99,12 @@ void TextArea::refreshTextureCache()
 
     GFX.setRenderTarget(target);
 
-    // <渲染字体的具体方法>
     auto font = OpenCoreManagers::ResManager.GetFont(fontID);
     if (!font)
     {
         LOG("资源管理器查询字体对象的结果为空");
+        GFX.setRenderTarget(nullptr);
+        SDL_DestroyTexture(target);
         return;
     }
 
@@ -101,14 +115,15 @@ void TextArea::refreshTextureCache()
     SDL_Texture *textBuffer =
         SDL_CreateTextureFromSurface(GFX.getRenderer(), text);
 
+    SDL_FreeSurface(text);
+
     if (!textBuffer)
     {
         LOG("Failed to generate text texture");
+        GFX.setRenderTarget(nullptr);
+        SDL_DestroyTexture(target);
+        return;
     }
-
-    SDL_FreeSurface(text);
-
-    // 此处已经知道了目标的尺寸为loRect.w x loRect.h
 
     int texW, texH;
 
@@ -145,9 +160,10 @@ void TextArea::refreshTextureCache()
 
     SDL_DestroyTexture(textBuffer);
 
-    // <渲染字体的具体方法>
     GFX.setRenderTarget(nullptr);
 
+    if (m_textureCache)
+        SDL_DestroyTexture(m_textureCache);
     m_textureCache = target;
 }
 

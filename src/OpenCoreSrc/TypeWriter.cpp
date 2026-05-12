@@ -14,17 +14,27 @@
 TypeWriter::TypeWriter(string_view id, uint8_t layer, short fontID)
     : UIElement(id.data(), layer, nullptr)
 {
-    // ID LAYER 和纹理都已经设置
-
-    this->VState = std::make_unique<VisualState>();
-    this->AnimeManager = std::make_unique<AnimationManager>();
-
     this->fontID = fontID;
-
     m_baseBackground =
         UI<BaseBackground>("baseBackground", 0, 2046, NULL, NULL);
 
     LOG("初始化成功，ID {}, 字体ID {}", id.data(), fontID);
+}
+
+TypeWriter::~TypeWriter()
+{
+    if (m_textureCache)
+        SDL_DestroyTexture(m_textureCache);
+}
+
+bool TypeWriter::onDestroy()
+{
+    if (m_textureCache)
+    {
+        SDL_DestroyTexture(m_textureCache);
+        m_textureCache = nullptr;
+    }
+    return UIElement::onDestroy();
 }
 
 void TypeWriter::Draw()
@@ -130,6 +140,8 @@ bool TypeWriter::generateTexture(SDL_Texture *texture)
     if (!font)
         return false;
 
+    if (m_textureCache)
+        SDL_DestroyTexture(m_textureCache);
     m_textureCache = GFX.createTexture(container.w, container.h);
     if (!m_textureCache)
         return false;

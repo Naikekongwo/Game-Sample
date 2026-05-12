@@ -108,6 +108,74 @@ inline MapInfo LoadMapInfo(const std::string &mapPath)
     return info;
 }
 
+/**
+ * @brief 将地图数据写回二进制文件。
+ *
+ * 写入格式与 LoadMapFromFile 读取的格式一致：
+ * - sizeof(MapHeader) 字节的头部（魔数 "OCMP"、版本、宽高等）
+ * - mapWidth * mapHeight 个连续的 BlockInfo，每 block 写入 blockSize 字节
+ *
+ * @param mapPath   输出文件路径。
+ * @param datas     BlockInfo 数组，按行优先顺序排列。
+ * @param mapWidth  地图宽度（Block 数）。
+ * @param mapHeight 地图高度（Block 数）。
+ * @param version   地图版本号（默认 1）。
+ * @param layerCount 地图层级数（默认 1）。
+ * @param blockSize 每 Block 存储字节数（默认 sizeof(BlockInfo)，即 4）。
+ *
+ * @throws std::runtime_error 当文件无法创建或写入失败时抛出。
+ */
+inline void SaveMapToFile(const std::string &mapPath,
+                          const std::vector<BlockInfo> &datas,
+                          uint16_t mapWidth, uint16_t mapHeight,
+                          uint8_t version = 1, uint8_t layerCount = 1,
+                          uint8_t blockSize = sizeof(BlockInfo))
+{
+    std::ofstream file(mapPath, std::ios::binary);
+    if (!file)
+        throw std::runtime_error("Failed to create map file: " + mapPath);
+
+    MapHeader header{};
+    header.magic[0] = 'O';
+    header.magic[1] = 'C';
+    header.magic[2] = 'M';
+    header.magic[3] = 'P';
+    header.version = version;
+    header.width = mapWidth;
+    header.height = mapHeight;
+    header.layerCount = layerCount;
+    header.blockSize = blockSize;
+
+    file.write(reinterpret_cast<const char *>(&header), sizeof(header));
+    if (!file)
+        throw std::runtime_error("Failed to write map header");
+
+    size_t totalBlocks = static_cast<size_t>(mapWidth) * mapHeight;
+    if (datas.size() < totalBlocks)
+    {
+        file.close();
+        throw std::runtime_error(
+            "BlockInfo data size smaller than map dimensions require");
+    }
+
+    for (size_t i = 0; i < totalBlocks; ++i)
+    {
+        const auto &block = datas[i];
+        uint8_t raw[4] = {block.Terrain, block.STRuct, block.Entity,
+                           block.Access};
+        file.write(reinterpret_cast<const char *>(raw),
+                   std::min(static_cast<size_t>(blockSize), sizeof(raw)));
+        if (!file)
+        {
+            file.close();
+            throw std::runtime_error("Failed to write block data at index " +
+                                     std::to_string(i));
+        }
+    }
+
+    file.close();
+}
+
 /// @brief 遍历文件夹，解析所有 .ocmp 地图文件，返回元信息数组。
 /// @param folderPath 文件夹路径（允许相对路径）
 /// @return 包含所有成功解析的 MapInfo 的 vector
