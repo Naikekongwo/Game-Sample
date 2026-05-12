@@ -9,10 +9,9 @@ void AnimationManager::onUpdate(float totalTime, VisualState &state)
     {
         auto &anime = Animations[i];
 
-        if (!anime->getReady())
+        if (i != 0)
         {
             anime->reset(totalTime, state);
-            anime->setReady();
         }
 
         anime->onUpdate(totalTime, state);
@@ -20,7 +19,6 @@ void AnimationManager::onUpdate(float totalTime, VisualState &state)
         if (!anime->isLoop() && anime->isFinished())
         {
             eraseList.push_back(i);
-            // 也重置第二个动画
         }
         else if (sequential)
         {
