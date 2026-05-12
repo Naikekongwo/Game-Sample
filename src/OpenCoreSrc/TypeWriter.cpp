@@ -31,12 +31,16 @@ void TypeWriter::Draw()
     if (!m_textureCache || m_textureValid == false)
         return;
 
+    if (status < TypeWriterStatus::Ready)
+        return;
+
     // <真正的绘制逻辑>
 
     auto &GFX = OpenCoreManagers::GFXManager;
 
     Rect dstRect = getLogicalBounds();
 
+    // 在此处处理打字机效果
     GFX.Draw(m_textureCache, nullptr, &dstRect, 0.0f, nullptr);
 
     // <真正的绘制逻辑>
@@ -116,7 +120,6 @@ bool TypeWriter::generateTexture(SDL_Texture *texture)
 
     int w, h;
 
-    int lineGap = 2;
     int lineStartIndex = 0;
     int lineEndIndex = 0;
 
@@ -196,7 +199,8 @@ bool TypeWriter::generateTexture(SDL_Texture *texture)
             Rect dstRect;
             dstRect.h = m_fontSize;
             dstRect.w = (texW * 1.0f / texH) * m_fontSize;
-            dstRect.x = 0;
+            dstRect.x =
+                (m_aligncenter) ? (containerSize.w - dstRect.w) * 0.5f : 0;
             dstRect.y = offsetY;
 
             GFX.Draw(textTexture, nullptr, &dstRect, 0.0f, nullptr);
@@ -207,6 +211,7 @@ bool TypeWriter::generateTexture(SDL_Texture *texture)
             offsetY += m_fontSize + lineGap;
         }
         m_textureValid = true;
+        status = TypeWriterStatus::Ready;
     }
 
     // 还原

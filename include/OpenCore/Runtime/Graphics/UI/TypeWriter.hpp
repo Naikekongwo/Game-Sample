@@ -91,9 +91,9 @@ class TypeWriter : public UIElement
   private:
     short fontID = 9001;
     short m_fontSize = 20;
+    short lineGap = 2;
 
     bool m_textureValid = false;
-
     bool m_shadowEnable = true;
     bool m_aligncenter = false;
 
@@ -107,4 +107,6 @@ class TypeWriter : public UIElement
 
     TypeWriterStatus status = TypeWriterStatus::Creating;
     TypeWriterMode mode = TypeWriterMode::TypeWriter;
+
+    float m_startTime = 0.0f;
 };

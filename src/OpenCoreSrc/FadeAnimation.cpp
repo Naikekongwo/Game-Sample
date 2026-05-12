@@ -14,7 +14,7 @@ void FadeAnimation::onUpdate(float totalTime, VisualState &state)
     if (startTime == 0.0f)
     {
         startTime = totalTime;
-        reset(totalTime, state);
+        return;
     }
     // 如果开始时间为0就重置
 
