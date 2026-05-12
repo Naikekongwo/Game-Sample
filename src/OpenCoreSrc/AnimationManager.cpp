@@ -9,9 +9,10 @@ void AnimationManager::onUpdate(float totalTime, VisualState &state)
     {
         auto &anime = Animations[i];
 
-        if (i != 0)
+        if (i != 0 && sequential)
         {
             anime->reset(totalTime, state);
+            break;
         }
 
         anime->onUpdate(totalTime, state);

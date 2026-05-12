@@ -4,6 +4,7 @@
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Animation/Manager/AnimationManager.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
+#include "OpenCore/Runtime/Graphics/UI/BaseBackground.hpp"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_ttf.h>
@@ -14,6 +15,9 @@ TypeWriter::TypeWriter(string_view id, uint8_t layer, short fontID)
     : UIElement(id.data(), layer, nullptr)
 {
     this->fontID = fontID;
+    m_baseBackground =
+        UI<BaseBackground>("baseBackground", 0, 2046, NULL, NULL);
+
     LOG("初始化成功，ID {}, 字体ID {}", id.data(), fontID);
 }
 
@@ -70,6 +74,11 @@ void TypeWriter::handlEvents(SDL_Event &event, float totalTime)
     default:
         break;
     }
+
+    if (status != TypeWriterStatus::Creating)
+    {
+        m_baseBackground->handlEvents(event, totalTime);
+    }
 }
 
 void TypeWriter::setText(string_view textContent)
@@ -87,10 +96,30 @@ void TypeWriter::setFontSize(short fontSize)
 
 void TypeWriter::onUpdate(float totalTime)
 {
+    this->AnimeManager->onUpdate(totalTime, *VState.get());
+    if (status == TypeWriterStatus::Creating)
+    {
+        m_baseBackground->Configure()
+            .Parent(this)
+            .Anchor(AnchorPoint::Center)
+            .Scale(1.0f, 1.0f)
+            .Posite(0.5f, 0.5f);
+
+        m_baseBackground->setNativeScale(60);
+        m_baseBackground->onUpdate(totalTime);
+        status = TypeWriterStatus::Ready;
+    }
     if (!m_textureValid)
     {
         generateTexture(nullptr);
     }
+
+    if (!isAnimeFinished())
+    {
+        generateTexture(nullptr);
+    }
+
+    m_baseBackground->onUpdate(totalTime);
 }
 
 void TypeWriter::setShadow(bool enableTag, int shadowOffset)
@@ -103,6 +132,9 @@ void TypeWriter::setShadow(bool enableTag, int shadowOffset)
 bool TypeWriter::generateTexture(SDL_Texture *texture)
 {
     m_parsedLines.clear();
+
+    if (VState->transparency <= 0.0f)
+        return false;
 
     auto &GFX = OpenCoreManagers::GFXManager.getInstance();
     Rect container = getLogicalBounds();
@@ -136,8 +168,9 @@ bool TypeWriter::generateTexture(SDL_Texture *texture)
 
     auto measure = [&](const std::string &s) -> float
     {
-        SDL_Surface *surf =
-            TTF_RenderUTF8_Blended(font, s.c_str(), {255, 255, 255, 255});
+        SDL_Surface *surf = TTF_RenderUTF8_Blended(
+            font, s.c_str(),
+            {255, 255, 255, static_cast<uint8_t>(VState->getAlpha())});
         if (!surf)
             return 0;
 
