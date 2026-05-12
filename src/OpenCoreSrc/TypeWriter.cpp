@@ -92,130 +92,149 @@ void TypeWriter::setShadow(bool enableTag, int shadowOffset)
 
 bool TypeWriter::generateTexture(SDL_Texture *texture)
 {
-    // 该方法目前只设计空参数
-    // if (m_textureCache)
-    // {
-    //     // 如果当前的纹理不为空
-    //     SDL_DestroyTexture(m_textureCache);
-    //     m_textureCache = nullptr;
-    // }
-
     m_parsedLines.clear();
 
-    Rect containerSize = getLogicalBounds();
     auto &GFX = OpenCoreManagers::GFXManager.getInstance();
-
-    m_textureCache = GFX.createTexture(containerSize.w, containerSize.h);
-
-    if (!m_textureCache)
-    {
-        LOG("获取渲染目标纹理时出现了问题");
-        return false;
-    }
-
-    // 设置渲染目标
-    GFX.setRenderTarget(m_textureCache);
+    Rect container = getLogicalBounds();
 
     auto font = OpenCoreManagers::ResManager.getInstance().GetFont(fontID);
+    if (!font)
+        return false;
 
-    int w, h;
+    m_textureCache = GFX.createTexture(container.w, container.h);
+    if (!m_textureCache)
+        return false;
 
-    int lineStartIndex = 0;
-    int lineEndIndex = 0;
+    GFX.setRenderTarget(m_textureCache);
 
-    // 解析文本
-    bool should_stop = false;
-    while (!should_stop)
+    SDL_SetRenderDrawBlendMode(GFX.getRenderer(), SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(GFX.getRenderer(), 0, 0, 0, 0);
+    SDL_RenderClear(GFX.getRenderer());
+
+    auto utf8Len = [](unsigned char c) -> size_t
     {
-        if (lineEndIndex >= m_textContent.length())
+        if ((c & 0x80) == 0x00)
+            return 1;
+        if ((c & 0xE0) == 0xC0)
+            return 2;
+        if ((c & 0xF0) == 0xE0)
+            return 3;
+        return 4;
+    };
+
+    auto measure = [&](const std::string &s) -> float
+    {
+        SDL_Surface *surf =
+            TTF_RenderUTF8_Blended(font, s.c_str(), {255, 255, 255, 255});
+        if (!surf)
+            return 0;
+
+        float scale = m_fontSize * 1.0f / surf->h;
+        float w = surf->w * scale;
+
+        SDL_FreeSurface(surf);
+        return w;
+    };
+
+    std::string line;
+
+    auto pushLine = [&]()
+    {
+        m_parsedLines.push_back(line);
+        line.clear();
+    };
+
+    for (size_t i = 0; i < m_textContent.size();)
+    {
+        size_t len = utf8Len((unsigned char)m_textContent[i]);
+        std::string ch = m_textContent.substr(i, len);
+
+        if (ch == "\n")
         {
-            should_stop = true;
-            m_parsedLines.push_back(m_textContent.substr(
-                lineStartIndex, lineEndIndex - lineStartIndex));
+            pushLine();
+            i += len;
+            continue;
+        }
+
+        std::string test = line + ch;
+
+        if (!line.empty() && measure(test) > container.w)
+        {
+            pushLine();
+            continue;
+        }
+
+        line = test;
+        i += len;
+    }
+
+    if (!line.empty())
+        pushLine();
+
+    int y = 0;
+
+    for (auto &l : m_parsedLines)
+    {
+        SDL_Surface *surf =
+            TTF_RenderUTF8_Blended(font, l.c_str(), {255, 255, 255, 255});
+
+        if (!surf)
+        {
+            GFX.setRenderTarget(nullptr);
+            return false;
+        }
+
+        SDL_Texture *tex =
+            SDL_CreateTextureFromSurface(GFX.getRenderer(), surf);
+
+        if (!tex)
+        {
+            SDL_FreeSurface(surf);
+            GFX.setRenderTarget(nullptr);
+            return false;
+        }
+
+        float scale = m_fontSize * 1.0f / surf->h;
+
+        Rect dst;
+        dst.w = surf->w * scale;
+        dst.h = m_fontSize;
+        dst.x = m_aligncenter ? (container.w - dst.w) * 0.5f : 0;
+        dst.y = y;
+
+        if (y + dst.h > container.h)
+        {
+            SDL_DestroyTexture(tex);
+            SDL_FreeSurface(surf);
             break;
         }
-        if (m_textContent[lineEndIndex] == '\n')
-        {
-            m_parsedLines.push_back(m_textContent.substr(
-                lineStartIndex, lineEndIndex - lineStartIndex));
-            lineStartIndex = lineEndIndex + 1;
-            lineEndIndex++;
-            continue;
-        }
-        TTF_SizeText(
-            font,
-            m_textContent
-                .substr(lineStartIndex, lineEndIndex - lineStartIndex + 1)
-                .c_str(),
-            &w, &h);
 
-        float factor = m_fontSize * 1.0f / h;
-
-        if (w * factor > containerSize.w)
+        if (m_shadowEnable)
         {
-            // 超长了
-            m_parsedLines.push_back(m_textContent.substr(
-                lineStartIndex, lineEndIndex - lineStartIndex));
-            lineStartIndex = lineEndIndex;
-            lineEndIndex++;
-            continue;
+            Rect s = dst;
+            s.x += m_shadowOffset;
+            s.y += m_shadowOffset;
+
+            SDL_SetTextureColorMod(tex, 0, 0, 0);
+            SDL_SetTextureAlphaMod(tex, 180);
+            GFX.Draw(tex, nullptr, &s, 0.0f, nullptr);
+
+            SDL_SetTextureColorMod(tex, 255, 255, 255);
+            SDL_SetTextureAlphaMod(tex, 255);
         }
-        lineEndIndex++;
+
+        GFX.Draw(tex, nullptr, &dst, 0.0f, nullptr);
+
+        SDL_DestroyTexture(tex);
+        SDL_FreeSurface(surf);
+
+        y += m_fontSize + lineGap;
     }
 
-    if (mode == TypeWriterMode::TypeWriter)
-    {
-        int offsetY = 0;
-        // 一般打字机模式
-        for (int i = 0; i < m_parsedLines.size(); i++)
-        {
-            SDL_Surface *textLine = TTF_RenderUTF8_Blended(
-                font, m_parsedLines[i].c_str(), {255, 255, 255, 255});
-            if (!textLine)
-            {
-                LOG("生成表面时失败");
-                return false;
-            }
-            SDL_Texture *textTexture =
-                SDL_CreateTextureFromSurface(GFX.getRenderer(), textLine);
-            if (!textTexture)
-            {
-                LOG("转换表面时失败");
-                SDL_FreeSurface(textLine);
-                return false;
-            }
-
-            int texW, texH;
-            SDL_QueryTexture(textTexture, nullptr, nullptr, &texW, &texH);
-            if (offsetY + m_fontSize > containerSize.h)
-            {
-                // 已经超出了，这一行无需渲染了
-                SDL_FreeSurface(textLine);
-                SDL_DestroyTexture(textTexture);
-                break;
-            }
-
-            // 没有超出，我们继续渲染
-            Rect dstRect;
-            dstRect.h = m_fontSize;
-            dstRect.w = (texW * 1.0f / texH) * m_fontSize;
-            dstRect.x =
-                (m_aligncenter) ? (containerSize.w - dstRect.w) * 0.5f : 0;
-            dstRect.y = offsetY;
-
-            GFX.Draw(textTexture, nullptr, &dstRect, 0.0f, nullptr);
-
-            SDL_FreeSurface(textLine);
-            SDL_DestroyTexture(textTexture);
-
-            offsetY += m_fontSize + lineGap;
-        }
-        m_textureValid = true;
-        status = TypeWriterStatus::Ready;
-    }
-
-    // 还原
     GFX.setRenderTarget(nullptr);
+
+    m_textureValid = true;
+    status = TypeWriterStatus::Ready;
 
     return true;
 }
