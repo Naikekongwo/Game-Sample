@@ -1,4 +1,5 @@
 #include "Eclipsea/Eclipsea.hpp"
+#include "Eclipsea/Stage/ConnectorTransition.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <SDL2/SDL_main.h>
 #include <functional>
@@ -42,13 +43,7 @@ void MainStage::setupBackground()
               0.5 * OpenCoreManagers::SetManager.getTargetHeight(), 5.0f)
         .Commit();
     Elements->PushElement(std::move(bg1));
-    auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
-    connector->Configure()
-        .Anchor(AnchorPoint::TopRight)
-        .Posite(0, 0)
-        .Scale(0.0f, 1.0f);
-    connector->Animate().Move(2700, 0, 6000, 0, 5.f, false).Commit();
-    Elements->PushElement(std::move(connector));
+    ConnectorTransition::PushReveal(Elements.get(), img_connector);
 }
 
 void MainStage::setupTitle()
@@ -171,12 +166,11 @@ void MainStage::onUpdate()
     Elements->onUpdate(timer->getTotalTime());
     if (phase == MainStagePhase::Idle)
     {
-        auto connector = Elements->find("connector");
-        if (connector and connector->isAnimeFinished())
+        if (ConnectorTransition::IsFinished(Elements.get()))
         {
             OpenCoreManagers::SFXManager.changeBGM(1003);
             OpenCoreManagers::SFXManager.playBGM();
-            Elements->removeElement("connector");
+            ConnectorTransition::Remove(Elements.get());
         }
     }
 }

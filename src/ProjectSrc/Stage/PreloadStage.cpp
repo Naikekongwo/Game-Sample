@@ -1,4 +1,5 @@
 #include "Eclipsea/Eclipsea.hpp"
+#include "Eclipsea/Stage/ConnectorTransition.hpp"
 #include "OpenCore/OpenCore.hpp"
 
 PreloadStage::PreloadStage(Timer *timer, StageManager *sController)
@@ -287,21 +288,14 @@ void PreloadStage::handleTitleSequence()
 
     case PreloadPhase::ShowConnector:
     {
-        auto connector = UI<ImageBoard>("connector", 99, img_connector, 1, 1);
-        connector->Configure()
-            .Scale(0.0f, 1.0f)
-            .Anchor(AnchorPoint::TopRight)
-            .Posite(0.0f, 0.0f);
-        connector->Animate().Move(0, 0, 2700, 0, 5.0f, false).Commit();
-        Elements->PushElement(std::move(connector));
+        ConnectorTransition::PushCover(Elements.get(), img_connector);
         phase = PreloadPhase::ConnectorOn;
         break;
     }
 
     case PreloadPhase::ConnectorOn:
     {
-        auto connector = Elements->find("connector");
-        if (connector && connector->isAnimeFinished())
+        if (ConnectorTransition::IsFinished(Elements.get()))
         {
             phase = PreloadPhase::Finished;
         }
