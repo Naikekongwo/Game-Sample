@@ -67,6 +67,9 @@ class Entity
 
     shared_ptr<float> getHealthHook() { return m_healthPercent; }
 
+    /// @brief 检查实体在目标位置是否会与不可通行的瓦片碰撞
+    bool canMoveTo(const Vec3 &pos) const;
+
   private:
     // 实体带有自我ID
     // 实体内置一个物理信息表
@@ -91,4 +94,7 @@ class Entity
     float heightRelative = 1.0f;
 
     float lastTime = 0.0f;
+
+    /// @brief 将 Direction 映射为贴图方向块的行偏移乘数 (Down=0, Left=1, Right=2, Up=3)
+    static int directionBaseIndex(Direction dir, int tilesPerDirection);
 };

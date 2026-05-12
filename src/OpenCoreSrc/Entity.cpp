@@ -14,6 +14,9 @@ void Entity::Configure(const EntityInfo &eInfo)
 
     m_healthPercent = std::make_shared<float>(1.0f);
 
+    pProperties.setTileSize(static_cast<uint8_t>(info.widthFactor),
+                            static_cast<uint8_t>(info.heightFactor));
+
     status = EntityStatus::Ready;
 }
 
@@ -28,6 +31,8 @@ void Entity::createRenderer()
         widthRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderWidth();
         heightRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderHeight();
 
+        renderer->setTileSize(pProperties.getTileWidth(),
+                              pProperties.getTileHeight());
         renderer->Configure().Scale(info.widthFactor * widthRelative, 0.0f);
     }
 }
@@ -44,23 +49,9 @@ void Entity::Draw(const Vec3 &absPos)
     Vec3 Position = pProperties.getPosition();
 
     // 只负责动画方向（这是Entity自己的逻辑）
-    switch (pProperties.getDirection())
-    {
-    case Direction::Up:
-        renderer->getVisualState()->frameIndex = 12;
-        break;
-    case Direction::Down:
-        renderer->getVisualState()->frameIndex = 0;
-        break;
-    case Direction::Left:
-        renderer->getVisualState()->frameIndex = 4;
-        break;
-    case Direction::Right:
-        renderer->getVisualState()->frameIndex = 8;
-        break;
-    default:
-        break;
-    }
+    int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
+    renderer->getVisualState()->frameIndex =
+        directionBaseIndex(pProperties.getDirection(), tilesPerDir);
 
     // ⭐关键：只接收已经算好的 screen 坐标
     renderer->setPosition(absPos.x, absPos.y);
@@ -97,33 +88,11 @@ void Entity::Draw(float cameraX, float cameraY)
         else
         {
             renderer->setPosition(0.5f + (Position.x - cameraX) * widthRelative,
-                                  0.5f + (Position.y - cameraY) * heightfactor);
+                                  0.5f + (Position.y - cameraY) * heightRelative);
             renderer->setTransparency(1.0f);
-            switch (pProperties.getDirection())
-            {
-            case Direction::Up:
-            {
-                renderer->getVisualState()->frameIndex = 12;
-                break;
-            }
-            case Direction::Down:
-            {
-                renderer->getVisualState()->frameIndex = 0;
-                break;
-            }
-            case Direction::Left:
-            {
-                renderer->getVisualState()->frameIndex = 4;
-                break;
-            }
-            case Direction::Right:
-            {
-                renderer->getVisualState()->frameIndex = 8;
-                break;
-            }
-            default:
-                break;
-            }
+            int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
+            renderer->getVisualState()->frameIndex =
+                directionBaseIndex(pProperties.getDirection(), tilesPerDir);
             renderer->Draw();
         }
     }
@@ -136,8 +105,18 @@ void Entity::Draw(float cameraX, float cameraY)
 
 void Entity::onUpdate(float totalTime)
 {
+    Vec3 previousPosition = pProperties.getPosition();
+
     // 刷新
     pProperties.onUpdate(totalTime);
+
+    // 碰撞检测：若新位置不可通行则回退
+    Vec3 newPosition = pProperties.getPosition();
+    if (!canMoveTo(newPosition))
+    {
+        pProperties.setPosition(previousPosition);
+        pProperties.setSpeed({0, 0, 0});
+    }
 
     // 刷新血量
 
@@ -147,4 +126,39 @@ void Entity::onUpdate(float totalTime)
         *m_healthPercent = 1.0f;
 
     lastTime = totalTime;
+}
+
+int Entity::directionBaseIndex(Direction dir, int tilesPerDirection)
+{
+    switch (dir)
+    {
+    case Direction::Down:  return 0;
+    case Direction::Left:  return tilesPerDirection;
+    case Direction::Right: return tilesPerDirection * 2;
+    case Direction::Up:    return tilesPerDirection * 3;
+    }
+    return 0;
+}
+
+bool Entity::canMoveTo(const Vec3 &pos) const
+{
+    auto wc = OpenEngine::getInstance().getServerWorldController();
+    if (!wc)
+        return true;
+
+    uint8_t tw = pProperties.getTileWidth();
+    uint8_t th = pProperties.getTileHeight();
+
+    int baseX = static_cast<int>(std::floor(pos.x));
+    int baseY = static_cast<int>(std::floor(pos.z > 0.0f ? pos.z : 0.0f));
+
+    for (uint8_t dy = 0; dy < th; ++dy)
+        for (uint8_t dx = 0; dx < tw; ++dx)
+        {
+            auto block = wc->queryBlockInfo(baseX + dx, baseY - dy);
+            if (block.has_value() && block->Access != 0)//这里先令等于0为可移动的格子，非0为不可移动的格子，后续可以根据需求细化不同access值代表是否可移动
+                return false;
+        }
+
+    return true;
 }

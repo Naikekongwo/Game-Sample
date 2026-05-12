@@ -14,6 +14,8 @@
 #include "OpenCore/Core/Math/OpenCore_Vec2.hpp"
 #include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
 #include "OpenCore_Collision.hpp"
+#include <utility>
+#include <vector>
 
 using Vec3 = OpenCore_Vec3;
 using Vec2 = OpenCore_Vec2;
@@ -52,6 +54,14 @@ class PhysicalProperties
     void setSpeed(const Vec3 &speed) { Speed = speed; }
     void setμFactor(const float &factor) { μFactor = factor; }
 
+    /// @brief 设置实体占据的瓦片尺寸
+    void setTileSize(uint8_t w, uint8_t h) { tileWidth = w; tileHeight = h; }
+    uint8_t getTileWidth() const { return tileWidth; }
+    uint8_t getTileHeight() const { return tileHeight; }
+
+    /// @brief 获取实体当前位置下占据的所有瓦片坐标 (gx, gy)
+    std::vector<std::pair<int, int>> getOccupiedTiles() const;
+
     void addSpeed(const Vec3 &speed)
     {
         Speed.x += speed.x;
@@ -84,6 +94,9 @@ class PhysicalProperties
     float maxAccelParam = 15.0f;   // 最大加速度（单位/s²）,控制起步/刹车的最大加速度，数值越大响应越灵敏，但过高会显得突跳,12.0 ~ 20.0
     float accelGain     = 10.0f;   // 趋近增益,接近目标速度时的柔和度，数值越大尾部越“硬”，过小则感觉迟滞,8.0 ~ 15.0
     float stopSmoothFactor = 10.0f; // 停止时向整数坐标平滑靠拢的速度，值越大越快
+
+    uint8_t tileWidth = 1;   // 实体占几格宽（世界单位）
+    uint8_t tileHeight = 1;  // 实体占几格高（世界单位）
 
     void parseHorizontalMovement(float &Speed, float &Pos, float deltaTime);
     void parseVerticalMovement(float &Speed, float &Pos, float deltaTime);
