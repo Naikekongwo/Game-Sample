@@ -67,7 +67,8 @@ void Entity::Draw(const Vec3 &absPos)
         int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
         int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
         int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
-        renderer->getVisualState()->frameIndex = base + animFrame;
+        renderer->getVisualState()->frameIndex =
+            info.defaultRow * m_gridCols + info.defaultCol + base + animFrame;
     }
 
     // ⭐关键：只接收已经算好的 screen 坐标
@@ -123,7 +124,8 @@ void Entity::Draw(float cameraX, float cameraY)
                 int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
                 int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
                 int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
-                renderer->getVisualState()->frameIndex = base + animFrame;
+                renderer->getVisualState()->frameIndex =
+                    info.defaultRow * m_gridCols + info.defaultCol + base + animFrame;
             }
             renderer->Draw();
         }

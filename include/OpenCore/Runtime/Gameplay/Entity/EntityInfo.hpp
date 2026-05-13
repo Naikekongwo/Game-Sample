@@ -35,6 +35,9 @@ struct EntityInfo
 
     uint8_t frameCount = 4; // 每个方向的动画帧数（公式法回退用）
 
+    uint8_t defaultCol = 0; // 静态占位贴图在精灵表网格中的列（无动画实体使用）
+    uint8_t defaultRow = 0; // 静态占位贴图在精灵表网格中的行
+
     // 显式动画序列 —— 非空时优先使用，覆盖公式计算
     std::vector<AnimSequence> animations;
 };
