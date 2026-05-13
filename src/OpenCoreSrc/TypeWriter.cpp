@@ -54,6 +54,8 @@ void TypeWriter::Draw()
 
     Rect dstRect = getLogicalBounds();
 
+    m_baseBackground->Draw();
+
     // 在此处处理打字机效果
     GFX.Draw(m_textureCache, nullptr, &dstRect, 0.0f, nullptr);
 
@@ -112,13 +114,8 @@ void TypeWriter::onUpdate(float totalTime)
     if (!m_textureValid)
     {
         generateTexture(nullptr);
+        return;
     }
-
-    if (!isAnimeFinished())
-    {
-        generateTexture(nullptr);
-    }
-
     m_baseBackground->onUpdate(totalTime);
 }
 

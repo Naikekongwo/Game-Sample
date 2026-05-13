@@ -30,7 +30,6 @@ void StoryStage::onEnter()
     if (sStatus > StoryStatus::Loading)
         return;
     initializeComponents();
-    sStatus = StoryStatus::Ready;
 }
 
 bool StoryStage::handlEvents(SDL_Event *event)
@@ -49,6 +48,16 @@ void StoryStage::onUpdate()
 
     switch (sStatus)
     {
+    case StoryStatus::Loading:
+    {
+        LOG("Loading");
+        break;
+    }
+    case StoryStatus::Ready:
+    {
+        LOG("Ready");
+        break;
+    }
     case StoryStatus::Intro:
     {
         // 等待
@@ -69,7 +78,6 @@ void StoryStage::onUpdate()
             buffer = firstLine;
             if (stageIndex == 0)
             {
-                LOG("That is OK!");
                 typeWriter->setText(secondLine);
                 typeWriter->Animate()
                     .Timer(0.5f)
@@ -79,6 +87,7 @@ void StoryStage::onUpdate()
                 return;
             }
         }
+        break;
     }
     default:
         break;
@@ -136,11 +145,12 @@ void StoryStage::func_intro()
 
     tpwt->Animate().Timer(22.0f).Move(2880, 560, -960, 560, 20.0f).Commit();
 
-    tpwt->setFontSize(40);
+    tpwt->setFontSize(48);
     tpwt->setText(firstLine);
     tpwt->alignCenter(true);
 
     Elements->PushElement(std::move(tpwt));
+
     sStatus = StoryStatus::Intro;
 }
 
