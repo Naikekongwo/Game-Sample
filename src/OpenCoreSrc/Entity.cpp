@@ -25,9 +25,9 @@ void Entity::createRenderer()
     // 创建一个角色绘制器
     if (!renderer && info.EntityTypeID != 0)
     {
-        uint8_t gridCols = static_cast<uint8_t>(info.widthFactor) * info.frameCount;
+        m_gridCols = static_cast<uint8_t>(info.widthFactor) * info.frameCount;
         uint8_t gridRows = static_cast<uint8_t>(info.heightFactor) * 4;
-        renderer = std::make_unique<Mob>(info.TextureID, gridCols, gridRows);
+        renderer = std::make_unique<Mob>(info.TextureID, m_gridCols, gridRows);
         renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);
 
         widthRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderWidth();
@@ -50,11 +50,25 @@ void Entity::Draw(const Vec3 &absPos)
     // 更新 world state
     Vec3 Position = pProperties.getPosition();
 
-    // 只负责动画方向（这是Entity自己的逻辑）
-    int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
-    int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
-    int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
-    renderer->getVisualState()->frameIndex = base + animFrame;
+    // 动画帧选取
+    if (!info.animations.empty() && m_currentAnimIndex < info.animations.size()) {
+        const auto &seq = info.animations[m_currentAnimIndex];
+        if (!seq.frames.empty()) {
+            int f = static_cast<int>(m_animTimer * m_animFPS) % seq.frames.size();
+            const auto &frame = seq.frames[f];
+            renderer->getVisualState()->frameIndex =
+                frame.row * m_gridCols + frame.col;
+            uint8_t fw = frame.tileW > 0 ? frame.tileW : pProperties.getTileWidth();
+            uint8_t fh = frame.tileH > 0 ? frame.tileH : pProperties.getTileHeight();
+            if (fw != renderer->getTileWidth() || fh != renderer->getTileHeight())
+                renderer->setTileSize(fw, fh);
+        }
+    } else {
+        int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
+        int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
+        int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
+        renderer->getVisualState()->frameIndex = base + animFrame;
+    }
 
     // ⭐关键：只接收已经算好的 screen 坐标
     renderer->setPosition(absPos.x, absPos.y);
@@ -93,10 +107,24 @@ void Entity::Draw(float cameraX, float cameraY)
             renderer->setPosition(0.5f + (Position.x - cameraX) * widthRelative,
                                   0.5f + (Position.y - cameraY) * heightRelative);
             renderer->setTransparency(1.0f);
-            int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
-            int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
-            int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
-            renderer->getVisualState()->frameIndex = base + animFrame;
+            if (!info.animations.empty() && m_currentAnimIndex < info.animations.size()) {
+                const auto &seq = info.animations[m_currentAnimIndex];
+                if (!seq.frames.empty()) {
+                    int f = static_cast<int>(m_animTimer * m_animFPS) % seq.frames.size();
+                    const auto &frame = seq.frames[f];
+                    renderer->getVisualState()->frameIndex =
+                        frame.row * m_gridCols + frame.col;
+                    uint8_t fw = frame.tileW > 0 ? frame.tileW : pProperties.getTileWidth();
+                    uint8_t fh = frame.tileH > 0 ? frame.tileH : pProperties.getTileHeight();
+                    if (fw != renderer->getTileWidth() || fh != renderer->getTileHeight())
+                        renderer->setTileSize(fw, fh);
+                }
+            } else {
+                int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
+                int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
+                int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
+                renderer->getVisualState()->frameIndex = base + animFrame;
+            }
             renderer->Draw();
         }
     }
@@ -126,20 +154,21 @@ void Entity::onUpdate(float totalTime)
     // 动画计时
     Vec3 speed = pProperties.getSpeed();
     bool isMoving = (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
-    Direction currentDir = pProperties.getDirection();
 
-    if (currentDir != m_lastDirection)
+    if (!isMoving)
     {
         m_animTimer = 0.0f;
-        m_lastDirection = currentDir;
-    }
-    else if (isMoving)
-    {
-        m_animTimer += deltaTime;
+        m_currentAnimIndex = 0;
     }
     else
     {
-        m_animTimer = 0.0f;
+        uint8_t newAnimIndex = computeAnimIndex();
+        if (newAnimIndex != m_currentAnimIndex)
+        {
+            m_animTimer = 0.0f;
+            m_currentAnimIndex = newAnimIndex;
+        }
+        m_animTimer += deltaTime;
     }
 
     // 刷新血量
@@ -185,4 +214,20 @@ bool Entity::canMoveTo(const Vec3 &pos) const
         }
 
     return true;
+}
+
+uint8_t Entity::computeAnimIndex() const
+{
+    // 仅在 isMoving=true 时调用
+    if (info.animations.empty())
+        return 0;
+
+    switch (pProperties.getDirection())
+    {
+    case Direction::Down:  return 1;
+    case Direction::Left:  return 2;
+    case Direction::Right: return 3;
+    case Direction::Up:    return 4;
+    }
+    return 0;
 }

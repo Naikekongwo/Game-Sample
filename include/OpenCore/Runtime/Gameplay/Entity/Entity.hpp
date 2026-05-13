@@ -70,6 +70,10 @@ class Entity
     /// @brief 检查实体在目标位置是否会与不可通行的瓦片碰撞
     bool canMoveTo(const Vec3 &pos) const;
 
+    /// @brief 切换当前动画序列
+    void setAnimIndex(uint8_t index) { m_currentAnimIndex = index; }
+    uint8_t getAnimIndex() const { return m_currentAnimIndex; }
+
   private:
     // 实体带有自我ID
     // 实体内置一个物理信息表
@@ -98,7 +102,11 @@ class Entity
     /// @brief 将 Direction 映射为贴图方向块的行偏移乘数 (Down=0, Left=1, Right=2, Up=3)
     static int directionBaseIndex(Direction dir, int tilesPerDirection);
 
-    float m_animTimer = 0.0f;       // 动画帧计时器
-    float m_animFPS = 6.0f;         // 动画播放速率
-    Direction m_lastDirection = Direction::Down;
+    float m_animTimer = 0.0f;           // 动画帧计时器
+    float m_animFPS = 6.0f;             // 动画播放速率
+    uint8_t m_currentAnimIndex = 0;     // 当前动画序列索引
+    uint8_t m_gridCols = 4;             // 精灵表网格列数
+
+    /// @brief 根据当前状态（静止/移动方向）计算应播放的动画序列索引
+    uint8_t computeAnimIndex() const;
 };
