@@ -138,6 +138,13 @@ Rect Texture::getSubRect(size_t startIndex, uint8_t cols, uint8_t rows)
         cols = xCount - col;
     }
 
+    if (row + rows > yCount)
+    {
+        LOG("Texture::getSubRect() rows exceed texture rows: {} + {} > {}",
+            row, rows, yCount);
+        rows = yCount - row;
+    }
+
     return Rect{static_cast<float>(col * width),
                 static_cast<float>(row * height),
                 static_cast<float>(cols * width),

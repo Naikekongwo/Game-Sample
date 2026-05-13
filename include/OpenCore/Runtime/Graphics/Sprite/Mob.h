@@ -11,7 +11,7 @@ using std::shared_ptr;
 class Mob : public Sprite
 {
   public:
-    Mob(short MobTextureID);
+    Mob(short MobTextureID, uint8_t gridCols = 4, uint8_t gridRows = 4);
 
     void Draw() override;
 

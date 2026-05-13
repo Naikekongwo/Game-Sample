@@ -1,7 +1,7 @@
 #include "OpenCore/OpenCore.hpp"
 #include <memory>
 
-Mob::Mob(short TextureID)
+Mob::Mob(short TextureID, uint8_t gridCols, uint8_t gridRows)
 {
     this->id = "MobSprite";
     this->layer = 0;
@@ -10,10 +10,9 @@ Mob::Mob(short TextureID)
     this->AnimeManager = std::make_unique<AnimationManager>();
 
     this->texture = std::make_unique<Texture>(
-        4, 4, OpenCoreManagers::ResManager.GetTexture(TextureID));
-    // 定义了该MOB的纹理
+        gridCols, gridRows, OpenCoreManagers::ResManager.GetTexture(TextureID));
 
-    LOG("生物创建成功，纹理ID:{}", TextureID);
+    LOG("生物创建成功，纹理ID:{}, 网格:{}x{}", TextureID, gridCols, gridRows);
 }
 
 void Mob::Draw()

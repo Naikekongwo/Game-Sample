@@ -25,7 +25,9 @@ void Entity::createRenderer()
     // 创建一个角色绘制器
     if (!renderer && info.EntityTypeID != 0)
     {
-        renderer = std::make_unique<Mob>(info.TextureID);
+        uint8_t gridCols = static_cast<uint8_t>(info.widthFactor) * info.frameCount;
+        uint8_t gridRows = static_cast<uint8_t>(info.heightFactor) * 4;
+        renderer = std::make_unique<Mob>(info.TextureID, gridCols, gridRows);
         renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);
 
         widthRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderWidth();
@@ -50,8 +52,9 @@ void Entity::Draw(const Vec3 &absPos)
 
     // 只负责动画方向（这是Entity自己的逻辑）
     int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
-    renderer->getVisualState()->frameIndex =
-        directionBaseIndex(pProperties.getDirection(), tilesPerDir);
+    int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
+    int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
+    renderer->getVisualState()->frameIndex = base + animFrame;
 
     // ⭐关键：只接收已经算好的 screen 坐标
     renderer->setPosition(absPos.x, absPos.y);
@@ -91,8 +94,9 @@ void Entity::Draw(float cameraX, float cameraY)
                                   0.5f + (Position.y - cameraY) * heightRelative);
             renderer->setTransparency(1.0f);
             int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
-            renderer->getVisualState()->frameIndex =
-                directionBaseIndex(pProperties.getDirection(), tilesPerDir);
+            int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
+            int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
+            renderer->getVisualState()->frameIndex = base + animFrame;
             renderer->Draw();
         }
     }
@@ -105,6 +109,7 @@ void Entity::Draw(float cameraX, float cameraY)
 
 void Entity::onUpdate(float totalTime)
 {
+    float deltaTime = totalTime - lastTime;
     Vec3 previousPosition = pProperties.getPosition();
 
     // 刷新
@@ -118,9 +123,28 @@ void Entity::onUpdate(float totalTime)
         pProperties.setSpeed({0, 0, 0});
     }
 
+    // 动画计时
+    Vec3 speed = pProperties.getSpeed();
+    bool isMoving = (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
+    Direction currentDir = pProperties.getDirection();
+
+    if (currentDir != m_lastDirection)
+    {
+        m_animTimer = 0.0f;
+        m_lastDirection = currentDir;
+    }
+    else if (isMoving)
+    {
+        m_animTimer += deltaTime;
+    }
+    else
+    {
+        m_animTimer = 0.0f;
+    }
+
     // 刷新血量
 
-    *m_healthPercent -= 0.05f * (totalTime - lastTime);
+    *m_healthPercent -= 0.05f * deltaTime;
 
     if (*m_healthPercent <= 0.0f)
         *m_healthPercent = 1.0f;
@@ -150,13 +174,13 @@ bool Entity::canMoveTo(const Vec3 &pos) const
     uint8_t th = pProperties.getTileHeight();
 
     int baseX = static_cast<int>(std::floor(pos.x));
-    int baseY = static_cast<int>(std::floor(pos.z > 0.0f ? pos.z : 0.0f));
+    int baseY = static_cast<int>(std::floor(pos.y));
 
     for (uint8_t dy = 0; dy < th; ++dy)
         for (uint8_t dx = 0; dx < tw; ++dx)
         {
             auto block = wc->queryBlockInfo(baseX + dx, baseY - dy);
-            if (block.has_value() && block->Access != 0)//这里先令等于0为可移动的格子，非0为不可移动的格子，后续可以根据需求细化不同access值代表是否可移动
+            if (block.has_value() && block->Access == 0)//这里先令等于0为可移动的格子，非0为不可移动的格子，后续可以根据需求细化不同access值代表是否可移动
                 return false;
         }
 

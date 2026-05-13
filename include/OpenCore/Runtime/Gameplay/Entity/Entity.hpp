@@ -97,4 +97,8 @@ class Entity
 
     /// @brief 将 Direction 映射为贴图方向块的行偏移乘数 (Down=0, Left=1, Right=2, Up=3)
     static int directionBaseIndex(Direction dir, int tilesPerDirection);
+
+    float m_animTimer = 0.0f;       // 动画帧计时器
+    float m_animFPS = 6.0f;         // 动画播放速率
+    Direction m_lastDirection = Direction::Down;
 };
