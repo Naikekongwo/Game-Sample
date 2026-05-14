@@ -8,12 +8,26 @@
 #include "OpenCore/World/Stage/Stage.hpp"
 
 #define firstLine                                                              \
-    "公元 2300年 "                                                             \
-    "X市\n地球水资源危机已经进入终末期，先前对生态恢复抱有幻想的科学家十不存"  \
-    "一，甚至极大多数已经登上了早些时候的诺亚13号飞船。\n地球即将进入无人居住" \
-    "的窘态。"
+    "在遥远未来的某一天，由于人类过度的消耗地球资源，生态圈有限的恢复能力终于" \
+    "枯竭了。\n江河湖海几近于枯竭，空气中的湿度极具下降，地表的液态水资源正在" \
+    "以异常的速度流失。"
 
-#define secondLine "XXXXXXXXXXX\nXXXXXXXXX"
+#define secondLine                                                             \
+    "起初，人类的科学家们尚对事态抱乐观态度，认为地表水资源中液态比例下降只是" \
+    "暂时性的气候问题，只要假以时日，水循环一定能够重回正轨。\n然而，随着日子" \
+    "一天一天过去，液态水资源愈发减少，大量生物和人类死去，期待的复苏并未到来" \
+    "，恐惧随着死亡的气息在人群中传播。"
+
+#define thirdLine                                                              \
+    "更糟糕的是，一些国家的顶级富豪开始筹备逃离地球的计划，并且陆续发射了五艘" \
+    "载人飞船，前往生态环境已经得到良好改善的火星。\n先前的发射任务大获成功，" \
+    "越来越多人像抓住救命稻草一般拼命地争抢登船资格。\n在这样的氛围下，同时对" \
+    "水资源枯竭的事态进入了停滞，先前那些抱有乐观态度的科学家已经十不存一，甚" \
+    "至他们中的大多数都已经做好了前往火星的准备。"
+
+#define fourthLine                                                             \
+    "今晚将要发射的，则是这个"                                                 \
+    "逃离航班的第13次发射\n——诺亚13号飞船。"
 
 StoryStage::StoryStage(Timer *timer, StageManager *sController)
 {
@@ -83,7 +97,32 @@ void StoryStage::onUpdate()
                     .Timer(0.5f)
                     .Move(2880, 560, -960, 560, 20.0f)
                     .Commit();
-                stageIndex = 1;
+                stageIndex++;
+                return;
+            }
+            else if (stageIndex == 1)
+            {
+                typeWriter->setText(thirdLine);
+                typeWriter->Animate()
+                    .Timer(0.5f)
+                    .Move(2880, 560, -960, 560, 20.0f)
+                    .Commit();
+                stageIndex++;
+                return;
+            }
+            else if (stageIndex == 2)
+            {
+                typeWriter->setText(fourthLine);
+                typeWriter->Animate()
+                    .Timer(0.5f)
+                    .Move(2880, 560, -960, 560, 20.0f)
+                    .Commit();
+                stageIndex++;
+                return;
+            }
+            else if (stageIndex == 3)
+            {
+                OpenCoreManagers::SFXManager.getInstance().stopBGM();
                 return;
             }
         }
@@ -129,7 +168,10 @@ void StoryStage::func_intro()
         .Alpha(1.0f)
         .Scale(1.0f, 0.0f);
 
-    frontpage->Animate().Timer(15.0f).Move(960, 2160, 960, 1080, 5.0f).Commit();
+    frontpage->Animate()
+        .Timer(15.0f)
+        .Move(960, 2160, 960, 1080, 10.0f)
+        .Commit();
 
     Elements->PushElement(std::move(frontpage));
 
@@ -141,9 +183,9 @@ void StoryStage::func_intro()
         .Alpha(1.0f)
         .Anchor(AnchorPoint::TopCenter)
         .Posite(2.5f, 0.55f)
-        .Scale(0.5f, 0.5f);
+        .Scale(0.6f, 0.5f);
 
-    tpwt->Animate().Timer(22.0f).Move(2880, 560, -960, 560, 20.0f).Commit();
+    tpwt->Animate().Timer(27.0f).Move(2880, 560, -960, 560, 20.0f).Commit();
 
     tpwt->setFontSize(48);
     tpwt->setText(firstLine);
