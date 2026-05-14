@@ -87,9 +87,6 @@ void StoryStage::onUpdate()
         if (typeWriter->isAnimeFinished())
         {
             // 动画结束
-
-            string buffer;
-            buffer = firstLine;
             if (stageIndex == 0)
             {
                 typeWriter->setText(secondLine);

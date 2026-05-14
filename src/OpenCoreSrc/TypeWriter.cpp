@@ -113,7 +113,8 @@ void TypeWriter::onUpdate(float totalTime)
     }
     if (!m_textureValid)
     {
-        generateTexture(nullptr);
+        if (generateTexture(nullptr))
+            m_textureValid = true;
         return;
     }
     m_baseBackground->onUpdate(totalTime);
@@ -275,7 +276,6 @@ bool TypeWriter::generateTexture(SDL_Texture *texture)
 
     GFX.setRenderTarget(nullptr);
 
-    m_textureValid = true;
     status = TypeWriterStatus::Ready;
 
     return true;
