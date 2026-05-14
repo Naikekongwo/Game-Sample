@@ -15,8 +15,6 @@ TypeWriter::TypeWriter(string_view id, uint8_t layer, short fontID)
     : UIElement(id.data(), layer, nullptr)
 {
     this->fontID = fontID;
-    m_baseBackground =
-        UI<BaseBackground>("baseBackground", 0, 2046, NULL, NULL);
 
     LOG("初始化成功，ID {}, 字体ID {}", id.data(), fontID);
 }
@@ -54,7 +52,10 @@ void TypeWriter::Draw()
 
     Rect dstRect = getLogicalBounds();
 
-    m_baseBackground->Draw();
+    if (status != TypeWriterStatus::Creating && (m_baseBackground != nullptr))
+    {
+        m_baseBackground->Draw();
+    }
 
     // 在此处处理打字机效果
     GFX.Draw(m_textureCache, nullptr, &dstRect, 0.0f, nullptr);
@@ -79,7 +80,8 @@ void TypeWriter::handlEvents(SDL_Event &event, float totalTime)
 
     if (status != TypeWriterStatus::Creating)
     {
-        m_baseBackground->handlEvents(event, totalTime);
+        if (m_baseBackground)
+            m_baseBackground->handlEvents(event, totalTime);
     }
 }
 
@@ -101,12 +103,19 @@ void TypeWriter::onUpdate(float totalTime)
     this->AnimeManager->onUpdate(totalTime, *VState.get());
     if (status == TypeWriterStatus::Creating)
     {
-        m_baseBackground->setNativeScale(60);
-        m_baseBackground->Configure()
-            .Parent(this)
-            .Anchor(AnchorPoint::Center)
-            .Scale(1.0f, 1.0f)
-            .Posite(0.5f, 0.5f);
+        if (m_enableBackground)
+        {
+            m_baseBackground =
+                UI<BaseBackground>("baseBackground", 0, 2046, NULL, NULL);
+
+            m_baseBackground->setNativeScale(10);
+            m_baseBackground->Configure()
+                .Parent(this)
+                .Anchor(AnchorPoint::Center)
+                .Scale(1.0f, 1.0f)
+                .Posite(0.5f, 0.5f);
+        }
+
         status = TypeWriterStatus::Ready;
     }
     if (!m_textureValid)
@@ -114,7 +123,11 @@ void TypeWriter::onUpdate(float totalTime)
         if (generateTexture(nullptr))
             m_textureValid = true;
     }
-    m_baseBackground->onUpdate(totalTime);
+
+    if (m_baseBackground)
+    {
+        m_baseBackground->onUpdate(totalTime);
+    }
 }
 
 void TypeWriter::setShadow(bool enableTag, int shadowOffset)

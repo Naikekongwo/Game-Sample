@@ -115,4 +115,6 @@ class TypeWriter : public UIElement
     TypeWriterMode mode = TypeWriterMode::TypeWriter;
 
     unique_ptr<BaseBackground> m_baseBackground;
+
+    bool m_enableBackground = false;
 };

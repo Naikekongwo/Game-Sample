@@ -125,6 +125,11 @@ void StoryStage::onUpdate()
             }
             else if (stageIndex == 3)
             {
+                typeWriter->Animate()
+                    .Timer(5.0f)
+                    .Move(384, 560, 384, 1080, 8.0f)
+                    .Timer(2.0f)
+                    .Commit();
 
                 auto house = UI<ImageBoard>("house", 30, 2047, 1, 1);
 
@@ -162,9 +167,13 @@ void StoryStage::onUpdate()
                         .Anchor(AnchorPoint::BottomCenter)
                         .Posite(0.46f, 0.47f)
                         .Scale(0.0f, 0.2f)
+                        .Alpha(0.0f)
                         .Sequence(true);
 
-                    rocket->Animate().Fade(0.0f, 1.0f, 5.0f).Commit();
+                    rocket->Animate()
+                        .Timer(5.0f)
+                        .Fade(0.0f, 1.0f, 8.0f)
+                        .Commit();
 
                     Elements->PushElement(std::move(rocket));
                 }
@@ -173,7 +182,23 @@ void StoryStage::onUpdate()
             }
             else if (stageIndex == 4)
             {
-                ++stageIndex;
+                auto &sfx = OpenCoreManagers::SFXManager.getInstance();
+                if (sfx.getVolume() > 0)
+                {
+                    sfx.setVolume(
+                        (sfx.getVolume() - 1 >= 0) ? sfx.getVolume() - 1 : 0);
+                }
+                else
+                {
+                    typeWriter->Animate().Timer(5.0f).Commit();
+                    ++stageIndex;
+                }
+                return;
+            }
+            else if (stageIndex == 5)
+            {
+                sStatus = StoryStatus::Launching;
+                // 开始播放倒计时音效
                 return;
             }
         }
