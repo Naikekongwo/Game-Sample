@@ -52,7 +52,12 @@ bool StoryStage::handlEvents(SDL_Event *event)
     return parseEvents(&new_event);
 }
 
-bool StoryStage::parseEvents(Event *event) { return true; }
+bool StoryStage::parseEvents(Event *event)
+{
+    SDL_Event sEvent = *event;
+    Elements->handlEvents(sEvent, timer->getTotalTime());
+    return true;
+}
 
 void StoryStage::initializeComponents() { func_intro(); }
 
@@ -92,9 +97,9 @@ void StoryStage::onUpdate()
                 typeWriter->setText(secondLine);
                 typeWriter->Animate()
                     .Timer(0.5f)
-                    .Move(2880, 560, -960, 560, 20.0f)
+                    .Move(1920, 560, -1152, 560, 20.0f)
                     .Commit();
-                stageIndex++;
+                ++stageIndex;
                 return;
             }
             else if (stageIndex == 1)
@@ -102,9 +107,9 @@ void StoryStage::onUpdate()
                 typeWriter->setText(thirdLine);
                 typeWriter->Animate()
                     .Timer(0.5f)
-                    .Move(2880, 560, -960, 560, 20.0f)
+                    .Move(1920, 560, -1152, 560, 20.0f)
                     .Commit();
-                stageIndex++;
+                ++stageIndex;
                 return;
             }
             else if (stageIndex == 2)
@@ -112,14 +117,63 @@ void StoryStage::onUpdate()
                 typeWriter->setText(fourthLine);
                 typeWriter->Animate()
                     .Timer(0.5f)
-                    .Move(2880, 560, -960, 560, 20.0f)
+                    .Move(1920, 560, 384, 560, 10.0f)
+                    .Timer(10.0f)
                     .Commit();
-                stageIndex++;
+                ++stageIndex;
                 return;
             }
             else if (stageIndex == 3)
             {
-                OpenCoreManagers::SFXManager.getInstance().stopBGM();
+
+                auto house = UI<ImageBoard>("house", 30, 2047, 1, 1);
+
+                house->Configure()
+                    .Parent(nullptr)
+                    .Sequence(true)
+                    .Anchor(AnchorPoint::Center)
+                    .Posite(0.5f, 0.5f)
+                    .Alpha(0.0f)
+                    .Scale(1.0f, 1.0f);
+
+                house->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 8.0f).Commit();
+
+                Elements->PushElement(std::move(house));
+
+                auto ele = Elements->find("frontpage");
+                if (ele)
+                {
+                    auto eleI = dynamic_cast<ImageBoard *>(ele);
+
+                    eleI->Configure()
+                        .Anchor(AnchorPoint::TopCenter)
+                        .Posite(0.5f, 0.2f);
+                    eleI->Animate()
+                        .SubStart(true)
+                        ->Fade(1.0f, 0.0f, 10.0f)
+                        .Scale(1.0f, 5.0f, 10.0f)
+                        .SubEnd()
+                        .Commit();
+
+                    auto rocket = UI<ImageBoard>("rocket", 1, 3001, 1, 1);
+
+                    rocket->Configure()
+                        .Parent(nullptr)
+                        .Anchor(AnchorPoint::BottomCenter)
+                        .Posite(0.46f, 0.47f)
+                        .Scale(0.0f, 0.2f)
+                        .Sequence(true);
+
+                    rocket->Animate().Fade(0.0f, 1.0f, 5.0f).Commit();
+
+                    Elements->PushElement(std::move(rocket));
+                }
+                ++stageIndex;
+                return;
+            }
+            else if (stageIndex == 4)
+            {
+                ++stageIndex;
                 return;
             }
         }
@@ -155,7 +209,7 @@ void StoryStage::func_intro()
 
     Elements->PushElement(std::move(background));
 
-    auto frontpage = UI<ImageBoard>("frontpage", 2, 3002, 1, 1);
+    auto frontpage = UI<ImageBoard>("frontpage", 70, 3002, 1, 1);
 
     frontpage->Configure()
         .Sequence(true)
@@ -178,15 +232,15 @@ void StoryStage::func_intro()
         .Sequence(true)
         .Parent(nullptr)
         .Alpha(1.0f)
-        .Anchor(AnchorPoint::TopCenter)
+        .Anchor(AnchorPoint::TopLeft)
         .Posite(2.5f, 0.55f)
         .Scale(0.6f, 0.5f);
 
-    tpwt->Animate().Timer(27.0f).Move(2880, 560, -960, 560, 20.0f).Commit();
+    tpwt->Animate().Timer(27.0f).Move(1920, 560, -1152, 560, 20.0f).Commit();
 
     tpwt->setFontSize(48);
     tpwt->setText(firstLine);
-    tpwt->alignCenter(true);
+    tpwt->alignCenter(false);
 
     Elements->PushElement(std::move(tpwt));
 

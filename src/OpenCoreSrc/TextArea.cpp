@@ -162,8 +162,8 @@ void TextArea::refreshTextureCache()
 
     GFX.setRenderTarget(nullptr);
 
-    if (m_textureCache)
-        SDL_DestroyTexture(m_textureCache);
+    // if (m_textureCache)
+    //     SDL_DestroyTexture(m_textureCache);
     m_textureCache = target;
 }
 

@@ -101,21 +101,18 @@ void TypeWriter::onUpdate(float totalTime)
     this->AnimeManager->onUpdate(totalTime, *VState.get());
     if (status == TypeWriterStatus::Creating)
     {
+        m_baseBackground->setNativeScale(60);
         m_baseBackground->Configure()
             .Parent(this)
             .Anchor(AnchorPoint::Center)
             .Scale(1.0f, 1.0f)
             .Posite(0.5f, 0.5f);
-
-        m_baseBackground->setNativeScale(60);
-        m_baseBackground->onUpdate(totalTime);
         status = TypeWriterStatus::Ready;
     }
     if (!m_textureValid)
     {
         if (generateTexture(nullptr))
             m_textureValid = true;
-        return;
     }
     m_baseBackground->onUpdate(totalTime);
 }

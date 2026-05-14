@@ -7,7 +7,6 @@ enum class StoryStatus
     Loading,
     Ready,
     Intro,
-    Launching
 };
 
 class StoryStage : public OverlayStage
