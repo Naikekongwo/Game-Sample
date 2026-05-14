@@ -10,6 +10,16 @@ BaseBackground::BaseBackground(const std::string &id, uint8_t layer,
     : UIElement(id, layer, std::move(texture))
 {
     // id、layer、texture 均已在 UIElement 初始化列表中正确设置
+    this->id = id;
+    this->layer = layer;
+
+    if (!texture)
+    {
+        LOG("纹理非法！");
+        return;
+    }
+
+    this->texture = std::move(texture);
 }
 
 BaseBackground::~BaseBackground()
