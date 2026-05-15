@@ -26,7 +26,8 @@ void Entity::createRenderer()
     if (!renderer && info.EntityTypeID != 0)
     {
         m_gridCols = static_cast<uint8_t>(info.widthFactor) * info.frameCount;
-        uint8_t gridRows = static_cast<uint8_t>(info.heightFactor) * 4;
+        uint8_t gridRows =
+            static_cast<uint8_t>(info.heightFactor) * info.frameCount;
         renderer = std::make_unique<Mob>(info.TextureID, m_gridCols, gridRows);
         renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);
 
@@ -51,22 +52,32 @@ void Entity::Draw(const Vec3 &absPos)
     Vec3 Position = pProperties.getPosition();
 
     // 动画帧选取
-    if (!info.animations.empty() && m_currentAnimIndex < info.animations.size()) {
+    if (!info.animations.empty() && m_currentAnimIndex < info.animations.size())
+    {
         const auto &seq = info.animations[m_currentAnimIndex];
-        if (!seq.frames.empty()) {
-            int f = static_cast<int>(m_animTimer * m_animFPS) % seq.frames.size();
+        if (!seq.frames.empty())
+        {
+            int f =
+                static_cast<int>(m_animTimer * m_animFPS) % seq.frames.size();
             const auto &frame = seq.frames[f];
             renderer->getVisualState()->frameIndex =
                 frame.row * m_gridCols + frame.col;
-            uint8_t fw = frame.tileW > 0 ? frame.tileW : pProperties.getTileWidth();
-            uint8_t fh = frame.tileH > 0 ? frame.tileH : pProperties.getTileHeight();
-            if (fw != renderer->getTileWidth() || fh != renderer->getTileHeight())
+            uint8_t fw =
+                frame.tileW > 0 ? frame.tileW : pProperties.getTileWidth();
+            uint8_t fh =
+                frame.tileH > 0 ? frame.tileH : pProperties.getTileHeight();
+            if (fw != renderer->getTileWidth() ||
+                fh != renderer->getTileHeight())
                 renderer->setTileSize(fw, fh);
         }
-    } else {
-        int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
+    }
+    else
+    {
+        int tilesPerDir = pProperties.getTileWidth() *
+                          pProperties.getTileHeight() * info.frameCount;
         int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
-        int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
+        int animFrame =
+            static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
         renderer->getVisualState()->frameIndex =
             info.defaultRow * m_gridCols + info.defaultCol + base + animFrame;
     }
@@ -106,26 +117,40 @@ void Entity::Draw(float cameraX, float cameraY)
         else
         {
             renderer->setPosition(0.5f + (Position.x - cameraX) * widthRelative,
-                                  0.5f + (Position.y - cameraY) * heightRelative);
+                                  0.5f +
+                                      (Position.y - cameraY) * heightRelative);
             renderer->setTransparency(1.0f);
-            if (!info.animations.empty() && m_currentAnimIndex < info.animations.size()) {
+            if (!info.animations.empty() &&
+                m_currentAnimIndex < info.animations.size())
+            {
                 const auto &seq = info.animations[m_currentAnimIndex];
-                if (!seq.frames.empty()) {
-                    int f = static_cast<int>(m_animTimer * m_animFPS) % seq.frames.size();
+                if (!seq.frames.empty())
+                {
+                    int f = static_cast<int>(m_animTimer * m_animFPS) %
+                            seq.frames.size();
                     const auto &frame = seq.frames[f];
                     renderer->getVisualState()->frameIndex =
                         frame.row * m_gridCols + frame.col;
-                    uint8_t fw = frame.tileW > 0 ? frame.tileW : pProperties.getTileWidth();
-                    uint8_t fh = frame.tileH > 0 ? frame.tileH : pProperties.getTileHeight();
-                    if (fw != renderer->getTileWidth() || fh != renderer->getTileHeight())
+                    uint8_t fw = frame.tileW > 0 ? frame.tileW
+                                                 : pProperties.getTileWidth();
+                    uint8_t fh = frame.tileH > 0 ? frame.tileH
+                                                 : pProperties.getTileHeight();
+                    if (fw != renderer->getTileWidth() ||
+                        fh != renderer->getTileHeight())
                         renderer->setTileSize(fw, fh);
                 }
-            } else {
-                int tilesPerDir = pProperties.getTileWidth() * pProperties.getTileHeight() * info.frameCount;
-                int base = directionBaseIndex(pProperties.getDirection(), tilesPerDir);
-                int animFrame = static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
+            }
+            else
+            {
+                int tilesPerDir = pProperties.getTileWidth() *
+                                  pProperties.getTileHeight() * info.frameCount;
+                int base =
+                    directionBaseIndex(pProperties.getDirection(), tilesPerDir);
+                int animFrame =
+                    static_cast<int>(m_animTimer * m_animFPS) % info.frameCount;
                 renderer->getVisualState()->frameIndex =
-                    info.defaultRow * m_gridCols + info.defaultCol + base + animFrame;
+                    info.defaultRow * m_gridCols + info.defaultCol + base +
+                    animFrame;
             }
             renderer->Draw();
         }
@@ -187,10 +212,14 @@ int Entity::directionBaseIndex(Direction dir, int tilesPerDirection)
 {
     switch (dir)
     {
-    case Direction::Down:  return 0;
-    case Direction::Left:  return tilesPerDirection;
-    case Direction::Right: return tilesPerDirection * 2;
-    case Direction::Up:    return tilesPerDirection * 3;
+    case Direction::Down:
+        return 0;
+    case Direction::Left:
+        return tilesPerDirection;
+    case Direction::Right:
+        return tilesPerDirection * 2;
+    case Direction::Up:
+        return tilesPerDirection * 3;
     }
     return 0;
 }
@@ -211,7 +240,9 @@ bool Entity::canMoveTo(const Vec3 &pos) const
         for (uint8_t dx = 0; dx < tw; ++dx)
         {
             auto block = wc->queryBlockInfo(baseX + dx, baseY - dy);
-            if (block.has_value() && block->Access == 0)//这里先令等于0为可移动的格子，非0为不可移动的格子，后续可以根据需求细化不同access值代表是否可移动
+            if (block.has_value() &&
+                block->Access ==
+                    0) // 这里先令等于0为可移动的格子，非0为不可移动的格子，后续可以根据需求细化不同access值代表是否可移动
                 return false;
         }
 
@@ -226,10 +257,14 @@ uint8_t Entity::computeAnimIndex() const
 
     switch (pProperties.getDirection())
     {
-    case Direction::Down:  return 1;
-    case Direction::Left:  return 2;
-    case Direction::Right: return 3;
-    case Direction::Up:    return 4;
+    case Direction::Down:
+        return 1;
+    case Direction::Left:
+        return 2;
+    case Direction::Right:
+        return 3;
+    case Direction::Up:
+        return 4;
     }
     return 0;
 }

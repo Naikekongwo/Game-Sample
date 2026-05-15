@@ -39,6 +39,10 @@ bool Eclipsea::StartUp()
 
     entityReg.registerEntity(player1);
 
+    EntityInfo purifier{100, 2044, 4, 3.0f, 3.0f, 1, 0, 0};
+
+    entityReg.registerEntity(purifier);
+
     // 生物结束
 
     try

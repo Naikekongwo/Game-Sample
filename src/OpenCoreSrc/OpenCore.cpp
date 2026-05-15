@@ -91,7 +91,7 @@ bool OpenEngine::MainLoop()
     bool should_close = false;
     bool isMinimized = false;
     bool hasFocus = true;
-    // SDL_Event event;
+    bool needsTitleUpdate = true;
     Event event;
 
     SetManager.RefreshSettings();
@@ -102,17 +102,19 @@ bool OpenEngine::MainLoop()
 
     while (!should_close)
     {
-        // 事件处理
-        // while (SDL_PollEvent(&event))
+#pragma region 事件处理
         while (EvtManager.PollEvent(event))
         {
-            switch (event.GetSDLEvent().type)
+            // 缓存 SDL_Event 引用，避免多次调用 GetSDLEvent()
+            const SDL_Event &sdlEvent = event.GetSDLEvent();
+
+            switch (sdlEvent.type)
             {
             case SDL_QUIT:
                 should_close = true;
                 break;
             case SDL_KEYDOWN:
-                if (event.GetSDLEvent().key.keysym.sym == SDLK_F11)
+                if (sdlEvent.key.keysym.sym == SDLK_F11)
                 {
                     Uint32 flags = SDL_GetWindowFlags(GFXManager.getWindow());
                     if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
@@ -127,10 +129,11 @@ bool OpenEngine::MainLoop()
                 }
                 break;
             case SDL_WINDOWEVENT:
-                switch (event.GetSDLEvent().window.event)
+                switch (sdlEvent.window.event)
                 {
                 case SDL_WINDOWEVENT_RESIZED:
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    needsTitleUpdate = true;
                     break;
                 case SDL_WINDOWEVENT_MINIMIZED:
                     isMinimized = true;
@@ -151,36 +154,48 @@ bool OpenEngine::MainLoop()
             default:
                 break;
             }
-            SDL_Event evt = event.GetSDLEvent();
-            sController->handlEvents(&evt);
-        }
 
+            // handlEvents 需要可变指针，从 const ref 拷贝一份
+            SDL_Event evtCopy = sdlEvent;
+            sController->handlEvents(&evtCopy);
+        }
+#pragma endregion
+
+#pragma region 帧更新
         EvtManager.EndFrame();
 
         timer->Tick();
         ResManager.ProcessMainThreadTasks();
 
-        if (isMinimized)
+        sController->onUpdate();
+#pragma endregion
+
+#pragma region 渲染
+        // 只在需要时更新窗口属性（如窗口尺寸变化），避免每帧字符串拼接
+        if (needsTitleUpdate)
         {
-            SDL_Delay(100);
-            continue;
+            GFXManager.refreshWindowProperties();
+            needsTitleUpdate = false;
         }
 
-        sController->onUpdate();
+        if (!isMinimized)
+        {
+            SDL_Renderer *renderer = GFXManager.getRenderer();
+            SDL_RenderClear(renderer);
+            sController->onRender();
+            SDL_RenderPresent(renderer);
+        }
+#pragma endregion
 
-        GFXManager.refreshWindowProperties();
-
-        SDL_Renderer *renderer = GFXManager.getRenderer();
-
-        SDL_RenderClear(GFXManager.getRenderer());
-        sController->onRender();
-
-        SDL_RenderPresent(GFXManager.getRenderer());
-
+#pragma region 帧率控制
         ServerWorldController->onUpdate(timer->getTotalTime());
 
-        SDL_Delay(static_cast<Uint32>(timer->getDelayTime() * 1000.0f));
-        // 限制帧间隔
+        // 失去焦点时帧率降至 1/3
+        float frameDelay = timer->getDelayTime();
+        if (!hasFocus)
+            frameDelay *= 3.0f;
+        SDL_Delay(static_cast<Uint32>(frameDelay * 1000.0f));
+#pragma endregion
     }
 
     return true;

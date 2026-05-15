@@ -71,14 +71,6 @@
         "path": "assets/ui/settings/Button_Back.png",
         "category": "texture"
     },
-    "2016": {
-        "path": "assets/terrain/wasteland.png",
-        "category": "texture"
-    },
-    "2017": {
-        "path": "assets/terrain/water.png",
-        "category": "texture"
-    },
     "2018": {
         "path": "assets/ui/icon_copyright.png",
         "category": "texture"
@@ -125,10 +117,6 @@
     },
     "2034": {
         "path": "assets/ui/checkbox_classic.png",
-        "category": "texture"
-    },
-    "2035": {
-        "path": "assets/terrain/terrain_major.png",
         "category": "texture"
     },
     "2036": {
