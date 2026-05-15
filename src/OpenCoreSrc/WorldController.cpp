@@ -66,7 +66,7 @@ bool WorldController::generateTheMan()
         auto purs = entityreg.createEntity(100);
 
         purs->enableDrawer(true);
-        Entities[2] = std::move(purs);
+        Entities[3] = std::move(purs);
     }
 
     return Entities.contains(1);

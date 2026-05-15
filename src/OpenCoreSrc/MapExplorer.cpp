@@ -37,8 +37,17 @@ void MapExplorer::onEnter()
         auto chao = m_wrdController->queryPhysicalProp(2);
         if (chao != nullptr)
         {
-            Vec3 pos{2, 0, 0};
+            Vec3 pos{2, 4, 0};
             chao->setPosition(pos);
+        }
+
+        status = MapExpStatus::Ready;
+
+        auto player = m_wrdController->queryPhysicalProp(1);
+        if (player != nullptr)
+        {
+            Vec3 pos{2, 4, 0};
+            player->setPosition(pos);
         }
 
         status = MapExpStatus::Ready;
@@ -207,31 +216,53 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_w: m_moveUp    = isKeyDown; break;
-        case SDLK_a: m_moveLeft  = isKeyDown; break;
-        case SDLK_d: m_moveRight = isKeyDown; break;
-        case SDLK_s: m_moveDown  = isKeyDown; break;
-        default: return;
+        case SDLK_w:
+            m_moveUp = isKeyDown;
+            break;
+        case SDLK_a:
+            m_moveLeft = isKeyDown;
+            break;
+        case SDLK_d:
+            m_moveRight = isKeyDown;
+            break;
+        case SDLK_s:
+            m_moveDown = isKeyDown;
+            break;
+        default:
+            return;
         }
     }
     else
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_UP:    m_moveUp    = isKeyDown; break;
-        case SDLK_LEFT:  m_moveLeft  = isKeyDown; break;
-        case SDLK_RIGHT: m_moveRight = isKeyDown; break;
-        case SDLK_DOWN:  m_moveDown  = isKeyDown; break;
-        default: return;
+        case SDLK_UP:
+            m_moveUp = isKeyDown;
+            break;
+        case SDLK_LEFT:
+            m_moveLeft = isKeyDown;
+            break;
+        case SDLK_RIGHT:
+            m_moveRight = isKeyDown;
+            break;
+        case SDLK_DOWN:
+            m_moveDown = isKeyDown;
+            break;
+        default:
+            return;
         }
     }
 
     // 根据所有当前按住的键计算合成速度
     Vec3 velocity{0, 0, 0};
-    if (m_moveUp)    velocity.y -= 3;
-    if (m_moveDown)  velocity.y += 3;
-    if (m_moveLeft)  velocity.x -= 3;
-    if (m_moveRight) velocity.x += 3;
+    if (m_moveUp)
+        velocity.y -= 3;
+    if (m_moveDown)
+        velocity.y += 3;
+    if (m_moveLeft)
+        velocity.x -= 3;
+    if (m_moveRight)
+        velocity.x += 3;
 
     m_wrdController->regMovement(m_focusEntityIndex, velocity);
 }

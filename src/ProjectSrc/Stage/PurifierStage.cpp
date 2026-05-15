@@ -43,7 +43,7 @@ void PurifierStage::onRender() { Elements->onRender(); }
 bool PurifierStage::buildStage()
 {
     // 背景
-    auto stageBg = UI<BaseBackground>("purSbg", 0, ui_bg_purifier, NULL, NULL);
+    auto stageBg = UI<BaseBackground>("purSbg", 0, 2009, NULL, NULL);
     stageBg->setNativeScale(120);
     stageBg->Configure()
         .Parent(nullptr)
