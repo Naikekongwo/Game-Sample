@@ -79,129 +79,7 @@ void StoryStage::onUpdate()
     }
     case StoryStatus::Intro:
     {
-        // 等待
-        auto element = Elements->find("typeWriter");
-        if (!element)
-        {
-            LOG("错误！没有找到TYPEWRITER元素");
-            return;
-        }
-
-        auto typeWriter = dynamic_cast<TypeWriter *>(element);
-
-        if (typeWriter->isAnimeFinished())
-        {
-            // 动画结束
-            if (stageIndex == 0)
-            {
-                typeWriter->setText(secondLine);
-                typeWriter->Animate()
-                    .Timer(0.5f)
-                    .Move(1920, 560, -1152, 560, 20.0f)
-                    .Commit();
-                ++stageIndex;
-                return;
-            }
-            else if (stageIndex == 1)
-            {
-                typeWriter->setText(thirdLine);
-                typeWriter->Animate()
-                    .Timer(0.5f)
-                    .Move(1920, 560, -1152, 560, 20.0f)
-                    .Commit();
-                ++stageIndex;
-                return;
-            }
-            else if (stageIndex == 2)
-            {
-                typeWriter->setText(fourthLine);
-                typeWriter->Animate()
-                    .Timer(0.5f)
-                    .Move(1920, 560, 384, 560, 10.0f)
-                    .Timer(10.0f)
-                    .Commit();
-                ++stageIndex;
-                return;
-            }
-            else if (stageIndex == 3)
-            {
-                typeWriter->Animate()
-                    .Timer(5.0f)
-                    .Move(384, 560, 384, 1080, 8.0f)
-                    .Timer(2.0f)
-                    .Commit();
-
-                auto house = UI<ImageBoard>("house", 30, 2047, 1, 1);
-
-                house->Configure()
-                    .Parent(nullptr)
-                    .Sequence(true)
-                    .Anchor(AnchorPoint::Center)
-                    .Posite(0.5f, 0.5f)
-                    .Alpha(0.0f)
-                    .Scale(1.0f, 1.0f);
-
-                house->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 8.0f).Commit();
-
-                Elements->PushElement(std::move(house));
-
-                auto ele = Elements->find("frontpage");
-                if (ele)
-                {
-                    auto eleI = dynamic_cast<ImageBoard *>(ele);
-
-                    eleI->Configure()
-                        .Anchor(AnchorPoint::TopCenter)
-                        .Posite(0.5f, 0.2f);
-                    eleI->Animate()
-                        .SubStart(true)
-                        ->Fade(1.0f, 0.0f, 10.0f)
-                        .Scale(1.0f, 5.0f, 10.0f)
-                        .SubEnd()
-                        .Commit();
-
-                    auto rocket = UI<ImageBoard>("rocket", 1, 3001, 1, 1);
-
-                    rocket->Configure()
-                        .Parent(nullptr)
-                        .Anchor(AnchorPoint::BottomCenter)
-                        .Posite(0.46f, 0.47f)
-                        .Scale(0.0f, 0.2f)
-                        .Alpha(0.0f)
-                        .Sequence(true);
-
-                    rocket->Animate()
-                        .Timer(5.0f)
-                        .Fade(0.0f, 1.0f, 8.0f)
-                        .Commit();
-
-                    Elements->PushElement(std::move(rocket));
-                }
-                ++stageIndex;
-                return;
-            }
-            else if (stageIndex == 4)
-            {
-                auto &sfx = OpenCoreManagers::SFXManager.getInstance();
-                if (sfx.getVolume() > 0)
-                {
-                    sfx.setVolume(
-                        (sfx.getVolume() - 1 >= 0) ? sfx.getVolume() - 1 : 0);
-                }
-                else
-                {
-                    typeWriter->Animate().Timer(5.0f).Commit();
-                    ++stageIndex;
-                }
-                return;
-            }
-            else if (stageIndex == 5)
-            {
-                sStatus = StoryStatus::Launching;
-                // 开始播放倒计时音效
-                return;
-            }
-        }
+        handleIntroUpdate();
         break;
     }
     default:
@@ -270,6 +148,139 @@ void StoryStage::func_intro()
     Elements->PushElement(std::move(tpwt));
 
     sStatus = StoryStatus::Intro;
+}
+
+void StoryStage::handleIntroUpdate()
+{
+    auto element = Elements->find("typeWriter");
+    if (!element)
+    {
+        LOG("错误！没有找到TYPEWRITER元素");
+        return;
+    }
+
+    auto typeWriter = dynamic_cast<TypeWriter *>(element);
+
+    if (!typeWriter->isAnimeFinished())
+        return;
+
+    switch (stageIndex)
+    {
+    case 0:
+        handleIntroScrollText(typeWriter, secondLine);
+        break;
+    case 1:
+        handleIntroScrollText(typeWriter, thirdLine);
+        break;
+    case 2:
+        handleIntroCenterText(typeWriter);
+        break;
+    case 3:
+        handleIntroVisualScene(typeWriter);
+        break;
+    case 4:
+        handleIntroFadeAudio(typeWriter);
+        break;
+    case 5:
+        handleIntroLaunch();
+        break;
+    default:
+        break;
+    }
+}
+
+void StoryStage::handleIntroScrollText(TypeWriter *typeWriter,
+                                       const std::string &text)
+{
+    typeWriter->setText(text);
+    typeWriter->Animate()
+        .Timer(0.5f)
+        .Move(1920, 560, -1152, 560, 20.0f)
+        .Commit();
+    ++stageIndex;
+}
+
+void StoryStage::handleIntroCenterText(TypeWriter *typeWriter)
+{
+    typeWriter->setText(fourthLine);
+    typeWriter->Animate()
+        .Timer(0.5f)
+        .Move(1920, 560, 384, 560, 10.0f)
+        .Timer(10.0f)
+        .Commit();
+    ++stageIndex;
+}
+
+void StoryStage::handleIntroVisualScene(TypeWriter *typeWriter)
+{
+    typeWriter->Animate()
+        .Timer(5.0f)
+        .Move(384, 560, 384, 1080, 8.0f)
+        .Timer(2.0f)
+        .Commit();
+
+    auto house = UI<ImageBoard>("house", 30, 2047, 1, 1);
+
+    house->Configure()
+        .Parent(nullptr)
+        .Sequence(true)
+        .Anchor(AnchorPoint::Center)
+        .Posite(0.5f, 0.5f)
+        .Alpha(0.0f)
+        .Scale(1.0f, 1.0f);
+
+    house->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 8.0f).Commit();
+
+    Elements->PushElement(std::move(house));
+
+    auto ele = Elements->find("frontpage");
+    if (ele)
+    {
+        auto eleI = dynamic_cast<ImageBoard *>(ele);
+
+        eleI->Configure().Anchor(AnchorPoint::TopCenter).Posite(0.5f, 0.2f);
+        eleI->Animate()
+            .SubStart(true)
+            ->Fade(1.0f, 0.0f, 10.0f)
+            .Scale(1.0f, 5.0f, 10.0f)
+            .SubEnd()
+            .Commit();
+
+        auto rocket = UI<ImageBoard>("rocket", 1, 3001, 1, 1);
+
+        rocket->Configure()
+            .Parent(nullptr)
+            .Anchor(AnchorPoint::BottomCenter)
+            .Posite(0.46f, 0.47f)
+            .Scale(0.0f, 0.2f)
+            .Alpha(0.0f)
+            .Sequence(true);
+
+        rocket->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 8.0f).Commit();
+
+        Elements->PushElement(std::move(rocket));
+    }
+    ++stageIndex;
+}
+
+void StoryStage::handleIntroFadeAudio(TypeWriter *typeWriter)
+{
+    auto &sfx = OpenCoreManagers::SFXManager.getInstance();
+    if (sfx.getVolume() > 0)
+    {
+        sfx.setVolume((sfx.getVolume() - 1 >= 0) ? sfx.getVolume() - 1 : 0);
+    }
+    else
+    {
+        typeWriter->Animate().Timer(5.0f).Commit();
+        ++stageIndex;
+    }
+}
+
+void StoryStage::handleIntroLaunch()
+{
+    sStatus = StoryStatus::Launching;
+    // 开始播放倒计时音效
 }
 
 #pragma endregion
