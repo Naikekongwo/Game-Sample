@@ -86,17 +86,6 @@ bool OpenEngine::Initialize()
 
 bool OpenEngine::MainLoop()
 {
-    // SDL_GameController *controller = nullptr;
-
-    // for (int i = 0; i < SDL_NumJoysticks(); i++)
-    // {
-    //     if (SDL_IsGameController(i))
-    //     {
-    //         controller = SDL_GameControllerOpen(i);
-    //         break;
-    //     }
-    // }
-    // 手柄
     using namespace OpenCoreManagers;
 
     bool should_close = false;
@@ -159,19 +148,6 @@ bool OpenEngine::MainLoop()
                     break;
                 }
                 break;
-            // case SDL_CONTROLLERBUTTONDOWN:
-            //     switch (event.cbutton.button)
-            //     {
-            //     case SDL_CONTROLLER_BUTTON_B:
-            //     {
-            //         SDL_LOG("OK");
-            //         SDL_GameControllerRumble(controller, 8000, 4000, 1000);
-            //         break;
-            //     }
-            //     default:
-            //         break;
-            //     }
-            //     break;
             default:
                 break;
             }
@@ -203,7 +179,7 @@ bool OpenEngine::MainLoop()
 
         ServerWorldController->onUpdate(timer->getTotalTime());
 
-        SDL_Delay(timer->getDelayTime());
+        SDL_Delay(static_cast<Uint32>(timer->getDelayTime() * 1000.0f));
         // 限制帧间隔
     }
 
