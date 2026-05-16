@@ -23,9 +23,9 @@ void Entity::createRenderer()
 {
     if (!renderer && info.EntityTypeID != 0)
     {
-        renderer = std::make_unique<Mob>(info.texture.textureID,
-                                         info.texture.gridCols,
-                                         info.texture.gridRows);
+        renderer =
+            std::make_unique<Mob>(info.texture.textureID, info.texture.gridCols,
+                                  info.texture.gridRows);
         renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);
 
         widthRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderWidth();
@@ -35,9 +35,9 @@ void Entity::createRenderer()
                               pProperties.getTileHeight());
         renderer->Configure().Scale(info.widthFactor * widthRelative, 0.0f);
 
-        m_baseFrame = static_cast<uint16_t>(
-            info.texture.originRow * info.texture.gridCols +
-            info.texture.originCol);
+        m_baseFrame = static_cast<uint16_t>(info.texture.originRow *
+                                                info.texture.gridCols +
+                                            info.texture.originCol);
     }
 }
 
