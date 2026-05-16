@@ -29,7 +29,8 @@
     "今晚将要发射的，则是这个"                                                 \
     "逃离航班的第13次发射\n——诺亚13号飞船。"
 
-StoryStage::StoryStage(Timer *timer, StageManager *sController)
+StoryStage::StoryStage(Timer *timer, StageManager *sController,
+                       StoryStatus sStatus)
 {
     this->timer = timer;
     this->sController = sController;
@@ -37,6 +38,8 @@ StoryStage::StoryStage(Timer *timer, StageManager *sController)
     this->stageType = overlayStage;
 
     Elements = std::make_unique<ElementManager>();
+
+    this->targetStatus = sStatus;
 }
 
 void StoryStage::onEnter()
@@ -59,7 +62,21 @@ bool StoryStage::parseEvents(Event *event)
     return true;
 }
 
-void StoryStage::initializeComponents() { func_intro(); }
+void StoryStage::initializeComponents()
+{
+    switch (targetStatus)
+    {
+    case StoryStatus::Intro:
+        func_intro();
+        break;
+    case StoryStatus::Dialog:
+    {
+        break;
+    }
+    default:
+        break;
+    }
+}
 
 void StoryStage::onUpdate()
 {
@@ -80,6 +97,11 @@ void StoryStage::onUpdate()
     case StoryStatus::Intro:
     {
         handleIntroUpdate();
+        break;
+    }
+    case StoryStatus::Launching:
+    {
+        handleLaunchUpdate();
         break;
     }
     default:
@@ -182,7 +204,10 @@ void StoryStage::handleIntroUpdate()
         handleIntroFadeAudio(typeWriter);
         break;
     case 5:
-        handleIntroLaunch();
+        handleIntroLaunch(typeWriter);
+        break;
+    case 6:
+        handleLaunchMove(typeWriter);
         break;
     default:
         break;
@@ -216,7 +241,7 @@ void StoryStage::handleIntroVisualScene(TypeWriter *typeWriter)
     typeWriter->Animate()
         .Timer(5.0f)
         .Move(384, 560, 384, 1080, 8.0f)
-        .Timer(2.0f)
+        .Timer(6.0f)
         .Commit();
 
     auto house = UI<ImageBoard>("house", 30, 2047, 1, 1);
@@ -245,21 +270,21 @@ void StoryStage::handleIntroVisualScene(TypeWriter *typeWriter)
             .Scale(1.0f, 5.0f, 10.0f)
             .SubEnd()
             .Commit();
-
-        auto rocket = UI<ImageBoard>("rocket", 1, 3001, 1, 1);
-
-        rocket->Configure()
-            .Parent(nullptr)
-            .Anchor(AnchorPoint::BottomCenter)
-            .Posite(0.46f, 0.47f)
-            .Scale(0.0f, 0.2f)
-            .Alpha(0.0f)
-            .Sequence(true);
-
-        rocket->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 8.0f).Commit();
-
-        Elements->PushElement(std::move(rocket));
     }
+
+    auto rocket = UI<ImageBoard>("rocket", 2, 3001, 1, 1);
+
+    rocket->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::BottomCenter)
+        .Posite(0.46f, 0.47f)
+        .Scale(0.0f, 0.2f)
+        .Alpha(0.0f)
+        .Sequence(true);
+
+    rocket->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 8.0f).Commit();
+
+    Elements->PushElement(std::move(rocket));
     ++stageIndex;
 }
 
@@ -277,10 +302,124 @@ void StoryStage::handleIntroFadeAudio(TypeWriter *typeWriter)
     }
 }
 
-void StoryStage::handleIntroLaunch()
+void StoryStage::handleIntroLaunch(TypeWriter *typeWriter)
+{
+
+    auto explosion = UI<ImageBoard>("flames", 1, 2051, 11, 11);
+
+    explosion->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::Center)
+        .Posite(0.46f, 0.47f)
+        .Scale(0.2f, 0.0f);
+
+    explosion->Animate().Frame(121, 15, true).Commit();
+
+    Elements->PushElement(std::move(explosion));
+
+    auto house = Elements->find("house");
+    if (house)
+    {
+        auto houseE = dynamic_cast<ImageBoard *>(house);
+
+        houseE->Animate().Fade(1.0f, 0.0f, 5.0f).Commit();
+    }
+
+    ++stageIndex;
+
+    typeWriter->Animate().Timer(8.0f).Commit();
+    // 开始播放倒计时音效
+}
+
+void StoryStage::handleLaunchUpdate()
+{
+    // 开始处理
+    auto element = Elements->find("typeWriter");
+
+    if (!element)
+    {
+        return;
+    }
+
+    if (element->isAnimeFinished())
+    {
+        auto typeWriter = dynamic_cast<TypeWriter *>(element);
+        switch (stageIndex)
+        {
+        case 0:
+        {
+            handleExplosion(typeWriter);
+            break;
+        }
+        case 1:
+        {
+            Elements->removeElement("rocket");
+            Elements->removeElement("flames");
+            Elements->removeElement("house");
+            Elements->removeElement("exp");
+            Elements->removeElement("background");
+            typeWriter->Animate().Timer(12.0f);
+            auto centerText = UI<TextArea>("text", 99, 9002, NULL, NULL);
+
+            centerText->Configure()
+                .Parent(nullptr)
+                .Anchor(AnchorPoint::Center)
+                .Posite(0.5f, 0.5f)
+                .Scale(0.8f, 0.2f)
+                .Alpha(0.0f);
+            centerText->alignCenter(true);
+            centerText->setText("两年后....");
+            centerText->setFontSize(50);
+
+            centerText->Animate().Fade(0.0f, 1.0f, 4.0f).Commit();
+
+            Elements->PushElement(std::move(centerText));
+
+            ++stageIndex;
+            break;
+        }
+        default:
+            break;
+        }
+    }
+}
+
+void StoryStage::handleLaunchMove(TypeWriter *typeWriter)
 {
     sStatus = StoryStatus::Launching;
-    // 开始播放倒计时音效
+    stageIndex = 0;
+
+    auto orocket = Elements->find("rocket");
+    auto oflames = Elements->find("flames");
+
+    if (orocket)
+    {
+        auto rocket = dynamic_cast<ImageBoard *>(orocket);
+        auto flames = dynamic_cast<ImageBoard *>(oflames);
+
+        rocket->Animate().Move(883.2f, 507.6f, 960, 540, 5.0f).Commit();
+        flames->Animate().Move(883.2f, 507.6f, 960, 540, 5.0f).Commit();
+    }
+
+    typeWriter->Animate().Timer(5.0f);
+}
+
+void StoryStage::handleExplosion(TypeWriter *typeWriter)
+{
+    auto explosion = UI<ImageBoard>("exp", 99, 2050, 11, 11);
+
+    explosion->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::Center)
+        .Posite(0.5f, 0.5f)
+        .Scale(0.5f, 0.0f);
+
+    explosion->Animate().Frame(121, 11).Commit();
+
+    Elements->PushElement(std::move(explosion));
+
+    typeWriter->Animate().Timer(6.0f);
+    ++stageIndex;
 }
 
 #pragma endregion
