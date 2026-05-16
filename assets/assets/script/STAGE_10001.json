@@ -159,6 +159,14 @@
         "path": "assets/story/img_insidehouse.png",
         "category": "texture"
     },
+    "2048": {
+        "path": "assets/ui/pause/btn_backmain.png",
+        "category": "texture"
+    },
+    "2049": {
+        "path": "assets/ui/pause/btn_settings.png",
+        "category": "texture"
+    },
     "3001": {
         "path": "assets/story/img_plane.png",
         "category": "texture"

@@ -55,6 +55,7 @@
 #include "Stage/DualGameplayStage.hpp"
 #include "Stage/GameplayStage.hpp"
 #include "Stage/MainStage.hpp"
+#include "Stage/PauseStage.hpp"
 #include "Stage/PreloadStage.hpp"
 #include "Stage/PurifierStage.hpp"
 #include "Stage/WorldEditorStage.hpp"

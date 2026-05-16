@@ -1,5 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "Eclipsea/Stage/DualGameplayStage.hpp"
+#include "Eclipsea/Stage/MainStage.hpp"
 #include "Eclipsea/Stage/PurifierStage.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
@@ -76,6 +77,13 @@ bool GameplayStage::handlEvents(SDL_Event *event)
 
             sController->changeStage(std::move(dualStage));
 
+            break;
+        }
+        case SDLK_ESCAPE:
+        {
+
+            auto pauseStage = std::make_unique<PauseStage>(timer, sController);
+            sController->changeStage(std::move(pauseStage));
             break;
         }
 
