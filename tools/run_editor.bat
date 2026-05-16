@@ -1,5 +1,9 @@
 @echo off
-set PYTHON=C:\Users\lenovo\.codegeex\mamba\envs\codegeex-agent\python.exe
+set PYTHON=C:\Users\naike\AppData\Local\Programs\Python\Python312\python.exe
+
+if not exist "%PYTHON%" (
+    set PYTHON=C:\Users\lenovo\.codegeex\mamba\envs\codegeex-agent\python.exe
+)
 
 if not exist "%PYTHON%" (
     echo Python not found. Please install Python 3 with Tkinter.

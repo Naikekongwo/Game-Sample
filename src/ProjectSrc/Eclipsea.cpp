@@ -39,7 +39,7 @@ bool Eclipsea::StartUp()
 
     entityReg.registerEntity(player1);
 
-    EntityInfo purifier{100, {2044, 4, 4}, 4, 3.0f, 3.0f};
+    EntityInfo purifier{100, {2044, 8, 8, 0, 1}, 4, 3.0f, 3.0f};
 
     entityReg.registerEntity(purifier);
 

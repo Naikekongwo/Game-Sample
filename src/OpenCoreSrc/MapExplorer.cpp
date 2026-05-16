@@ -50,6 +50,13 @@ void MapExplorer::onEnter()
             player->setPosition(pos);
         }
 
+        auto purs = m_wrdController->queryPhysicalProp(3);
+        if (purs != nullptr)
+        {
+            Vec3 pos{5, 7, 0};
+            purs->setPosition(pos);
+        }
+
         status = MapExpStatus::Ready;
         LOG("状态从创建态更新到准备态");
     }
