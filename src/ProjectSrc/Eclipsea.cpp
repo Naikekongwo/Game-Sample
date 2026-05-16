@@ -29,17 +29,17 @@ bool Eclipsea::StartUp()
 
     auto &entityReg = engine.getEntityRegister();
 
-    EntityInfo player{PLAYER_ENTITYTYPE, player_texture, 8, 1.0f};
+    EntityInfo player{PLAYER_ENTITYTYPE, {player_texture, 4, 4}, 8, 1.0f};
 
     entityReg.registerEntity(player);
 
     auto &entityReg1 = engine.getEntityRegister();
 
-    EntityInfo player1{2, chao_texture, 8, 1.0f};
+    EntityInfo player1{2, {chao_texture, 4, 4}, 8, 1.0f};
 
     entityReg.registerEntity(player1);
 
-    EntityInfo purifier{100, 2044, 4, 3.0f, 3.0f, 1, 0, 0};
+    EntityInfo purifier{100, {2044, 4, 4}, 4, 3.0f, 3.0f};
 
     entityReg.registerEntity(purifier);
 

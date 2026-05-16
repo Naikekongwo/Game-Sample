@@ -46,7 +46,7 @@ void Mob::Draw()
 
             Rect srcRect =
                 (tileWidth > 1 || tileHeight > 1)
-                    ? texture->getSubRect(8, tileWidth, tileHeight)
+                    ? texture->getSubRect(VState->getFrameIndex(), tileWidth, tileHeight)
                     : Rect{texture->getSubRect(VState->getFrameIndex())};
             GFX.Draw(texture->get(), &srcRect, &dstRect, 0.0f, nullptr);
         }
