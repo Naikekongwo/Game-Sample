@@ -167,6 +167,14 @@
         "path": "assets/ui/pause/btn_settings.png",
         "category": "texture"
     },
+    "2050": {
+        "path": "assets/effects/explosion.png",
+        "category": "texture"
+    },
+    "2051": {
+        "path": "assets/effects/flames.png",
+        "category": "texture"
+    },
     "3001": {
         "path": "assets/story/img_plane.png",
         "category": "texture"

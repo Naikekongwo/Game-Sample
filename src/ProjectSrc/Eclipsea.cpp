@@ -16,6 +16,8 @@ bool Eclipsea::StartUp()
         return false;
     }
 
+#pragma region 注册游戏信息
+
     auto timer = engine.getTimer();
     auto sController = engine.getStageController();
 
@@ -24,27 +26,22 @@ bool Eclipsea::StartUp()
         std::make_unique<PreloadStage>(timer, sController), 1920, 1080, true);
 
     engine.GameRegistry(std::move(eclipseaInfo));
+#pragma endregion
 
-    // 配置生物
-
+#pragma region 注册实体
     auto &entityReg = engine.getEntityRegister();
 
     EntityInfo player{PLAYER_ENTITYTYPE, {player_texture, 4, 4}, 8, 1.0f};
-
     entityReg.registerEntity(player);
 
-    auto &entityReg1 = engine.getEntityRegister();
-
     EntityInfo player1{2, {chao_texture, 4, 4}, 8, 1.0f};
-
     entityReg.registerEntity(player1);
 
     EntityInfo purifier{100, {2044, 8, 8, 0, 1}, 4, 3.0f, 3.0f};
-
     entityReg.registerEntity(purifier);
+#pragma endregion
 
-    // 生物结束
-
+    // region === 主循环 ===
     try
     {
         engine.MainLoop();
@@ -55,6 +52,7 @@ bool Eclipsea::StartUp()
         LOG("The engine exited with error : {}", e.what());
         return false;
     }
+    // endregion
 
     return true;
 }

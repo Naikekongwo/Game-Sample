@@ -50,8 +50,8 @@ class OpenCoreMap
     virtual bool onEnter() = 0;
 
     // 获取地图的宽高
-    virtual uint16_t getMapWidth() const noexcept { return MapWidth; }
-    virtual uint16_t getMapHeight() const noexcept { return MapHeight; }
+    virtual uint16_t getMapWidth() noexcept { return MapWidth; }
+    virtual uint16_t getMapHeight() noexcept { return MapHeight; }
 
     // 获取指定位置的方块信息
     virtual BlockInfo &getBlockInfo(int offsetX, int offsetY) = 0;

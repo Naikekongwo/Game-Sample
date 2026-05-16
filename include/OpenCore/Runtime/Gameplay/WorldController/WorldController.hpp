@@ -67,12 +67,9 @@ class WorldController
     BackPtr createBackpack(short backpackCapacity)
     {
         BackPtr backpack = std::make_shared<Backpack>(backpackCapacity);
-
         backpack->setBackpackID(BackpackCounts);
         BackpackCounts++;
-
         containers[backpack->getBackpackID()] = backpack;
-
         return backpack;
     }
 
@@ -92,7 +89,7 @@ class WorldController
      * @brief 只允许返回副本，不允许返回引用，防止越界修改
      * @return PhysicalProperties
      */
-    PhysicalProperties* queryPhysicalProp(short EntityIndex);
+    PhysicalProperties *queryPhysicalProp(short EntityIndex);
 
     /**
      * @brief 获取地图管理器的状态

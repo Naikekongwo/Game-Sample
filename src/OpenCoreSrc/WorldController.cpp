@@ -2,8 +2,10 @@
 #include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Gameplay/Backpack/Backpack.hpp"
+#include "OpenCore/Runtime/Gameplay/Entity/Entity.hpp"
 #include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
+#include <cstdint>
 #include <memory>
 #include <optional>
 
@@ -35,6 +37,32 @@ bool WorldController::generateMapManager()
     mapManager->loadClassicMap(1, "maps/test_newTemple.ocmp");
     mapManager->setCurrentID(1);
 
+    uint16_t mapWidth = 0;
+    uint16_t mapHeight = 0;
+
+    mapWidth = mapManager->getMapWidth();
+    mapHeight = mapManager->getMapHeight();
+
+    LOG("ENTITY ID: {}", mapWidth);
+
+    for (int x = 0; x < mapWidth; x++)
+    {
+        for (int y = 0; y < mapHeight; y++)
+        {
+            BlockInfo bf = mapManager->getBlockInfo(x, y);
+            if (bf.Entity != 0)
+            {
+                // 生成Entity
+                EntityPtr newEntity =
+                    Gameplay::EntityReg.getInstance().createEntity(bf.Entity);
+                Vec3 pos{x * 1.0f, y * 1.0f, 0};
+                newEntity->enableDrawer(true);
+                newEntity->getPhysicalProperties().setPosition(pos);
+                Entities[bf.Entity] = std::move(newEntity);
+            }
+        }
+    }
+
     LOG("地图管理器初始化成功");
 
     return (mapManager != nullptr);
@@ -62,11 +90,6 @@ bool WorldController::generateTheMan()
 
         player->enableDrawer(true);
         Entities[2] = std::move(player);
-
-        auto purs = entityreg.createEntity(100);
-
-        purs->enableDrawer(true);
-        Entities[3] = std::move(purs);
     }
 
     return Entities.contains(1);

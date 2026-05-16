@@ -7,7 +7,7 @@
 bool MapManager::loadClassicMap(short id, string path)
 {
     auto map = std::make_unique<ClassicMap>(id, path);
-
+    map->onEnter();
     return addMap(std::move(map));
 }
 

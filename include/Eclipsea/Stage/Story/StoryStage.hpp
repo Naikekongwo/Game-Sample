@@ -9,14 +9,16 @@ enum class StoryStatus
     Loading,
     Ready,
     Intro,
-    Launching
+    Launching,
+    Dialog
 };
 
 class StoryStage : public OverlayStage
 {
   public:
     // 构造函数
-    StoryStage(Timer *timer, StageManager *sController);
+    StoryStage(Timer *timer, StageManager *sController,
+               StoryStatus sStatus = StoryStatus::Intro);
 
     void onEnter() override;
 
@@ -35,6 +37,7 @@ class StoryStage : public OverlayStage
     short stageIndex = 0;
 
     StoryStatus sStatus = StoryStatus::Loading;
+    StoryStatus targetStatus = StoryStatus::Intro;
 
     void func_intro();
 
@@ -44,5 +47,9 @@ class StoryStage : public OverlayStage
     void handleIntroCenterText(TypeWriter *typeWriter);
     void handleIntroVisualScene(TypeWriter *typeWriter);
     void handleIntroFadeAudio(TypeWriter *typeWriter);
-    void handleIntroLaunch();
+    void handleIntroLaunch(TypeWriter *typeWriter);
+
+    void handleLaunchUpdate();
+    void handleLaunchMove(TypeWriter *typeWriter);
+    void handleExplosion(TypeWriter *typeWriter);
 };

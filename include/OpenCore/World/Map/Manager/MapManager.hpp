@@ -20,11 +20,11 @@ class MapManager final
     bool saveMap(OpenCoreMap *map);
 
     // 获取地图相关信息的函数
-    uint16_t getMapWidth() const noexcept
+    uint16_t getMapWidth() noexcept
     {
         return MapPool_.at(currentID)->getMapWidth();
     }
-    uint16_t getMapHeight() const noexcept
+    uint16_t getMapHeight() noexcept
     {
         return MapPool_.at(currentID)->getMapHeight();
     }
