@@ -1,9 +1,12 @@
 #include "Eclipsea/Eclipsea.hpp"
+#include "Eclipsea/Stage/DualGameplayStage.hpp"
 #include "Eclipsea/Stage/PurifierStage.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
 #include "OpenCore/Runtime/Graphics/UI/TypeWriter.hpp"
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
 #include <memory>
 
 GameplayStage::GameplayStage(Timer *timer, StageManager *sController)
@@ -62,6 +65,24 @@ void GameplayStage::onRender() { Elements->onRender(); }
 
 bool GameplayStage::handlEvents(SDL_Event *event)
 {
+    if (event->type == SDL_KEYDOWN)
+    {
+        switch (event->key.keysym.sym)
+        {
+        case SDLK_y:
+        {
+            auto dualStage =
+                std::make_unique<DualGameplayStage>(timer, sController);
+
+            sController->changeStage(std::move(dualStage));
+
+            break;
+        }
+
+        default:
+            break;
+        }
+    }
     Elements->handlEvents(*event, timer->getTotalTime());
     return true;
 }

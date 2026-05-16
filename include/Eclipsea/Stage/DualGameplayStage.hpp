@@ -19,7 +19,7 @@
  */
 class DualGameplayStage : public BaseStage
 {
-
+  public:
     DualGameplayStage(Timer *timer, StageManager *sController);
 
     /**

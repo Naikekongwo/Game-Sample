@@ -2,6 +2,7 @@
 #include "Eclipsea/Stage/PurifierStage.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
+#include <SDL2/SDL_events.h>
 #include <memory>
 
 DualGameplayStage::DualGameplayStage(Timer *timer, StageManager *sController)
@@ -82,4 +83,9 @@ void DualGameplayStage::onRender() { Elements->onRender(); }
 
 void DualGameplayStage::initializeComponents() {}
 
-bool DualGameplayStage::parseEvents(Event *event) { return true; }
+bool DualGameplayStage::parseEvents(Event *event)
+{
+    SDL_Event sEvent = *event;
+    Elements->handlEvents(sEvent, timer->getTotalTime());
+    return true;
+}
