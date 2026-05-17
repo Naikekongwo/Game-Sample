@@ -211,6 +211,8 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
     if (m_wrdController == nullptr)
         return;
 
+    m_itemContainer->handlEvents(event, totalTime);
+
     if (event.type != SDL_KEYDOWN && event.type != SDL_KEYUP)
         return;
 

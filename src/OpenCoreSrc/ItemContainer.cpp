@@ -33,6 +33,55 @@ void ItemContainer::setBackpack(shared_ptr<Backpack> backpack)
     m_backpack = backpack;
 }
 
+void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
+{
+    // 处理事件
+    if (event.type == SDL_MOUSEBUTTONDOWN)
+    {
+        auto backpack = m_backpack.lock();
+        if (!backpack)
+        {
+            LOG("背包已悬空，无法处理点击, ID: {}", id);
+        }
+
+        Rect bounds = getLogicalBounds();
+        float mouseX = static_cast<float>(event.button.x);
+        float mouseY = static_cast<float>(event.button.y);
+
+        // 判断鼠标是否在物品栏区域内
+        if (mouseX < bounds.x || mouseX >= bounds.x + bounds.w ||
+            mouseY < bounds.y || mouseY >= bounds.y + bounds.h)
+        {
+            return;
+        }
+
+        short rows = (backpack) ? backpack->getCapacity() / m_columns : 1;
+
+        float cellWidth = bounds.w / m_columns;
+        float cellHeight = bounds.h / rows;
+
+        // 计算相对坐标
+        float relX = mouseX - bounds.x;
+        float relY = mouseY - bounds.y;
+
+        // 计算行列
+        int col = static_cast<int>(relX / cellWidth);
+        int row = static_cast<int>(relY / cellHeight);
+
+        // 边界保护
+        if (col >= m_columns)
+            col = m_columns - 1;
+        if (row >= rows)
+            row = rows - 1;
+
+        // 全局索引 = 起始索引 + 行 * 列数 + 列
+        int globalIndex = m_indexRange.first + row * m_columns + col;
+
+        LOG("点击了物品栏格, ID: {}, 行: {}, 列: {}, 背包全局索引: {}", id, row,
+            col, globalIndex);
+    }
+}
+
 void ItemContainer::Draw()
 {
     if (VState->getAlpha() <= 0.0f)
@@ -48,8 +97,7 @@ void ItemContainer::Draw()
     auto backpack = m_backpack.lock();
     if (!backpack)
     {
-        LOG("所绑定的背包已经悬空，无法绘制 {}", id);
-        return;
+        // LOG("所绑定的背包已经悬空，将不会绘制物品 id: {}", id);
     }
 
     // 以上是检查绘制状态，避免进行不必要的绘制
@@ -61,7 +109,7 @@ void ItemContainer::Draw()
     float offsetX = 0.0f;
     float offsetY = 0.0f;
 
-    short rows = backpack->getCapacity() / m_columns;
+    short rows = (backpack) ? backpack->getCapacity() / m_columns : 1;
 
     float width = bounds.w / m_columns;
     float height = bounds.h / rows;
@@ -81,10 +129,6 @@ void ItemContainer::Draw()
             GFX.Draw(texture->get(), nullptr, &dstRect, 0.0f, nullptr);
         }
     }
-
-    // throw std::runtime_error("OK");
-
-    // m_item->Draw();
 }
 
 void ItemContainer::onEnter()

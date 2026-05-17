@@ -32,7 +32,7 @@ class ItemContainer : public UIElement
     ItemContainer(string_view id, uint8_t layer, unique_ptr<Texture> texture,
                   short col, short row);
 
-    void handlEvents(SDL_Event &event, float totalTime) override {};
+    void handlEvents(SDL_Event &event, float totalTime) override;
     void onUpdate(float totalTime) override {};
     void onEnter() override;
     void onExit() override {};
@@ -44,8 +44,6 @@ class ItemContainer : public UIElement
   private:
     weak_ptr<Backpack> m_backpack;
     pair<uint8_t, uint8_t> m_indexRange;
-
     short m_columns = 1;
-
     unique_ptr<ItemSprite> m_item;
 };
