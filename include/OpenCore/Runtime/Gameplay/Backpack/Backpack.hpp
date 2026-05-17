@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 
-
 using std::shared_ptr;
 using std::vector;
 
