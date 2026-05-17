@@ -120,8 +120,9 @@ bool Entity::canMoveTo(const Vec3 &pos) const
     uint8_t tw = pProperties.getTileWidth();
     uint8_t th = pProperties.getTileHeight();
 
-    int baseX = static_cast<int>(std::floor(pos.x));
-    int baseY = static_cast<int>(std::floor(pos.y));
+    Vec3 spd = pProperties.getSpeed();
+    int baseX = static_cast<int>(std::floor(pos.x + (spd.x > 0.0f ? 1.0f : 0.0f)));
+    int baseY = static_cast<int>(std::floor(pos.y + (spd.y > 0.0f ? 1.0f : 0.0f)));
 
     for (uint8_t dy = 0; dy < th; ++dy)
         for (uint8_t dx = 0; dx < tw; ++dx)
