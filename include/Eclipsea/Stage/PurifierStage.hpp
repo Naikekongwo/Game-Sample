@@ -9,6 +9,7 @@
 enum class PurifierPhase
 {
     Normal,
+    Selecting,
     Exiting,
     Finished
 };

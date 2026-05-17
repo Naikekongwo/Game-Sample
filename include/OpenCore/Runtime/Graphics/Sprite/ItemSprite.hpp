@@ -16,7 +16,7 @@ class ItemSprite : public Sprite
 {
   public:
     ItemSprite();
-    explicit ItemSprite(short textureID);  // 新增：接受纹理 ID 的构造
+    explicit ItemSprite(short textureID); // 新增：接受纹理 ID 的构造
     ~ItemSprite() override = default;
 
     void onEnter() override;
