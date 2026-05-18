@@ -3,6 +3,7 @@
 #include "OpenCore/Core/Math/OpenCore_Rect.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Gameplay/Backpack/Backpack.hpp"
 #include "OpenCore/Runtime/Gameplay/Backpack/ItemManager.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/ItemSprite.hpp"
 #include <cstdint>
@@ -45,6 +46,7 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
         if (!backpack)
         {
             LOG("背包已悬空，无法处理点击, ID: {}", id);
+            return;
         }
 
         Rect bounds = getLogicalBounds();
@@ -58,7 +60,7 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
             return;
         }
 
-        short rows = (backpack) ? backpack->getCapacity() / m_columns : 1;
+        short rows = backpack->getCapacity() / m_columns;
 
         float cellWidth = bounds.w / m_columns;
         float cellHeight = bounds.h / rows;
@@ -80,8 +82,40 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
         // 全局索引 = 起始索引 + 行 * 列数 + 列
         int globalIndex = m_indexRange.first + row * m_columns + col;
 
+        // 确保不超出 range 范围
+        if (globalIndex > m_indexRange.second)
+            globalIndex = m_indexRange.second;
+
         LOG("点击了物品栏格, ID: {}, 行: {}, 列: {}, 背包全局索引: {}", id, row,
             col, globalIndex);
+
+        auto wrdController =
+            OpenEngine::getInstance().getServerWorldController();
+
+        auto slotOpt = backpack->getItem(globalIndex);
+        if (!slotOpt.has_value() || !slotOpt->item.has_value())
+        {
+            // 空格 → 从悬空区取物品放入
+            optional<ItemInstance> homeless = wrdController->popHomelessItem();
+            if (homeless.has_value() && homeless->item.has_value())
+            {
+                backpack->setItem(homeless->item->getTypeID(), 1, globalIndex);
+                LOG("从悬空物品槽放置了物品到背包, 背包ID: {}, 索引: {}, "
+                    "物品类型ID: {}",
+                    backpack->getBackpackID(), globalIndex,
+                    homeless->item->getTypeID());
+            }
+        }
+        else
+        {
+            // 非空格 → 推到悬空区
+            if (wrdController->pushHomelessItem(backpack->getBackpackID(),
+                                                globalIndex))
+            {
+                LOG("从背包放置了物品到悬空物品槽, 背包ID: {}, 索引: {}",
+                    backpack->getBackpackID(), globalIndex);
+            }
+        }
     }
 }
 
@@ -112,7 +146,9 @@ void ItemContainer::Draw()
     float offsetX = 0.0f;
     float offsetY = 0.0f;
 
-    short rows = (backpack) ? backpack->getCapacity() / m_columns : 1;
+    // 由 indexRange 决定本容器实际覆盖的槽位数
+    uint8_t rangeSize = m_indexRange.second - m_indexRange.first + 1;
+    short rows = (rangeSize + m_columns - 1) / m_columns; // 向上取整
 
     float width = bounds.w / m_columns;
     float height = bounds.h / rows;
@@ -121,6 +157,11 @@ void ItemContainer::Draw()
     {
         for (int j = 0; j < m_columns; j++)
         {
+            int slotIndex = m_indexRange.first + i * m_columns + j;
+
+            // 不要绘制超出 range 范围的槽位
+            if (slotIndex > m_indexRange.second)
+                break;
 
             // 第i行，第j列
             offsetX = width * j;
@@ -133,16 +174,18 @@ void ItemContainer::Draw()
 
             if (backpack)
             {
-                if (backpack->getItem(m_columns * i + j)->item != std::nullopt)
+                auto slotOpt = backpack->getItem(slotIndex);
+                if (slotOpt.has_value() && slotOpt->item.has_value())
                 {
-                    Item item =
-                        backpack->getItem(m_columns * i + j)->item.value();
+                    Item &item = slotOpt->item.value();
 
                     optional<ItemTextureMeta> meta =
                         Gameplay::ItemMgr.getTextureMeta(
                             item.getItemInfo().textureMetaID);
                     if (meta == std::nullopt)
                         continue;
+
+                    m_item->setScale((1.0f / m_columns) * 0.9f, 0.9f);
 
                     m_item->changeTexture(MakeTexture(meta->texture_cols,
                                                       meta->texture_rows,
@@ -203,11 +246,11 @@ void ItemContainer::setIndexRange(pair<uint8_t, uint8_t> indexRange)
         return;
     }
 
-    if (indexRange.second >= backpack->getCapacity())
+    if (indexRange.first > indexRange.second ||
+        indexRange.second >= backpack->getCapacity())
     {
-        // Index out of range
-        // 超出了背包的容量
-        LOG("输入的index索引范围超出了背包的极限, ID{}", id);
+        LOG("输入的index索引范围无效, ID{}, 范围 [{}, {}]", id,
+            indexRange.first, indexRange.second);
         return;
     }
 

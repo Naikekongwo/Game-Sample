@@ -1,6 +1,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Gameplay/Backpack/ItemManager.hpp"
+#include "OpenCore/Runtime/Gameplay/Backpack/Iteminfo.hpp"
 #include <exception>
 #include <memory>
 #include <stdexcept>
@@ -52,8 +53,27 @@ bool Eclipsea::StartUp()
 
     ItemInfo bottle_empty{"bottle_empty", 1, 2038, 9, 1.0f, 9};
     ItemInfo bottle_full{"bottle_full", 2, 2038, 10, 1.0f, 9};
+    ItemInfo control_basic{"control_basic", 3, 2038, 0, 1.0f, 1};
+    ItemInfo control_balanced{"control_balanced", 4, 2038, 1, 1.0f, 1};
+    ItemInfo control_advanced{"control_advanced", 5, 2038, 2, 1.0f, 1};
+    ItemInfo nuclearcore_basic{"nuclearcore_basic", 6, 2038, 3, 1.0f, 1};
+    ItemInfo nuclearcore_balanced{"nuclearcore_balanced", 7, 2038, 4, 1.0f, 1};
+    ItemInfo nuclearcore_advanced{"nuclearcore_advanced", 8, 2038, 5, 1.0f, 1};
+    ItemInfo storage_basic{"storage_basic", 9, 2038, 6, 1.0f, 1};
+    ItemInfo storage_balanced{"storage_balanced", 10, 2038, 7, 1.0f, 1};
+    ItemInfo storage_advanced{"storage_advanced", 11, 2038, 8, 1.0f, 1};
+
     ItemReg.registerItem(bottle_empty);
     ItemReg.registerItem(bottle_full);
+    ItemReg.registerItem(control_basic);
+    ItemReg.registerItem(control_balanced);
+    ItemReg.registerItem(control_advanced);
+    ItemReg.registerItem(nuclearcore_basic);
+    ItemReg.registerItem(nuclearcore_balanced);
+    ItemReg.registerItem(nuclearcore_advanced);
+    ItemReg.registerItem(storage_basic);
+    ItemReg.registerItem(storage_balanced);
+    ItemReg.registerItem(storage_advanced);
 #pragma endregion
 
     // region === 主循环 ===

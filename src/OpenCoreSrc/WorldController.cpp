@@ -121,6 +121,13 @@ bool WorldController::generateTheMan()
 
         player->enableDrawer(true);
         player->getBackpack()->addItem(1, 1);
+        player->getBackpack()->addItem(3, 1);
+        player->getBackpack()->addItem(4, 1);
+        player->getBackpack()->addItem(5, 1);
+        player->getBackpack()->addItem(6, 1);
+        player->getBackpack()->addItem(7, 1);
+        player->getBackpack()->addItem(8, 1);
+        player->getBackpack()->addItem(9, 1);
         Entities[1] = std::move(player);
     }
 
@@ -252,18 +259,58 @@ bool WorldController::regMovement(short entityID, Vec3 Speed)
     return true;
 }
 
-// bool WorldController::pushHomelessItem(short backpackID, short backpackIndex)
-// {
-//     // 首先验证背包有效性
-//     if (!containers.contains(backpackID))
-//         return false;
-//     if (containers.at(backpackID)->getCapacity() <= backpackIndex)
-//         return false;
+bool WorldController::pushHomelessItem(short backpackID, short backpackIndex)
+{
+    // 首先验证背包有效性
+    if (!containers.contains(backpackID))
+        return false;
+    if (containers.at(backpackID)->getCapacity() <= backpackIndex)
+        return false;
 
-//     return true;
-// }
+    auto itemOpt = containers.at(backpackID)->getItem(backpackIndex);
+    if (!itemOpt.has_value() || !itemOpt->item.has_value())
+        return false;
 
-// ItemInstance WorldController::popHomelessItem()
-// {
-//     return ItemInstance{Gameplay::ItemMgr.createItem(0).value(), 1};
-// }
+    ItemExchangeRecord record{itemOpt.value(), backpackID, 0, false};
+
+    m_homelessItem = record;
+
+    // 清空原槽位
+    containers.at(backpackID)->removeItem(backpackIndex);
+    return true;
+}
+
+optional<ItemInstance> WorldController::popHomelessItem()
+{
+    if (!m_homelessItem.has_value())
+        return std::nullopt;
+
+    ItemInstance instance = m_homelessItem->instance;
+    m_homelessItem = std::nullopt;
+    return instance;
+}
+
+optional<ItemInfo> WorldController::queryHomelessItemInfo()
+{
+    if (m_homelessItem.has_value())
+    {
+        return m_homelessItem->instance.item->getItemInfo();
+    }
+
+    return std::nullopt;
+}
+
+void WorldController::giveUpHomelessItem()
+{
+    if (m_homelessItem.has_value())
+    {
+        if (containers.contains(m_homelessItem->srcBackpackID))
+        {
+            containers.at(m_homelessItem->srcBackpackID)
+                ->addItem(m_homelessItem->instance.item->getTypeID(),
+                          m_homelessItem->instance.count);
+        }
+    }
+
+    m_homelessItem = std::nullopt;
+}

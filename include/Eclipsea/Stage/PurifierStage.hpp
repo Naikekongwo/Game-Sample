@@ -35,6 +35,8 @@ class PurifierStage : public OverlayStage
 
   private:
     PurifierPhase phase = PurifierPhase::Normal;
+
+    unique_ptr<ItemSprite> ItemPickedUp;
 };
 
 #endif //_PURIFIER_STAGE_H_

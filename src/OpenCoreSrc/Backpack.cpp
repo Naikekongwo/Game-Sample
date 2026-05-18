@@ -129,3 +129,13 @@ std::optional<ItemInstance> Backpack::getItem(short index)
 
     return slots_.at(index);
 }
+
+bool Backpack::removeItem(short index)
+{
+    if (index >= BackpackCapacity)
+        return false;
+
+    slots_.at(index).item = std::nullopt;
+    slots_.at(index).count = 0;
+    return true;
+}
