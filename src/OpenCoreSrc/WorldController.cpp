@@ -81,6 +81,7 @@ bool WorldController::generateTheMan()
         auto player = entityreg.createEntity(1);
 
         player->enableDrawer(true);
+        player->getBackpack()->addItem(1, 1);
         Entities[1] = std::move(player);
     }
 

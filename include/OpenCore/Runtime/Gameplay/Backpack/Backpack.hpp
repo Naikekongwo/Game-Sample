@@ -3,16 +3,18 @@
 #include "Item.hpp"
 #include "ItemManager.hpp"
 #include <memory>
+#include <optional>
 #include <vector>
 
+using std::optional;
 using std::shared_ptr;
 using std::vector;
 
 // 单个背包槽位
 struct ItemInstance
 {
-    Item item;         // 该堆叠的代表物品（用于渲染等）
-    uint8_t count = 0; // 当前堆叠数量
+    optional<Item> item; // 该堆叠的代表物品（用于渲染等）
+    uint8_t count = 0;   // 当前堆叠数量
 };
 
 // 物品交换记录（保留原设计，后续可配合 onUpdate 完善）
@@ -45,6 +47,19 @@ class Backpack final
 
     // 处理交换记录（基础框架）
     void onUpdate(ItemExchangeRecord &record, float totalTime);
+
+    optional<ItemInstance> getItem(short index);
+
+    /**
+     * @brief 向背包中加入物品
+     * @deprecated 非常莫名其妙的方法，以后再删除
+     * @param ItemTypeID
+     * @param ItemAmount
+     * @return true
+     * @return false
+     */
+    bool addItem(short ItemTypeID, short ItemAmount);
+    bool setItem(short ItemTypeID, short ItemAmount, short index);
 
   private:
     short BackpackID = 0;

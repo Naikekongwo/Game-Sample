@@ -32,8 +32,9 @@ class Item
 
     const string &getID() const noexcept { return id; }
     short getTypeID() const noexcept { return info.typeID; }
-
     bool isReady() const noexcept { return status == ItemStatus::Ready; }
+
+    ItemInfo getItemInfo() { return info; }
 
   private:
     string id; // 物品实例的唯一 ID

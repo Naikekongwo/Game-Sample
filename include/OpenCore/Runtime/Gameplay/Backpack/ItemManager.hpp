@@ -55,6 +55,8 @@ class ItemManager final
      */
     std::optional<Item> createItem(short typeID);
 
+    std::optional<ItemTextureMeta> getTextureMeta(short metaID);
+
   private:
     ItemManager() = default;
 

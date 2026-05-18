@@ -1,9 +1,12 @@
 #include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
 #include "Eclipsea/Eclipsea.hpp"
+#include "OpenCore/Core/Math/OpenCore_Rect.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Gameplay/Backpack/ItemManager.hpp"
+#include "OpenCore/Runtime/Graphics/Sprite/ItemSprite.hpp"
 #include <cstdint>
+#include <optional>
 #include <stdexcept>
 
 ItemContainer::ItemContainer(string_view id, uint8_t layer,
@@ -127,6 +130,29 @@ void ItemContainer::Draw()
                             height};
 
             GFX.Draw(texture->get(), nullptr, &dstRect, 0.0f, nullptr);
+
+            if (backpack)
+            {
+                if (backpack->getItem(m_columns * i + j)->item != std::nullopt)
+                {
+                    Item item =
+                        backpack->getItem(m_columns * i + j)->item.value();
+
+                    optional<ItemTextureMeta> meta =
+                        Gameplay::ItemMgr.getTextureMeta(
+                            item.getItemInfo().textureMetaID);
+                    if (meta == std::nullopt)
+                        continue;
+
+                    m_item->changeTexture(MakeTexture(meta->texture_cols,
+                                                      meta->texture_rows,
+                                                      meta->textureID));
+                    m_item->setSubTexture(item.getItemInfo().texturePosID);
+                    m_item->setPosition((j + 0.5f) * (1.0f / m_columns),
+                                        (i + 0.5f) * (1.0f / rows));
+                    m_item->Draw();
+                }
+            }
         }
     }
 }

@@ -14,10 +14,10 @@ ItemSprite::ItemSprite()
     onEnter();
 }
 
-ItemSprite::ItemSprite(short textureID) 
+ItemSprite::ItemSprite(short textureID)
 {
     this->id = "null";
-    this->layer = 0;  // 适当层级
+    this->layer = 0; // 适当层级
 
     this->VState = std::make_unique<VisualState>();
     this->AnimeManager = std::make_unique<AnimationManager>();
@@ -41,7 +41,19 @@ void ItemSprite::Draw()
     auto GFX = OpenCoreManagers::GFXManager.getInstance();
 
     Rect rect = getLogicalBounds();
-    Rect srcRect = texture->getSubRect(0);
+    Rect srcRect = texture->getSubRect(VState->getFrameIndex());
 
     GFX.Draw(texture->get(), &srcRect, &rect, 0.0f, nullptr);
+}
+
+bool ItemSprite::setSubTexture(short index)
+{
+    if (!texture)
+        return false;
+
+    if (index >= texture->Size())
+        return false;
+
+    VState->frameIndex = index;
+    return true;
 }

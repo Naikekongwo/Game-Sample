@@ -60,3 +60,13 @@ bool ItemManager::registerItemTextureMeta(const ItemTextureMeta &meta)
         meta.textureID, meta.texture_cols, meta.texture_rows);
     return true;
 }
+
+optional<ItemTextureMeta> ItemManager::getTextureMeta(short texID)
+{
+    if (!itemTextureRegistry.contains(texID))
+    {
+        return std::nullopt;
+    }
+
+    return itemTextureRegistry.at(texID);
+}

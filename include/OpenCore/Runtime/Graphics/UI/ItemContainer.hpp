@@ -44,6 +44,7 @@ class ItemContainer : public UIElement
   private:
     weak_ptr<Backpack> m_backpack;
     pair<uint8_t, uint8_t> m_indexRange;
-    short m_columns = 1;
     unique_ptr<ItemSprite> m_item;
+
+    short m_columns = 1;
 };

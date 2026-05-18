@@ -50,8 +50,8 @@ bool Eclipsea::StartUp()
     ItemTextureMeta meta00{2038, 8, 8};
     ItemReg.registerItemTextureMeta(meta00);
 
-    ItemInfo bottle_empty{"bottle_empty", 0, 2038, 9, 1.0f, 9};
-    ItemInfo bottle_full{"bottle_full", 1, 2038, 10, 1.0f, 9};
+    ItemInfo bottle_empty{"bottle_empty", 1, 2038, 9, 1.0f, 9};
+    ItemInfo bottle_full{"bottle_full", 2, 2038, 10, 1.0f, 9};
     ItemReg.registerItem(bottle_empty);
     ItemReg.registerItem(bottle_full);
 #pragma endregion

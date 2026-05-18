@@ -24,6 +24,8 @@ class ItemSprite : public Sprite
 
     bool onDestroy() override { return true; };
 
+    bool setSubTexture(short index);
+
   private:
     // 正常来说，其不应该持有这个
     short itemTexID = 2038;
