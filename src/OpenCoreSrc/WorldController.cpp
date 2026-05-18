@@ -213,18 +213,35 @@ bool WorldController::regMovement(short entityID, Vec3 Speed)
     return true;
 }
 
-// bool WorldController::pushHomelessItem(short backpackID, short backpackIndex)
-// {
-//     // 首先验证背包有效性
-//     if (!containers.contains(backpackID))
-//         return false;
-//     if (containers.at(backpackID)->getCapacity() <= backpackIndex)
-//         return false;
+bool WorldController::pushHomelessItem(short backpackID, short backpackIndex)
+{
+    // 首先验证背包有效性
+    if (!containers.contains(backpackID))
+        return false;
+    if (containers.at(backpackID)->getCapacity() <= backpackIndex)
+        return false;
+    if (containers.at(backpackID)->getItem(backpackID) == std::nullopt)
+        return false;
 
-//     return true;
-// }
+    optional<ItemInstance> item =
+        containers.at(backpackID)->getItem(backpackID);
 
-// ItemInstance WorldController::popHomelessItem()
-// {
-//     return ItemInstance{Gameplay::ItemMgr.createItem(0).value(), 1};
-// }
+    ItemExchangeRecord record{item.value(), backpackID, 0, false};
+
+    m_homelessItem = record;
+    return true;
+}
+
+optional<ItemInstance> WorldController::popHomelessItem()
+{
+    if (!m_homelessItem.has_value())
+    {
+        ItemInstance instance = m_homelessItem->instance;
+        m_homelessItem = std::nullopt;
+        return instance;
+    }
+    else
+    {
+        return std::nullopt;
+    }
+}

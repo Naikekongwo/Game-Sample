@@ -3,6 +3,7 @@
 #include "OpenCore/Core/Math/OpenCore_Rect.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
+#include "OpenCore/Runtime/Gameplay/Backpack/Backpack.hpp"
 #include "OpenCore/Runtime/Gameplay/Backpack/ItemManager.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/ItemSprite.hpp"
 #include <cstdint>
@@ -82,6 +83,32 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
 
         LOG("点击了物品栏格, ID: {}, 行: {}, 列: {}, 背包全局索引: {}", id, row,
             col, globalIndex);
+
+        auto wrdController =
+            OpenEngine::getInstance().getServerWorldController();
+
+        if (backpack->getItem(globalIndex) == std::nullopt)
+        {
+            optional<ItemInstance> item = wrdController->popHomelessItem();
+            if (item != std::nullopt)
+            {
+                backpack->setItem(item->item->getTypeID(), 1, globalIndex);
+                LOG("从悬空物品槽放置了物品到背包, 背包ID: {}, 索引: {}, "
+                    "物品类型ID: {}",
+                    backpack->getBackpackID(), globalIndex,
+                    item->item->getTypeID());
+            }
+        }
+        else
+        {
+            if (wrdController->pushHomelessItem(backpack->getBackpackID(),
+                                                globalIndex))
+            {
+                backpack->setItem(2, 1, globalIndex);
+                LOG("从背包放置了物品到悬空物品槽, 背包ID: {}, 索引: {}",
+                    backpack->getBackpackID(), globalIndex);
+            }
+        }
     }
 }
 
@@ -143,6 +170,8 @@ void ItemContainer::Draw()
                             item.getItemInfo().textureMetaID);
                     if (meta == std::nullopt)
                         continue;
+
+                    m_item->setScale((1.0f / m_columns) * 0.9f, 0.9f);
 
                     m_item->changeTexture(MakeTexture(meta->texture_cols,
                                                       meta->texture_rows,

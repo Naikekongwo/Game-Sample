@@ -165,6 +165,13 @@ void MapExplorer::Draw()
 
         m_wrdController->getEntities(Entities);
 
+        sort(Entities.begin(), Entities.end(),
+             [](Entity *a, Entity *b)
+             {
+                 return a->getPhysicalProperties().getPosition().y <
+                        b->getPhysicalProperties().getPosition().y;
+             });
+
         for (auto ptr : Entities)
         {
             auto ePos = ptr->getPhysicalProperties().getPosition();

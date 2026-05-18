@@ -78,6 +78,8 @@ class MapExplorer : public UIElement
     bool setIndex(short ID)
     {
         m_focusEntityIndex = ID;
+        m_itemContainer->setBackpack(
+            m_wrdController->getBackpackByEntityID(m_focusEntityIndex));
         return true;
     }
 
@@ -98,9 +100,9 @@ class MapExplorer : public UIElement
     unique_ptr<ItemContainer> m_itemContainer;
     unique_ptr<HealthBar> m_healthbar;
 
-    bool m_moveUp    = false;
-    bool m_moveDown  = false;
-    bool m_moveLeft  = false;
+    bool m_moveUp = false;
+    bool m_moveDown = false;
+    bool m_moveLeft = false;
     bool m_moveRight = false;
 
     void initComponents();

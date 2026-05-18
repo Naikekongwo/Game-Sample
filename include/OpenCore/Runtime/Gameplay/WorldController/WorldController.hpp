@@ -93,8 +93,8 @@ class WorldController
 
     void EnableUpdate() { status = WorldControllerStatus::Visible; }
 
-    // bool pushHomelessItem(short backpackID, short backpackIndex);
-    // ItemInstance popHomelessItem();
+    bool pushHomelessItem(short backpackID, short backpackIndex);
+    optional<ItemInstance> popHomelessItem();
 
   private:
     /**
