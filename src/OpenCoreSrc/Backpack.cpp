@@ -88,6 +88,7 @@ bool Backpack::addItem(short ItemTypeID, short ItemAmount)
         if (setItem(ItemTypeID, ItemAmount, index))
         {
             result = true;
+            break;
         }
     }
     return result;
