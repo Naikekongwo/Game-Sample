@@ -2,15 +2,14 @@
 #pragma once
 #include <string>
 
-class Entity;  // 前向声明，允许使用 Entity* 指针
+class Entity; // 前向声明，允许使用 Entity* 指针
 
 struct ItemInfo
 {
     std::string id;          // 物品实例的唯一 ID
-    unsigned int typeID = 0; // 物品类型
-    short textureID = 0;       // 纹理 ID（用于 ItemSprite）
-    float widthFactor = 1.0f;// 缩放因子
-    unsigned int statueID = 0; // 物品状态 ID（可用于不同状态显示不同纹理）
-    Entity* owner = nullptr; // 物品所属实体（如果有）
-    // 其他可能需要的字段...
+    short typeID = 0;        // 物品类型
+    short textureMetaID = 0; // 纹理 ID（用于 ItemSprite）
+    short texturePosID = 0;
+    float widthFactor = 1.0f;     // 缩放因子
+    uint8_t maxStackedAmount = 0; // 最大堆叠数量
 };

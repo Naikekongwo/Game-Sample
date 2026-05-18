@@ -208,3 +208,19 @@ bool WorldController::regMovement(short entityID, Vec3 Speed)
 
     return true;
 }
+
+// bool WorldController::pushHomelessItem(short backpackID, short backpackIndex)
+// {
+//     // 首先验证背包有效性
+//     if (!containers.contains(backpackID))
+//         return false;
+//     if (containers.at(backpackID)->getCapacity() <= backpackIndex)
+//         return false;
+
+//     return true;
+// }
+
+// ItemInstance WorldController::popHomelessItem()
+// {
+//     return ItemInstance{Gameplay::ItemMgr.createItem(0).value(), 1};
+// }

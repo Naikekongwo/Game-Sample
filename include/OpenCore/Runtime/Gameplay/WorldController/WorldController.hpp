@@ -12,6 +12,7 @@
  */
 
 #include "OpenCore/Runtime/Gameplay/Backpack/Backpack.hpp"
+#include "OpenCore/Runtime/Gameplay/Backpack/ItemManager.hpp"
 #include "OpenCore/Runtime/Gameplay/Entity/Entity.hpp"
 #include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
 #include "OpenCore/Runtime/Gameplay/Physics/PhysicalProperties.h"
@@ -92,6 +93,9 @@ class WorldController
 
     void EnableUpdate() { status = WorldControllerStatus::Visible; }
 
+    // bool pushHomelessItem(short backpackID, short backpackIndex);
+    // ItemInstance popHomelessItem();
+
   private:
     /**
      * @brief 构建并初始化 MapManager对象
@@ -118,7 +122,7 @@ class WorldController
     int BackpackCounts = 1;
 
     // 新加入的槽位，用于容纳那些悬空的物品
-    BackpackSlot m_homelessItem;
+    optional<ItemExchangeRecord> m_homelessItem = std::nullopt;
 
     unordered_map<short, EntityPtr> Entities;
 
