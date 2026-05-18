@@ -3,8 +3,10 @@
 
 std::vector<std::pair<int, int>> PhysicalProperties::getOccupiedTiles() const
 {
+    uint8_t effH = getEffectiveTileHeight();
+
     std::vector<std::pair<int, int>> tiles;
-    tiles.reserve(tileWidth * tileHeight);
+    tiles.reserve(tileWidth * effH);
 
     // Position 为 BottomCenter 锚点（底部中心），
     // X 向左右各半展开，Y 从底向上展开
@@ -12,14 +14,14 @@ std::vector<std::pair<int, int>> PhysicalProperties::getOccupiedTiles() const
     int baseX = static_cast<int>(std::floor(Position.x)) - halfW;
     int baseY = static_cast<int>(std::floor(Position.y));
 
-    for (uint8_t dy = 0; dy < tileHeight; ++dy)
+    for (uint8_t dy = 0; dy < effH; ++dy)
         for (uint8_t dx = 0; dx < tileWidth; ++dx)
             tiles.emplace_back(baseX + dx, baseY - dy);
 
     if (tileWidth > 1 || tileHeight > 1)
     {
-        LOG("[getOccupiedTiles] pos({:.2f},{:.2f}) tw={} th={} halfW={} baseX={} baseY={} -> {} tiles",
-            Position.x, Position.y, tileWidth, tileHeight, halfW, baseX, baseY, tiles.size());
+        LOG("[getOccupiedTiles] pos({:.2f},{:.2f}) tw={} th={} effH={} scale={:.2f} halfW={} baseX={} baseY={} -> {} tiles",
+            Position.x, Position.y, tileWidth, tileHeight, effH, collisionHeightScale, halfW, baseX, baseY, tiles.size());
     }
 
     return tiles;

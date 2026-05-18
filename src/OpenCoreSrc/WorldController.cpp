@@ -76,18 +76,20 @@ bool WorldController::spawnMapEntities()
             newEntity->getPhysicalProperties().setPosition(pos);
 
             // TypeID >= 10 的实体占据其脚下的方块（以标记方块为中心）
+            // 碰撞高度按 collisionHeightScale 缩放到下半部分
             if (bf.Entity >= 10)
             {
                 uint8_t tw = static_cast<uint8_t>(eInfo.widthFactor);
                 uint8_t th = static_cast<uint8_t>(eInfo.heightFactor);
+                uint8_t effH = newEntity->getPhysicalProperties().getEffectiveTileHeight();
 
                 int startX = x - (tw - 1) / 2;
                 int startY = y; // 标记方块行 = 实体底部行
 
-                LOG("[SPAWN] Entity {} at marker({},{}), tw={} th={}, startX={} startY={}",
-                    bf.Entity, x, y, tw, th, startX, startY);
+                LOG("[SPAWN] Entity {} at marker({},{}), tw={} th={} effH={}, startX={} startY={}",
+                    bf.Entity, x, y, tw, th, effH, startX, startY);
 
-                for (int dy = 0; dy < th; ++dy)
+                for (int dy = 0; dy < effH; ++dy)
                 {
                     for (int dx = 0; dx < tw; ++dx)
                     {

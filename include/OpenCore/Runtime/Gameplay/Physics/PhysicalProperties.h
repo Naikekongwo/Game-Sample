@@ -59,6 +59,17 @@ class PhysicalProperties
     uint8_t getTileWidth() const { return tileWidth; }
     uint8_t getTileHeight() const { return tileHeight; }
 
+    /// @brief 设置碰撞高度缩放（0~1），Y 轴只取下半部分有效行
+    void setCollisionHeightScale(float s) { collisionHeightScale = s; }
+    float getCollisionHeightScale() const { return collisionHeightScale; }
+
+    /// @brief 返回有效碰撞行数 = max(1, floor(tileHeight * collisionHeightScale))
+    uint8_t getEffectiveTileHeight() const
+    {
+        int h = static_cast<int>(tileHeight * collisionHeightScale);
+        return static_cast<uint8_t>(h > 0 ? h : 1);
+    }
+
     /// @brief 获取实体当前位置下占据的所有瓦片坐标 (gx, gy)
     std::vector<std::pair<int, int>> getOccupiedTiles() const;
 
@@ -97,6 +108,7 @@ class PhysicalProperties
 
     uint8_t tileWidth = 1;   // 实体占几格宽（世界单位）
     uint8_t tileHeight = 1;  // 实体占几格高（世界单位）
+    float collisionHeightScale = 1.0f; // 碰撞高度比例（Y轴有效占比，默认1.0=全部）
 
     void parseHorizontalMovement(float &Speed, float &Pos, float deltaTime);
     void parseVerticalMovement(float &Speed, float &Pos, float deltaTime);

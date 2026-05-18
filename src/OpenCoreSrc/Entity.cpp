@@ -15,6 +15,8 @@ void Entity::Configure(const EntityInfo &eInfo)
 
     pProperties.setTileSize(static_cast<uint8_t>(info.widthFactor),
                             static_cast<uint8_t>(info.heightFactor));
+    // 碰撞箱只取 Y 轴底部 2/3（向下取整），上半部分不参与碰撞
+    pProperties.setCollisionHeightScale(2.0f / 3.0f);
 
     status = EntityStatus::Ready;
 }
@@ -122,6 +124,7 @@ bool Entity::canMoveTo(const Vec3 &pos) const
         return true;
 
     uint8_t tw = pProperties.getTileWidth();
+    uint8_t effH = pProperties.getEffectiveTileHeight();
     uint8_t th = pProperties.getTileHeight();
 
     Vec3 spd = pProperties.getSpeed();
@@ -129,7 +132,7 @@ bool Entity::canMoveTo(const Vec3 &pos) const
     int baseX = static_cast<int>(std::floor(pos.x + (spd.x > 0.0f ? 1.0f : 0.0f))) - halfW;
     int baseY = static_cast<int>(std::floor(pos.y + (spd.y > 0.0f ? 1.0f : 0.0f)));
 
-    for (uint8_t dy = 0; dy < th; ++dy)
+    for (uint8_t dy = 0; dy < effH; ++dy)
         for (uint8_t dx = 0; dx < tw; ++dx)
         {
             int cx = baseX + dx;
@@ -137,8 +140,8 @@ bool Entity::canMoveTo(const Vec3 &pos) const
             auto block = wc->queryBlockInfo(cx, cy);
             if (block.has_value() && block->Access == 0)
             {
-                LOG("[canMoveTo] BLOCKED at ({},{}) for entity at pos({:.2f},{:.2f}) tw={} th={} halfW={} baseX={} baseY={}",
-                    cx, cy, pos.x, pos.y, tw, th, halfW, baseX, baseY);
+                LOG("[canMoveTo] BLOCKED at ({},{}) for entity at pos({:.2f},{:.2f}) tw={} effH={} th={} halfW={} baseX={} baseY={}",
+                    cx, cy, pos.x, pos.y, tw, effH, th, halfW, baseX, baseY);
                 return false;
             }
         }
