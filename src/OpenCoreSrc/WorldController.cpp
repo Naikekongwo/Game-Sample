@@ -220,28 +220,26 @@ bool WorldController::pushHomelessItem(short backpackID, short backpackIndex)
         return false;
     if (containers.at(backpackID)->getCapacity() <= backpackIndex)
         return false;
-    if (containers.at(backpackID)->getItem(backpackID) == std::nullopt)
+
+    auto itemOpt = containers.at(backpackID)->getItem(backpackIndex);
+    if (!itemOpt.has_value() || !itemOpt->item.has_value())
         return false;
 
-    optional<ItemInstance> item =
-        containers.at(backpackID)->getItem(backpackID);
-
-    ItemExchangeRecord record{item.value(), backpackID, 0, false};
+    ItemExchangeRecord record{itemOpt.value(), backpackID, 0, false};
 
     m_homelessItem = record;
+
+    // 清空原槽位
+    containers.at(backpackID)->removeItem(backpackIndex);
     return true;
 }
 
 optional<ItemInstance> WorldController::popHomelessItem()
 {
     if (!m_homelessItem.has_value())
-    {
-        ItemInstance instance = m_homelessItem->instance;
-        m_homelessItem = std::nullopt;
-        return instance;
-    }
-    else
-    {
         return std::nullopt;
-    }
+
+    ItemInstance instance = m_homelessItem->instance;
+    m_homelessItem = std::nullopt;
+    return instance;
 }

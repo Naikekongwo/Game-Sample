@@ -50,6 +50,9 @@ class Backpack final
 
     optional<ItemInstance> getItem(short index);
 
+    /** @brief 清空指定槽位 */
+    bool removeItem(short index);
+
     /**
      * @brief 向背包中加入物品
      * @deprecated 非常莫名其妙的方法，以后再删除

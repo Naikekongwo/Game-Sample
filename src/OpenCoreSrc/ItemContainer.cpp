@@ -46,6 +46,7 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
         if (!backpack)
         {
             LOG("背包已悬空，无法处理点击, ID: {}", id);
+            return;
         }
 
         Rect bounds = getLogicalBounds();
@@ -59,7 +60,7 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
             return;
         }
 
-        short rows = (backpack) ? backpack->getCapacity() / m_columns : 1;
+        short rows = backpack->getCapacity() / m_columns;
 
         float cellWidth = bounds.w / m_columns;
         float cellHeight = bounds.h / rows;
@@ -87,24 +88,26 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
         auto wrdController =
             OpenEngine::getInstance().getServerWorldController();
 
-        if (backpack->getItem(globalIndex) == std::nullopt)
+        auto slotOpt = backpack->getItem(globalIndex);
+        if (!slotOpt.has_value() || !slotOpt->item.has_value())
         {
-            optional<ItemInstance> item = wrdController->popHomelessItem();
-            if (item != std::nullopt)
+            // 空格 → 从悬空区取物品放入
+            optional<ItemInstance> homeless = wrdController->popHomelessItem();
+            if (homeless.has_value() && homeless->item.has_value())
             {
-                backpack->setItem(item->item->getTypeID(), 1, globalIndex);
+                backpack->setItem(homeless->item->getTypeID(), 1, globalIndex);
                 LOG("从悬空物品槽放置了物品到背包, 背包ID: {}, 索引: {}, "
                     "物品类型ID: {}",
                     backpack->getBackpackID(), globalIndex,
-                    item->item->getTypeID());
+                    homeless->item->getTypeID());
             }
         }
         else
         {
+            // 非空格 → 推到悬空区
             if (wrdController->pushHomelessItem(backpack->getBackpackID(),
                                                 globalIndex))
             {
-                backpack->setItem(2, 1, globalIndex);
                 LOG("从背包放置了物品到悬空物品槽, 背包ID: {}, 索引: {}",
                     backpack->getBackpackID(), globalIndex);
             }
@@ -160,10 +163,11 @@ void ItemContainer::Draw()
 
             if (backpack)
             {
-                if (backpack->getItem(m_columns * i + j)->item != std::nullopt)
+                int slotIndex = m_indexRange.first + i * m_columns + j;
+                auto slotOpt = backpack->getItem(slotIndex);
+                if (slotOpt.has_value() && slotOpt->item.has_value())
                 {
-                    Item item =
-                        backpack->getItem(m_columns * i + j)->item.value();
+                    Item &item = slotOpt->item.value();
 
                     optional<ItemTextureMeta> meta =
                         Gameplay::ItemMgr.getTextureMeta(
