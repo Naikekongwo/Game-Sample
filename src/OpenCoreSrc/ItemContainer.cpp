@@ -82,6 +82,10 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
         // 全局索引 = 起始索引 + 行 * 列数 + 列
         int globalIndex = m_indexRange.first + row * m_columns + col;
 
+        // 确保不超出 range 范围
+        if (globalIndex > m_indexRange.second)
+            globalIndex = m_indexRange.second;
+
         LOG("点击了物品栏格, ID: {}, 行: {}, 列: {}, 背包全局索引: {}", id, row,
             col, globalIndex);
 
@@ -142,7 +146,9 @@ void ItemContainer::Draw()
     float offsetX = 0.0f;
     float offsetY = 0.0f;
 
-    short rows = (backpack) ? backpack->getCapacity() / m_columns : 1;
+    // 由 indexRange 决定本容器实际覆盖的槽位数
+    uint8_t rangeSize = m_indexRange.second - m_indexRange.first + 1;
+    short rows = (rangeSize + m_columns - 1) / m_columns; // 向上取整
 
     float width = bounds.w / m_columns;
     float height = bounds.h / rows;
@@ -151,6 +157,11 @@ void ItemContainer::Draw()
     {
         for (int j = 0; j < m_columns; j++)
         {
+            int slotIndex = m_indexRange.first + i * m_columns + j;
+
+            // 不要绘制超出 range 范围的槽位
+            if (slotIndex > m_indexRange.second)
+                break;
 
             // 第i行，第j列
             offsetX = width * j;
@@ -163,7 +174,6 @@ void ItemContainer::Draw()
 
             if (backpack)
             {
-                int slotIndex = m_indexRange.first + i * m_columns + j;
                 auto slotOpt = backpack->getItem(slotIndex);
                 if (slotOpt.has_value() && slotOpt->item.has_value())
                 {
@@ -236,11 +246,11 @@ void ItemContainer::setIndexRange(pair<uint8_t, uint8_t> indexRange)
         return;
     }
 
-    if (indexRange.second >= backpack->getCapacity())
+    if (indexRange.first > indexRange.second ||
+        indexRange.second >= backpack->getCapacity())
     {
-        // Index out of range
-        // 超出了背包的容量
-        LOG("输入的index索引范围超出了背包的极限, ID{}", id);
+        LOG("输入的index索引范围无效, ID{}, 范围 [{}, {}]", id,
+            indexRange.first, indexRange.second);
         return;
     }
 

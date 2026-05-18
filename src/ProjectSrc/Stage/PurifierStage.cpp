@@ -1,4 +1,5 @@
 #include "Eclipsea/Eclipsea.hpp"
+#include "OpenCore/Core/Macros.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ImageBoard.hpp"
@@ -15,6 +16,11 @@ PurifierStage::PurifierStage(Timer *timer, StageManager *sController)
 bool PurifierStage::handlEvents(SDL_Event *event)
 {
     Elements->handlEvents(*event, timer->getTotalTime());
+    if (ItemPickedUp)
+    {
+        ItemPickedUp->getVisualState()->Position[0] = event->motion.x;
+        ItemPickedUp->getVisualState()->Position[1] = event->motion.y;
+    }
     return true;
 }
 
@@ -40,10 +46,62 @@ void PurifierStage::onUpdate()
             sController->removeStage(this->stageType);
     }
 }
-void PurifierStage::onRender() { Elements->onRender(); }
-
-bool PurifierStage::buildStage()
+void PurifierStage::onRender()
 {
+    Elements->onRender();
+
+    auto item = OpenEngine::getInstance()
+                    .getServerWorldController()
+                    ->queryHomelessItemInfo();
+
+    if (item.has_value())
+    {
+        if (!ItemPickedUp)
+        {
+            ItemPickedUp = std::make_unique<ItemSprite>();
+
+            ItemPickedUp->Configure()
+                .Parent(nullptr)
+                .Anchor(AnchorPoint::Center)
+                .Posite(0.5f, 0.5f)
+                .Scale(0.1f, 0.1f * widthheight);
+        }
+
+        auto meta = Gameplay::ItemMgr.getTextureMeta(item->textureMetaID);
+
+        if (!meta.has_value())
+            return;
+
+        ItemPickedUp->changeTexture(MakeTexture(
+            meta->texture_cols, meta->texture_rows, meta->textureID));
+        ItemPickedUp->setSubTexture(item->texturePosID);
+        ItemPickedUp->Draw();
+    }
+}
+
+void PurifierStage::onEnter()
+{
+    LOG("PurifierStage::onEnter");
+    OpenEngine::getInstance().getServerWorldController()->giveUpHomelessItem();
+    initializeComponents();
+}
+
+void PurifierStage::onExit()
+{
+    Elements->onDestroy();
+    OpenEngine::getInstance().getServerWorldController()->giveUpHomelessItem();
+    LOG("PurifierStage::onExit - cleared elements");
+}
+
+void PurifierStage::onDestroy() { LOG("PurifierStage::onDestroy"); }
+
+bool PurifierStage::parseEvents(Event *event) { return true; }
+
+void PurifierStage::initializeComponents()
+
+{
+
+    auto wrdController = OpenEngine::getInstance().getServerWorldController();
     // 背景
     auto stageBg = UI<BaseBackground>("purSbg", 0, 2009, NULL, NULL);
     stageBg->setNativeScale(120);
@@ -192,27 +250,39 @@ bool PurifierStage::buildStage()
         .Scale(0.07f, 0.0f)
         .Posite(0.71f, 0.285f);
 
+    nuclear_item->setBackpack(wrdController->getBackpackByEntityID(100));
+    control_item->setBackpack(wrdController->getBackpackByEntityID(100));
+    storage_item->setBackpack(wrdController->getBackpackByEntityID(100));
+    filter_item->setBackpack(wrdController->getBackpackByEntityID(100));
+
+    nuclear_item->setIndexRange(std::make_pair(0, 0));
+    control_item->setIndexRange(std::make_pair(1, 1));
+    storage_item->setIndexRange(std::make_pair(2, 2));
+    filter_item->setIndexRange(std::make_pair(3, 3));
+
+    nuclear_item->onEnter();
+    control_item->onEnter();
+    storage_item->onEnter();
+    filter_item->onEnter();
+
     Elements->PushElement(std::move(nuclear_item));
     Elements->PushElement(std::move(control_item));
     Elements->PushElement(std::move(storage_item));
     Elements->PushElement(std::move(filter_item));
 
-    return true;
+    auto itemContainer = UI<ItemContainer>("player_items", 30, 2027, 8, 1);
+
+    itemContainer->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::BottomCenter)
+        .Scale(0.533f, 0.1185f)
+        .Posite(0.5f, 0.9f)
+        .Alpha(1.0f);
+
+    itemContainer->setBackpack(wrdController->getBackpackByEntityID(1));
+
+    itemContainer->setIndexRange(std::make_pair(0, 7));
+    itemContainer->onEnter();
+
+    Elements->PushElement(std::move(itemContainer));
 }
-void PurifierStage::onEnter()
-{
-    LOG("PurifierStage::onEnter");
-    buildStage();
-}
-
-void PurifierStage::onExit()
-{
-    Elements->onDestroy();
-    LOG("PurifierStage::onExit - cleared elements");
-}
-
-void PurifierStage::onDestroy() { LOG("PurifierStage::onDestroy"); }
-
-bool PurifierStage::parseEvents(Event *event) { return true; }
-
-void PurifierStage::initializeComponents() {}

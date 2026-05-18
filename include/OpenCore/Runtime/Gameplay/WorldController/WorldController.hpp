@@ -95,6 +95,8 @@ class WorldController
 
     bool pushHomelessItem(short backpackID, short backpackIndex);
     optional<ItemInstance> popHomelessItem();
+    optional<ItemInfo> queryHomelessItemInfo();
+    void giveUpHomelessItem();
 
   private:
     /**
