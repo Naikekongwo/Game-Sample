@@ -45,25 +45,30 @@ enum class WorldControllerStatus
 class WorldController
 {
   public:
+    // ─── 生命周期 ───────────────────────────────────
     void onUpdate(float totalTime);
     void onEnter();
 
-    /**
-     * @brief 记录物品的交换
-     *
-     * @param record
-     */
+    // ─── 查询接口 ───────────────────────────────────
+    PhysicalProperties *queryPhysicalProp(short EntityIndex);
+    optional<BlockInfo> queryBlockInfo(int gx, int gy);
+
+    Entity *getEntityByID(short id);
+    void getEntities(vector<Entity *> &list);
+
+    BackPtr getBackpackByID(short id);
+    BackPtr getBackpackByEntityID(short id);
+
+    bool regMovement(short entityID, Vec3 Speed);
+
+    // ─── 内联工具 ───────────────────────────────────
+    /** @brief 记录物品的交换 */
     void RecordItemExchange(const ItemExchangeRecord &record)
     {
         Market.push(record);
     }
 
-    /**
-     * @brief 创建背包（按照容量）
-     *
-     * @param backpackCapacity
-     * @return BackPtr
-     */
+    /** @brief 创建背包（按照容量） */
     BackPtr createBackpack(short backpackCapacity)
     {
         BackPtr backpack = std::make_shared<Backpack>(backpackCapacity);
@@ -73,56 +78,17 @@ class WorldController
         return backpack;
     }
 
-    /**
-     * @brief 设置可见性
-     * @deprecated 不合适
-     * @return true
-     * @return false
-     */
+    /** @brief 获取地图管理器的状态 */
+    bool isMapReady() const noexcept { return mapManager->isReady(); }
+
+    /** @brief 初始化当前地图 */
+    bool initMap() { return mapManager->initCurrentMap(); }
+
+    /** @deprecated 不合适 */
     bool isVisible() const noexcept
     {
         return status == WorldControllerStatus::Visible;
     }
-
-    /**
-     * @brief 获取对应ID的实体的物理信息
-     * @brief 只允许返回副本，不允许返回引用，防止越界修改
-     * @return PhysicalProperties
-     */
-    PhysicalProperties *queryPhysicalProp(short EntityIndex);
-
-    /**
-     * @brief 获取地图管理器的状态
-     *
-     * @return true
-     * @return false
-     */
-    bool isMapReady() const noexcept { return mapManager->isReady(); }
-
-    /**
-     * @brief 查询BLOCK信息
-     *
-     * @param x
-     * @param y
-     * @return optional<BlockInfo>
-     */
-    optional<BlockInfo> queryBlockInfo(int gx, int gy);
-
-    /**
-     * @brief 初始化当前地图
-     *
-     * @return true
-     * @return false
-     */
-    bool initMap() { return mapManager->initCurrentMap(); }
-
-    Entity *getEntityByID(short id);
-    void getEntities(vector<Entity *> &list);
-
-    BackPtr getBackpackByID(short id);
-    BackPtr getBackpackByEntityID(short id);
-
-    bool regMovement(short entityID, Vec3 Speed);
 
     void EnableUpdate() { status = WorldControllerStatus::Visible; }
 
@@ -150,6 +116,9 @@ class WorldController
     queue<ItemExchangeRecord> Market;
     unordered_map<short, BackPtr> containers;
     int BackpackCounts = 1;
+
+    // 新加入的槽位，用于容纳那些悬空的物品
+    BackpackSlot m_homelessItem;
 
     unordered_map<short, EntityPtr> Entities;
 

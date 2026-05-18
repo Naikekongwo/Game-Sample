@@ -12,14 +12,13 @@ using std::vector;
 struct BackpackSlot
 {
     Item item;         // 该堆叠的代表物品（用于渲染等）
-    uint8_t count = 1; // 当前堆叠数量
+    uint8_t count = 0; // 当前堆叠数量
 };
 
 // 物品交换记录（保留原设计，后续可配合 onUpdate 完善）
 struct ItemExchangeRecord
 {
     short ItemTypeID = 0;
-    short statueID = 0;
     short ItemAmount = 0;
 
     short srcBackpackID = 0;
