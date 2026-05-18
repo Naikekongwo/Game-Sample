@@ -33,8 +33,8 @@ void ScaleAnimation::onUpdate(float totalTime, VisualState &state)
         t = 1.0f;
         finished = !isLooping;
         if (isLooping)
-            startTime = totalTime;                  // 循环则重置起始时间
-        LOG("ScaleAnimation: animation finished."); // 动画结束
+            startTime = totalTime;           // 循环则重置起始时间
+        LOG("ScaleAnimation: 动画执行完成"); // 动画结束
     }
     // 线性插值计算当前缩放
     state.scale[0] = state.scale[1] = startScale + (endScale - startScale) * t;
@@ -48,5 +48,5 @@ void ScaleAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;
-    LOG("ScaleAnimation: reset success.");
+    LOG("ScaleAnimation: 动画重置成功");
 }

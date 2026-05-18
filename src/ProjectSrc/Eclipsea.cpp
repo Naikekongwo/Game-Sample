@@ -1,4 +1,6 @@
 #include "Eclipsea/Eclipsea.hpp"
+#include "OpenCore/OpenCore.hpp"
+#include "OpenCore/Runtime/Gameplay/Backpack/ItemManager.hpp"
 #include <exception>
 #include <memory>
 #include <stdexcept>
@@ -39,6 +41,19 @@ bool Eclipsea::StartUp()
 
     EntityInfo purifier{100, {2044, 8, 8, 0, 1}, 4, 3.0f, 3.0f};
     entityReg.registerEntity(purifier);
+#pragma endregion
+
+#pragma region 注册物品相关内容
+
+    auto &ItemReg = Gameplay::ItemMgr;
+
+    ItemTextureMeta meta00{2038, 8, 8};
+    ItemReg.registerItemTextureMeta(meta00);
+
+    ItemInfo bottle_empty{"bottle_empty", 0, 2038, 9, 1.0f, 9};
+    ItemInfo bottle_full{"bottle_full", 1, 2038, 10, 1.0f, 9};
+    ItemReg.registerItem(bottle_empty);
+    ItemReg.registerItem(bottle_full);
 #pragma endregion
 
     // region === 主循环 ===

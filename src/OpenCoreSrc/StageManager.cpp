@@ -46,7 +46,7 @@ void StageManager::processCommandQueue()
     bool output = !commandQueue.empty();
 
     if (output)
-        LOG("processCommandQueue start, queue size = {}",
+        LOG("开始执行命令序列，序列池当前剩余操作: {}",
             (int)commandQueue.size());
 
     while (!commandQueue.empty())
@@ -62,7 +62,7 @@ void StageManager::processCommandQueue()
         switch (task->opt)
         {
         case StageCommandType::Add:
-            LOG("Adding stage to index %zu", index);
+            LOG("向索引 {} 中添加场景", index);
             if (stageContainer[index])
             {
                 stageContainer[index]->onExit();
@@ -91,8 +91,7 @@ void StageManager::processCommandQueue()
     }
 
     if (output)
-        LOG("processCommandQueue end, queue size = {}",
-            (int)commandQueue.size());
+        LOG("序列池操作完毕，当前剩余操作数为 {}", (int)commandQueue.size());
 }
 
 void StageManager::onRender()

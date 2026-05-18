@@ -33,8 +33,8 @@ void MoveAnimation::onUpdate(float totalTime, VisualState &state)
         t = 1.0f;
         finished = !isLooping;
         if (isLooping)
-            startTime = totalTime;                 // 循环则重置起始时间
-        LOG("MoveAnimation: animation finished."); // 动画结束
+            startTime = totalTime;          // 循环则重置起始时间
+        LOG("MoveAnimation: 动画执行完成"); // 动画结束
     }
     // 线性插值计算当前位置
     state.Position[0] = startX + (endX - startX) * t;
@@ -49,5 +49,5 @@ void MoveAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;
-    LOG("MoveAnimation: reset success.");
+    LOG("MoveAnimation: 动画重置成功");
 }

@@ -93,7 +93,7 @@ void ContainerStage::initializeComponents()
                 [](auto &elem)
                 {
                     auto state = elem->getVisualState();
-                    LOG("Adding fade out effect to {}, transparency, {}",
+                    LOG("向元素 {} 添加渐变效果, 透明度为, {}",
                         elem->getID().c_str(), state->transparency);
                     elem->Animate()
                         .Fade(state->transparency, 0.0f, 0.1f)

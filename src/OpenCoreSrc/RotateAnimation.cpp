@@ -33,8 +33,8 @@ void RotateAnimation::onUpdate(float totalTime, VisualState &state)
         t = 1.0f;
         finished = !isLooping;
         if (isLooping)
-            startTime = totalTime;                   // 循环则重置起始时间
-        LOG("RotateAnimation: animation finished."); // 动画结束
+            startTime = totalTime;            // 循环则重置起始时间
+        LOG("RotateAnimation: 动画执行完成"); // 动画结束
     }
     // 线性插值计算当前角度，直接写入angle字段
     state.angle = startAngle + (endAngle - startAngle) * t;
@@ -48,5 +48,5 @@ void RotateAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;
-    LOG("RotateAnimation: reset success.");
+    LOG("RotateAnimation: 动画重置成功");
 }

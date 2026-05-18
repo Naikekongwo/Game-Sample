@@ -22,6 +22,9 @@ void WorldController::onEnter()
         if (!result)
             LOG("世界控制器在初始化时出现了问题");
 
+        // 清除悬空状态
+        m_homelessItem = std::nullopt;
+
         status = WorldControllerStatus::Ready;
     }
 }

@@ -34,8 +34,8 @@ void FadeAnimation::onUpdate(float totalTime, VisualState &state)
         t = 1.0f;
         finished = !isLooping;
         if (isLooping)
-            startTime = totalTime;                 // 循环则重置起始时间
-        LOG("FadeAnimation: animation finished."); // 动画结束
+            startTime = totalTime;          // 循环则重置起始时间
+        LOG("FadeAnimation: 动画执行完成"); // 动画结束
     }
     // 线性插值计算当前透明度
     state.transparency = startAlpha + (endAlpha - startAlpha) * t;
@@ -49,5 +49,5 @@ void FadeAnimation::reset(float totalTime, VisualState &state)
 {
     startTime = totalTime;
     finished = false;
-    LOG("FadeAnimation: reset success.");
+    LOG("FadeAnimation: 动画重置成功");
 }

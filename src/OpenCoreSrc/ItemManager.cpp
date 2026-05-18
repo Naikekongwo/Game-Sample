@@ -20,7 +20,7 @@ bool ItemManager::registerItem(const ItemInfo &regInfo)
     }
 
     itemRegistry[regInfo.typeID] = regInfo;
-    LOG("物品注册成功，类型 ID：{}", regInfo.typeID);
+    LOG("物品注册成功，名称 {} 类型 ID {}", regInfo.id, regInfo.typeID);
     return true;
 }
 
@@ -36,4 +36,27 @@ optional<Item> ItemManager::createItem(short typeID)
     // 已经注册的物品
     Item result(itemRegistry.at(typeID));
     return result;
+}
+
+bool ItemManager::registerItemTextureMeta(const ItemTextureMeta &meta)
+{
+    if (itemTextureRegistry.contains(meta.textureID))
+    {
+        ItemTextureMeta old = itemTextureRegistry.at(meta.textureID);
+        if (old.texture_cols == meta.texture_cols &&
+            old.texture_rows == meta.texture_rows)
+        {
+            // 完全相同
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    itemTextureRegistry[meta.textureID] = meta;
+    LOG("注册了物品贴图元信息, 纹理ID: {} 纹理横向网格 {} 纵向网格 {}",
+        meta.textureID, meta.texture_cols, meta.texture_rows);
+    return true;
 }
