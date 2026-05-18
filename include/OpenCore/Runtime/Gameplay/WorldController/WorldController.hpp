@@ -85,6 +85,9 @@ class WorldController
     /** @brief 初始化当前地图 */
     bool initMap() { return mapManager->initCurrentMap(); }
 
+    /** @brief 从地图方块数据中生成实体（在贴图加载后调用） */
+    bool spawnMapEntities();
+
     /** @deprecated 不合适 */
     bool isVisible() const noexcept
     {

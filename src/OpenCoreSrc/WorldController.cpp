@@ -40,35 +40,74 @@ bool WorldController::generateMapManager()
     mapManager->loadClassicMap(1, "maps/test_newTemple.ocmp");
     mapManager->setCurrentID(1);
 
-    uint16_t mapWidth = 0;
-    uint16_t mapHeight = 0;
+    LOG("地图管理器初始化成功");
 
-    mapWidth = mapManager->getMapWidth();
-    mapHeight = mapManager->getMapHeight();
+    return (mapManager != nullptr);
+}
 
-    LOG("ENTITY ID: {}", mapWidth);
+bool WorldController::spawnMapEntities()
+{
+    if (!mapManager || !mapManager->isReady())
+        return false;
+
+    uint16_t mapWidth = mapManager->getMapWidth();
+    uint16_t mapHeight = mapManager->getMapHeight();
 
     for (int x = 0; x < mapWidth; x++)
     {
         for (int y = 0; y < mapHeight; y++)
         {
             BlockInfo bf = mapManager->getBlockInfo(x, y);
-            if (bf.Entity != 0)
+            if (bf.Entity == 0 || Entities.contains(bf.Entity))
+                continue;
+
+            EntityPtr newEntity =
+                Gameplay::EntityReg.getInstance().createEntity(bf.Entity);
+            if (!newEntity)
+                continue;
+
+            auto eInfo =
+                Gameplay::EntityReg.getInstance().getEntityInfo(bf.Entity);
+
+            // Entity 以 BottomCenter 锚点，站在标记方块上
+            // X = 网格整数（左右居中），Y = 标记方块底部（网格 + 0.5）
+            Vec3 pos{x * 1.0f, y + 0.5f, 0};
+            newEntity->enableDrawer(true);
+            newEntity->getPhysicalProperties().setPosition(pos);
+
+            // TypeID >= 10 的实体占据其脚下的方块（以标记方块为中心）
+            if (bf.Entity >= 10)
             {
-                // 生成Entity
-                EntityPtr newEntity =
-                    Gameplay::EntityReg.getInstance().createEntity(bf.Entity);
-                Vec3 pos{x * 1.0f, y * 1.0f, 0};
-                newEntity->enableDrawer(true);
-                newEntity->getPhysicalProperties().setPosition(pos);
-                Entities[bf.Entity] = std::move(newEntity);
+                uint8_t tw = static_cast<uint8_t>(eInfo.widthFactor);
+                uint8_t th = static_cast<uint8_t>(eInfo.heightFactor);
+
+                int startX = x - (tw - 1) / 2;
+                int startY = y; // 标记方块行 = 实体底部行
+
+                LOG("[SPAWN] Entity {} at marker({},{}), tw={} th={}, startX={} startY={}",
+                    bf.Entity, x, y, tw, th, startX, startY);
+
+                for (int dy = 0; dy < th; ++dy)
+                {
+                    for (int dx = 0; dx < tw; ++dx)
+                    {
+                        int gx = startX + dx;
+                        int gy = startY - dy; // 从底部行向上占据
+                        if (gx >= 0 && gx < mapWidth && gy >= 0 &&
+                            gy < mapHeight)
+                        {
+                            LOG("[SPAWN]   mark Access=0 at ({}, {})", gx, gy);
+                            mapManager->getBlockInfo(gx, gy).Access = 0;
+                        }
+                    }
+                }
             }
+
+            Entities[bf.Entity] = std::move(newEntity);
         }
     }
 
-    LOG("地图管理器初始化成功");
-
-    return (mapManager != nullptr);
+    return true;
 }
 
 bool WorldController::generateTheMan()

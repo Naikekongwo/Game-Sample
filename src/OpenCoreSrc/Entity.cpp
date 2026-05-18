@@ -98,6 +98,10 @@ void Entity::onUpdate(float totalTime)
     Vec3 newPosition = pProperties.getPosition();
     if (!canMoveTo(newPosition))
     {
+        if (pProperties.getTileWidth() > 1 || pProperties.getTileHeight() > 1)
+            LOG("[onUpdate] multi-tile entity reverted from ({:.2f},{:.2f}) to ({:.2f},{:.2f}) tw={} th={}",
+                newPosition.x, newPosition.y, previousPosition.x, previousPosition.y,
+                pProperties.getTileWidth(), pProperties.getTileHeight());
         pProperties.setPosition(previousPosition);
         pProperties.setSpeed({0, 0, 0});
     }
@@ -121,15 +125,22 @@ bool Entity::canMoveTo(const Vec3 &pos) const
     uint8_t th = pProperties.getTileHeight();
 
     Vec3 spd = pProperties.getSpeed();
-    int baseX = static_cast<int>(std::floor(pos.x + (spd.x > 0.0f ? 1.0f : 0.0f)));
+    int halfW = tw / 2;
+    int baseX = static_cast<int>(std::floor(pos.x + (spd.x > 0.0f ? 1.0f : 0.0f))) - halfW;
     int baseY = static_cast<int>(std::floor(pos.y + (spd.y > 0.0f ? 1.0f : 0.0f)));
 
     for (uint8_t dy = 0; dy < th; ++dy)
         for (uint8_t dx = 0; dx < tw; ++dx)
         {
-            auto block = wc->queryBlockInfo(baseX + dx, baseY - dy);
+            int cx = baseX + dx;
+            int cy = baseY - dy;
+            auto block = wc->queryBlockInfo(cx, cy);
             if (block.has_value() && block->Access == 0)
+            {
+                LOG("[canMoveTo] BLOCKED at ({},{}) for entity at pos({:.2f},{:.2f}) tw={} th={} halfW={} baseX={} baseY={}",
+                    cx, cy, pos.x, pos.y, tw, th, halfW, baseX, baseY);
                 return false;
+            }
         }
 
     return true;

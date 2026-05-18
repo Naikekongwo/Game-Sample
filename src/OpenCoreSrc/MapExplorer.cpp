@@ -33,6 +33,9 @@ void MapExplorer::onEnter()
     {
         initComponents();
 
+        // 贴图加载完毕后，从地图方块中生成实体
+        m_wrdController->spawnMapEntities();
+
         // <TODO>
         auto chao = m_wrdController->queryPhysicalProp(2);
         if (chao != nullptr)
@@ -139,8 +142,8 @@ void MapExplorer::Draw()
 
                 if (bInfo == std::nullopt)
                     continue;
-                if (bInfo->Terrain == bInfo->STRuct &&
-                    bInfo->Terrain == bInfo->Access)
+                if (bInfo->Terrain == 2 &&
+                    bInfo->STRuct == 2)
                     continue;
 
                 // <Terrain纹理板块>
