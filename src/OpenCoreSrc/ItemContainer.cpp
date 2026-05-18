@@ -109,11 +109,14 @@ void ItemContainer::handlEvents(SDL_Event &event, float totalTime)
         else
         {
             // 非空格 → 推到悬空区
-            if (wrdController->pushHomelessItem(backpack->getBackpackID(),
-                                                globalIndex))
+            if (wrdController->queryHomelessItemInfo() == std::nullopt)
             {
-                LOG("从背包放置了物品到悬空物品槽, 背包ID: {}, 索引: {}",
-                    backpack->getBackpackID(), globalIndex);
+                if (wrdController->pushHomelessItem(backpack->getBackpackID(),
+                                                    globalIndex))
+                {
+                    LOG("从背包放置了物品到悬空物品槽, 背包ID: {}, 索引: {}",
+                        backpack->getBackpackID(), globalIndex);
+                }
             }
         }
     }
