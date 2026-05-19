@@ -186,6 +186,9 @@ void MapExplorer::Draw()
             ptr->Draw(absPos);
         }
 
+        m_symbol->setPosition(0.5f, 0.3f);
+        m_symbol->Draw();
+
         m_itemContainer->Draw();
 
         m_healthbar->setHealth(
@@ -364,6 +367,14 @@ void MapExplorer::initComponents()
         .Anchor(AnchorPoint::TopRight)
         .Scale(0.0f, 0.16f)
         .Posite(0.95f, 0.055f);
+
+    m_symbol = std::make_unique<Symbol>("entity_symbol", 99, 2052);
+
+    m_symbol->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::Center)
+        .Posite(0.5f, 0.5f)
+        .Scale(0.06f, 0.06f);
 
     LOG("物品栏创建成功");
 }

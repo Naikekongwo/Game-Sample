@@ -22,5 +22,5 @@ class Symbol : public UIElement
     bool onDestroy() override { return true; }
 
   private:
-    SymbolType m_symbolType;
+    SymbolType m_symbolType = SYMBOL_QUESTION;
 };

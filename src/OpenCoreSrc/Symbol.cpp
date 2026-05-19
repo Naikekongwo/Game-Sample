@@ -47,7 +47,7 @@ void Symbol::Draw()
     SDL_SetTextureAlphaMod(neo_texture->get(), VState->getAlpha());
 
     Rect dstRect = getLogicalBounds();
-    Rect srcRect = neo_texture->getSubRect(VState->frameIndex);
+    Rect srcRect = neo_texture->getSubRect(static_cast<int>(m_symbolType));
 
     GFX.Draw(neo_texture->get(), &srcRect, &dstRect, VState->angle, nullptr);
 

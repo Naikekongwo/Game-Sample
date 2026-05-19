@@ -35,6 +35,7 @@ enum class ViewportType
 };
 
 class ClassicMap;
+class Symbol;
 class ImageBoard;
 
 /**
@@ -99,6 +100,7 @@ class MapExplorer : public UIElement
     unique_ptr<Tile> tileRenderer;
     unique_ptr<ItemContainer> m_itemContainer;
     unique_ptr<HealthBar> m_healthbar;
+    unique_ptr<Symbol> m_symbol;
 
     bool m_moveUp = false;
     bool m_moveDown = false;
