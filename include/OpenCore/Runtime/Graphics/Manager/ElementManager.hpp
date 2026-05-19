@@ -23,8 +23,10 @@
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
 #include "OpenCore/Runtime/Graphics/UI/MultiImageBoard.hpp"
 #include "OpenCore/Runtime/Graphics/UI/Scrollbar.hpp"
+#include "OpenCore/Runtime/Graphics/UI/Symbol.hpp"
 #include "OpenCore/Runtime/Graphics/UI/TextArea.hpp"
 #include "OpenCore/Runtime/Graphics/UI/TypeWriter.hpp"
+
 
 #include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/ItemSprite.hpp"

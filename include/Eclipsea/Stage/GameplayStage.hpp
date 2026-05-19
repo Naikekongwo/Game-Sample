@@ -24,6 +24,7 @@ class GameplayStage : public BaseStage
 
     void onUpdate() override;
 
+    void onEnter() override { initializeComponents(); }
     void onRender() override;
 
     // 准备函数

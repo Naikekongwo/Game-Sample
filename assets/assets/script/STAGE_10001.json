@@ -175,6 +175,10 @@
         "path": "assets/effects/flames.png",
         "category": "texture"
     },
+    "2052": {
+        "path": "assets/ui/symbols.png",
+        "category": "texture"
+    },
     "3001": {
         "path": "assets/story/img_plane.png",
         "category": "texture"

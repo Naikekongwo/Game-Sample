@@ -76,6 +76,14 @@ bool Eclipsea::StartUp()
     ItemReg.registerItem(storage_advanced);
 #pragma endregion
 
+#pragma region 注册纹理
+
+    auto &TMMGR = OpenCoreManagers::TexMetaManager.getInstance();
+
+    TextureMeta symbolMeta{2052, 8, 8};
+    TMMGR.registerTextureMeta(symbolMeta);
+#pragma endregion
+
     // region === 主循环 ===
     try
     {
