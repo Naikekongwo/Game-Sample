@@ -43,9 +43,14 @@ class OpenCore_Vec3
     }
 
     // 等于
-    OpenCore_Vec3 operator==(const OpenCore_Vec3 &other)
+    bool operator==(const OpenCore_Vec3 &other)
     {
         return (x == other.x and y == other.y and z == other.z);
+    }
+
+    bool operator!=(const OpenCore_Vec3 &other)
+    {
+        return !(x == other.x and y == other.y and z == other.z);
     }
 
     // 点乘（Dot Product） - 返回标量

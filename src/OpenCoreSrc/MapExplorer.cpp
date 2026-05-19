@@ -14,17 +14,13 @@
 MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr)
 {
-
     renderRangeX = *OpenCoreManagers::SetManager.getRenderWidth();
     renderRangeY = *OpenCoreManagers::SetManager.getRenderHeight();
 
     LOG("初始化成功");
 }
 
-void MapExplorer::onExit()
-{
-    // OpenEngine::getInstance().getServerWorldController()->enabled(false);
-}
+void MapExplorer::onExit() {}
 
 void MapExplorer::onEnter()
 {
@@ -44,20 +40,11 @@ void MapExplorer::onEnter()
             chao->setPosition(pos);
         }
 
-        status = MapExpStatus::Ready;
-
         auto player = m_wrdController->queryPhysicalProp(1);
         if (player != nullptr)
         {
             Vec3 pos{2, 4, 0};
             player->setPosition(pos);
-        }
-
-        auto purs = m_wrdController->queryPhysicalProp(3);
-        if (purs != nullptr)
-        {
-            Vec3 pos{5, 7, 0};
-            purs->setPosition(pos);
         }
 
         status = MapExpStatus::Ready;
@@ -67,144 +54,139 @@ void MapExplorer::onEnter()
 
 void MapExplorer::Draw()
 {
-    if (status != MapExpStatus::Ready)
+    if (status != MapExpStatus::Ready || m_wrdController == nullptr)
         return;
 
-    if (m_wrdController == nullptr)
-        return;
-
-    // <新的自绘制逻辑>
-
-    // 首先检查地图状态
-    if (VState->getAlpha() > 0.0f && m_wrdController->isMapReady())
-    {
-
-        auto cameraProp =
-            m_wrdController->queryPhysicalProp(m_focusEntityIndex);
-        if (cameraProp == nullptr)
-        {
-            LOG("渲染的焦点实体物理信息并不存在");
-            return;
-        }
-
-        // <开始绘制>
-
-        SDL_Rect rect{0, 0, 1920, 1080};
-
-        float viewportX = 0.0f;
-
-        switch (vType)
-        {
-        case ViewportType::LeftHalf:
-        {
-            viewportX -= 0.25f;
-            rect.x = 0;
-            rect.y = 0;
-            rect.w = 960;
-            rect.h = 1080;
-            break;
-        }
-        case ViewportType::RightHalf:
-        {
-            viewportX += 0.25f;
-            rect.x = 960;
-            rect.y = 0;
-            rect.w = 960;
-            rect.h = 1080;
-            break;
-        }
-        default:
-            break;
-        }
-
-        SDL_RenderSetClipRect(
-            OpenCoreManagers::GFXManager.getInstance().getRenderer(), &rect);
-
-        auto Position = cameraProp->getPosition();
-
-        int center_x = Position.x + 0.5f;
-        int center_y = Position.y + 0.5f;
-
-        float offsetX = Position.x - center_x;
-        float offsetY = Position.y - center_y;
-
-        auto left_border = (renderRangeX / 2);
-        auto up_border = (renderRangeY - 1) / 2;
-
-        for (int y = -up_border - 1; y <= up_border + 1; ++y)
-        {
-            for (int x = -left_border; x <= left_border; ++x)
-            {
-                int gx = x + center_x;
-                int gy = y + center_y;
-
-                auto bInfo = m_wrdController->queryBlockInfo(gx, gy);
-
-                if (bInfo == std::nullopt)
-                    continue;
-                if (bInfo->Terrain == 2 && bInfo->STRuct == 2)
-                    continue;
-
-                // <Terrain纹理板块>
-                tileRenderer->setPosition(
-                    (x - offsetX) * widthFactor + 0.5f + viewportX,
-                    (y - offsetY + Position.z) * heightFactor + 0.5f);
-
-                tileRenderer->setTransparency(1.0f);
-                tileRenderer->getVisualState()->frameIndex = bInfo->Terrain;
-                tileRenderer->setTileType(TileType::Terrain);
-                tileRenderer->setTileID(bInfo->Terrain);
-                tileRenderer->Draw();
-                // <Terrain纹理板块>
-
-                tileRenderer->setTileType(TileType::Terrain);
-                tileRenderer->setTileID(bInfo->STRuct);
-                tileRenderer->Draw();
-            }
-        }
-
-        vector<Entity *> Entities;
-
-        m_wrdController->getEntities(Entities);
-
-        sort(Entities.begin(), Entities.end(),
-             [](Entity *a, Entity *b)
-             {
-                 return a->getPhysicalProperties().getPosition().y <
-                        b->getPhysicalProperties().getPosition().y;
-             });
-
-        for (auto ptr : Entities)
-        {
-            auto ePos = ptr->getPhysicalProperties().getPosition();
-            Vec3 absPos;
-
-            absPos.x = (ePos.x - Position.x) * widthFactor + viewportX + 0.5f;
-            absPos.y = (ePos.y - Position.y) * heightFactor + 0.5f;
-            absPos.z = 0;
-
-            ptr->Draw(absPos);
-        }
-
-        m_symbol->setPosition(0.5f, 0.3f);
-        m_symbol->Draw();
-
-        m_itemContainer->Draw();
-
-        m_healthbar->setHealth(
-            m_wrdController->getEntityByID(m_focusEntityIndex)
-                ->getHealthHook());
-        m_healthbar->Draw();
-
-        SDL_RenderSetClipRect(
-            OpenCoreManagers::GFXManager.getInstance().getRenderer(), nullptr);
-    }
-    else
+    if (VState->getAlpha() <= 0.0f)
     {
         if (!m_wrdController->isMapReady())
             m_wrdController->initMap();
         LOG("世界控制器尚未准备完毕");
+        return;
     }
+
+    if (!m_wrdController->isMapReady())
+    {
+        m_wrdController->initMap();
+        LOG("世界控制器尚未准备完毕");
+        return;
+    }
+
+    auto cameraProp = m_wrdController->queryPhysicalProp(m_focusEntityIndex);
+    if (cameraProp == nullptr)
+    {
+        LOG("渲染的焦点实体物理信息并不存在");
+        return;
+    }
+
+    auto *renderer = OpenCoreManagers::GFXManager.getInstance().getRenderer();
+
+    SDL_Rect rect{0, 0, 1920, 1080};
+    float viewportX = 0.0f;
+
+    switch (vType)
+    {
+    case ViewportType::LeftHalf:
+        viewportX -= 0.25f;
+        rect.x = 0;
+        rect.y = 0;
+        rect.w = 960;
+        rect.h = 1080;
+        break;
+    case ViewportType::RightHalf:
+        viewportX += 0.25f;
+        rect.x = 960;
+        rect.y = 0;
+        rect.w = 960;
+        rect.h = 1080;
+        break;
+    default:
+        break;
+    }
+
+    SDL_RenderSetClipRect(renderer, &rect);
+
+    auto Position = cameraProp->getPosition();
+
+    int center_x = Position.x + 0.5f;
+    int center_y = Position.y + 0.5f;
+
+    float offsetX = Position.x - center_x;
+    float offsetY = Position.y - center_y;
+
+    auto left_border = (renderRangeX / 2);
+    auto up_border = (renderRangeY - 1) / 2;
+
+    for (int y = -up_border - 1; y <= up_border + 1; ++y)
+    {
+        for (int x = -left_border; x <= left_border; ++x)
+        {
+            int gx = x + center_x;
+            int gy = y + center_y;
+
+            auto bInfo = m_wrdController->queryBlockInfo(gx, gy);
+
+            if (bInfo == std::nullopt)
+                continue;
+            if (bInfo->Terrain == 2 && bInfo->STRuct == 2)
+                continue;
+
+            tileRenderer->setPosition(
+                (x - offsetX) * widthFactor + 0.5f + viewportX,
+                (y - offsetY + Position.z) * heightFactor + 0.5f);
+
+            tileRenderer->setTransparency(1.0f);
+            tileRenderer->getVisualState()->frameIndex = bInfo->Terrain;
+            tileRenderer->setTileType(TileType::Terrain);
+            tileRenderer->setTileID(bInfo->Terrain);
+            tileRenderer->Draw();
+
+            tileRenderer->setTileType(TileType::Terrain);
+            tileRenderer->setTileID(bInfo->STRuct);
+            tileRenderer->Draw();
+        }
+    }
+
+    vector<Entity *> Entities;
+    m_wrdController->getEntities(Entities);
+
+    sort(Entities.begin(), Entities.end(),
+         [](Entity *a, Entity *b)
+         {
+             return a->getPhysicalProperties().getPosition().y <
+                    b->getPhysicalProperties().getPosition().y;
+         });
+
+    for (auto ptr : Entities)
+    {
+        auto ePos = ptr->getPhysicalProperties().getPosition();
+        Vec3 absPos;
+
+        absPos.x = (ePos.x - Position.x) * widthFactor + viewportX + 0.5f;
+        absPos.y = (ePos.y - Position.y) * heightFactor + 0.5f;
+        absPos.z = 0;
+
+        ptr->Draw(absPos);
+
+        if (abs(ePos.x - Position.x) < 2.0f &&
+            abs(ePos.y - Position.y) < 0.5f &&
+            ePos != cameraProp->getPosition())
+        {
+            m_symbol->setPosition(absPos.x, absPos.y - 0.06f);
+            m_symbol->Draw();
+        }
+    }
+
+    m_symbol->setPosition(0.5f, 0.3f);
+    // m_symbol->Draw();
+
+    m_itemContainer->Draw();
+
+    m_healthbar->setHealth(
+        m_wrdController->getEntityByID(m_focusEntityIndex)->getHealthHook());
+    m_healthbar->Draw();
+
+    SDL_RenderSetClipRect(renderer, nullptr);
 }
 
 void MapExplorer::onUpdate(float totalTime)
@@ -212,9 +194,6 @@ void MapExplorer::onUpdate(float totalTime)
     if (status == MapExpStatus::Creating)
     {
         onEnter();
-    }
-    else
-    {
     }
 }
 
@@ -310,11 +289,6 @@ void MapExplorer::setExplorerViewPort(ViewportType vType)
     if (vType != ViewportType::Fullscreen && vType != ViewportType::Free)
     {
         renderRangeX *= 0.5;
-
-        // widthFactor = 1.0f / renderRangeX;
-        // heightFactor = 1.0f / renderRangeY;
-
-        // tileRenderer->setScale(widthFactor, heightFactor);
     }
 }
 
@@ -340,8 +314,6 @@ void MapExplorer::initComponents()
 
     m_itemContainer = UI<ItemContainer>("itemContainer", 99, 2027, 8, 1);
     m_itemContainer->setParentContainer(this);
-
-    auto thing = m_wrdController;
 
     m_itemContainer->Configure()
         .Parent(this)
