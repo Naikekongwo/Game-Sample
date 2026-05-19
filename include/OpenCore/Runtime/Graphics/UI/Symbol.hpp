@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OpenCore/Core/Math/OpenCore_Vec3.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/IDrawableObject.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
 
@@ -17,6 +18,7 @@ class Symbol : public UIElement
 
     void handlEvents(SDL_Event &event, float totalTime) override;
     void onUpdate(float totalTime) override;
+
     void Draw() override;
 
     bool onDestroy() override { return true; }

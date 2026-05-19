@@ -1,4 +1,5 @@
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
+#include "OpenCore/Core/Macros.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
@@ -72,7 +73,10 @@ void MapExplorer::Draw()
         return;
     }
 
-    auto cameraProp = m_wrdController->queryPhysicalProp(m_focusEntityIndex);
+    auto focusEntity = m_wrdController->getEntityByID(m_focusEntityIndex);
+
+    auto cameraProp =
+        focusEntity ? &focusEntity->getPhysicalProperties() : nullptr;
     if (cameraProp == nullptr)
     {
         LOG("渲染的焦点实体物理信息并不存在");
@@ -168,17 +172,18 @@ void MapExplorer::Draw()
 
         ptr->Draw(absPos);
 
+        Vec3 symbolPos = absPos;
+        symbolPos.y -= 0.06f;
+
         if (abs(ePos.x - Position.x) < 2.0f &&
             abs(ePos.y - Position.y) < 0.5f &&
             ePos != cameraProp->getPosition())
         {
-            m_symbol->setPosition(absPos.x, absPos.y - 0.06f);
+            m_symbol->setPosition(0.5f + viewportX, 0.27f);
+            m_symbol->setScale(0.05f, 0.05f * widthheight);
             m_symbol->Draw();
         }
     }
-
-    m_symbol->setPosition(0.5f, 0.3f);
-    // m_symbol->Draw();
 
     m_itemContainer->Draw();
 
