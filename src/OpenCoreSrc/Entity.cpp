@@ -18,6 +18,11 @@ void Entity::Configure(const EntityInfo &eInfo)
     // 碰撞箱只取 Y 轴底部 2/3（向下取整），上半部分不参与碰撞
     pProperties.setCollisionHeightScale(2.0f / 3.0f);
 
+    // 构建动画组映射表
+    m_animMap.clear();
+    for (const auto &group : eInfo.animations)
+        m_animMap[group.id] = group;
+
     status = EntityStatus::Ready;
 }
 
@@ -53,7 +58,7 @@ void Entity::Draw(const Vec3 &absPos)
 
     renderer->setPosition(absPos.x, absPos.y);
     renderer->setTransparency(1.0f);
-    renderer->getVisualState()->frameIndex = m_baseFrame;
+    renderer->getVisualState()->frameIndex = getCurrentFrameIndex();
     renderer->Draw();
 }
 
@@ -79,7 +84,7 @@ void Entity::Draw(float cameraX, float cameraY)
         renderer->setPosition(0.5f + (Position.x - cameraX) * widthRelative,
                               0.5f + (Position.y - cameraY) * heightRelative);
         renderer->setTransparency(1.0f);
-        renderer->getVisualState()->frameIndex = m_baseFrame;
+        renderer->getVisualState()->frameIndex = getCurrentFrameIndex();
         renderer->Draw();
     }
     else if (renderer)
@@ -100,15 +105,46 @@ void Entity::onUpdate(float totalTime)
     Vec3 newPosition = pProperties.getPosition();
     if (!canMoveTo(newPosition))
     {
-        // if (pProperties.getTileWidth() > 1 || pProperties.getTileHeight() >
-        // 1)
-        //     LOG("[onUpdate] multi-tile entity reverted from ({:.2f},{:.2f})
-        //     to ({:.2f},{:.2f}) tw={} th={}",
-        //         newPosition.x, newPosition.y, previousPosition.x,
-        //         previousPosition.y, pProperties.getTileWidth(),
-        //         pProperties.getTileHeight());
         pProperties.setPosition(previousPosition);
         pProperties.setSpeed({0, 0, 0});
+    }
+
+    // ─── 动画状态机 ───────────────────────────────────
+    Vec3 spd = pProperties.getSpeed();
+    bool moving = (spd.x != 0.0f || spd.y != 0.0f);
+
+    if (moving)
+    {
+        short animId = directionToAnimId(pProperties.getDirection());
+
+        // 方向切换时重置帧
+        if (animId != m_currentAnimId)
+        {
+            m_currentAnimId = animId;
+            m_currentFrame = 0;
+            m_frameTimer = 0.0f;
+        }
+
+        // 推进帧
+        auto it = m_animMap.find(m_currentAnimId);
+        if (it != m_animMap.end() && !it->second.frames.empty())
+        {
+            auto &group = it->second;
+            m_frameTimer += deltaTime;
+            float frameInterval = 1.0f / group.frameRate;
+            while (m_frameTimer >= frameInterval)
+            {
+                m_frameTimer -= frameInterval;
+                m_currentFrame = (m_currentFrame + 1) % group.frames.size();
+            }
+        }
+    }
+    else
+    {
+        // 停止 → idle
+        m_currentAnimId = 0;
+        m_currentFrame = 0;
+        m_frameTimer = 0.0f;
     }
 
     // 刷新血量
@@ -118,6 +154,33 @@ void Entity::onUpdate(float totalTime)
         *m_healthPercent = 1.0f;
 
     lastTime = totalTime;
+}
+
+short Entity::directionToAnimId(Direction dir)
+{
+    switch (dir)
+    {
+    case Direction::Up:    return 1;
+    case Direction::Down:  return 2;
+    case Direction::Left:  return 3;
+    case Direction::Right: return 4;
+    default:               return 0;
+    }
+}
+
+uint16_t Entity::getCurrentFrameIndex() const
+{
+    if (m_currentAnimId != 0)
+    {
+        auto it = m_animMap.find(m_currentAnimId);
+        if (it != m_animMap.end() && m_currentFrame < it->second.frames.size())
+        {
+            const auto &frame = it->second.frames[m_currentFrame];
+            return static_cast<uint16_t>(frame.originRow * info.texture.gridCols +
+                                         frame.originCol);
+        }
+    }
+    return m_baseFrame;
 }
 
 bool Entity::canMoveTo(const Vec3 &pos) const

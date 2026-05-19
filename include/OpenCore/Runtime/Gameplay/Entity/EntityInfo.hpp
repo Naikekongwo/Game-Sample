@@ -4,6 +4,7 @@
 // 实体的注册类
 
 #include <cstdint>
+#include <vector>
 
 /// @brief 纹理资源描述，绑定纹理ID与精灵表网格尺寸
 struct TextureAsset
@@ -15,10 +16,20 @@ struct TextureAsset
     uint8_t originRow = 0;  // 该实体纹理在精灵表中的起始行
 };
 
+/// @brief 动画组：一个方向的移动动画
+struct AnimationGroup
+{
+    short id = 0;                       // 1=上 2=下 3=左 4=右, >4 扩展
+    uint8_t frameRate = 8;              // 每秒帧数
+    std::vector<TextureAsset> frames;   // 每帧对应的纹理格子
+};
+
 struct EntityInfo
 {
     short EntityTypeID = 0;
-    TextureAsset texture;   // 纹理资源（含ID与网格）
+    TextureAsset texture;   // 静止时的默认贴图
+
+    std::vector<AnimationGroup> animations; // 移动动画组
 
     uint8_t backpackCapacity = 0;
 

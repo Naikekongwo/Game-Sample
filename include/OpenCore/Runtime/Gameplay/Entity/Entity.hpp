@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <unordered_map>
 
 #define ENTITY_PLAYER_ID 1
 
@@ -17,6 +18,7 @@ class Sprite;
 
 using std::string;
 using std::unique_ptr;
+using std::unordered_map;
 
 enum EntityStatus
 {
@@ -83,4 +85,16 @@ class Entity
     uint8_t maxHealth = 255;
 
     float lastTime = 0.0f;
+
+    // ─── 动画状态 ───────────────────────────────────
+    unordered_map<short, AnimationGroup> m_animMap; // id → 动画组
+    short m_currentAnimId = 0;                      // 当前播放 id，0=idle
+    uint8_t m_currentFrame = 0;                     // 当前帧序号
+    float m_frameTimer = 0.0f;                      // 帧计时器（秒）
+
+    /// @brief Direction → animId 映射（Up=1, Down=2, Left=3, Right=4）
+    static short directionToAnimId(Direction dir);
+
+    /// @brief 返回当前应显示的帧索引（动画帧或 idle 帧）
+    uint16_t getCurrentFrameIndex() const;
 };
