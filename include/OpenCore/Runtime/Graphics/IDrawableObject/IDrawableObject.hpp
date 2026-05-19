@@ -12,7 +12,9 @@
 #include <memory>
 #include <string>
 
+using std::shared_ptr;
 using std::string;
+using std::string_view;
 using std::unique_ptr;
 
 class AnimationManager;
@@ -41,6 +43,8 @@ class IDrawableObject
 {
   public:
     IDrawableObject();
+
+    IDrawableObject(string_view id, short layer, short textureID);
 
     virtual ~IDrawableObject() = default;
 
@@ -185,6 +189,8 @@ class IDrawableObject
     int magnetFactor = 0;                      ///< 磁吸因子（像素）
     bool absolutePosite = true; ///< 位置是否基于绝对坐标（否则为相对父容器）
     IDrawableObject *parentContainer = nullptr; ///< 父容器指针
+
+    shared_ptr<Texture> neo_texture; // 新纹理，其生命周期由外部所管理
 };
 
 #endif //_IDRAWABLE_H_

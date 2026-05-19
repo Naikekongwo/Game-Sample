@@ -1,6 +1,8 @@
 
+#include "OpenCore/Runtime/Graphics/IDrawableObject/IDrawableObject.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include <cstdint>
+#include <optional>
 
 void IDrawableObject::setSequential(bool sequential)
 {
@@ -169,6 +171,28 @@ IDrawableObject::IDrawableObject()
 
     AnimeManager = std::make_unique<AnimationManager>();
     VState = std::make_unique<VisualState>();
+
+    // 此构造器理应给那些不需要纹理的元素使用，所以不加载纹理
+}
+
+IDrawableObject::IDrawableObject(string_view id, short layer, short textureID)
+{
+    this->id = id;
+    this->layer = layer;
+
+    AnimeManager = std::make_unique<AnimationManager>();
+    VState = std::make_unique<VisualState>();
+
+    auto texOpt = OpenCoreManagers::TexMetaManager.getTexture(textureID);
+    if (texOpt != std::nullopt)
+    {
+        neo_texture = texOpt.value();
+    }
+    else
+    {
+        LOG("元素初始化时候遇到了空纹理，元素ID {} 纹理ID {}", id.data(),
+            textureID);
+    }
 }
 
 void IDrawableObject::setParentContainer(IDrawableObject *parentContainer)

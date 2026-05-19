@@ -38,6 +38,7 @@ constexpr int DEBUG_MODE = DEBUG_COPYRIGHT | DEBUG_MAIN | DEBUG_MAP;
 #include "OpenCore/Runtime/Gameplay/Entity/EntityRegister.hpp"
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/Manager/GraphicsManager.hpp"
+#include "OpenCore/Runtime/Graphics/Manager/TextureMeta.hpp"
 
 #include "OpenCore/Core/Helpers/Debugger.hpp"
 
@@ -58,6 +59,7 @@ inline EventManager &EvtManager = EventManager::GetInstance();
 inline GraphicsManager &GFXManager = GraphicsManager::getInstance();
 inline SoundEffectManager &SFXManager = SoundEffectManager::getInstance();
 inline SettingsManager &SetManager = SettingsManager::getInstance();
+inline TextureMetaManager &TexMetaManager = TextureMetaManager::getInstance();
 } // namespace OpenCoreManagers
 
 /**

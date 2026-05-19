@@ -57,6 +57,8 @@ bool OpenEngine::Initialize()
     (void)ThrManager;
     // 创建资源管理器实例
     (void)ResManager;
+    // 创建纹理元管理器
+    (void)TexMetaManager;
     // 创建音效管理器实例
     (void)SFXManager;
     // 创建场景控制器实例

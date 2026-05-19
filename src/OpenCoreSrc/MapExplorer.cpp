@@ -142,8 +142,7 @@ void MapExplorer::Draw()
 
                 if (bInfo == std::nullopt)
                     continue;
-                if (bInfo->Terrain == 2 &&
-                    bInfo->STRuct == 2)
+                if (bInfo->Terrain == 2 && bInfo->STRuct == 2)
                     continue;
 
                 // <Terrain纹理板块>
