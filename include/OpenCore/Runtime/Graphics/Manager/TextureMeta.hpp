@@ -41,6 +41,14 @@ class TextureMetaManager final
 
     bool registerTextureMeta(TextureMeta meta);
 
+    optional<TextureMeta> queryTextureMeta(short textureID) const
+    {
+        auto it = _metaRegistry.find(textureID);
+        if (it != _metaRegistry.end())
+            return it->second;
+        return std::nullopt;
+    }
+
     // 支持缓存机制的纹理获取函数
     optional<shared_ptr<Texture>> getTexture(short textureID);
 

@@ -11,6 +11,7 @@
 #include <optional>
 
 #include "Eclipsea/Eclipsea.hpp"
+#include "OpenCore/Runtime/Graphics/UI/Symbol.hpp"
 
 MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr)
@@ -179,6 +180,7 @@ void MapExplorer::Draw()
             abs(ePos.y - Position.y) < 0.5f &&
             ePos != cameraProp->getPosition())
         {
+            m_symbol->SetSymbolType(SYMBOL_WARNING);
             m_symbol->setPosition(0.5f + viewportX, 0.27f);
             m_symbol->setScale(0.05f, 0.05f * widthheight);
             m_symbol->Draw();
