@@ -12,6 +12,7 @@ void Entity::Configure(const EntityInfo &eInfo)
             info.backpackCapacity);
 
     m_healthPercent = std::make_shared<float>(1.0f);
+    m_movable = eInfo.movable;
 
     pProperties.setTileSize(static_cast<uint8_t>(info.widthFactor),
                             static_cast<uint8_t>(info.heightFactor));
@@ -31,8 +32,8 @@ void Entity::createRenderer()
     if (!renderer && info.EntityTypeID != 0)
     {
         renderer =
-            std::make_unique<Mob>(info.texture.textureID, info.texture.gridCols,
-                                  info.texture.gridRows);
+            std::make_unique<Mob>(info.texture.meta.textureID, info.texture.meta.cols,
+                                  info.texture.meta.rows);
         renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);
 
         widthRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderWidth();
@@ -43,7 +44,7 @@ void Entity::createRenderer()
         renderer->Configure().Scale(info.widthFactor * widthRelative, 0.0f);
 
         m_baseFrame = static_cast<uint16_t>(info.texture.originRow *
-                                                info.texture.gridCols +
+                                                info.texture.meta.cols +
                                             info.texture.originCol);
     }
 }
@@ -101,50 +102,55 @@ void Entity::onUpdate(float totalTime)
     // 刷新
     pProperties.onUpdate(totalTime);
 
-    // 碰撞检测：若新位置不可通行则回退
-    Vec3 newPosition = pProperties.getPosition();
-    if (!canMoveTo(newPosition))
+    if (!m_movable)
     {
-        pProperties.setPosition(previousPosition);
         pProperties.setSpeed({0, 0, 0});
-    }
-
-    // ─── 动画状态机 ───────────────────────────────────
-    Vec3 spd = pProperties.getSpeed();
-    bool moving = (spd.x != 0.0f || spd.y != 0.0f);
-
-    if (moving)
-    {
-        short animId = directionToAnimId(pProperties.getDirection());
-
-        // 方向切换时重置帧
-        if (animId != m_currentAnimId)
-        {
-            m_currentAnimId = animId;
-            m_currentFrame = 0;
-            m_frameTimer = 0.0f;
-        }
-
-        // 推进帧
-        auto it = m_animMap.find(m_currentAnimId);
-        if (it != m_animMap.end() && !it->second.frames.empty())
-        {
-            auto &group = it->second;
-            m_frameTimer += deltaTime;
-            float frameInterval = 1.0f / group.frameRate;
-            while (m_frameTimer >= frameInterval)
-            {
-                m_frameTimer -= frameInterval;
-                m_currentFrame = (m_currentFrame + 1) % group.frames.size();
-            }
-        }
+        pProperties.setDesiredVelocity({0, 0, 0});
     }
     else
     {
-        // 停止 → idle
-        m_currentAnimId = 0;
-        m_currentFrame = 0;
-        m_frameTimer = 0.0f;
+        // 碰撞检测：若新位置不可通行则回退
+        Vec3 newPosition = pProperties.getPosition();
+        if (!canMoveTo(newPosition))
+        {
+            pProperties.setPosition(previousPosition);
+            pProperties.setSpeed({0, 0, 0});
+        }
+
+        // ─── 动画状态机 ───────────────────────────────────
+        Vec3 spd = pProperties.getSpeed();
+        bool moving = (spd.x != 0.0f || spd.y != 0.0f);
+
+        if (moving)
+        {
+            short animId = directionToAnimId(pProperties.getDirection());
+
+            if (animId != m_currentAnimId)
+            {
+                m_currentAnimId = animId;
+                m_currentFrame = 0;
+                m_frameTimer = 0.0f;
+            }
+
+            auto it = m_animMap.find(m_currentAnimId);
+            if (it != m_animMap.end() && !it->second.frames.empty())
+            {
+                auto &group = it->second;
+                m_frameTimer += deltaTime;
+                float frameInterval = 1.0f / group.frameRate;
+                while (m_frameTimer >= frameInterval)
+                {
+                    m_frameTimer -= frameInterval;
+                    m_currentFrame = (m_currentFrame + 1) % group.frames.size();
+                }
+            }
+        }
+        else
+        {
+            m_currentAnimId = 0;
+            m_currentFrame = 0;
+            m_frameTimer = 0.0f;
+        }
     }
 
     // 刷新血量
@@ -176,7 +182,7 @@ uint16_t Entity::getCurrentFrameIndex() const
         if (it != m_animMap.end() && m_currentFrame < it->second.frames.size())
         {
             const auto &frame = it->second.frames[m_currentFrame];
-            return static_cast<uint16_t>(frame.originRow * info.texture.gridCols +
+            return static_cast<uint16_t>(frame.originRow * info.texture.meta.cols +
                                          frame.originCol);
         }
     }

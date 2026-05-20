@@ -54,12 +54,14 @@ class Entity
     PhysicalProperties &getPhysicalProperties() { return pProperties; }
     BackPtr &getBackpack() { return backpack; }
     shared_ptr<float> getHealthHook() { return m_healthPercent; }
+    bool isMovable() const noexcept { return m_movable; }
     /// @brief 检查实体在目标位置是否会与不可通行的瓦片碰撞
     bool canMoveTo(const Vec3 &pos) const;
 
     void setDesiredVelocity(const Vec3 &vel)
     {
-        pProperties.setDesiredVelocity(vel);
+        if (m_movable)
+            pProperties.setDesiredVelocity(vel);
     }
     void configMoveParams(float maxAccel, float gain)
     {
@@ -83,6 +85,7 @@ class Entity
 
     shared_ptr<float> m_healthPercent;
     uint8_t maxHealth = 255;
+    uint8_t m_movable = 1;
 
     float lastTime = 0.0f;
 

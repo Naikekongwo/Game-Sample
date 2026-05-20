@@ -34,13 +34,13 @@ bool Eclipsea::StartUp()
 #pragma region 注册实体
     auto &entityReg = engine.getEntityRegister();
 
-    EntityInfo player{PLAYER_ENTITYTYPE, {player_texture, 4, 4}, {{1,6,{{player_texture,4,4,0,3},{player_texture,4,4,1,3},{player_texture,4,4,2,3},{player_texture,4,4,3,3}}},{2,6,{{player_texture,4,4,0,0},{player_texture,4,4,1,0},{player_texture,4,4,2,0},{player_texture,4,4,3,0}}},{3,6,{{player_texture,4,4,0,1},{player_texture,4,4,1,1},{player_texture,4,4,2,1},{player_texture,4,4,3,1}}},{4,6,{{player_texture,4,4,0,2},{player_texture,4,4,1,2},{player_texture,4,4,2,2},{player_texture,4,4,3,2}}}}, 8, 1.0f};
+    EntityInfo player = EntityInfo::makeCharacter(PLAYER_ENTITYTYPE, player_texture, 8, true, 1.0f);
     entityReg.registerEntity(player);
 
-    EntityInfo player1{2, {chao_texture, 4, 4}, {{1,6,{{chao_texture,4,4,0,3},{chao_texture,4,4,1,3},{chao_texture,4,4,2,3},{chao_texture,4,4,3,3}}},{2,6,{{chao_texture,4,4,0,0},{chao_texture,4,4,1,0},{chao_texture,4,4,2,0},{chao_texture,4,4,3,0}}},{3,6,{{chao_texture,4,4,0,1},{chao_texture,4,4,1,1},{chao_texture,4,4,2,1},{chao_texture,4,4,3,1}}},{4,6,{{chao_texture,4,4,0,2},{chao_texture,4,4,1,2},{chao_texture,4,4,2,2},{chao_texture,4,4,3,2}}}}, 8 , 1.0f};
+    EntityInfo player1 = EntityInfo::makeCharacter(2, chao_texture, 8, true, 1.0f);
     entityReg.registerEntity(player1);
 
-    EntityInfo purifier{100, {2044, 8, 8, 0, 1}, {}, 4, 3.0f, 3.0f};
+    EntityInfo purifier{100, {{2044, 8, 8}, 0, 1}, {}, 4, 0, 3.0f, 3.0f};
     entityReg.registerEntity(purifier);
 #pragma endregion
 
