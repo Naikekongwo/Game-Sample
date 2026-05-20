@@ -7,6 +7,7 @@
 enum SymbolType : int
 {
     SYMBOL_QUESTION,
+    SYMBOL_WARNING,
 };
 
 class Symbol : public UIElement
