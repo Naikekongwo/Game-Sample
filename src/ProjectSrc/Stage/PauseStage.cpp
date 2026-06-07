@@ -1,4 +1,5 @@
 #include "Eclipsea/Eclipsea.hpp"
+#include "Eclipsea/Stage/MainStage.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/World/Stage/OverlayStage.hpp"
@@ -66,6 +67,15 @@ void PauseStage::initializeComponents()
         .Anchor(AnchorPoint::Center)
         .Posite(0.5f, 0.3f)
         .Scale(0.0f, 0.25f);
+
+    backmain->setOnClick(
+        [this]()
+        {
+            LOG("Setting button clicked");
+            auto main = std::make_unique<MainStage>(timer, sController);
+            sController->changeStage(std::move(main));
+            // TODO: 打开设置界面
+        });
 
     Elements->PushElement(std::move(backmain));
 

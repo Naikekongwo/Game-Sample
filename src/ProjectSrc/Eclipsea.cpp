@@ -34,14 +34,19 @@ bool Eclipsea::StartUp()
 #pragma region 注册实体
     auto &entityReg = engine.getEntityRegister();
 
-    EntityInfo player = EntityInfo::makeCharacter(PLAYER_ENTITYTYPE, player_texture, 8, true, 1.0f);
+    EntityInfo player = EntityInfo::makeCharacter(
+        PLAYER_ENTITYTYPE, player_texture, 8, true, 1.0f);
     entityReg.registerEntity(player);
 
-    EntityInfo player1 = EntityInfo::makeCharacter(2, chao_texture, 8, true, 1.0f);
+    EntityInfo player1 =
+        EntityInfo::makeCharacter(2, chao_texture, 8, true, 1.0f);
     entityReg.registerEntity(player1);
 
     EntityInfo purifier{100, {{2044, 8, 8}, 0, 1}, {}, 4, 0, 3.0f, 3.0f};
     entityReg.registerEntity(purifier);
+
+    EntityInfo storage{101, {{2044, 8, 8}, 0, 4}, {}, 4, 0, 2.0f, 2.0f};
+    entityReg.registerEntity(storage);
 #pragma endregion
 
 #pragma region 注册物品相关内容

@@ -4,6 +4,9 @@
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ImageBoard.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
+#include "OpenCore/Runtime/Graphics/UI/TextArea.hpp"
+#include <SDL2/SDL_keycode.h>
+#include <optional>
 
 PurifierStage::PurifierStage(Timer *timer, StageManager *sController)
 {
@@ -15,6 +18,18 @@ PurifierStage::PurifierStage(Timer *timer, StageManager *sController)
 
 bool PurifierStage::handlEvents(SDL_Event *event)
 {
+    switch (event->key.keysym.sym)
+    {
+    case SDLK_ESCAPE:
+    {
+        if (phase != PurifierPhase::Normal)
+            return true; // 防止多次点击
+        phase = PurifierPhase::Exiting;
+        break;
+    }
+    default:
+        break;
+    }
     Elements->handlEvents(*event, timer->getTotalTime());
     if (ItemPickedUp)
     {
@@ -27,6 +42,177 @@ bool PurifierStage::handlEvents(SDL_Event *event)
 void PurifierStage::onUpdate()
 {
     Elements->onUpdate(timer->getTotalTime());
+
+    auto itemName = Elements->find("item_name");
+    if (OpenEngine::getInstance()
+            .getServerWorldController()
+            ->queryHomelessItemInfo() != std::nullopt)
+    {
+        if (itemName)
+        {
+            auto itemNamePtr = dynamic_cast<TextArea *>(itemName);
+            switch (OpenEngine::getInstance()
+                        .getServerWorldController()
+                        ->queryHomelessItemInfo()
+                        ->typeID)
+            {
+            case 1:
+                itemNamePtr->setText("空瓶");
+                break;
+            case 2:
+                itemNamePtr->setText("满瓶");
+                break;
+            case 3:
+                itemNamePtr->setText("基础控制单元");
+                break;
+            case 4:
+                itemNamePtr->setText("均衡控制单元");
+                break;
+            case 5:
+                itemNamePtr->setText("高级控制单元");
+                break;
+            case 6:
+                itemNamePtr->setText("基础反应堆");
+                break;
+            case 7:
+                itemNamePtr->setText("均衡反应堆");
+                break;
+            case 8:
+                itemNamePtr->setText("高级反应堆");
+                break;
+            case 9:
+                itemNamePtr->setText("基础储水罐");
+                break;
+            case 10:
+                itemNamePtr->setText("均衡储水罐");
+                break;
+            case 11:
+                itemNamePtr->setText("高级储水罐");
+                break;
+            }
+        }
+    }
+    else
+    {
+        auto itemNamePtr = dynamic_cast<TextArea *>(itemName);
+        auto &settings = OpenCoreManagers::SetManager.getInstance();
+        float water = *settings.getWaterStorage();
+        float maxCap = *settings.getWaterStorageMax();
+        float purified = *settings.getPurifiedWaterStorage();
+        itemNamePtr->setText(
+            std::format("水箱容量：{:.0f}/{:.0f} 纯净水储量：{:.1f}", water,
+                        maxCap, purified));
+    }
+
+    // 根据纯净水量切换字体颜色: >250 天蓝, 否则白色
+    {
+        auto itemNamePtr = dynamic_cast<TextArea *>(itemName);
+        float purified = *OpenCoreManagers::SetManager.getInstance()
+                              .getPurifiedWaterStorage();
+        if (purified > 250.0f)
+            itemNamePtr->setTextColor(135, 206, 235);
+        else
+            itemNamePtr->setTextColor(255, 255, 255);
+    }
+
+    // 根据容器中的物品更新净水器参数
+    {
+        auto wrdController =
+            OpenEngine::getInstance().getServerWorldController();
+        auto purifierBackpack = wrdController->getBackpackByEntityID(100);
+
+        auto &purifyRate =
+            *OpenCoreManagers::SetManager.getInstance().getWaterPurifyRate();
+        auto &storageMax =
+            *OpenCoreManagers::SetManager.getInstance().getWaterStorageMax();
+
+        // 核反应堆 (nuclear_item, index 0, typeID 6~8) → waterPurifyRate
+        auto nuclearSlot = purifierBackpack->getItem(0);
+        if (nuclearSlot.has_value() && nuclearSlot->item.has_value())
+        {
+            short typeID = nuclearSlot->item->getTypeID();
+            if (typeID >= 6 && typeID <= 8)
+                purifyRate =
+                    static_cast<float>(typeID - 5); // 6→1.0, 7→2.0, 8→3.0
+            else
+                purifyRate = 1.0f;
+        }
+        else
+        {
+            purifyRate = 1.0f;
+        }
+
+        // 储水罐/出水管 (storage_item, index 2, typeID 9~11) → waterStorageMax
+        auto storageSlot = purifierBackpack->getItem(2);
+        if (storageSlot.has_value() && storageSlot->item.has_value())
+        {
+            short typeID = storageSlot->item->getTypeID();
+            if (typeID == 9)
+                storageMax = 1000.0f;
+            else if (typeID == 10)
+                storageMax = 2000.0f;
+            else if (typeID == 11)
+                storageMax = 3000.0f;
+            else
+                storageMax = 1.0f;
+        }
+        else
+        {
+            storageMax = 1.0f;
+        }
+
+        // 出水口 (filter_item, index 3):
+        //   空瓶(typeID=1) → 消耗250纯净水 → 满瓶直接放入玩家背包
+        //   满瓶(typeID=2) → waterStorage+250 → 空瓶直接放入玩家背包
+        auto filterSlot = purifierBackpack->getItem(3);
+        if (filterSlot.has_value() && filterSlot->item.has_value())
+        {
+            short typeID = filterSlot->item->getTypeID();
+            auto playerBackpack = wrdController->getBackpackByEntityID(1);
+
+            if (typeID == 1)
+            {
+                auto &purified = *OpenCoreManagers::SetManager.getInstance()
+                                      .getPurifiedWaterStorage();
+                if (purified >= 250.0f)
+                {
+                    purified -= 250.0f;
+                    purifierBackpack->removeItem(3); // 清空出水口
+                    playerBackpack->addItem(2, 1);   // 满瓶放入玩家背包
+                    LOG("出水口: 空瓶接满, 满瓶已放入背包");
+                }
+            }
+            else if (typeID == 2)
+            {
+                auto &water = *OpenCoreManagers::SetManager.getInstance()
+                                   .getWaterStorage();
+                water += 250.0f;
+                purifierBackpack->removeItem(3); // 清空出水口
+                playerBackpack->addItem(1, 1);   // 空瓶放回玩家背包
+                LOG("出水口: 满瓶放水, 空瓶已放回背包");
+            }
+        }
+    }
+
+    // 净水逻辑: 消耗 waterStorage → 产出 purifiedWaterStorage
+    {
+        auto &settings = OpenCoreManagers::SetManager.getInstance();
+        float &water = *settings.getWaterStorage();
+        float &purified = *settings.getPurifiedWaterStorage();
+        float rate = *settings.getWaterPurifyRate();
+
+        float amount = 5.0f * rate * static_cast<float>(timer->getDeltaTime());
+        if (water >= amount)
+        {
+            water -= amount;
+            purified += amount;
+        }
+        else if (water > 0.0f)
+        {
+            purified += water;
+            water = 0.0f;
+        }
+    }
 
     if (phase == PurifierPhase::Exiting)
     {
@@ -129,16 +315,6 @@ void PurifierStage::initializeComponents()
             if (phase != PurifierPhase::Normal)
                 return; // 防止多次点击
             phase = PurifierPhase::Exiting;
-            Elements->forEachElement(
-                [](auto &elem)
-                {
-                    auto state = elem->getVisualState();
-                    LOG("向元素 {} 中添加渐变效果，当前透明度为 {}",
-                        elem->getID().c_str(), state->transparency);
-                    elem->Animate()
-                        .Fade(state->transparency, 0.0f, 0.1f)
-                        .Commit();
-                });
         });
 
     Elements->PushElement(std::move(backButton));
@@ -212,7 +388,7 @@ void PurifierStage::initializeComponents()
         .Anchor(AnchorPoint::TopLeft)
         .Posite(0.71f, 0.237f)
         .Sequence(true);
-    filter_text->setText("过滤器");
+    filter_text->setText("出水口");
     filter_text->setFontSize(45);
     filter_text->alignCenter(false);
 
@@ -283,6 +459,22 @@ void PurifierStage::initializeComponents()
 
     itemContainer->setIndexRange(std::make_pair(0, 7));
     itemContainer->onEnter();
+
+    auto itemName = UI<TextArea>("item_name", 31, 9002, NULL, NULL);
+
+    itemName->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::BottomCenter)
+        .Scale(0.8f, 0.1185f)
+        .Posite(0.5f, 0.77f)
+        .Alpha(1.0f);
+
+    itemName->setShadow(true, 3);
+    itemName->setText("等待点击");
+    itemName->alignCenter(true);
+    itemName->setFontSize(60);
+
+    Elements->PushElement(std::move(itemName));
 
     Elements->PushElement(std::move(itemContainer));
 }

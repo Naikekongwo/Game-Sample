@@ -69,9 +69,6 @@ void DualGameplayStage::Init()
 
     Elements->PushElement(std::move(mapexp));
     Elements->PushElement(std::move(mapexp2));
-
-    auto gameplay = std::make_unique<PurifierStage>(timer, sController);
-    sController->changeStage(std::move(gameplay));
 }
 
 void DualGameplayStage::onUpdate()

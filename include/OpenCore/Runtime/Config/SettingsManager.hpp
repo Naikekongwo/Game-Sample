@@ -38,6 +38,20 @@ class SettingsManager
         targetRenderWidth = width;
     }
 
+    shared_ptr<float> getWaterStorage() const noexcept { return waterStorage; }
+    shared_ptr<float> getPurifiedWaterStorage() const noexcept
+    {
+        return purifiedWaterStorage;
+    }
+    shared_ptr<float> getWaterStorageMax() const noexcept
+    {
+        return waterStorageMax;
+    }
+    shared_ptr<float> getWaterPurifyRate() const noexcept
+    {
+        return waterPurifyRate;
+    }
+
   private:
     shared_ptr<float> musicVolume = std::make_shared<float>(0.3f);
     shared_ptr<float> soundVolume = std::make_shared<float>(0.3f);
@@ -48,6 +62,11 @@ class SettingsManager
 
     shared_ptr<uint8_t> render_width = std::make_shared<uint8_t>(16);
     shared_ptr<uint8_t> render_height = std::make_shared<uint8_t>(9);
+
+    shared_ptr<float> purifiedWaterStorage = std::make_shared<float>(0.0f);
+    shared_ptr<float> waterStorage = std::make_shared<float>(1.0f);
+    shared_ptr<float> waterStorageMax = std::make_shared<float>(1.0f);
+    shared_ptr<float> waterPurifyRate = std::make_shared<float>(1.0f);
 
     int targetRenderWidth = 1920;
     int targetRenderHeight = 1080;

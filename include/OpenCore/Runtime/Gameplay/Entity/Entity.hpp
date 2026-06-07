@@ -87,7 +87,7 @@ class Entity
     uint8_t maxHealth = 255;
     uint8_t m_movable = 1;
 
-    float lastTime = 0.0f;
+    float lastTime = -1.0f;
 
     // ─── 动画状态 ───────────────────────────────────
     unordered_map<short, AnimationGroup> m_animMap; // id → 动画组

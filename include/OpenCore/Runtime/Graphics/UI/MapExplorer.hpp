@@ -14,6 +14,7 @@
 #include "OpenCore/Runtime/Gameplay/WorldController/WorldController.hpp"
 #include "OpenCore/Runtime/Graphics/IDrawableObject/UIElement.hpp"
 #include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
+#include "OpenCore/Runtime/Graphics/Sprite/ItemSprite.hpp"
 #include <memory>
 
 /**
@@ -106,6 +107,12 @@ class MapExplorer : public UIElement
     bool m_moveDown = false;
     bool m_moveLeft = false;
     bool m_moveRight = false;
+
+    Entity *nearbyEntity = nullptr; // 当前附近的实体（用于显示交互提示）
+
+    unique_ptr<ItemSprite> m_pickedUpItem;
+    float m_mouseX = 0.0f;
+    float m_mouseY = 0.0f;
 
     void initComponents();
 };

@@ -53,9 +53,21 @@ class TextArea : public UIElement
 
     void alignCenter(bool tag) { m_aligncenter = tag; }
 
+    void setTextColor(uint8_t r, uint8_t g, uint8_t b)
+    {
+        m_colorR = r;
+        m_colorG = g;
+        m_colorB = b;
+        m_valid = false;
+    }
+
   private:
     short fontID = 9001;
     short m_fontSize = 20;
+
+    uint8_t m_colorR = 255;
+    uint8_t m_colorG = 255;
+    uint8_t m_colorB = 255;
 
     bool m_shadowEnable = true;
     bool m_aligncenter = false;

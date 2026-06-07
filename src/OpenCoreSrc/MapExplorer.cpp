@@ -1,4 +1,5 @@
 #include "OpenCore/Runtime/Graphics/UI/MapExplorer.hpp"
+#include "Eclipsea/Stage/PurifierStage.hpp"
 #include "OpenCore/Core/Macros.hpp"
 #include "OpenCore/OpenCore.hpp"
 #include "OpenCore/Runtime/Animation/IAnimation.hpp"
@@ -164,6 +165,7 @@ void MapExplorer::Draw()
                     b->getPhysicalProperties().getPosition().y;
          });
 
+    nearbyEntity = nullptr;
     for (auto ptr : Entities)
     {
         auto ePos = ptr->getPhysicalProperties().getPosition();
@@ -179,13 +181,15 @@ void MapExplorer::Draw()
         symbolPos.y -= 0.06f;
 
         if (abs(ePos.x - Position.x) < 2.0f &&
-            abs(ePos.y - Position.y) < 0.5f &&
+            abs(ePos.y - Position.y) < 2.0f &&
             ePos != cameraProp->getPosition())
         {
-            m_symbol->SetSymbolType(SYMBOL_WARNING);
+            m_symbol->SetSymbolType(SYMBOL_QUESTION);
             m_symbol->setPosition(0.5f + viewportX, 0.27f);
             m_symbol->setScale(0.05f, 0.05f * widthheight);
             m_symbol->Draw();
+
+            nearbyEntity = ptr;
         }
     }
 
@@ -194,6 +198,39 @@ void MapExplorer::Draw()
     m_healthbar->setHealth(
         m_wrdController->getEntityByID(m_focusEntityIndex)->getHealthHook());
     m_healthbar->Draw();
+
+    // 渲染拖动的物品
+    {
+        auto homeless = m_wrdController->queryHomelessItemInfo();
+        if (homeless.has_value())
+        {
+            if (!m_pickedUpItem)
+            {
+                m_pickedUpItem = std::make_unique<ItemSprite>();
+                m_pickedUpItem->Configure()
+                    .Parent(nullptr)
+                    .Anchor(AnchorPoint::Center)
+                    .Posite(0.5f, 0.5f)
+                    .Scale(0.1f, 0.1f * widthheight);
+            }
+
+            auto meta =
+                Gameplay::ItemMgr.getTextureMeta(homeless->textureMetaID);
+            if (meta.has_value())
+            {
+                m_pickedUpItem->changeTexture(MakeTexture(
+                    meta->texture_cols, meta->texture_rows, meta->textureID));
+                m_pickedUpItem->setSubTexture(homeless->texturePosID);
+                m_pickedUpItem->getVisualState()->Position[0] = m_mouseX;
+                m_pickedUpItem->getVisualState()->Position[1] = m_mouseY;
+                m_pickedUpItem->Draw();
+            }
+        }
+        else
+        {
+            m_pickedUpItem.reset();
+        }
+    }
 
     SDL_RenderSetClipRect(renderer, nullptr);
 }
@@ -218,6 +255,40 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
         return;
 
     m_itemContainer->handlEvents(event, totalTime);
+
+    // --- 鼠标追踪: 更新拖动物品的位置 ---
+    if (event.type == SDL_MOUSEMOTION)
+    {
+        m_mouseX = static_cast<float>(event.motion.x);
+        m_mouseY = static_cast<float>(event.motion.y);
+    }
+
+    // --- 鼠标点击: 喝水 ---
+    if (event.type == SDL_MOUSEBUTTONDOWN &&
+        event.button.button == SDL_BUTTON_LEFT)
+    {
+        auto homeless = m_wrdController->queryHomelessItemInfo();
+        if (homeless.has_value() && homeless->typeID == 2) // 满瓶
+        {
+            // 检查点击位置是否在屏幕中央区域 (±30%)
+            float cx = m_mouseX / 1920.0f;
+            float cy = m_mouseY / 1080.0f;
+            if (cx >= 0.35f && cx <= 0.65f && cy >= 0.35f && cy <= 0.65f)
+            {
+                auto player =
+                    m_wrdController->getEntityByID(m_focusEntityIndex);
+                if (player)
+                {
+                    m_wrdController->popHomelessItem();
+                    player->getBackpack()->addItem(1, 1); // 空瓶放回背包
+
+                    *player->getHealthHook() =
+                        std::min(1.0f, *player->getHealthHook() + 0.5f);
+                    LOG("喝水: 满瓶已消耗, 恢复50%生命值");
+                }
+            }
+        }
+    }
 
     bool isKeyDown = (event.type == SDL_KEYDOWN);
     bool isCtrlDown = (event.type == SDL_CONTROLLERBUTTONDOWN);
@@ -245,6 +316,29 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
             case SDLK_s:
                 m_moveDown = isKeyDown;
                 break;
+            case SDLK_RETURN:
+            {
+                if (nearbyEntity)
+                {
+                    switch (nearbyEntity->getEntityInfo().EntityTypeID)
+                    {
+                    case 100:
+                    {
+                        auto Purifier = std::make_unique<PurifierStage>(
+                            OpenEngine::getInstance().getTimer(),
+                            OpenEngine::getInstance().getStageController());
+                        OpenEngine::getInstance()
+                            .getStageController()
+                            ->changeStage(std::move(Purifier));
+                        break;
+                    }
+                    default:
+                        break;
+                    }
+                }
+
+                break;
+            }
             default:
                 return;
             }

@@ -31,9 +31,9 @@ void Entity::createRenderer()
 {
     if (!renderer && info.EntityTypeID != 0)
     {
-        renderer =
-            std::make_unique<Mob>(info.texture.meta.textureID, info.texture.meta.cols,
-                                  info.texture.meta.rows);
+        renderer = std::make_unique<Mob>(info.texture.meta.textureID,
+                                         info.texture.meta.cols,
+                                         info.texture.meta.rows);
         renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);
 
         widthRelative = 1.0f / *OpenCoreManagers::SetManager.getRenderWidth();
@@ -96,6 +96,11 @@ void Entity::Draw(float cameraX, float cameraY)
 
 void Entity::onUpdate(float totalTime)
 {
+    if (lastTime < 0.0f)
+    {
+        lastTime = totalTime;
+        return;
+    }
     float deltaTime = totalTime - lastTime;
     Vec3 previousPosition = pProperties.getPosition();
 
@@ -166,11 +171,16 @@ short Entity::directionToAnimId(Direction dir)
 {
     switch (dir)
     {
-    case Direction::Up:    return 1;
-    case Direction::Down:  return 2;
-    case Direction::Left:  return 3;
-    case Direction::Right: return 4;
-    default:               return 0;
+    case Direction::Up:
+        return 1;
+    case Direction::Down:
+        return 2;
+    case Direction::Left:
+        return 3;
+    case Direction::Right:
+        return 4;
+    default:
+        return 0;
     }
 }
 
@@ -182,8 +192,8 @@ uint16_t Entity::getCurrentFrameIndex() const
         if (it != m_animMap.end() && m_currentFrame < it->second.frames.size())
         {
             const auto &frame = it->second.frames[m_currentFrame];
-            return static_cast<uint16_t>(frame.originRow * info.texture.meta.cols +
-                                         frame.originCol);
+            return static_cast<uint16_t>(
+                frame.originRow * info.texture.meta.cols + frame.originCol);
         }
     }
     return m_baseFrame;

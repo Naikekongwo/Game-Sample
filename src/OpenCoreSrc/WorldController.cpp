@@ -81,12 +81,14 @@ bool WorldController::spawnMapEntities()
             {
                 uint8_t tw = static_cast<uint8_t>(eInfo.widthFactor);
                 uint8_t th = static_cast<uint8_t>(eInfo.heightFactor);
-                uint8_t effH = newEntity->getPhysicalProperties().getEffectiveTileHeight();
+                uint8_t effH =
+                    newEntity->getPhysicalProperties().getEffectiveTileHeight();
 
                 int startX = x - (tw - 1) / 2;
                 int startY = y; // 标记方块行 = 实体底部行
 
-                LOG("[SPAWN] Entity {} at marker({},{}), tw={} th={} effH={}, startX={} startY={}",
+                LOG("[SPAWN] Entity {} at marker({},{}), tw={} th={} effH={}, "
+                    "startX={} startY={}",
                     bf.Entity, x, y, tw, th, effH, startX, startY);
 
                 for (int dy = 0; dy < effH; ++dy)
@@ -122,14 +124,18 @@ bool WorldController::generateTheMan()
         auto player = entityreg.createEntity(1);
 
         player->enableDrawer(true);
-        player->getBackpack()->addItem(1, 1);
-        player->getBackpack()->addItem(3, 1);
+        // 控制单元: 中级 + 高级
         player->getBackpack()->addItem(4, 1);
         player->getBackpack()->addItem(5, 1);
+        // 反应堆: 低级 + 中级
         player->getBackpack()->addItem(6, 1);
         player->getBackpack()->addItem(7, 1);
-        player->getBackpack()->addItem(8, 1);
-        player->getBackpack()->addItem(9, 1);
+        // 储水罐: 中级 + 高级
+        player->getBackpack()->addItem(10, 1);
+        player->getBackpack()->addItem(11, 1);
+        // 两瓶满水
+        player->getBackpack()->addItem(2, 1);
+        player->getBackpack()->addItem(2, 1);
         Entities[1] = std::move(player);
     }
 

@@ -110,8 +110,8 @@ void TextArea::refreshTextureCache()
 
     uint8_t textAlpha = VState->getAlpha();
 
-    SDL_Surface *text = TTF_RenderUTF8_Blended(font, m_textContent.c_str(),
-                                               {255, 255, 255, textAlpha});
+    SDL_Surface *text = TTF_RenderUTF8_Blended(
+        font, m_textContent.c_str(), {m_colorR, m_colorG, m_colorB, textAlpha});
     SDL_Texture *textBuffer =
         SDL_CreateTextureFromSurface(GFX.getRenderer(), text);
 
