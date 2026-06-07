@@ -7,6 +7,8 @@
 #include <SDL2/SDL_gamecontroller.h>
 #include <memory>
 
+#include "OpenCore/Core/Event/ControllerManager.hpp"
+
 // 单例
 OpenEngine &OpenEngine::getInstance()
 {
@@ -72,6 +74,8 @@ bool OpenEngine::Initialize()
     // 初始化 GFX 实例 (若失败直接退出)
     if (!GFXManager.Init())
         return false;
+    // 初始化手柄管理器（枚举已连接的手柄）
+    ControllerManager::GetInstance().Init();
     // 初始化线程管理器
     ThrManager.start(2, 8);
     // 初始化资源管理器(其初始化时需要renderer，所以必须在GFX之后初始化)
@@ -157,6 +161,10 @@ bool OpenEngine::MainLoop()
                 break;
             }
 
+            // 将手柄事件交给 ControllerManager
+            // 处理（打开/关闭手柄、记录按键状态）
+            ControllerManager::GetInstance().HandleEvent(sdlEvent);
+
             // handlEvents 需要可变指针，从 const ref 拷贝一份
             SDL_Event evtCopy = sdlEvent;
             sController->handlEvents(&evtCopy);
@@ -210,6 +218,7 @@ bool OpenEngine::CleanUp()
     sController.reset();
     timer.reset();
 
+    ControllerManager::GetInstance().Shutdown();
     SFXManager.CleanUp();
     ResManager.CleanUp();
     ThrManager.shutdown();

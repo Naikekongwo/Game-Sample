@@ -5,12 +5,14 @@
 #include "OpenCore/Runtime/Graphics/Sprite/HealthBar.hpp"
 #include "OpenCore/Runtime/Graphics/UI/ItemContainer.hpp"
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_render.h>
 #include <memory>
 #include <optional>
 
 #include "Eclipsea/Eclipsea.hpp"
+#include "OpenCore/Core/Event/ControllerManager.hpp"
 #include "OpenCore/Runtime/Graphics/UI/Symbol.hpp"
 
 MapExplorer::MapExplorer(const string &id, short layer)
@@ -202,6 +204,12 @@ void MapExplorer::onUpdate(float totalTime)
     {
         onEnter();
     }
+
+    // 人物移动时持续触发手柄低频微震以模拟摩擦感
+    if (m_moveUp || m_moveDown || m_moveLeft || m_moveRight)
+    {
+        ControllerManager::GetInstance().RumblePlayer(0, 0x1000, 0, 80);
+    }
 }
 
 void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
@@ -211,29 +219,74 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
 
     m_itemContainer->handlEvents(event, totalTime);
 
-    if (event.type != SDL_KEYDOWN && event.type != SDL_KEYUP)
-        return;
-
-    if (event.key.repeat)
-        return;
-
     bool isKeyDown = (event.type == SDL_KEYDOWN);
+    bool isCtrlDown = (event.type == SDL_CONTROLLERBUTTONDOWN);
 
-    if (vType == ViewportType::Fullscreen || vType == ViewportType::LeftHalf)
+    // --- 键盘输入 ---
+    if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
     {
-        switch (event.key.keysym.sym)
+        if (event.key.repeat)
+            return;
+
+        if (vType == ViewportType::Fullscreen ||
+            vType == ViewportType::LeftHalf)
         {
-        case SDLK_w:
-            m_moveUp = isKeyDown;
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_w:
+                m_moveUp = isKeyDown;
+                break;
+            case SDLK_a:
+                m_moveLeft = isKeyDown;
+                break;
+            case SDLK_d:
+                m_moveRight = isKeyDown;
+                break;
+            case SDLK_s:
+                m_moveDown = isKeyDown;
+                break;
+            default:
+                return;
+            }
+        }
+        else
+        {
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_UP:
+                m_moveUp = isKeyDown;
+                break;
+            case SDLK_LEFT:
+                m_moveLeft = isKeyDown;
+                break;
+            case SDLK_RIGHT:
+                m_moveRight = isKeyDown;
+                break;
+            case SDLK_DOWN:
+                m_moveDown = isKeyDown;
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    // --- 手柄十字键输入 ---
+    else if (event.type == SDL_CONTROLLERBUTTONDOWN ||
+             event.type == SDL_CONTROLLERBUTTONUP)
+    {
+        switch (event.cbutton.button)
+        {
+        case SDL_CONTROLLER_BUTTON_DPAD_UP:
+            m_moveUp = isCtrlDown;
             break;
-        case SDLK_a:
-            m_moveLeft = isKeyDown;
+        case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+            m_moveDown = isCtrlDown;
             break;
-        case SDLK_d:
-            m_moveRight = isKeyDown;
+        case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+            m_moveLeft = isCtrlDown;
             break;
-        case SDLK_s:
-            m_moveDown = isKeyDown;
+        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+            m_moveRight = isCtrlDown;
             break;
         default:
             return;
@@ -241,23 +294,7 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
     }
     else
     {
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_UP:
-            m_moveUp = isKeyDown;
-            break;
-        case SDLK_LEFT:
-            m_moveLeft = isKeyDown;
-            break;
-        case SDLK_RIGHT:
-            m_moveRight = isKeyDown;
-            break;
-        case SDLK_DOWN:
-            m_moveDown = isKeyDown;
-            break;
-        default:
-            return;
-        }
+        return;
     }
 
     // 根据所有当前按住的键计算合成速度
