@@ -1,0 +1,4 @@
+BreakBeforeBraces: Allman
+IndentWidth: 4
+AlignConsecutiveDeclarations: Consecutive 
+AlignConsecutiveAssignments: Consecutive
