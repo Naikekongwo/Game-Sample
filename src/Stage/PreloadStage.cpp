@@ -195,7 +195,8 @@ void PreloadStage::buildLoadingUI()
 
 void PreloadStage::buildTitle()
 {
-    // 标题（Waterrect 水面效果已暂移除，源代码保留于 Gameplay/Sprite/Waterrect）
+    // 标题（Waterrect 水面效果已暂移除，源代码保留于
+    // Gameplay/Sprite/Waterrect）
     auto startTitle = UI<ImageBoard>("startTitle", 2, "icon_opencore", 1, 1);
     startTitle->Configure()
         .Scale(0.52f, 0.46f)
