@@ -34,7 +34,7 @@ void Entity::createRenderer()
 {
     if (!renderer && info.EntityTypeID != 0)
     {
-        renderer = std::make_unique<Mob>(info.texture.meta.textureID,
+        renderer = std::make_unique<Mob>(info.texture.meta.textureName,
                                          info.texture.meta.cols,
                                          info.texture.meta.rows);
         renderer->Configure().Anchor(AnchorPoint::BottomCenter).Alpha(0.0f);

@@ -26,25 +26,24 @@ using std::weak_ptr;
 class Backpack;
 class ItemSprite;
 
-class ItemContainer : public UIElement
-{
-  public:
-    ItemContainer(string_view id, uint8_t layer, unique_ptr<Texture> texture,
-                  short col, short row);
+class ItemContainer : public UIElement {
+public:
+  ItemContainer(string_view id, uint8_t layer, unique_ptr<Texture> texture,
+                short col, short row);
 
-    void parseEvents(Event *event, float totalTime) override;
-    void onUpdate(float totalTime) override {};
-    void onEnter() override;
-    void onExit() override {};
-    void Draw() override;
+  void parseEvents(Event *event, float totalTime) override;
+  void onUpdate(float totalTime) override {};
+  void onEnter() override;
+  void onExit() override {};
+  void Draw() override;
 
-    void setIndexRange(pair<uint8_t, uint8_t> indexRange);
-    void setBackpack(shared_ptr<Backpack> backpack);
+  void setIndexRange(pair<uint8_t, uint8_t> indexRange);
+  void setBackpack(shared_ptr<Backpack> backpack);
 
-  private:
-    weak_ptr<Backpack> m_backpack;
-    pair<uint8_t, uint8_t> m_indexRange;
-    unique_ptr<ItemSprite> m_item;
+private:
+  weak_ptr<Backpack> m_backpack;
+  pair<uint8_t, uint8_t> m_indexRange;
+  unique_ptr<ItemSprite> m_item;
 
-    short m_columns = 1;
+  short m_columns = 1;
 };

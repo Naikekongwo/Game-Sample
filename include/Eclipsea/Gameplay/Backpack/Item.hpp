@@ -19,7 +19,7 @@ enum class ItemStatus
 
 struct ItemTextureMeta
 {
-    short textureID;
+    std::string textureName;
     uint8_t texture_rows;
     uint8_t texture_cols;
 };

@@ -12,29 +12,106 @@
 #include <stdexcept>
 #include <system_error>
 
-// 便捷：同时向 PackageManager 注册纹理，并在数字ID桥中绑定名称
-static void RegisterTexture(PackageManager *package, short id,
-                            const char *name, const char *path)
+// 注册全部资源（纹理 / 字体）——沿用 Aozora-Re 的 PackageManager 注册方式。
+// 新版 OpenCore 已放弃 script 清单 + 数字 ID，统一以字符串资源名注册。
+//
+// 注意：引擎的 registerResources 只登记资源清单，并不会登记纹理的网格元信息。
+// 而 getTextureObject(name)（BaseBackground / CheckBox / Scrollbar / Symbol 等
+// 按名查找的控件）依赖已注册的元信息，否则返回空纹理。因此这里在注册资源的
+// 同时，为每个纹理注册其网格元信息（cols × rows）。
+static void RegisterAllResources(PackageManager *package)
 {
-    package->registerResource(RscTexture, name, path);
-    EclipseaTextures::getInstance().bindTexture(id, name);
+    struct TextureDef
+    {
+        const char *name;
+        const char *path;
+        uint8_t cols;
+        uint8_t rows;
+    };
+
+    // 纹理注册表（名称、路径、网格）。图集按实际帧布局填写，其余为 1×1。
+    const TextureDef kTextures[] = {
+        // ── 1×1 UI / 背景 ──
+        {"preload_title", "assets/ui/Preload_Title.png", 1, 1},
+        {"icon_opencore", "assets/ui/icon_opencore.png", 1, 1},
+        {"icon_studio", "assets/ui/icon_studio.png", 1, 1},
+        {"img_connector", "assets/ui/preload_menu_connector.png", 1, 1},
+        {"background_main", "assets/backgrounds/main_background.png", 1, 1},
+        {"background_gameplay",
+         "assets/backgrounds/gameplay_background.png", 1, 1},
+        {"background_purifier", "assets/ui/purifier_background.png", 1, 1},
+        {"main_title", "assets/ui/Title_Main.png", 1, 1},
+        {"copyright", "assets/ui/icon_copyright.png", 1, 1},
+        {"item_purifier", "assets/ui/purifier/purifier.png", 1, 1},
+        {"desset_top", "assets/backgrounds/dessert_top.png", 1, 1},
+        {"base_sky", "assets/backgrounds/base_sky.png", 1, 1},
+        {"cities_top", "assets/backgrounds/cities_top.png", 1, 1},
+        {"button_border", "assets/ui/rect_border.png", 1, 1},
+        {"stone_background", "assets/ui/stone_background.png", 1, 1},
+        {"img_createworld", "assets/ui/main/Button_Create.png", 1, 1},
+        {"img_scrollbutton", "assets/ui/scrollbutton.png", 1, 1},
+        {"img_itemcontain", "assets/ui/item_container.png", 1, 1},
+        {"pad_copyright", "assets/ui/pad_copyright.png", 1, 1},
+        {"effects_explosion", "assets/effects/explosion.png", 1, 1},
+        {"story_plane", "assets/story/img_plane.png", 1, 1},
+        {"story_ruinedcity", "assets/story/img_ruinedcity.png", 1, 1},
+        {"story_starsky", "assets/story/img_starsky.png", 1, 1},
+        {"background_typewriter", "assets/ui/background_typewriter.png", 1, 1},
+        {"img_insidehouse", "assets/story/img_insidehouse.png", 1, 1},
+        {"entity_shadow", "assets/entity/entity_shadow.png", 1, 1},
+        {"ui_bg_purifier",
+         "assets/ui/purifier/purifier_background.png", 1, 1},
+        {"water", "assets/terrain/water.png", 1, 1},
+
+        // ── 3 帧按钮（normal / pressed / …）──
+        {"img_StartButton", "assets/ui/main/Button_Start.png", 1, 3},
+        {"img_ContButton", "assets/ui/main/Button_Continue.png", 1, 3},
+        {"img_SettButton", "assets/ui/main/Button_Settings.png", 1, 3},
+        {"img_BackButton", "assets/ui/settings/Button_Back.png", 1, 3},
+        {"btn_backmain", "assets/ui/pause/btn_backmain.png", 1, 3},
+        {"btn_pause_settings", "assets/ui/pause/btn_settings.png", 1, 3},
+
+        // ── 两态复选框（未勾选 / 勾选，竖排）──
+        {"img_checkbox", "assets/ui/checkbox_classic.png", 1, 2},
+
+        // ── 动画图集 ──
+        {"water_drops", "assets/ui/animation_waterdrops.png", 1, 5},
+        {"water_waves", "assets/ui/animation_waterwaves.png", 1, 5},
+        {"effects_water_bubbles", "assets/effects/waterparticles.png", 5, 9},
+        {"effects_flames", "assets/effects/flames.png", 11, 11},
+        {"ui_img_healthbar", "assets/ui/gameplay/healthbar.png", 1, 4},
+
+        // ── 实体 / 物品 / 地形 ──
+        {"player_texture", "assets/entity/player_texture.png", 4, 4},
+        {"chao_texture", "assets/entity/chao_texture.png", 4, 4},
+        {"items_sets00", "assets/items/items_sets00.png", 8, 8},
+        {"terrain_terrain", "assets/terrain/terrain.png", 8, 8},
+        {"symbols", "assets/ui/symbols.png", 8, 8},
+    };
+
+    for (const auto &tex : kTextures)
+    {
+        package->registerResource(RscTexture, tex.name, tex.path);
+        package->registerTextureMeta(TextureMeta{tex.name, tex.cols, tex.rows});
+    }
+
+    // ── 字体 ──
+    package->registerResources({
+        {RscFont, "9001", "assets/ui/font/OpenCoreFont.ttf"},
+        {RscFont, "9002", "assets/ui/font/OpenCoreCHFont.ttf"},
+        {RscFont, "OpenCoreFont", "assets/ui/font/OpenCoreFont.ttf"},
+    });
 }
 
-// 便捷：注册字体
-static void RegisterFont(PackageManager *package, const char *name,
-                         const char *path)
+// 注册音频（SDL3_mixer 项目级模块，以资源名注册）
+static void RegisterAllAudio()
 {
-    package->registerResource(RscFont, name, path);
-}
-
-// 便捷：注册音乐 / 音效
-static void RegisterMusic(short id, const char *path)
-{
-    Eclipsea::AudioManager::getInstance().registerMusic(id, path);
-}
-static void RegisterSound(short id, const char *path)
-{
-    Eclipsea::AudioManager::getInstance().registerSound(id, path);
+    auto &audio = Eclipsea::AudioManager::getInstance();
+    audio.registerMusic("music_oceanwaves", "assets/audio/bgm_oceanwaves.mp3");
+    audio.registerSound("se_waterdrops", "assets/audio/fx_waterdrops.mp3");
+    audio.registerMusic("music_lostworld", "assets/audio/bgm_lostworld.mp3");
+    audio.registerMusic("music_someoneinthedark",
+                        "assets/audio/bgm_someoneinthedark.mp3");
 }
 
 bool EclipseaApp::StartUp()
@@ -79,145 +156,50 @@ bool EclipseaApp::StartUp()
 
     auto Package = engine.getPackageManager();
 
-    // ── 注册纹理 ─────────────────────────────────────────────
-    RegisterTexture(Package, preload_title, "preload_title",
-                    "assets/ui/Preload_Title.png");
-    RegisterTexture(Package, icon_opencore, "icon_opencore",
-                    "assets/ui/icon_opencore.png");
-    RegisterTexture(Package, icon_studio, "icon_studio",
-                    "assets/ui/icon_studio.png");
-    RegisterTexture(Package, img_connector, "img_connector",
-                    "assets/ui/preload_menu_connector.png");
-    RegisterTexture(Package, background_main, "background_main",
-                    "assets/backgrounds/main_background.png");
-    RegisterTexture(Package, background_gameplay, "background_gameplay",
-                    "assets/backgrounds/gameplay_background.png");
-    RegisterTexture(Package, img_StartButton, "img_StartButton",
-                    "assets/ui/main/Button_Start.png");
-    RegisterTexture(Package, background_purifier, "background_purifier",
-                    "assets/ui/purifier_background.png");
-    RegisterTexture(Package, img_ContButton, "img_ContButton",
-                    "assets/ui/main/Button_Continue.png");
-    RegisterTexture(Package, img_SettButton, "img_SettButton",
-                    "assets/ui/main/Button_Settings.png");
-    RegisterTexture(Package, main_title, "main_title",
-                    "assets/ui/Title_Main.png");
-    RegisterTexture(Package, water_drops, "water_drops",
-                    "assets/ui/animation_waterdrops.png");
-    RegisterTexture(Package, water_waves, "water_waves",
-                    "assets/ui/animation_waterwaves.png");
-    RegisterTexture(Package, img_BackButton, "img_BackButton",
-                    "assets/ui/settings/Button_Back.png");
-    RegisterTexture(Package, copyright, "copyright",
-                    "assets/ui/icon_copyright.png");
-    RegisterTexture(Package, item_purifier, "item_purifier",
-                    "assets/ui/purifier/purifier.png");
-    RegisterTexture(Package, desset_top, "desset_top",
-                    "assets/backgrounds/dessert_top.png");
-    RegisterTexture(Package, base_sky, "base_sky",
-                    "assets/backgrounds/base_sky.png");
-    RegisterTexture(Package, cities_top, "cities_top",
-                    "assets/backgrounds/cities_top.png");
-    RegisterTexture(Package, button_border, "button_border",
-                    "assets/ui/rect_border.png");
-    RegisterTexture(Package, stone_background, "stone_background",
-                    "assets/ui/stone_background.png");
-    RegisterTexture(Package, img_createworld, "img_createworld",
-                    "assets/ui/main/Button_Create.png");
-    RegisterTexture(Package, img_scrollbutton, "img_scrollbutton",
-                    "assets/ui/scrollbutton.png");
-    RegisterTexture(Package, img_itemcontain, "img_itemcontain",
-                    "assets/ui/item_container.png");
-    RegisterTexture(Package, pad_copyright, "pad_copyright",
-                    "assets/ui/pad_copyright.png");
-    RegisterTexture(Package, img_checkbox, "img_checkbox",
-                    "assets/ui/checkbox_classic.png");
-    RegisterTexture(Package, player_texture, "player_texture",
-                    "assets/entity/player_texture.png");
-    RegisterTexture(Package, items_sets00, "items_sets00",
-                    "assets/items/items_sets00.png");
-    RegisterTexture(Package, chao_texture, "chao_texture",
-                    "assets/entity/chao_texture.png");
-    RegisterTexture(Package, ui_img_healthbar, "ui_img_healthbar",
-                    "assets/ui/gameplay/healthbar.png");
-    RegisterTexture(Package, effects_water_bubbles, "effects_water_bubbles",
-                    "assets/effects/waterparticles.png");
-    RegisterTexture(Package, ui_bg_purifier, "ui_bg_purifier",
-                    "assets/ui/purifier/purifier_background.png");
-    RegisterTexture(Package, terrain_terrain, "terrain_terrain",
-                    "assets/terrain/terrain.png");
-    RegisterTexture(Package, entity_shadow, "entity_shadow",
-                    "assets/entity/entity_shadow.png");
-    RegisterTexture(Package, background_typewriter, "background_typewriter",
-                    "assets/ui/background_typewriter.png");
-    RegisterTexture(Package, img_insidehouse, "img_insidehouse",
-                    "assets/story/img_insidehouse.png");
-    RegisterTexture(Package, btn_backmain, "btn_backmain",
-                    "assets/ui/pause/btn_backmain.png");
-    RegisterTexture(Package, btn_pause_settings, "btn_pause_settings",
-                    "assets/ui/pause/btn_settings.png");
-    RegisterTexture(Package, effects_explosion, "effects_explosion",
-                    "assets/effects/explosion.png");
-    RegisterTexture(Package, effects_flames, "effects_flames",
-                    "assets/effects/flames.png");
-    RegisterTexture(Package, symbols, "symbols", "assets/ui/symbols.png");
-    RegisterTexture(Package, story_plane, "story_plane",
-                    "assets/story/img_plane.png");
-    RegisterTexture(Package, story_ruinedcity, "story_ruinedcity",
-                    "assets/story/img_ruinedcity.png");
-    RegisterTexture(Package, story_starsky, "story_starsky",
-                    "assets/story/img_starsky.png");
+    // ── 注册全部资源（纹理 / 字体）───────────────────────────
+    RegisterAllResources(Package);
 
-    // ── 注册字体 ─────────────────────────────────────────────
-    RegisterFont(Package, "9001", "assets/ui/font/OpenCoreFont.ttf");
-    RegisterFont(Package, "9002", "assets/ui/font/OpenCoreCHFont.ttf");
-    RegisterFont(Package, "OpenCoreFont", "assets/ui/font/OpenCoreFont.ttf");
-
-    // ── 注册音频（数字ID → 文件路径）──────────────────────────
-    RegisterMusic(music_oceanwaves, "assets/audio/bgm_oceanwaves.mp3");
-    RegisterSound(se_waterdrops, "assets/audio/fx_waterdrops.mp3");
-    RegisterMusic(music_lostworld, "assets/audio/bgm_lostworld.mp3");
-    RegisterMusic(music_someoneinthedark,
-                  "assets/audio/bgm_someoneinthedark.mp3");
-
-    // ── 初始化音频 ───────────────────────────────────────────
+    // ── 注册并初始化音频 ─────────────────────────────────────
+    RegisterAllAudio();
     Eclipsea::AudioManager::getInstance().Init();
 
 #pragma region 注册实体
     auto &entityReg = EntityRegister::getInstance();
 
     EntityInfo player = EntityInfo::makeCharacter(
-        PLAYER_ENTITYTYPE, player_texture, 8, true, 1.0f);
+        PLAYER_ENTITYTYPE, "player_texture", 8, true, 1.0f);
     entityReg.registerEntity(player);
 
     EntityInfo player1 =
-        EntityInfo::makeCharacter(2, chao_texture, 8, true, 1.0f);
+        EntityInfo::makeCharacter(2, "chao_texture", 8, true, 1.0f);
     entityReg.registerEntity(player1);
 
-    EntityInfo purifier{100, {{2044, 8, 8}, 0, 1}, {}, 4, 0, 3.0f, 3.0f};
+    EntityInfo purifier{
+        100, {{"terrain_terrain", 8, 8}, 0, 1}, {}, 4, 0, 3.0f, 3.0f};
     entityReg.registerEntity(purifier);
 
-    EntityInfo storage{101, {{2044, 8, 8}, 0, 4}, {}, 4, 0, 2.0f, 2.0f};
+    EntityInfo storage{
+        101, {{"terrain_terrain", 8, 8}, 0, 4}, {}, 4, 0, 2.0f, 2.0f};
     entityReg.registerEntity(storage);
 #pragma endregion
 
 #pragma region 注册物品相关内容
     auto &ItemReg = EclipseaGameplay::ItemMgr;
 
-    ItemTextureMeta meta00{2038, 8, 8};
+    ItemTextureMeta meta00{"items_sets00", 8, 8};
     ItemReg.registerItemTextureMeta(meta00);
 
-    ItemInfo bottle_empty{"bottle_empty", 1, 2038, 9, 1.0f, 9};
-    ItemInfo bottle_full{"bottle_full", 2, 2038, 10, 1.0f, 9};
-    ItemInfo control_basic{"control_basic", 3, 2038, 0, 1.0f, 1};
-    ItemInfo control_balanced{"control_balanced", 4, 2038, 1, 1.0f, 1};
-    ItemInfo control_advanced{"control_advanced", 5, 2038, 2, 1.0f, 1};
-    ItemInfo nuclearcore_basic{"nuclearcore_basic", 6, 2038, 3, 1.0f, 1};
-    ItemInfo nuclearcore_balanced{"nuclearcore_balanced", 7, 2038, 4, 1.0f, 1};
-    ItemInfo nuclearcore_advanced{"nuclearcore_advanced", 8, 2038, 5, 1.0f, 1};
-    ItemInfo storage_basic{"storage_basic", 9, 2038, 6, 1.0f, 1};
-    ItemInfo storage_balanced{"storage_balanced", 10, 2038, 7, 1.0f, 1};
-    ItemInfo storage_advanced{"storage_advanced", 11, 2038, 8, 1.0f, 1};
+    ItemInfo bottle_empty{"bottle_empty", 1, "items_sets00", 9, 1.0f, 9};
+    ItemInfo bottle_full{"bottle_full", 2, "items_sets00", 10, 1.0f, 9};
+    ItemInfo control_basic{"control_basic", 3, "items_sets00", 0, 1.0f, 1};
+    ItemInfo control_balanced{"control_balanced", 4, "items_sets00", 1, 1.0f, 1};
+    ItemInfo control_advanced{"control_advanced", 5, "items_sets00", 2, 1.0f, 1};
+    ItemInfo nuclearcore_basic{"nuclearcore_basic", 6, "items_sets00", 3, 1.0f, 1};
+    ItemInfo nuclearcore_balanced{"nuclearcore_balanced", 7, "items_sets00", 4, 1.0f, 1};
+    ItemInfo nuclearcore_advanced{"nuclearcore_advanced", 8, "items_sets00", 5, 1.0f, 1};
+    ItemInfo storage_basic{"storage_basic", 9, "items_sets00", 6, 1.0f, 1};
+    ItemInfo storage_balanced{"storage_balanced", 10, "items_sets00", 7, 1.0f, 1};
+    ItemInfo storage_advanced{"storage_advanced", 11, "items_sets00", 8, 1.0f, 1};
 
     ItemReg.registerItem(bottle_empty);
     ItemReg.registerItem(bottle_full);
@@ -235,7 +217,7 @@ bool EclipseaApp::StartUp()
 #pragma region 注册纹理元数据
     auto &TMMGR = EclipseaTextureMetaManager::getInstance();
 
-    EclipseaTextureMeta symbolMeta{2052, 8, 8};
+    EclipseaTextureMeta symbolMeta{"symbols", 8, 8};
     TMMGR.registerTextureMeta(symbolMeta);
 #pragma endregion
 

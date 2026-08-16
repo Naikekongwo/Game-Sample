@@ -40,9 +40,9 @@ optional<Item> ItemManager::createItem(short typeID)
 
 bool ItemManager::registerItemTextureMeta(const ItemTextureMeta &meta)
 {
-    if (itemTextureRegistry.contains(meta.textureID))
+    if (itemTextureRegistry.contains(meta.textureName))
     {
-        ItemTextureMeta old = itemTextureRegistry.at(meta.textureID);
+        ItemTextureMeta old = itemTextureRegistry.at(meta.textureName);
         if (old.texture_cols == meta.texture_cols &&
             old.texture_rows == meta.texture_rows)
         {
@@ -55,18 +55,19 @@ bool ItemManager::registerItemTextureMeta(const ItemTextureMeta &meta)
         }
     }
 
-    itemTextureRegistry[meta.textureID] = meta;
-    LOG("注册了物品贴图元信息, 纹理ID: {} 纹理横向网格 {} 纵向网格 {}",
-        meta.textureID, meta.texture_cols, meta.texture_rows);
+    itemTextureRegistry[meta.textureName] = meta;
+    LOG("注册了物品贴图元信息, 纹理: {} 纹理横向网格 {} 纵向网格 {}",
+        meta.textureName, meta.texture_cols, meta.texture_rows);
     return true;
 }
 
-optional<ItemTextureMeta> ItemManager::getTextureMeta(short texID)
+optional<ItemTextureMeta> ItemManager::getTextureMeta(std::string_view texName)
 {
-    if (!itemTextureRegistry.contains(texID))
+    auto key = std::string(texName);
+    if (!itemTextureRegistry.contains(key))
     {
         return std::nullopt;
     }
 
-    return itemTextureRegistry.at(texID);
+    return itemTextureRegistry.at(key);
 }

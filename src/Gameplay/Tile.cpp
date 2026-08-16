@@ -1,5 +1,4 @@
 #include "Eclipsea/Gameplay/Sprite/Tile.h"
-#include "Eclipsea/Core/EclipseaTextures.hpp"
 #include "OpenCore.hpp"
 #include "Runtime/Graphics/IDrawableObject/Texture.hpp"
 #include <memory>
@@ -16,12 +15,10 @@ Tile::Tile()
 
 void Tile::onEnter()
 {
-    // 初始化纹理库
-    // TerrainTiles = std::make_unique<Texture>(
-    //     16, 16, EclipseaTextures::getInstance().getTexture(2035));
-
+    // 初始化纹理库（直接以资源名同步加载，旧数字 ID 已移除）
+    auto *package = OpenEngine::getInstance().getPackageManager();
     TerrainTiles = std::make_unique<Texture>(
-        8, 8, EclipseaTextures::getInstance().getTexture(2044));
+        8, 8, package ? package->getTextureAsync("terrain_terrain") : nullptr);
 }
 
 void Tile::Draw()

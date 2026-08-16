@@ -12,11 +12,13 @@
 
 #include "Runtime/Graphics/IDrawableObject/Sprite.hpp"
 
+#include <string>
+
 class ItemSprite : public Sprite
 {
   public:
     ItemSprite();
-    explicit ItemSprite(short textureID); // 新增：接受纹理 ID 的构造
+    explicit ItemSprite(std::string_view textureName); // 接受纹理资源名
     ~ItemSprite() override = default;
 
     void onEnter() override;
@@ -28,5 +30,5 @@ class ItemSprite : public Sprite
 
   private:
     // 正常来说，其不应该持有这个
-    short itemTexID = 2038;
+    std::string itemTexName = "items_sets00";
 };

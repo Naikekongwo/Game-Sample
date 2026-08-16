@@ -1,5 +1,4 @@
 #include "Eclipsea/Gameplay/TextureMeta.hpp"
-#include "Eclipsea/Core/EclipseaTextures.hpp"
 #include "OpenCore.hpp"
 #include <memory>
 #include <optional>
@@ -19,28 +18,32 @@ EclipseaTextureMetaManager::EclipseaTextureMetaManager()
 
 bool EclipseaTextureMetaManager::registerTextureMeta(EclipseaTextureMeta meta)
 {
-    if (meta.textureID < 0)
+    if (meta.textureName.empty())
         return false;
-    _metaRegistry[meta.textureID] = meta;
+    _metaRegistry[meta.textureName] = meta;
     return true;
 }
 
 std::optional<shared_ptr<Texture>>
-EclipseaTextureMetaManager::getTexture(short textureID)
+EclipseaTextureMetaManager::getTexture(std::string_view textureName)
 {
-    auto it = _textureCache.find(textureID);
+    auto key = std::string(textureName);
+    auto it = _textureCache.find(key);
     if (it != _textureCache.end())
         return it->second;
 
-    auto metaIt = _metaRegistry.find(textureID);
+    auto metaIt = _metaRegistry.find(key);
     if (metaIt == _metaRegistry.end())
         return std::nullopt;
 
     const EclipseaTextureMeta &meta = metaIt->second;
-    auto texture = EclipseaTextures::getInstance().getTextureObject(
-        meta.textureID, meta.cols, meta.rows);
+    auto *package = OpenEngine::getInstance().getPackageManager();
+    auto texture = package ? package->getTextureObject(
+                                 {meta.textureName, meta.cols, meta.rows})
+                           : nullptr;
     if (!texture)
         return std::nullopt;
 
+    _textureCache[key] = texture;
     return texture;
 }

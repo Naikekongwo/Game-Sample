@@ -21,7 +21,7 @@ void WorldEditorStage::Init()
     SFX.stopBGM();
 
     unique_ptr<ImageBoard> background = std::make_unique<ImageBoard>(
-        "background", 0, MakeTexture(1, 1, background_gameplay));
+        "background", 0, MakeTexture(1, 1, "background_gameplay"));
 
     background->Configure()
         .Anchor(AnchorPoint::Center)

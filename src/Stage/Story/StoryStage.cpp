@@ -106,7 +106,7 @@ void StoryStage::func_intro()
     if (sStatus > StoryStatus::Ready)
         return;
 
-    Eclipsea::AudioManager::getInstance().changeBGM(music_someoneinthedark);
+    Eclipsea::AudioManager::getInstance().changeBGM("music_someoneinthedark");
 
     auto background = UI<ImageBoard>("background", 0, "story_starsky", 1, 1);
 

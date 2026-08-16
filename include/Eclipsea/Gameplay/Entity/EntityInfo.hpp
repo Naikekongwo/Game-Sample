@@ -8,12 +8,12 @@
 
 #include "Eclipsea/Gameplay/TextureMeta.hpp"
 
-/// @brief 图集中某一格的完整引用：图集元数据 + 格坐�?
+/// @brief 图集中某一格的完整引用：图集元数据 + 格坐标
 struct TextureCell
 {
-    EclipseaTextureMeta meta;       // 图集描述 (textureID, cols, rows)
-    uint8_t originCol = 0;  // 该格在精灵表中的�?
-    uint8_t originRow = 0;  // 该格在精灵表中的�?
+    EclipseaTextureMeta meta;       // 图集描述 (textureName, cols, rows)
+    uint8_t originCol = 0;  // 该格在精灵表中的列
+    uint8_t originRow = 0;  // 该格在精灵表中的行
 };
 
 /// @brief 动画组：一个方向的移动动画
@@ -39,15 +39,15 @@ struct EntityInfo
     float widthFactor = 1.0f;
     float heightFactor = 1.0f;
 
-    /// @brief 快速构造角色（自动生成4方向动画，标�?x4精灵表排布）
-    /// 精灵表布局约定：行0=�? �?=�? �?=�? �?=�?
-    static EntityInfo makeCharacter(short typeID, short texID,
+    /// @brief 快速构造角色（自动生成4方向动画，标准4x4精灵表排布）
+    /// 精灵表布局约定：行0=下 1=上 2=左 3=右
+    static EntityInfo makeCharacter(short typeID, std::string_view texName,
                                     uint8_t capacity = 0, bool canMove = true,
                                     float wFactor = 1.0f, float hFactor = 1.0f)
     {
         EntityInfo info{};
         info.EntityTypeID = typeID;
-        info.texture = {{texID, 4, 4}, 0, 0};
+        info.texture = {{texName, 4, 4}, 0, 0};
         info.backpackCapacity = capacity;
         info.movable = canMove ? 1 : 0;
         info.widthFactor = wFactor;
@@ -55,10 +55,10 @@ struct EntityInfo
         if (canMove)
         {
             info.animations = {
-                {1, 8, { {{texID, 4, 4}, 0, 3}, {{texID, 4, 4}, 1, 3}, {{texID, 4, 4}, 2, 3}, {{texID, 4, 4}, 3, 3} }},
-                {2, 8, { {{texID, 4, 4}, 0, 0}, {{texID, 4, 4}, 1, 0}, {{texID, 4, 4}, 2, 0}, {{texID, 4, 4}, 3, 0} }},
-                {3, 8, { {{texID, 4, 4}, 0, 1}, {{texID, 4, 4}, 1, 1}, {{texID, 4, 4}, 2, 1}, {{texID, 4, 4}, 3, 1} }},
-                {4, 8, { {{texID, 4, 4}, 0, 2}, {{texID, 4, 4}, 1, 2}, {{texID, 4, 4}, 2, 2}, {{texID, 4, 4}, 3, 2} }}
+                {1, 8, { {{texName, 4, 4}, 0, 3}, {{texName, 4, 4}, 1, 3}, {{texName, 4, 4}, 2, 3}, {{texName, 4, 4}, 3, 3} }},
+                {2, 8, { {{texName, 4, 4}, 0, 0}, {{texName, 4, 4}, 1, 0}, {{texName, 4, 4}, 2, 0}, {{texName, 4, 4}, 3, 0} }},
+                {3, 8, { {{texName, 4, 4}, 0, 1}, {{texName, 4, 4}, 1, 1}, {{texName, 4, 4}, 2, 1}, {{texName, 4, 4}, 3, 1} }},
+                {4, 8, { {{texName, 4, 4}, 0, 2}, {{texName, 4, 4}, 1, 2}, {{texName, 4, 4}, 2, 2}, {{texName, 4, 4}, 3, 2} }}
             };
         }
         return info;

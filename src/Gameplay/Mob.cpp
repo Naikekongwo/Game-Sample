@@ -1,9 +1,8 @@
 #include "Eclipsea/Gameplay/Sprite/Mob.h"
-#include "Eclipsea/Core/EclipseaTextures.hpp"
 #include "OpenCore.hpp"
 #include <memory>
 
-Mob::Mob(short TextureID, uint8_t gridCols, uint8_t gridRows)
+Mob::Mob(std::string_view textureName, uint8_t gridCols, uint8_t gridRows)
 {
     this->id = "MobSprite";
     this->layer = 0;
@@ -11,10 +10,12 @@ Mob::Mob(short TextureID, uint8_t gridCols, uint8_t gridRows)
     this->VState = std::make_unique<VisualState>();
     this->AnimeManager = std::make_unique<AnimationManager>();
 
+    auto *package = OpenEngine::getInstance().getPackageManager();
     this->texture = std::make_unique<Texture>(
-        gridCols, gridRows, EclipseaTextures::getInstance().getTexture(TextureID));
+        gridCols, gridRows,
+        package ? package->getTextureAsync(textureName) : nullptr);
 
-    LOG("生物创建成功，纹理ID:{}, 网格:{}x{}", TextureID, gridCols, gridRows);
+    LOG("生物创建成功，纹理:{}, 网格:{}x{}", textureName, gridCols, gridRows);
 }
 
 void Mob::Draw()
@@ -36,10 +37,10 @@ void Mob::Draw()
             // 渲染影子
             if (!shadow)
             {
+                auto *package = OpenEngine::getInstance().getPackageManager();
                 shadow = make_shared<Texture>(
-                    1, 1,
-                    EclipseaTextures::getInstance().getTexture(
-                        2045));
+                    1, 1, package ? package->getTextureAsync("entity_shadow")
+                                  : nullptr);
             }
 
             GFX.Draw(shadow->get(), nullptr, &shadowRect, 0.0f, nullptr);

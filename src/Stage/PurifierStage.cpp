@@ -242,13 +242,13 @@ void PurifierStage::onRender()
                 .Scale(0.1f, 0.1f * widthheight);
         }
 
-        auto meta = Gameplay::ItemMgr.getTextureMeta(item->textureMetaID);
+        auto meta = Gameplay::ItemMgr.getTextureMeta(item->textureMetaName);
 
         if (!meta.has_value())
             return;
 
         ItemPickedUp->changeTexture(MakeTexture(
-            meta->texture_cols, meta->texture_rows, meta->textureID));
+            meta->texture_cols, meta->texture_rows, meta->textureName));
         ItemPickedUp->setSubTexture(item->texturePosID);
         ItemPickedUp->Draw();
     }
@@ -385,13 +385,13 @@ void PurifierStage::initializeComponents()
     Elements->PushElement(std::move(filter_text));
 
     auto nuclear_item = std::make_unique<ItemContainer>(
-        "nuclear_item", 30, MakeTexture(1, 1, img_itemcontain), 1, 1);
+        "nuclear_item", 30, MakeTexture(1, 1, "img_itemcontain"), 1, 1);
     auto control_item = std::make_unique<ItemContainer>(
-        "control_item", 30, MakeTexture(1, 1, img_itemcontain), 1, 1);
+        "control_item", 30, MakeTexture(1, 1, "img_itemcontain"), 1, 1);
     auto storage_item = std::make_unique<ItemContainer>(
-        "storage_item", 30, MakeTexture(1, 1, img_itemcontain), 1, 1);
+        "storage_item", 30, MakeTexture(1, 1, "img_itemcontain"), 1, 1);
     auto filter_item = std::make_unique<ItemContainer>(
-        "filter_item", 30, MakeTexture(1, 1, img_itemcontain), 1, 1);
+        "filter_item", 30, MakeTexture(1, 1, "img_itemcontain"), 1, 1);
 
     nuclear_item->Configure()
         .Parent(nullptr)

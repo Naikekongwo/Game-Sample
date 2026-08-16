@@ -186,7 +186,7 @@ void MainStage::onUpdate()
         auto connector = Elements->find("connector");
         if (connector && connector->isAnimeFinished())
         {
-            Eclipsea::AudioManager::getInstance().changeBGM(music_lostworld);
+            Eclipsea::AudioManager::getInstance().changeBGM("music_lostworld");
             Eclipsea::AudioManager::getInstance().playBGM();
             Elements->removeElement("connector");
         }

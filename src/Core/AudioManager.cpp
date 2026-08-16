@@ -75,40 +75,42 @@ void AudioManager::CleanUp()
     MIX_Quit();
 }
 
-void AudioManager::registerMusic(short id, std::string_view path)
+void AudioManager::registerMusic(std::string_view name, std::string_view path)
 {
-    musicPaths_[id] = std::string(path);
+    musicPaths_[std::string(name)] = std::string(path);
 }
 
-void AudioManager::registerSound(short id, std::string_view path)
+void AudioManager::registerSound(std::string_view name, std::string_view path)
 {
-    soundPaths_[id] = std::string(path);
+    soundPaths_[std::string(name)] = std::string(path);
 }
 
-MIX_Track *AudioManager::ensureTrack(short id, bool isMusic)
+MIX_Track *AudioManager::ensureTrack(std::string_view name, bool isMusic)
 {
     if (isMusic)
         return bgmTrack;
 
-    auto it = soundTracks_.find(id);
+    auto key = std::string(name);
+    auto it = soundTracks_.find(key);
     if (it != soundTracks_.end())
         return it->second;
 
     MIX_Track *track = MIX_CreateTrack(mixer);
     if (track)
-        soundTracks_[id] = track;
+        soundTracks_[key] = track;
     return track;
 }
 
-bool AudioManager::loadBGM(short id)
+bool AudioManager::loadBGM(std::string_view name)
 {
     if (!mixer || !bgmTrack)
         return false;
 
-    auto it = musicPaths_.find(id);
+    auto key = std::string(name);
+    auto it = musicPaths_.find(key);
     if (it == musicPaths_.end())
     {
-        LOG("AudioManager::loadBGM() 未注册的BGM ID {}", id);
+        LOG("AudioManager::loadBGM() 未注册的BGM {}", name);
         return false;
     }
 
@@ -149,10 +151,10 @@ void AudioManager::stopBGM()
     bgmReady = false;
 }
 
-bool AudioManager::changeBGM(short id)
+bool AudioManager::changeBGM(std::string_view name)
 {
     stopBGM();
-    if (loadBGM(id))
+    if (loadBGM(name))
     {
         playBGM();
         return true;
@@ -160,19 +162,20 @@ bool AudioManager::changeBGM(short id)
     return false;
 }
 
-void AudioManager::playSE(int id, int loops)
+void AudioManager::playSE(std::string_view name, int loops)
 {
     if (!mixer)
         return;
 
-    auto it = soundPaths_.find(id);
+    auto key = std::string(name);
+    auto it = soundPaths_.find(key);
     if (it == soundPaths_.end())
     {
-        LOG("AudioManager::playSE() 未注册的音效 ID {}", id);
+        LOG("AudioManager::playSE() 未注册的音效 {}", name);
         return;
     }
 
-    MIX_Track *track = ensureTrack(id, false);
+    MIX_Track *track = ensureTrack(key, false);
     if (!track)
         return;
 
@@ -192,9 +195,9 @@ void AudioManager::playSE(int id, int loops)
     SDL_DestroyProperties(props);
 }
 
-void AudioManager::stopSE(int id)
+void AudioManager::stopSE(std::string_view name)
 {
-    auto it = soundTracks_.find(id);
+    auto it = soundTracks_.find(std::string(name));
     if (it != soundTracks_.end() && it->second)
         MIX_StopTrack(it->second, 0);
 }
@@ -219,9 +222,9 @@ void AudioManager::setVolume(int volume)
     }
 }
 
-void AudioManager::setSEVolume(int id, int volume)
+void AudioManager::setSEVolume(std::string_view name, int volume)
 {
-    auto it = soundTracks_.find(id);
+    auto it = soundTracks_.find(std::string(name));
     if (it == soundTracks_.end() || !it->second)
         return;
 

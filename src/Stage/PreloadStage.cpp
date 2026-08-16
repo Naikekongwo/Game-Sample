@@ -54,7 +54,7 @@ void PreloadStage::initializeComponents()
     buildLoadingUI();
 
     // 2. 初始化音乐（oceanwaves BGM）
-    Eclipsea::AudioManager::getInstance().loadBGM(music_oceanwaves);
+    Eclipsea::AudioManager::getInstance().loadBGM("music_oceanwaves");
     Eclipsea::AudioManager::getInstance().playBGM();
     Eclipsea::AudioManager::getInstance().setVolume(30);
 
@@ -87,7 +87,7 @@ void PreloadStage::initializeComponents()
                 if (!title)
                     return true;
                 title->setTransparency(0.0f);
-                title->changeTexture(MakeTexture(1, 1, icon_studio));
+                title->changeTexture(MakeTexture(1, 1, "icon_studio"));
                 title->Configure().Scale(0.3125f, 0.0f);
                 title->setSequential(true);
                 title->Animate()
@@ -112,7 +112,7 @@ void PreloadStage::initializeComponents()
                 if (!title)
                     return true;
                 title->setTransparency(0.0f);
-                title->changeTexture(MakeTexture(1, 1, preload_title));
+                title->changeTexture(MakeTexture(1, 1, "preload_title"));
                 title->Configure().Scale(0.53f, 0.0f);
                 title->setSequential(true);
                 title->Animate()
@@ -135,7 +135,7 @@ void PreloadStage::initializeComponents()
                 if (!title)
                     return true;
                 title->setTransparency(0.0f);
-                title->changeTexture(MakeTexture(1, 1, img_connector));
+                title->changeTexture(MakeTexture(1, 1, "img_connector"));
                 title->Configure().Scale(0.53f, 0.0f);
                 title->setSequential(true);
                 title->Animate()
@@ -175,8 +175,8 @@ void PreloadStage::buildLoadingUI()
     auto animation = std::make_unique<MultiImageBoard>("animation", 10, 2);
 
     vector<unique_ptr<Texture>> animeList;
-    animeList.push_back(std::move(MakeTexture(1, 5, water_drops)));
-    animeList.push_back(std::move(MakeTexture(1, 5, water_waves)));
+    animeList.push_back(std::move(MakeTexture(1, 5, "water_drops")));
+    animeList.push_back(std::move(MakeTexture(1, 5, "water_waves")));
 
     animation->pushImageBoard(animeList);
 
@@ -220,9 +220,7 @@ void PreloadStage::buildTitleAndWater()
 
     // 水面效果（Waterrect）
     auto waterRect = std::make_unique<Waterrect>(
-        "water", 1,
-        std::make_unique<Texture>(
-            1, 1, EclipseaTextures::getInstance().getTexture(oriwater)));
+        "water", 1, MakeTexture(1, 1, "water"));
 
     waterRect->Configure()
         .Anchor(AnchorPoint::TopCenter)

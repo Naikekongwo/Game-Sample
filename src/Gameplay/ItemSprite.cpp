@@ -1,4 +1,3 @@
-#include "Eclipsea/Core/EclipseaTextures.hpp"
 #include "Eclipsea/Gameplay/Sprite/ItemSprite.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore.hpp"
@@ -15,7 +14,7 @@ ItemSprite::ItemSprite()
     onEnter();
 }
 
-ItemSprite::ItemSprite(short textureID)
+ItemSprite::ItemSprite(std::string_view textureName)
 {
     this->id = "null";
     this->layer = 0; // 适当层级
@@ -23,16 +22,18 @@ ItemSprite::ItemSprite(short textureID)
     this->VState = std::make_unique<VisualState>();
     this->AnimeManager = std::make_unique<AnimationManager>();
 
+    auto *package = OpenEngine::getInstance().getPackageManager();
     this->texture = std::make_unique<Texture>(
-        4, 4, EclipseaTextures::getInstance().getTexture(textureID));
+        4, 4, package ? package->getTextureAsync(textureName) : nullptr);
 
-    LOG("物品精灵创建成功，纹理ID:{}", textureID);
+    LOG("物品精灵创建成功，纹理:{}", textureName);
 }
 
 void ItemSprite::onEnter()
 {
+    auto *package = OpenEngine::getInstance().getPackageManager();
     texture = std::make_unique<Texture>(
-        1, 2, EclipseaTextures::getInstance().getTexture(itemTexID));
+        1, 2, package ? package->getTextureAsync(itemTexName) : nullptr);
 }
 
 void ItemSprite::Draw()

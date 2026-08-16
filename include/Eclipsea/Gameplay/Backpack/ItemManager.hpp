@@ -8,6 +8,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 
 using std::string;
@@ -55,11 +56,11 @@ class ItemManager final
      */
     std::optional<Item> createItem(short typeID);
 
-    std::optional<ItemTextureMeta> getTextureMeta(short metaID);
+    std::optional<ItemTextureMeta> getTextureMeta(std::string_view texName);
 
   private:
     ItemManager() = default;
 
     unordered_map<short, ItemInfo> itemRegistry; // 类型 ID -> 注册信息
-    unordered_map<short, ItemTextureMeta> itemTextureRegistry;
+    unordered_map<string, ItemTextureMeta> itemTextureRegistry;
 };
