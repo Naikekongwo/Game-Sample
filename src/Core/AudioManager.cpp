@@ -6,249 +6,215 @@
 
 #include <utility>
 
-namespace Eclipsea
-{
+namespace Eclipsea {
 
-AudioManager &AudioManager::getInstance()
-{
-    static AudioManager instance;
-    return instance;
+AudioManager &AudioManager::getInstance() {
+  static AudioManager instance;
+  return instance;
 }
 
-bool AudioManager::Init()
-{
-    if (!MIX_Init())
-    {
-        LOG("AudioManager::Init() MIX_Init failed: {}", SDL_GetError());
-        return false;
-    }
-
-    SDL_AudioSpec spec;
-    SDL_zero(spec);
-    spec.format   = SDL_AUDIO_S16;
-    spec.channels = 2;
-    spec.freq     = 44100;
-
-    mixer = MIX_CreateMixer(&spec);
-    if (!mixer)
-    {
-        LOG("AudioManager::Init() MIX_CreateMixer failed: {}", SDL_GetError());
-        return false;
-    }
-
-    bgmTrack = MIX_CreateTrack(mixer);
-    if (!bgmTrack)
-    {
-        LOG("AudioManager::Init() failed to create BGM track: {}",
-            SDL_GetError());
-        return false;
-    }
-
-    LOG("AudioManager::Init() success");
-    return true;
-}
-
-void AudioManager::CleanUp()
-{
-    stopAllSE();
-    stopBGM();
-
-    if (bgmTrack)
-    {
-        MIX_DestroyTrack(bgmTrack);
-        bgmTrack = nullptr;
-    }
-
-    for (auto &[id, track] : soundTracks_)
-    {
-        if (track)
-            MIX_DestroyTrack(track);
-    }
-    soundTracks_.clear();
-
-    if (mixer)
-    {
-        MIX_DestroyMixer(mixer);
-        mixer = nullptr;
-    }
-
-    MIX_Quit();
-}
-
-void AudioManager::registerMusic(std::string_view name, std::string_view path)
-{
-    musicPaths_[std::string(name)] = std::string(path);
-}
-
-void AudioManager::registerSound(std::string_view name, std::string_view path)
-{
-    soundPaths_[std::string(name)] = std::string(path);
-}
-
-MIX_Track *AudioManager::ensureTrack(std::string_view name, bool isMusic)
-{
-    if (isMusic)
-        return bgmTrack;
-
-    auto key = std::string(name);
-    auto it = soundTracks_.find(key);
-    if (it != soundTracks_.end())
-        return it->second;
-
-    MIX_Track *track = MIX_CreateTrack(mixer);
-    if (track)
-        soundTracks_[key] = track;
-    return track;
-}
-
-bool AudioManager::loadBGM(std::string_view name)
-{
-    if (!mixer || !bgmTrack)
-        return false;
-
-    auto key = std::string(name);
-    auto it = musicPaths_.find(key);
-    if (it == musicPaths_.end())
-    {
-        LOG("AudioManager::loadBGM() 未注册的BGM {}", name);
-        return false;
-    }
-
-    MIX_Audio *audio = MIX_LoadAudio(mixer, it->second.c_str(), true);
-    if (!audio)
-    {
-        LOG("AudioManager::loadBGM() 加载失败 {}: {}", it->second,
-            SDL_GetError());
-        return false;
-    }
-
-    if (!MIX_SetTrackAudio(bgmTrack, audio))
-    {
-        LOG("AudioManager::loadBGM() 绑定音频失败: {}", SDL_GetError());
-        MIX_DestroyAudio(audio);
-        return false;
-    }
-
-    bgmReady = true;
-    return true;
-}
-
-void AudioManager::playBGM()
-{
-    if (!bgmReady || !bgmTrack)
-        return;
-
-    SDL_PropertiesID props = SDL_CreateProperties();
-    SDL_SetNumberProperty(props, MIX_PROP_PLAY_LOOPS_NUMBER, -1); // 无限循环
-    MIX_PlayTrack(bgmTrack, props);
-    SDL_DestroyProperties(props);
-}
-
-void AudioManager::stopBGM()
-{
-    if (bgmTrack)
-        MIX_StopTrack(bgmTrack, 0);
-    bgmReady = false;
-}
-
-bool AudioManager::changeBGM(std::string_view name)
-{
-    stopBGM();
-    if (loadBGM(name))
-    {
-        playBGM();
-        return true;
-    }
+bool AudioManager::Init() {
+  if (!MIX_Init()) {
+    LOG("AudioManager::Init() MIX_Init failed: {}", SDL_GetError());
     return false;
+  }
+
+  SDL_AudioSpec spec;
+  SDL_zero(spec);
+  spec.format = SDL_AUDIO_S16;
+  spec.channels = 2;
+  spec.freq = 44100;
+
+  mixer = MIX_CreateMixer(&spec);
+  if (!mixer) {
+    LOG("AudioManager::Init() MIX_CreateMixer failed: {}", SDL_GetError());
+    return false;
+  }
+
+  bgmTrack = MIX_CreateTrack(mixer);
+  if (!bgmTrack) {
+    LOG("AudioManager::Init() failed to create BGM track: {}", SDL_GetError());
+    return false;
+  }
+
+  LOG("AudioManager::Init() success");
+  return true;
 }
 
-void AudioManager::playSE(std::string_view name, int loops)
-{
-    if (!mixer)
-        return;
+void AudioManager::CleanUp() {
+  stopAllSE();
+  stopBGM();
 
-    auto key = std::string(name);
-    auto it = soundPaths_.find(key);
-    if (it == soundPaths_.end())
-    {
-        LOG("AudioManager::playSE() 未注册的音效 {}", name);
-        return;
-    }
+  if (bgmTrack) {
+    MIX_DestroyTrack(bgmTrack);
+    bgmTrack = nullptr;
+  }
 
-    MIX_Track *track = ensureTrack(key, false);
-    if (!track)
-        return;
+  for (auto &[id, track] : soundTracks_) {
+    if (track)
+      MIX_DestroyTrack(track);
+  }
+  soundTracks_.clear();
 
-    MIX_Audio *audio = MIX_LoadAudio(mixer, it->second.c_str(), false);
-    if (!audio)
-    {
-        LOG("AudioManager::playSE() 加载失败 {}: {}", it->second,
-            SDL_GetError());
-        return;
-    }
+  if (mixer) {
+    MIX_DestroyMixer(mixer);
+    mixer = nullptr;
+  }
 
-    MIX_SetTrackAudio(track, audio);
-
-    SDL_PropertiesID props = SDL_CreateProperties();
-    SDL_SetNumberProperty(props, MIX_PROP_PLAY_LOOPS_NUMBER, loops);
-    MIX_PlayTrack(track, props);
-    SDL_DestroyProperties(props);
+  MIX_Quit();
 }
 
-void AudioManager::stopSE(std::string_view name)
-{
-    auto it = soundTracks_.find(std::string(name));
-    if (it != soundTracks_.end() && it->second)
-        MIX_StopTrack(it->second, 0);
+void AudioManager::registerMusic(std::string_view name, std::string_view path) {
+  musicPaths_[std::string(name)] = std::string(path);
 }
 
-void AudioManager::stopAllSE()
-{
-    if (mixer)
-        MIX_StopAllTracks(mixer, 0);
+void AudioManager::registerSound(std::string_view name, std::string_view path) {
+  soundPaths_[std::string(name)] = std::string(path);
 }
 
-void AudioManager::setVolume(int volume)
-{
-    currentBGMVolume = volume;
-    if (bgmTrack)
-    {
-        float gain = static_cast<float>(volume) / 128.0f;
-        if (gain < 0.0f)
-            gain = 0.0f;
-        if (gain > 1.0f)
-            gain = 1.0f;
-        MIX_SetTrackGain(bgmTrack, gain);
-    }
+MIX_Track *AudioManager::ensureTrack(std::string_view name, bool isMusic) {
+  if (isMusic)
+    return bgmTrack;
+
+  auto key = std::string(name);
+  auto it = soundTracks_.find(key);
+  if (it != soundTracks_.end())
+    return it->second;
+
+  MIX_Track *track = MIX_CreateTrack(mixer);
+  if (track)
+    soundTracks_[key] = track;
+  return track;
 }
 
-void AudioManager::setSEVolume(std::string_view name, int volume)
-{
-    auto it = soundTracks_.find(std::string(name));
-    if (it == soundTracks_.end() || !it->second)
-        return;
+bool AudioManager::loadBGM(std::string_view name) {
+  if (!mixer || !bgmTrack)
+    return false;
 
+  auto key = std::string(name);
+  auto it = musicPaths_.find(key);
+  if (it == musicPaths_.end()) {
+    LOG("AudioManager::loadBGM() 未注册的BGM {}", name);
+    return false;
+  }
+
+  MIX_Audio *audio = MIX_LoadAudio(mixer, it->second.c_str(), true);
+  if (!audio) {
+    LOG("AudioManager::loadBGM() 加载失败 {}: {}", it->second, SDL_GetError());
+    return false;
+  }
+
+  if (!MIX_SetTrackAudio(bgmTrack, audio)) {
+    LOG("AudioManager::loadBGM() 绑定音频失败: {}", SDL_GetError());
+    MIX_DestroyAudio(audio);
+    return false;
+  }
+
+  bgmReady = true;
+  return true;
+}
+
+void AudioManager::playBGM() {
+  if (!bgmReady || !bgmTrack)
+    return;
+
+  SDL_PropertiesID props = SDL_CreateProperties();
+  SDL_SetNumberProperty(props, MIX_PROP_PLAY_LOOPS_NUMBER, -1); // 无限循环
+  MIX_PlayTrack(bgmTrack, props);
+  SDL_DestroyProperties(props);
+}
+
+void AudioManager::stopBGM() {
+  if (bgmTrack)
+    MIX_StopTrack(bgmTrack, 0);
+  bgmReady = false;
+}
+
+bool AudioManager::changeBGM(std::string_view name) {
+  stopBGM();
+  if (loadBGM(name)) {
+    playBGM();
+    return true;
+  }
+  return false;
+}
+
+void AudioManager::playSE(std::string_view name, int loops) {
+  if (!mixer)
+    return;
+
+  auto key = std::string(name);
+  auto it = soundPaths_.find(key);
+  if (it == soundPaths_.end()) {
+    LOG("AudioManager::playSE() 未注册的音效 {}", name);
+    return;
+  }
+
+  MIX_Track *track = ensureTrack(key, false);
+  if (!track)
+    return;
+
+  MIX_Audio *audio = MIX_LoadAudio(mixer, it->second.c_str(), false);
+  if (!audio) {
+    LOG("AudioManager::playSE() 加载失败 {}: {}", it->second, SDL_GetError());
+    return;
+  }
+
+  MIX_SetTrackAudio(track, audio);
+
+  SDL_PropertiesID props = SDL_CreateProperties();
+  SDL_SetNumberProperty(props, MIX_PROP_PLAY_LOOPS_NUMBER, loops);
+  MIX_PlayTrack(track, props);
+  SDL_DestroyProperties(props);
+}
+
+void AudioManager::stopSE(std::string_view name) {
+  auto it = soundTracks_.find(std::string(name));
+  if (it != soundTracks_.end() && it->second)
+    MIX_StopTrack(it->second, 0);
+}
+
+void AudioManager::stopAllSE() {
+  if (mixer)
+    MIX_StopAllTracks(mixer, 0);
+}
+
+void AudioManager::setVolume(int volume) {
+  currentBGMVolume = volume;
+  if (bgmTrack) {
     float gain = static_cast<float>(volume) / 128.0f;
     if (gain < 0.0f)
-        gain = 0.0f;
+      gain = 0.0f;
     if (gain > 1.0f)
-        gain = 1.0f;
-    MIX_SetTrackGain(it->second, gain);
+      gain = 1.0f;
+    MIX_SetTrackGain(bgmTrack, gain);
+  }
 }
 
-void AudioManager::setAllSEVolume(int volume)
-{
-    float gain = static_cast<float>(volume) / 128.0f;
-    if (gain < 0.0f)
-        gain = 0.0f;
-    if (gain > 1.0f)
-        gain = 1.0f;
+void AudioManager::setSEVolume(std::string_view name, int volume) {
+  auto it = soundTracks_.find(std::string(name));
+  if (it == soundTracks_.end() || !it->second)
+    return;
 
-    for (auto &[id, track] : soundTracks_)
-    {
-        if (track)
-            MIX_SetTrackGain(track, gain);
-    }
+  float gain = static_cast<float>(volume) / 128.0f;
+  if (gain < 0.0f)
+    gain = 0.0f;
+  if (gain > 1.0f)
+    gain = 1.0f;
+  MIX_SetTrackGain(it->second, gain);
+}
+
+void AudioManager::setAllSEVolume(int volume) {
+  float gain = static_cast<float>(volume) / 128.0f;
+  if (gain < 0.0f)
+    gain = 0.0f;
+  if (gain > 1.0f)
+    gain = 1.0f;
+
+  for (auto &[id, track] : soundTracks_) {
+    if (track)
+      MIX_SetTrackGain(track, gain);
+  }
 }
 
 } // namespace Eclipsea

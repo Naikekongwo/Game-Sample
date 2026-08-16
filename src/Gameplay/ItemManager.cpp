@@ -1,73 +1,63 @@
 #include "Eclipsea/Gameplay/Backpack/ItemManager.hpp"
-#include "OpenCore.hpp"                           // LOG 宏等
 #include "Eclipsea/Gameplay/Backpack/Backpack.hpp" // 需要 Backpack 的完整定义以调用 pushItem
 #include "Eclipsea/Gameplay/Entity/Entity.hpp" // Entity 前向声明或完整定义
+#include "OpenCore.hpp"                        // LOG 宏等
 #include <optional>
 
-uint8_t ItemManager::getMaxStackSize(short typeID) const
-{
-    auto it = itemRegistry.find(typeID);
-    if (it != itemRegistry.end())
-        return it->second.maxStackedAmount;
-    return 64; // 默认堆叠上限
-}
-bool ItemManager::registerItem(const ItemInfo &regInfo)
-{
-    if (itemRegistry.contains(regInfo.typeID))
-    {
-        LOG("物品注册失败：类型 ID {} 已存在", regInfo.typeID);
-        return false;
-    }
 
-    itemRegistry[regInfo.typeID] = regInfo;
-    LOG("物品注册成功，名称 {} 类型 ID {}", regInfo.id, regInfo.typeID);
-    return true;
+uint8_t ItemManager::getMaxStackSize(short typeID) const {
+  auto it = itemRegistry.find(typeID);
+  if (it != itemRegistry.end())
+    return it->second.maxStackedAmount;
+  return 64; // 默认堆叠上限
+}
+bool ItemManager::registerItem(const ItemInfo &regInfo) {
+  if (itemRegistry.contains(regInfo.typeID)) {
+    LOG("物品注册失败：类型 ID {} 已存在", regInfo.typeID);
+    return false;
+  }
+
+  itemRegistry[regInfo.typeID] = regInfo;
+  LOG("物品注册成功，名称 {} 类型 ID {}", regInfo.id, regInfo.typeID);
+  return true;
 }
 
-optional<Item> ItemManager::createItem(short typeID)
-{
-    auto it = itemRegistry.find(typeID);
-    if (it == itemRegistry.end())
-    {
-        LOG("创建物品失败：类型 ID {} 未注册", typeID);
-        return std::nullopt;
-    }
+optional<Item> ItemManager::createItem(short typeID) {
+  auto it = itemRegistry.find(typeID);
+  if (it == itemRegistry.end()) {
+    LOG("创建物品失败：类型 ID {} 未注册", typeID);
+    return std::nullopt;
+  }
 
-    // 已经注册的物品
-    Item result(itemRegistry.at(typeID));
-    return result;
+  // 已经注册的物品
+  Item result(itemRegistry.at(typeID));
+  return result;
 }
 
-bool ItemManager::registerItemTextureMeta(const ItemTextureMeta &meta)
-{
-    if (itemTextureRegistry.contains(meta.textureName))
-    {
-        ItemTextureMeta old = itemTextureRegistry.at(meta.textureName);
-        if (old.texture_cols == meta.texture_cols &&
-            old.texture_rows == meta.texture_rows)
-        {
-            // 完全相同
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+bool ItemManager::registerItemTextureMeta(const ItemTextureMeta &meta) {
+  if (itemTextureRegistry.contains(meta.textureName)) {
+    ItemTextureMeta old = itemTextureRegistry.at(meta.textureName);
+    if (old.texture_cols == meta.texture_cols &&
+        old.texture_rows == meta.texture_rows) {
+      // 完全相同
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    itemTextureRegistry[meta.textureName] = meta;
-    LOG("注册了物品贴图元信息, 纹理: {} 纹理横向网格 {} 纵向网格 {}",
-        meta.textureName, meta.texture_cols, meta.texture_rows);
-    return true;
+  itemTextureRegistry[meta.textureName] = meta;
+  LOG("注册了物品贴图元信息, 纹理: {} 纹理横向网格 {} 纵向网格 {}",
+      meta.textureName, meta.texture_cols, meta.texture_rows);
+  return true;
 }
 
-optional<ItemTextureMeta> ItemManager::getTextureMeta(std::string_view texName)
-{
-    auto key = std::string(texName);
-    if (!itemTextureRegistry.contains(key))
-    {
-        return std::nullopt;
-    }
+optional<ItemTextureMeta>
+ItemManager::getTextureMeta(std::string_view texName) {
+  auto key = std::string(texName);
+  if (!itemTextureRegistry.contains(key)) {
+    return std::nullopt;
+  }
 
-    return itemTextureRegistry.at(key);
+  return itemTextureRegistry.at(key);
 }

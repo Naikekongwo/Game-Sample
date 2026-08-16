@@ -28,11 +28,10 @@
 #include "Stage/MainStage/ContinueStage.hpp"
 #include "Stage/MainStage/SettingsStage.hpp"
 
-class EclipseaApp
-{
-  public:
-    bool StartUp();
-    bool CleanUp();
+class EclipseaApp {
+public:
+  bool StartUp();
+  bool CleanUp();
 
-  private:
+private:
 };

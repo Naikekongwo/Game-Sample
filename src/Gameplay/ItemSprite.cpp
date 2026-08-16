@@ -3,59 +3,54 @@
 #include "OpenCore.hpp"
 #include <memory>
 
-ItemSprite::ItemSprite()
-{
-    id = "null";
-    this->layer = 0;
-    this->VState = std::make_unique<VisualState>();
-    this->AnimeManager = std::make_unique<AnimationManager>();
+ItemSprite::ItemSprite() {
+  id = "null";
+  this->layer = 0;
+  this->VState = std::make_unique<VisualState>();
+  this->AnimeManager = std::make_unique<AnimationManager>();
 
-    texture.reset();
-    onEnter();
+  texture.reset();
+  onEnter();
 }
 
-ItemSprite::ItemSprite(std::string_view textureName)
-{
-    this->id = "null";
-    this->layer = 0; // 适当层级
+ItemSprite::ItemSprite(std::string_view textureName) {
+  this->id = "null";
+  this->layer = 0; // 适当层级
 
-    this->VState = std::make_unique<VisualState>();
-    this->AnimeManager = std::make_unique<AnimationManager>();
+  this->VState = std::make_unique<VisualState>();
+  this->AnimeManager = std::make_unique<AnimationManager>();
 
-    auto *package = OpenEngine::getInstance().getPackageManager();
-    this->texture = std::make_unique<Texture>(
-        4, 4, package ? package->getTextureAsync(textureName) : nullptr);
+  auto *package = OpenEngine::getInstance().getPackageManager();
+  this->texture = std::make_unique<Texture>(
+      4, 4, package ? package->getTextureAsync(textureName) : nullptr);
 
-    LOG("物品精灵创建成功，纹理:{}", textureName);
+  LOG("物品精灵创建成功，纹理:{}", textureName);
 }
 
-void ItemSprite::onEnter()
-{
-    auto *package = OpenEngine::getInstance().getPackageManager();
-    texture = std::make_unique<Texture>(
-        1, 2, package ? package->getTextureAsync(itemTexName) : nullptr);
+void ItemSprite::onEnter() {
+  auto *package = OpenEngine::getInstance().getPackageManager();
+  texture = std::make_unique<Texture>(
+      1, 2, package ? package->getTextureAsync(itemTexName) : nullptr);
 }
 
-void ItemSprite::Draw()
-{
-    // <TODO>
+void ItemSprite::Draw() {
+  // <TODO>
 
-    auto GFX = OpenCoreManagers::GFXManager;
+  auto GFX = OpenCoreManagers::GFXManager;
 
-    Rect rect = getLogicalBounds();
-    Rect srcRect = texture->getSubRect(VState->getFrameIndex());
+  Rect rect = getLogicalBounds();
+  Rect srcRect = texture->getSubRect(VState->getFrameIndex());
 
-    GFX.Draw(texture->get(), &srcRect, &rect, 0.0f, nullptr);
+  GFX.Draw(texture->get(), &srcRect, &rect, 0.0f, nullptr);
 }
 
-bool ItemSprite::setSubTexture(short index)
-{
-    if (!texture)
-        return false;
+bool ItemSprite::setSubTexture(short index) {
+  if (!texture)
+    return false;
 
-    if (index >= texture->Size())
-        return false;
+  if (index >= texture->Size())
+    return false;
 
-    VState->frameIndex = index;
-    return true;
+  VState->frameIndex = index;
+  return true;
 }

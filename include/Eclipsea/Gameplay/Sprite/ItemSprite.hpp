@@ -14,21 +14,20 @@
 
 #include <string>
 
-class ItemSprite : public Sprite
-{
-  public:
-    ItemSprite();
-    explicit ItemSprite(std::string_view textureName); // 接受纹理资源名
-    ~ItemSprite() override = default;
+class ItemSprite : public Sprite {
+public:
+  ItemSprite();
+  explicit ItemSprite(std::string_view textureName); // 接受纹理资源名
+  ~ItemSprite() override = default;
 
-    void onEnter() override;
-    void Draw() override;
+  void onEnter() override;
+  void Draw() override;
 
-    bool onDestroy() override { return true; };
+  bool onDestroy() override { return true; };
 
-    bool setSubTexture(short index);
+  bool setSubTexture(short index);
 
-  private:
-    // 正常来说，其不应该持有这个
-    std::string itemTexName = "items_sets00";
+private:
+  // 正常来说，其不应该持有这个
+  std::string itemTexName = "items_sets00";
 };

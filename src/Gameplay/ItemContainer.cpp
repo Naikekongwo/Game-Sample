@@ -12,7 +12,6 @@
 #include <optional>
 #include <stdexcept>
 
-
 ItemContainer::ItemContainer(string_view id, uint8_t layer,
                              unique_ptr<Texture> texture, short col, short row)
     : UIElement(id.data(), layer, std::move(texture)) {

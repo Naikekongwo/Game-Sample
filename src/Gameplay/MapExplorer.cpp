@@ -13,11 +13,9 @@
 #include <memory>
 #include <optional>
 
-
 #include "Core/Event/ControllerManager.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "Runtime/Graphics/UI/Symbol.hpp"
-
 
 MapExplorer::MapExplorer(const string &id, short layer)
     : UIElement(id, layer, nullptr) {

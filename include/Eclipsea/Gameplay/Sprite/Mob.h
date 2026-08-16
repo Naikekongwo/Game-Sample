@@ -8,22 +8,24 @@
 
 using std::shared_ptr;
 
-class Mob : public Sprite
-{
-  public:
-    Mob(std::string_view MobTextureName, uint8_t gridCols = 4,
-        uint8_t gridRows = 4);
+class Mob : public Sprite {
+public:
+  Mob(std::string_view MobTextureName, uint8_t gridCols = 4,
+      uint8_t gridRows = 4);
 
-    void Draw() override;
+  void Draw() override;
 
-    bool onDestroy() override { return true; };
+  bool onDestroy() override { return true; };
 
-    void setTileSize(uint8_t w, uint8_t h) { tileWidth = w; tileHeight = h; }
-    uint8_t getTileWidth() const { return tileWidth; }
-    uint8_t getTileHeight() const { return tileHeight; }
+  void setTileSize(uint8_t w, uint8_t h) {
+    tileWidth = w;
+    tileHeight = h;
+  }
+  uint8_t getTileWidth() const { return tileWidth; }
+  uint8_t getTileHeight() const { return tileHeight; }
 
-  private:
-    shared_ptr<Texture> shadow;
-    uint8_t tileWidth = 1;
-    uint8_t tileHeight = 1;
+private:
+  shared_ptr<Texture> shadow;
+  uint8_t tileWidth = 1;
+  uint8_t tileHeight = 1;
 };
