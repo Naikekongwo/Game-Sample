@@ -78,8 +78,7 @@ void ContinueStage::initializeComponents()
     Elements->PushElement(std::move(MapInfoDiv));
 
     // 右侧地图信息的容器
-    auto InfoDiv =
-        UI<BaseBackground>("infoDiv", 1, "img_itemcontain", 0, 0);
+    auto InfoDiv = UI<BaseBackground>("infoDiv", 1, "img_itemcontain", 0, 0);
 
     InfoDiv->setNativeScale(20);
 

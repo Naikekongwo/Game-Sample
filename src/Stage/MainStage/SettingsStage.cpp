@@ -1,10 +1,11 @@
+#include "Eclipsea/Core/GameSettings.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore.hpp"
 #include "Runtime/Animation/IAnimation.hpp"
 #include "Runtime/Graphics/UI/TextArea.hpp"
 #include <cstddef>
 #include <memory>
-#include "Eclipsea/Core/GameSettings.hpp"
+
 
 // SettingsStage（新 OpenCore）：timer / sController 由 StageManager 自动注入
 SettingsStage::SettingsStage()
@@ -81,7 +82,7 @@ void SettingsStage::onEnter()
     Elements->PushElement(std::move(musicTitle));
     Elements->PushElement(std::move(soundTitle));
 
-    auto Multi = UI<TextArea>("multiTitle", 3, "9002", 0, 0);
+    auto Multi       = UI<TextArea>("multiTitle", 3, "9002", 0, 0);
     auto renderTitle = UI<TextArea>("renderTitle", 3, "9002", 0, 0);
 
     renderTitle->Configure()

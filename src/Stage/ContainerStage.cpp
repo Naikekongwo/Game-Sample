@@ -56,8 +56,7 @@ bool ContainerStage::parseEvents(Event *event)
 void ContainerStage::initializeComponents()
 {
     // 背景
-    auto stageBg =
-        UI<BaseBackground>("purSbg", 0, "background_purifier", 0, 0);
+    auto stageBg = UI<BaseBackground>("purSbg", 0, "background_purifier", 0, 0);
     stageBg->setNativeScale(120);
     stageBg->Configure()
         .Parent(nullptr)

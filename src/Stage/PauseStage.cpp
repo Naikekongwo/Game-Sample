@@ -22,8 +22,8 @@ void PauseStage::onEnter() { initializeComponents(); }
 
 void PauseStage::initializeComponents()
 {
-    auto Container = UI<BaseBackground>("set_background", 0,
-                                        "stone_background", 0, 0);
+    auto Container =
+        UI<BaseBackground>("set_background", 0, "stone_background", 0, 0);
     Container->setNativeScale(128);
 
     Container->Configure()
@@ -88,15 +88,9 @@ void PauseStage::initializeComponents()
     Elements->PushElement(std::move(Container));
 }
 
-void PauseStage::onUpdate()
-{
-    Elements->onUpdate(timer->getTotalTime());
-}
+void PauseStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
 
-void PauseStage::onRender()
-{
-    Elements->onRender();
-}
+void PauseStage::onRender() { Elements->onRender(); }
 
 void PauseStage::onExit()
 {
@@ -104,7 +98,4 @@ void PauseStage::onExit()
     LOG("PauseStage: onExit - cleared elements");
 }
 
-void PauseStage::onDestroy()
-{
-    LOG("PauseStage: onDestroy");
-}
+void PauseStage::onDestroy() { LOG("PauseStage: onDestroy"); }

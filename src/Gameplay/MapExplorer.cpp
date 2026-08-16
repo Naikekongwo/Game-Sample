@@ -18,427 +18,479 @@
 #include "Runtime/Graphics/UI/Symbol.hpp"
 
 MapExplorer::MapExplorer(const string &id, short layer)
-    : UIElement(id, layer, nullptr) {
-  renderRangeX = *Eclipsea::GameSettings::getInstance().getRenderWidth();
-  renderRangeY = *Eclipsea::GameSettings::getInstance().getRenderHeight();
+    : UIElement(id, layer, nullptr)
+{
+    renderRangeX = *Eclipsea::GameSettings::getInstance().getRenderWidth();
+    renderRangeY = *Eclipsea::GameSettings::getInstance().getRenderHeight();
 
-  LOG("初始化成功");
+    LOG("初始化成功");
 }
 
 void MapExplorer::onExit() {}
 
-void MapExplorer::onEnter() {
+void MapExplorer::onEnter()
+{
 
-  if (status == MapExpStatus::Creating) {
-    initComponents();
-
-    // 贴图加载完毕后，从地图方块中生成实体
-    m_wrdController->spawnMapEntities();
-
-    // <TODO>
-    auto chao = m_wrdController->queryPhysicalProp(2);
-    if (chao != nullptr) {
-      Vec3 pos{2, 4, 0};
-      chao->setPosition(pos);
-    }
-
-    auto player = m_wrdController->queryPhysicalProp(1);
-    if (player != nullptr) {
-      Vec3 pos{2, 4, 0};
-      player->setPosition(pos);
-    }
-
-    status = MapExpStatus::Ready;
-    LOG("状态从创建态更新到准备态");
-  }
-}
-
-void MapExplorer::Draw() {
-  if (status != MapExpStatus::Ready || m_wrdController == nullptr)
-    return;
-
-  if (VState->getAlpha() <= 0.0f) {
-    if (!m_wrdController->isMapReady())
-      m_wrdController->initMap();
-    LOG("世界控制器尚未准备完毕");
-    return;
-  }
-
-  if (!m_wrdController->isMapReady()) {
-    m_wrdController->initMap();
-    LOG("世界控制器尚未准备完毕");
-    return;
-  }
-
-  auto focusEntity = m_wrdController->getEntityByID(m_focusEntityIndex);
-
-  auto cameraProp =
-      focusEntity ? &focusEntity->getPhysicalProperties() : nullptr;
-  if (cameraProp == nullptr) {
-    LOG("渲染的焦点实体物理信息并不存在");
-    return;
-  }
-
-  auto *renderer = OpenCoreManagers::GFXManager.getRenderer();
-
-  SDL_Rect rect{0, 0, 1920, 1080};
-  float viewportX = 0.0f;
-
-  switch (vType) {
-  case ViewportType::LeftHalf:
-    viewportX -= 0.25f;
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = 960;
-    rect.h = 1080;
-    break;
-  case ViewportType::RightHalf:
-    viewportX += 0.25f;
-    rect.x = 960;
-    rect.y = 0;
-    rect.w = 960;
-    rect.h = 1080;
-    break;
-  default:
-    break;
-  }
-
-  SDL_SetRenderClipRect(renderer, &rect);
-
-  auto Position = cameraProp->getPosition();
-
-  int center_x = Position.x + 0.5f;
-  int center_y = Position.y + 0.5f;
-
-  float offsetX = Position.x - center_x;
-  float offsetY = Position.y - center_y;
-
-  auto left_border = (renderRangeX / 2);
-  auto up_border = (renderRangeY - 1) / 2;
-
-  for (int y = -up_border - 1; y <= up_border + 1; ++y) {
-    for (int x = -left_border; x <= left_border; ++x) {
-      int gx = x + center_x;
-      int gy = y + center_y;
-
-      auto bInfo = m_wrdController->queryBlockInfo(gx, gy);
-
-      if (bInfo == std::nullopt)
-        continue;
-      if (bInfo->Terrain == 2 && bInfo->STRuct == 2)
-        continue;
-
-      tileRenderer->setPositeRelative(
-          (x - offsetX) * widthFactor + 0.5f + viewportX,
-          (y - offsetY + Position.z) * heightFactor + 0.5f);
-
-      tileRenderer->setTransparency(1.0f);
-      tileRenderer->getVisualState()->frameIndex = bInfo->Terrain;
-      tileRenderer->setTileType(TileType::Terrain);
-      tileRenderer->setTileID(bInfo->Terrain);
-      tileRenderer->Draw();
-
-      tileRenderer->setTileType(TileType::Terrain);
-      tileRenderer->setTileID(bInfo->STRuct);
-      tileRenderer->Draw();
-    }
-  }
-
-  vector<Entity *> Entities;
-  m_wrdController->getEntities(Entities);
-
-  sort(Entities.begin(), Entities.end(), [](Entity *a, Entity *b) {
-    return a->getPhysicalProperties().getPosition().y <
-           b->getPhysicalProperties().getPosition().y;
-  });
-
-  nearbyEntity = nullptr;
-  for (auto ptr : Entities) {
-    auto ePos = ptr->getPhysicalProperties().getPosition();
-    Vec3 absPos;
-
-    absPos.x = (ePos.x - Position.x) * widthFactor + viewportX + 0.5f;
-    absPos.y = (ePos.y - Position.y) * heightFactor + 0.5f;
-    absPos.z = 0;
-
-    ptr->Draw(absPos);
-
-    Vec3 symbolPos = absPos;
-    symbolPos.y -= 0.06f;
-
-    if (abs(ePos.x - Position.x) < 2.0f && abs(ePos.y - Position.y) < 2.0f &&
-        ePos != cameraProp->getPosition()) {
-      m_symbol->SetSymbolType(SYMBOL_QUESTION);
-      m_symbol->setPositeRelative(0.5f + viewportX, 0.27f);
-      m_symbol->setScaleRelative(0.05f, 0.05f * widthheight);
-      m_symbol->Draw();
-
-      nearbyEntity = ptr;
-    }
-  }
-
-  m_itemContainer->Draw();
-
-  m_healthbar->setHealth(
-      m_wrdController->getEntityByID(m_focusEntityIndex)->getHealthHook());
-  m_healthbar->Draw();
-
-  // 渲染拖动的物品
-  {
-    auto homeless = m_wrdController->queryHomelessItemInfo();
-    if (homeless.has_value()) {
-      if (!m_pickedUpItem) {
-        m_pickedUpItem = std::make_unique<ItemSprite>();
-        m_pickedUpItem->Configure()
-            .Parent(nullptr)
-            .Anchor(AnchorPoint::Center)
-            .PositeR(0.5f, 0.5f)
-            .ScaleR(0.1f, 0.1f * widthheight);
-      }
-
-      auto meta = Gameplay::ItemMgr.getTextureMeta(homeless->textureMetaName);
-      if (meta.has_value()) {
-        m_pickedUpItem->changeTexture(MakeTexture(
-            meta->texture_cols, meta->texture_rows, meta->textureName));
-        m_pickedUpItem->setSubTexture(homeless->texturePosID);
-        m_pickedUpItem->getVisualState()->Position[0] = m_mouseX;
-        m_pickedUpItem->getVisualState()->Position[1] = m_mouseY;
-        m_pickedUpItem->Draw();
-      }
-    } else {
-      m_pickedUpItem.reset();
-    }
-  }
-
-  SDL_SetRenderClipRect(renderer, nullptr);
-}
-
-void MapExplorer::onUpdate(float totalTime) {
-  if (status == MapExpStatus::Creating) {
-    onEnter();
-  }
-
-  // 人物移动时持续触发手柄低频微震以模拟摩擦感
-  if (m_moveUp || m_moveDown || m_moveLeft || m_moveRight) {
-    ControllerManager::GetInstance().RumblePlayer(0, 0x1000, 0, 80);
-  }
-}
-
-void MapExplorer::parseEvents(Event *event, float totalTime) {
-  if (m_wrdController == nullptr)
-    return;
-
-  UIElement::parseEvents(event, totalTime);
-
-  SDL_Event &sdlEvent = event->GetSDLEvent();
-
-  m_itemContainer->parseEvents(event, totalTime);
-
-  // --- 鼠标追踪: 更新拖动物品的位置 ---
-  if (sdlEvent.type == SDL_EVENT_MOUSE_MOTION) {
-    m_mouseX = static_cast<float>(sdlEvent.motion.x);
-    m_mouseY = static_cast<float>(sdlEvent.motion.y);
-  }
-
-  // --- 鼠标点击: 喝水 ---
-  if (sdlEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN &&
-      sdlEvent.button.button == SDL_BUTTON_LEFT) {
-    auto homeless = m_wrdController->queryHomelessItemInfo();
-    if (homeless.has_value() && homeless->typeID == 2) // 满瓶
+    if (status == MapExpStatus::Creating)
     {
-      // 检查点击位置是否在屏幕中央区域 (±30%)
-      float cx = m_mouseX / 1920.0f;
-      float cy = m_mouseY / 1080.0f;
-      if (cx >= 0.35f && cx <= 0.65f && cy >= 0.35f && cy <= 0.65f) {
-        auto player = m_wrdController->getEntityByID(m_focusEntityIndex);
-        if (player) {
-          m_wrdController->popHomelessItem();
-          player->getBackpack()->addItem(1, 1); // 空瓶放回背包
+        initComponents();
 
-          *player->getHealthHook() =
-              std::min(1.0f, *player->getHealthHook() + 0.5f);
-          LOG("喝水: 满瓶已消耗, 恢复50%生命值");
-        }
-      }
-    }
-  }
+        // 贴图加载完毕后，从地图方块中生成实体
+        m_wrdController->spawnMapEntities();
 
-  bool isKeyDown = (sdlEvent.type == SDL_EVENT_KEY_DOWN);
-  bool isCtrlDown = (sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN);
-
-  // --- 键盘输入 ---
-  if (sdlEvent.type == SDL_EVENT_KEY_DOWN ||
-      sdlEvent.type == SDL_EVENT_KEY_UP) {
-    if (sdlEvent.key.repeat)
-      return;
-
-    if (vType == ViewportType::Fullscreen || vType == ViewportType::LeftHalf) {
-      switch (sdlEvent.key.key) {
-      case SDLK_W:
-        m_moveUp = isKeyDown;
-        break;
-      case SDLK_A:
-        m_moveLeft = isKeyDown;
-        break;
-      case SDLK_D:
-        m_moveRight = isKeyDown;
-        break;
-      case SDLK_S:
-        m_moveDown = isKeyDown;
-        break;
-      case SDLK_RETURN: {
-        if (nearbyEntity) {
-          switch (nearbyEntity->getEntityInfo().EntityTypeID) {
-          case 100: {
-            auto Purifier = std::make_unique<PurifierStage>();
-            OpenEngine::getInstance().getStageController()->changeStage(
-                std::move(Purifier));
-            break;
-          }
-          default:
-            break;
-          }
+        // <TODO>
+        auto chao = m_wrdController->queryPhysicalProp(2);
+        if (chao != nullptr)
+        {
+            Vec3 pos{2, 4, 0};
+            chao->setPosition(pos);
         }
 
-        break;
-      }
-      default:
-        return;
-      }
-    } else {
-      switch (sdlEvent.key.key) {
-      case SDLK_UP:
-        m_moveUp = isKeyDown;
-        break;
-      case SDLK_LEFT:
-        m_moveLeft = isKeyDown;
-        break;
-      case SDLK_RIGHT:
-        m_moveRight = isKeyDown;
-        break;
-      case SDLK_DOWN:
-        m_moveDown = isKeyDown;
-        break;
-      default:
-        return;
-      }
+        auto player = m_wrdController->queryPhysicalProp(1);
+        if (player != nullptr)
+        {
+            Vec3 pos{2, 4, 0};
+            player->setPosition(pos);
+        }
+
+        status = MapExpStatus::Ready;
+        LOG("状态从创建态更新到准备态");
     }
-  }
-  // --- 手柄十字键输入 ---
-  else if (sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
-           sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_UP) {
-    switch (sdlEvent.gbutton.button) {
-    case SDL_GAMEPAD_BUTTON_DPAD_UP:
-      m_moveUp = isCtrlDown;
-      break;
-    case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
-      m_moveDown = isCtrlDown;
-      break;
-    case SDL_GAMEPAD_BUTTON_DPAD_LEFT:
-      m_moveLeft = isCtrlDown;
-      break;
-    case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:
-      m_moveRight = isCtrlDown;
-      break;
+}
+
+void MapExplorer::Draw()
+{
+    if (status != MapExpStatus::Ready || m_wrdController == nullptr)
+        return;
+
+    if (VState->getAlpha() <= 0.0f)
+    {
+        if (!m_wrdController->isMapReady())
+            m_wrdController->initMap();
+        LOG("世界控制器尚未准备完毕");
+        return;
+    }
+
+    if (!m_wrdController->isMapReady())
+    {
+        m_wrdController->initMap();
+        LOG("世界控制器尚未准备完毕");
+        return;
+    }
+
+    auto focusEntity = m_wrdController->getEntityByID(m_focusEntityIndex);
+
+    auto cameraProp =
+        focusEntity ? &focusEntity->getPhysicalProperties() : nullptr;
+    if (cameraProp == nullptr)
+    {
+        LOG("渲染的焦点实体物理信息并不存在");
+        return;
+    }
+
+    auto *renderer = OpenCoreManagers::GFXManager.getRenderer();
+
+    SDL_Rect rect{0, 0, 1920, 1080};
+    float    viewportX = 0.0f;
+
+    switch (vType)
+    {
+    case ViewportType::LeftHalf:
+        viewportX -= 0.25f;
+        rect.x = 0;
+        rect.y = 0;
+        rect.w = 960;
+        rect.h = 1080;
+        break;
+    case ViewportType::RightHalf:
+        viewportX += 0.25f;
+        rect.x = 960;
+        rect.y = 0;
+        rect.w = 960;
+        rect.h = 1080;
+        break;
     default:
-      return;
+        break;
     }
-  } else {
-    return;
-  }
 
-  // 根据所有当前按住的键计算合成速度
-  Vec3 velocity{0, 0, 0};
-  if (m_moveUp)
-    velocity.y -= 3;
-  if (m_moveDown)
-    velocity.y += 3;
-  if (m_moveLeft)
-    velocity.x -= 3;
-  if (m_moveRight)
-    velocity.x += 3;
+    SDL_SetRenderClipRect(renderer, &rect);
 
-  m_wrdController->regMovement(m_focusEntityIndex, velocity);
+    auto Position = cameraProp->getPosition();
+
+    int center_x = Position.x + 0.5f;
+    int center_y = Position.y + 0.5f;
+
+    float offsetX = Position.x - center_x;
+    float offsetY = Position.y - center_y;
+
+    auto left_border = (renderRangeX / 2);
+    auto up_border   = (renderRangeY - 1) / 2;
+
+    for (int y = -up_border - 1; y <= up_border + 1; ++y)
+    {
+        for (int x = -left_border; x <= left_border; ++x)
+        {
+            int gx = x + center_x;
+            int gy = y + center_y;
+
+            auto bInfo = m_wrdController->queryBlockInfo(gx, gy);
+
+            if (bInfo == std::nullopt)
+                continue;
+            if (bInfo->Terrain == 2 && bInfo->STRuct == 2)
+                continue;
+
+            tileRenderer->setPositeRelative(
+                (x - offsetX) * widthFactor + 0.5f + viewportX,
+                (y - offsetY + Position.z) * heightFactor + 0.5f);
+
+            tileRenderer->setTransparency(1.0f);
+            tileRenderer->getVisualState()->frameIndex = bInfo->Terrain;
+            tileRenderer->setTileType(TileType::Terrain);
+            tileRenderer->setTileID(bInfo->Terrain);
+            tileRenderer->Draw();
+
+            tileRenderer->setTileType(TileType::Terrain);
+            tileRenderer->setTileID(bInfo->STRuct);
+            tileRenderer->Draw();
+        }
+    }
+
+    vector<Entity *> Entities;
+    m_wrdController->getEntities(Entities);
+
+    sort(Entities.begin(), Entities.end(),
+         [](Entity *a, Entity *b)
+         {
+             return a->getPhysicalProperties().getPosition().y <
+                    b->getPhysicalProperties().getPosition().y;
+         });
+
+    nearbyEntity = nullptr;
+    for (auto ptr : Entities)
+    {
+        auto ePos = ptr->getPhysicalProperties().getPosition();
+        Vec3 absPos;
+
+        absPos.x = (ePos.x - Position.x) * widthFactor + viewportX + 0.5f;
+        absPos.y = (ePos.y - Position.y) * heightFactor + 0.5f;
+        absPos.z = 0;
+
+        ptr->Draw(absPos);
+
+        Vec3 symbolPos = absPos;
+        symbolPos.y -= 0.06f;
+
+        if (abs(ePos.x - Position.x) < 2.0f &&
+            abs(ePos.y - Position.y) < 2.0f &&
+            ePos != cameraProp->getPosition())
+        {
+            m_symbol->SetSymbolType(SYMBOL_QUESTION);
+            m_symbol->setPositeRelative(0.5f + viewportX, 0.27f);
+            m_symbol->setScaleRelative(0.05f, 0.05f * widthheight);
+            m_symbol->Draw();
+
+            nearbyEntity = ptr;
+        }
+    }
+
+    m_itemContainer->Draw();
+
+    m_healthbar->setHealth(
+        m_wrdController->getEntityByID(m_focusEntityIndex)->getHealthHook());
+    m_healthbar->Draw();
+
+    // 渲染拖动的物品
+    {
+        auto homeless = m_wrdController->queryHomelessItemInfo();
+        if (homeless.has_value())
+        {
+            if (!m_pickedUpItem)
+            {
+                m_pickedUpItem = std::make_unique<ItemSprite>();
+                m_pickedUpItem->Configure()
+                    .Parent(nullptr)
+                    .Anchor(AnchorPoint::Center)
+                    .PositeR(0.5f, 0.5f)
+                    .ScaleR(0.1f, 0.1f * widthheight);
+            }
+
+            auto meta =
+                Gameplay::ItemMgr.getTextureMeta(homeless->textureMetaName);
+            if (meta.has_value())
+            {
+                m_pickedUpItem->changeTexture(MakeTexture(
+                    meta->texture_cols, meta->texture_rows, meta->textureName));
+                m_pickedUpItem->setSubTexture(homeless->texturePosID);
+                m_pickedUpItem->getVisualState()->Position[0] = m_mouseX;
+                m_pickedUpItem->getVisualState()->Position[1] = m_mouseY;
+                m_pickedUpItem->Draw();
+            }
+        }
+        else
+        {
+            m_pickedUpItem.reset();
+        }
+    }
+
+    SDL_SetRenderClipRect(renderer, nullptr);
 }
 
-bool MapExplorer::setWorldController(WorldController *wrdController) {
-  if (!wrdController)
-    return false;
+void MapExplorer::onUpdate(float totalTime)
+{
+    if (status == MapExpStatus::Creating)
+    {
+        onEnter();
+    }
 
-  this->m_wrdController = wrdController;
-
-  wrdController->EnableUpdate();
-
-  return true;
+    // 人物移动时持续触发手柄低频微震以模拟摩擦感
+    if (m_moveUp || m_moveDown || m_moveLeft || m_moveRight)
+    {
+        ControllerManager::GetInstance().RumblePlayer(0, 0x1000, 0, 80);
+    }
 }
 
-void MapExplorer::setExplorerViewPort(ViewportType vType) {
-  this->vType = vType;
+void MapExplorer::parseEvents(Event *event, float totalTime)
+{
+    if (m_wrdController == nullptr)
+        return;
 
-  renderRangeX = *Eclipsea::GameSettings::getInstance().getRenderWidth();
-  renderRangeY = *Eclipsea::GameSettings::getInstance().getRenderHeight();
+    UIElement::parseEvents(event, totalTime);
 
-  if (vType != ViewportType::Fullscreen && vType != ViewportType::Free) {
-    renderRangeX *= 0.5;
-  }
+    SDL_Event &sdlEvent = event->GetSDLEvent();
+
+    m_itemContainer->parseEvents(event, totalTime);
+
+    // --- 鼠标追踪: 更新拖动物品的位置 ---
+    if (sdlEvent.type == SDL_EVENT_MOUSE_MOTION)
+    {
+        m_mouseX = static_cast<float>(sdlEvent.motion.x);
+        m_mouseY = static_cast<float>(sdlEvent.motion.y);
+    }
+
+    // --- 鼠标点击: 喝水 ---
+    if (sdlEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN &&
+        sdlEvent.button.button == SDL_BUTTON_LEFT)
+    {
+        auto homeless = m_wrdController->queryHomelessItemInfo();
+        if (homeless.has_value() && homeless->typeID == 2) // 满瓶
+        {
+            // 检查点击位置是否在屏幕中央区域 (±30%)
+            float cx = m_mouseX / 1920.0f;
+            float cy = m_mouseY / 1080.0f;
+            if (cx >= 0.35f && cx <= 0.65f && cy >= 0.35f && cy <= 0.65f)
+            {
+                auto player =
+                    m_wrdController->getEntityByID(m_focusEntityIndex);
+                if (player)
+                {
+                    m_wrdController->popHomelessItem();
+                    player->getBackpack()->addItem(1, 1); // 空瓶放回背包
+
+                    *player->getHealthHook() =
+                        std::min(1.0f, *player->getHealthHook() + 0.5f);
+                    LOG("喝水: 满瓶已消耗, 恢复50%生命值");
+                }
+            }
+        }
+    }
+
+    bool isKeyDown  = (sdlEvent.type == SDL_EVENT_KEY_DOWN);
+    bool isCtrlDown = (sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN);
+
+    // --- 键盘输入 ---
+    if (sdlEvent.type == SDL_EVENT_KEY_DOWN ||
+        sdlEvent.type == SDL_EVENT_KEY_UP)
+    {
+        if (sdlEvent.key.repeat)
+            return;
+
+        if (vType == ViewportType::Fullscreen ||
+            vType == ViewportType::LeftHalf)
+        {
+            switch (sdlEvent.key.key)
+            {
+            case SDLK_W:
+                m_moveUp = isKeyDown;
+                break;
+            case SDLK_A:
+                m_moveLeft = isKeyDown;
+                break;
+            case SDLK_D:
+                m_moveRight = isKeyDown;
+                break;
+            case SDLK_S:
+                m_moveDown = isKeyDown;
+                break;
+            case SDLK_RETURN:
+            {
+                if (nearbyEntity)
+                {
+                    switch (nearbyEntity->getEntityInfo().EntityTypeID)
+                    {
+                    case 100:
+                    {
+                        auto Purifier = std::make_unique<PurifierStage>();
+                        OpenEngine::getInstance()
+                            .getStageController()
+                            ->changeStage(std::move(Purifier));
+                        break;
+                    }
+                    default:
+                        break;
+                    }
+                }
+
+                break;
+            }
+            default:
+                return;
+            }
+        }
+        else
+        {
+            switch (sdlEvent.key.key)
+            {
+            case SDLK_UP:
+                m_moveUp = isKeyDown;
+                break;
+            case SDLK_LEFT:
+                m_moveLeft = isKeyDown;
+                break;
+            case SDLK_RIGHT:
+                m_moveRight = isKeyDown;
+                break;
+            case SDLK_DOWN:
+                m_moveDown = isKeyDown;
+                break;
+            default:
+                return;
+            }
+        }
+    }
+    // --- 手柄十字键输入 ---
+    else if (sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
+             sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_UP)
+    {
+        switch (sdlEvent.gbutton.button)
+        {
+        case SDL_GAMEPAD_BUTTON_DPAD_UP:
+            m_moveUp = isCtrlDown;
+            break;
+        case SDL_GAMEPAD_BUTTON_DPAD_DOWN:
+            m_moveDown = isCtrlDown;
+            break;
+        case SDL_GAMEPAD_BUTTON_DPAD_LEFT:
+            m_moveLeft = isCtrlDown;
+            break;
+        case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:
+            m_moveRight = isCtrlDown;
+            break;
+        default:
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
+
+    // 根据所有当前按住的键计算合成速度
+    Vec3 velocity{0, 0, 0};
+    if (m_moveUp)
+        velocity.y -= 3;
+    if (m_moveDown)
+        velocity.y += 3;
+    if (m_moveLeft)
+        velocity.x -= 3;
+    if (m_moveRight)
+        velocity.x += 3;
+
+    m_wrdController->regMovement(m_focusEntityIndex, velocity);
 }
 
-void MapExplorer::initComponents() {
-  if (tileRenderer)
-    return;
+bool MapExplorer::setWorldController(WorldController *wrdController)
+{
+    if (!wrdController)
+        return false;
 
-  // 创建Tile的渲染器
-  tileRenderer = std::make_unique<Tile>();
-  tileRenderer->Configure()
-      .Parent(nullptr)
-      .Anchor(AnchorPoint::Center)
-      .Alpha(0.0f);
-  LOG("地图单位渲染器创建成功");
-  tileRenderer->onEnter();
+    this->m_wrdController = wrdController;
 
-  // 初始化Tile的大小：归一化坐标（每格占屏幕的 1/renderRange），
-  // 用 setScaleRelative 强制相对语义，坐标 >1.0 也不会被误判为绝对像素
-  widthFactor = 1.0f / renderRangeX;
-  heightFactor = 1.0f / renderRangeY;
+    wrdController->EnableUpdate();
 
-  tileRenderer->setScaleRelative(widthFactor, heightFactor);
+    return true;
+}
 
-  m_itemContainer = std::make_unique<ItemContainer>(
-      "itemContainer", 99, MakeTexture(1, 1, "img_itemcontain"), 8, 1);
-  m_itemContainer->setParentContainer(this);
+void MapExplorer::setExplorerViewPort(ViewportType vType)
+{
+    this->vType = vType;
 
-  m_itemContainer->Configure()
-      .Parent(this)
-      .Anchor(AnchorPoint::BottomCenter)
-      .ScaleR(0.533f, 0.1185f)
-      .PositeR(0.5f, 0.95f)
-      .Alpha(1.0f)
-      .Follow(2);
+    renderRangeX = *Eclipsea::GameSettings::getInstance().getRenderWidth();
+    renderRangeY = *Eclipsea::GameSettings::getInstance().getRenderHeight();
 
-  m_itemContainer->setBackpack(
-      m_wrdController->getBackpackByEntityID(m_focusEntityIndex));
-  m_itemContainer->setIndexRange(std::make_pair(0, 7));
-  m_itemContainer->onEnter();
+    if (vType != ViewportType::Fullscreen && vType != ViewportType::Free)
+    {
+        renderRangeX *= 0.5;
+    }
+}
 
-  // 初始化生命值
+void MapExplorer::initComponents()
+{
+    if (tileRenderer)
+        return;
 
-  m_healthbar = std::make_unique<HealthBar>(
-      "map_hp", 99, MakeTexture(1, 4, "ui_img_healthbar"));
+    // 创建Tile的渲染器
+    tileRenderer = std::make_unique<Tile>();
+    tileRenderer->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::Center)
+        .Alpha(0.0f);
+    LOG("地图单位渲染器创建成功");
+    tileRenderer->onEnter();
 
-  m_healthbar->onEnter();
-  m_healthbar->Configure()
-      .Parent(this)
-      .Anchor(AnchorPoint::TopRight)
-      .ScaleR(0.0f, 0.16f)
-      .PositeR(0.95f, 0.055f);
+    // 初始化Tile的大小：归一化坐标（每格占屏幕的 1/renderRange），
+    // 用 setScaleRelative 强制相对语义，坐标 >1.0 也不会被误判为绝对像素
+    widthFactor  = 1.0f / renderRangeX;
+    heightFactor = 1.0f / renderRangeY;
 
-  m_symbol = std::make_unique<Symbol>("entity_symbol", 99, "symbols");
+    tileRenderer->setScaleRelative(widthFactor, heightFactor);
 
-  m_symbol->Configure()
-      .Parent(nullptr)
-      .Anchor(AnchorPoint::Center)
-      .PositeR(0.5f, 0.5f)
-      .ScaleR(0.06f, 0.06f);
+    m_itemContainer = std::make_unique<ItemContainer>(
+        "itemContainer", 99, MakeTexture(1, 1, "img_itemcontain"), 8, 1);
+    m_itemContainer->setParentContainer(this);
 
-  LOG("物品栏创建成功");
+    m_itemContainer->Configure()
+        .Parent(this)
+        .Anchor(AnchorPoint::BottomCenter)
+        .ScaleR(0.533f, 0.1185f)
+        .PositeR(0.5f, 0.95f)
+        .Alpha(1.0f)
+        .Follow(2);
+
+    m_itemContainer->setBackpack(
+        m_wrdController->getBackpackByEntityID(m_focusEntityIndex));
+    m_itemContainer->setIndexRange(std::make_pair(0, 7));
+    m_itemContainer->onEnter();
+
+    // 初始化生命值
+
+    m_healthbar = std::make_unique<HealthBar>(
+        "map_hp", 99, MakeTexture(1, 4, "ui_img_healthbar"));
+
+    m_healthbar->onEnter();
+    m_healthbar->Configure()
+        .Parent(this)
+        .Anchor(AnchorPoint::TopRight)
+        .ScaleR(0.0f, 0.16f)
+        .PositeR(0.95f, 0.055f);
+
+    m_symbol = std::make_unique<Symbol>("entity_symbol", 99, "symbols");
+
+    m_symbol->Configure()
+        .Parent(nullptr)
+        .Anchor(AnchorPoint::Center)
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(0.06f, 0.06f);
+
+    LOG("物品栏创建成功");
 }
