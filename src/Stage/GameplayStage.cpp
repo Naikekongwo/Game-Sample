@@ -19,10 +19,11 @@ GameplayStage::GameplayStage()
     // BaseStage 基类已设置 stageType 与 Elements
 }
 
-void GameplayStage::onUpdate() {
-  // 先驱动世界控制器（实体消费 desiredVelocity 移动），再更新 UI 元素
-  getServerWorldController().onUpdate(timer->getTotalTime());
-  Elements->onUpdate(timer->getTotalTime());
+void GameplayStage::onUpdate()
+{
+    // 先驱动世界控制器（实体消费 desiredVelocity 移动），再更新 UI 元素
+    getServerWorldController().onUpdate(timer->getTotalTime());
+    Elements->onUpdate(timer->getTotalTime());
 }
 
 void GameplayStage::onRender() { Elements->onRender(); }
