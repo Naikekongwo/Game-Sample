@@ -12,3 +12,7 @@ build_tmp/
 assets/assets/raw/
 
 # 屏蔽clang-format
+
+
+# 屏蔽 Windows
+desktop.ini
