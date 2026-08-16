@@ -1,0 +1,4 @@
+#include "winuser.h"
+
+// 应用程序图标
+IDI_ICON1 ICON "icon_combined.ico"

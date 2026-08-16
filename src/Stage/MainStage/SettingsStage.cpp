@@ -1,0 +1,307 @@
+#include "Eclipsea/Eclipsea.hpp"
+#include "OpenCore.hpp"
+#include "Runtime/Animation/IAnimation.hpp"
+#include "Runtime/Graphics/UI/TextArea.hpp"
+#include <cstddef>
+#include <memory>
+#include "Eclipsea/Core/GameSettings.hpp"
+
+// SettingsStage（新 OpenCore）：timer / sController 由 StageManager 自动注入
+SettingsStage::SettingsStage()
+{
+    // TopStage 基类已设置 stageType 与 Elements
+}
+
+void SettingsStage::onEnter()
+{
+    // 初始化设置页面，首先创建baseBackground
+    auto Container =
+        UI<BaseBackground>("set_background", 0, "stone_background", 0, 0);
+    Container->setNativeScale(128);
+
+    Container->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Posite(0.5f, 0.5f)
+        .Scale(0.6f, 0.8f)
+        .Sequence(true)
+        .Follow(0)
+        .Parent(nullptr);
+
+    auto background_large =
+        UI<BaseBackground>("largebg", 1, "img_itemcontain", 0, 0);
+
+    background_large->setNativeScale(20);
+
+    background_large->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopCenter)
+        .Scale(0.9f, 0.7f)
+        .Posite(0.5f, 0.15f);
+
+    Elements->PushElement(std::move(background_large));
+
+    auto title = UI<TextArea>("settingtitle", 99, "9002", 0, 0);
+
+    title->Configure()
+        .Anchor(AnchorPoint::TopCenter)
+        .Parent(Container.get())
+        .Scale(0.113f, 0.0717f)
+        .Posite(0.5f, 0.05f);
+
+    title->setText("设置");
+    title->setFontSize(62);
+    title->setShadow(true, 2);
+
+    Elements->PushElement(std::move(title));
+
+    // 选项名称
+    auto musicTitle = UI<TextArea>("musicVol", 3, "9002", 0, 0);
+    auto soundTitle = UI<TextArea>("soundVol", 3, "9002", 0, 0);
+
+    musicTitle->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.22f)
+        .Scale(0.5f, 0.0425f);
+
+    musicTitle->setText("音乐音量");
+    musicTitle->setFontSize(36);
+    musicTitle->setShadow(true, 2);
+
+    soundTitle->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.35f)
+        .Scale(0.5f, 0.0425f);
+
+    soundTitle->setText("音效音量");
+    soundTitle->setFontSize(36);
+    soundTitle->setShadow(true, 2);
+
+    Elements->PushElement(std::move(musicTitle));
+    Elements->PushElement(std::move(soundTitle));
+
+    auto Multi = UI<TextArea>("multiTitle", 3, "9002", 0, 0);
+    auto renderTitle = UI<TextArea>("renderTitle", 3, "9002", 0, 0);
+
+    renderTitle->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.48f)
+        .Scale(0.25f, 0.053f);
+
+    renderTitle->setText("渲染距离");
+    renderTitle->setFontSize(36);
+    renderTitle->setShadow(true, 2);
+
+    Multi->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.61f)
+        .Scale(0.25f, 0.053f);
+
+    Multi->setText("本地主机");
+    Multi->setFontSize(36);
+    Multi->setShadow(true, 2);
+
+    Elements->PushElement(std::move(renderTitle));
+    Elements->PushElement(std::move(Multi));
+
+    // 滑块
+    auto scroll_musicv = std::make_unique<Scrollbar>(
+        "scroll_musicv", 3, "img_scrollbutton", "img_scrollbutton");
+
+    scroll_musicv->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Parent(Container.get())
+        .Scale(0.7f, 0.033f)
+        .Posite(0.5f, 0.3f);
+
+    scroll_musicv->bindVariable(
+        Eclipsea::GameSettings::getInstance().getMusicVolume());
+
+    Elements->PushElement(std::move(scroll_musicv));
+
+    auto scroll_chunk = std::make_unique<Scrollbar>(
+        "scroll_chunkv", 3, "img_scrollbutton", "img_scrollbutton");
+
+    scroll_chunk->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Parent(Container.get())
+        .Scale(0.7f, 0.033f)
+        .Posite(0.5f, 0.43f);
+
+    scroll_chunk->bindVariable(
+        Eclipsea::GameSettings::getInstance().getChunkVolume());
+
+    Elements->PushElement(std::move(scroll_chunk));
+
+    auto scroll_renderd = std::make_unique<Scrollbar>(
+        "scroll_renderd", 3, "img_scrollbutton", "img_scrollbutton");
+
+    scroll_renderd->Configure()
+        .Anchor(AnchorPoint::Center)
+        .Parent(Container.get())
+        .Scale(0.7f, 0.033f)
+        .Posite(0.5f, 0.56f);
+
+    scroll_renderd->bindVariable(
+        Eclipsea::GameSettings::getInstance().getRenderFactor());
+
+    Elements->PushElement(std::move(scroll_renderd));
+
+    auto checkbox = UI<CheckBox>("checkbox", 3, "img_checkbox", 0, 0);
+
+    checkbox->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Scale(0.0f, 0.053f)
+        .Posite(0.27f, 0.61f);
+
+    checkbox->bindVariable(
+        Eclipsea::GameSettings::getInstance().getMultiStatus());
+    Elements->PushElement(std::move(checkbox));
+
+    auto buttonBorder =
+        UI<ImageBoard>("buttonBorders", 3, "button_border", 1, 1);
+    buttonBorder->Configure()
+        .Parent(Container.get())
+        .Scale(0.06f, 0.0f)
+        .Posite(0.92f, 0.08f)
+        .Anchor(AnchorPoint::Center)
+        .Sequence(false);
+
+    Elements->PushElement(std::move(buttonBorder));
+
+    // 返回按钮
+    auto backButton = UI<Button>("backButton", 3, "img_BackButton", 1, 3);
+    backButton->Configure()
+        .Parent(Container.get())
+        .Scale(0.05f, 0.0f)
+        .Posite(0.92f, 0.08f)
+        .Anchor(AnchorPoint::Center)
+        .Sequence(false);
+
+    // 点击回调
+    backButton->setOnClick(
+        [this]()
+        {
+            if (phase != SettingsPhase::Ready)
+                return; // 防止多次点击
+            phase = SettingsPhase::Exiting;
+        });
+    Elements->PushElement(std::move(backButton));
+
+    // 鸣谢
+    auto writerTitle = UI<TextArea>("writerTitle", 3, "9002", 0, 0);
+
+    writerTitle->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.14f, 0.74f)
+        .Scale(0.25f, 0.053f);
+
+    writerTitle->setText("鸣 谢");
+    writerTitle->setFontSize(36);
+    writerTitle->setShadow(true, 2);
+
+    auto shaoyang = UI<TextArea>("shaoyang", 3, "9002", 0, 0);
+
+    shaoyang->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.237f, 0.68f)
+        .Scale(0.25f, 0.12f);
+
+    shaoyang->setText("开发 刘绍阳");
+    shaoyang->setFontSize(30);
+    shaoyang->setShadow(true, 2);
+
+    auto qiyuan = UI<TextArea>("qiyuan", 3, "9002", 0, 0);
+
+    qiyuan->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.237f, 0.73f)
+        .Scale(0.25f, 0.12f);
+
+    qiyuan->setText("开发 刘骐源");
+    qiyuan->setFontSize(30);
+    qiyuan->setShadow(true, 2);
+
+    auto huangteng = UI<TextArea>("huangteng", 3, "9002", 0, 0);
+
+    huangteng->Configure()
+        .Parent(Container.get())
+        .Anchor(AnchorPoint::TopLeft)
+        .Posite(0.237f, 0.78f)
+        .Scale(0.25f, 0.12f);
+
+    huangteng->setText("艺术 黄腾");
+    huangteng->setFontSize(30);
+    huangteng->setShadow(true, 2);
+
+    Elements->PushElement(std::move(writerTitle));
+    Elements->PushElement(std::move(shaoyang));
+    Elements->PushElement(std::move(qiyuan));
+    Elements->PushElement(std::move(huangteng));
+
+    auto copyr = UI<TextArea>("settingcopyr", 99, "9001", 0, 0);
+
+    copyr->Configure()
+        .Anchor(AnchorPoint::BottomCenter)
+        .Parent(Container.get())
+        .Scale(0.9f, 0.0717f)
+        .Posite(0.5f, 0.95f);
+
+    copyr->setText("OpenCore 2026 & OpenGames Studio's Works");
+    copyr->setFontSize(36);
+    copyr->setShadow(true, 2);
+    copyr->alignCenter(true);
+
+    Elements->PushElement(std::move(copyr));
+
+    // 将背景推送
+    Elements->PushElement(std::move(Container));
+}
+
+void SettingsStage::onUpdate()
+{
+    Elements->onUpdate(timer->getTotalTime());
+    // 刷新函数
+    switch (phase)
+    {
+    case SettingsPhase::Entering:
+    {
+        auto bgc = Elements->find("set_background");
+        if (bgc && bgc->isAnimeFinished())
+            phase = SettingsPhase::Ready;
+        break;
+    }
+    case SettingsPhase::Ready:
+        break;
+    case SettingsPhase::Exiting:
+        onExit();
+        break;
+    default:
+        break;
+    }
+}
+
+void SettingsStage::onExit()
+{
+    Eclipsea::GameSettings::getInstance().RefreshSettings();
+    sController->removeStage(this->stageType);
+}
+
+void SettingsStage::onDestroy() {}
+
+void SettingsStage::onRender() { Elements->onRender(); }
+
+bool SettingsStage::parseEvents(Event *event)
+{
+    Elements->parseEvents(event, timer->getTotalTime());
+    return true;
+}
+
+void SettingsStage::initializeComponents() {}

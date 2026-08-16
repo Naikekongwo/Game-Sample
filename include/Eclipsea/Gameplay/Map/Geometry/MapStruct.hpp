@@ -1,0 +1,51 @@
+#pragma once
+
+// MapStruct.hpp
+// 地图的基本数据结构
+
+#include <cstdint>
+#include <stdexcept>
+#include <vector>
+
+using std::vector;
+
+struct MapHeader
+{
+    // magic[4] : "OCMP" 此为OpenCoreMap结构的标识符
+    // version : 此为地图版本
+    // width, height : 此为地图大小
+    // layerCount : 此为地图层级
+    // reserved : 此为保留数目
+    char     magic[4];
+    uint8_t  version;
+    uint16_t width;
+    uint16_t height;
+    uint8_t  layerCount;
+    uint8_t  blockSize;
+    uint8_t  reserved[24];
+};
+
+struct BlockInfo
+{
+    // Terrain : 地形
+    uint8_t Terrain = 2;
+    uint8_t STRuct  = 2;
+    uint8_t Entity  = 2;
+    uint8_t Access  = 2;
+
+    BlockInfo() : Terrain(2) {};
+
+    BlockInfo(vector<uint8_t> datas)
+    {
+        if (datas.size() > sizeof(BlockInfo))
+        {
+            throw std::runtime_error(
+                "BlockInfo too big! Are you using new version map?");
+        }
+
+        Terrain = (datas.size() >= 1) ? datas[0] : 0;
+        STRuct  = (datas.size() >= 2) ? datas[1] : 0;
+        Entity  = (datas.size() >= 3) ? datas[2] : 0;
+        Access  = (datas.size() >= 4) ? datas[3] : 0;
+    }
+};

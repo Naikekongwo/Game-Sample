@@ -1,0 +1,97 @@
+#include "Eclipsea/Gameplay/UI/MultiImageBoard.hpp"
+
+#include "OpenCore.hpp"
+
+bool MultiImageBoard::onDestroy()
+{
+    auto result = UIElement::onDestroy();
+
+    Layers.clear();
+
+    return result;
+}
+
+void MultiImageBoard::onUpdate(float totalTime)
+{
+    if (async == true)
+    {
+        for (auto &entry : Layers)
+        {
+
+            entry->onUpdate(totalTime);
+        }
+    }
+}
+
+void MultiImageBoard::Draw()
+{
+    for (auto &entry : Layers)
+    {
+        entry->Draw();
+    }
+}
+
+MultiImageBoard::MultiImageBoard(const std::string &id, uint8_t layer,
+                                 uint8_t size)
+    : UIElement(id, layer, nullptr)
+{
+    this->size = static_cast<size_t>(size);
+
+    LOG("MImageBoard::~() created with size: {}", size);
+}
+
+bool MultiImageBoard::pushImageBoard(vector<unique_ptr<Texture>> &list)
+{
+    if (list.size() != size)
+    {
+        LOG("MImageBoard::Push... Failed to push texture, it should be {}, "
+            "but it is a {}",
+            static_cast<int>(size), static_cast<int>(list.size()));
+        return false;
+    }
+
+    uint8_t iter = 0;
+
+    for (auto it = list.begin(); it != list.end();)
+    {
+        auto ImgBoard = std::make_unique<ImageBoard>(
+            std::to_string(iter), layer + iter, std::move(*it));
+
+        ImgBoard->Configure().Parent(this);
+
+        Layers.push_back(std::move(ImgBoard));
+
+        LOG("MImageBoard::Push... successfully pushed a element id {}", iter);
+        it = list.erase(it);
+
+        iter++;
+    }
+
+    return true;
+}
+
+AnimationPipeline MultiImageBoard::AnimateAt(uint8_t index)
+{
+    if (Layers.size() <= index)
+    {
+        throw std::out_of_range("Index out of range");
+    }
+    else
+    {
+        return Layers[index]->Animate();
+    }
+}
+
+DrawableConfigurator MultiImageBoard::ConfigureAt(uint8_t index)
+{
+    LOG("CONFIGURE:: Now the size is {}, layers size is {}",
+        static_cast<int>(size), static_cast<int>(Layers.size()));
+    if (Layers.size() <= index)
+    {
+        throw std::out_of_range("Index out of range");
+    }
+    else
+    {
+        return Layers[index]->Configure();
+    }
+}
