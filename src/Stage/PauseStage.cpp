@@ -28,8 +28,8 @@ void PauseStage::initializeComponents()
 
     Container->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(0.3f, 0.6f)
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(0.3f, 0.6f)
         .Sequence(true)
         .Follow(0)
         .Parent(nullptr);
@@ -39,8 +39,8 @@ void PauseStage::initializeComponents()
     title->Configure()
         .Anchor(AnchorPoint::TopCenter)
         .Parent(nullptr)
-        .Scale(0.200f, 0.0717f)
-        .Posite(0.5f, 0.12f);
+        .ScaleR(0.200f, 0.0717f)
+        .PositeR(0.5f, 0.12f);
 
     title->setText("游戏暂停");
     title->setFontSize(50);
@@ -54,8 +54,8 @@ void PauseStage::initializeComponents()
     backmain->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.3f)
-        .Scale(0.0f, 0.25f);
+        .PositeR(0.5f, 0.3f)
+        .ScaleR(0.0f, 0.25f);
 
     backmain->setOnClick(
         [this]()
@@ -72,8 +72,8 @@ void PauseStage::initializeComponents()
     btn_setting->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.6f)
-        .Scale(0.0f, 0.25f);
+        .PositeR(0.5f, 0.6f)
+        .ScaleR(0.0f, 0.25f);
 
     btn_setting->setOnClick(
         [this]()

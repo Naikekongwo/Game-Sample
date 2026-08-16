@@ -80,7 +80,7 @@ void PreloadStage::initializeComponents()
                     return true;
                 title->setTransparency(0.0f);
                 title->changeTexture(MakeTexture(1, 1, "icon_studio"));
-                title->Configure().Scale(0.3125f, 0.0f);
+                title->Configure().ScaleR(0.3125f, 0.0f);
                 title->setSequential(true);
                 title->Animate()
                     .SubStart(true)
@@ -105,7 +105,7 @@ void PreloadStage::initializeComponents()
                     return true;
                 title->setTransparency(0.0f);
                 title->changeTexture(MakeTexture(1, 1, "preload_title"));
-                title->Configure().Scale(0.53f, 0.0f);
+                title->Configure().ScaleR(0.53f, 0.0f);
                 title->setSequential(true);
                 title->Animate()
                     .Fade(0.0f, 1.0f, 2.0f, false)
@@ -128,9 +128,9 @@ void PreloadStage::initializeComponents()
                 auto connector =
                     UI<ImageBoard>("connector", 99, "img_connector", 1, 1);
                 connector->Configure()
-                    .Scale(0.0f, 1.0f)
+                    .ScaleR(0.0f, 1.0f)
                     .Anchor(AnchorPoint::TopRight)
-                    .Posite(0.0f, 0.0f);
+                    .PositeR(0.0f, 0.0f);
                 connector->Animate().Move(0, 0, 2700, 0, 5.0f, false).Commit();
                 Elements->PushElement(std::move(connector));
                 return true;
@@ -172,21 +172,21 @@ void PreloadStage::buildLoadingUI()
 
     animation->Configure()
         .Anchor(AnchorPoint::Center)
-        .Scale(0.208f, 0.208f * widthheight)
-        .Posite(0.5f, 0.5f)
+        .ScaleR(0.208f, 0.208f * widthheight)
+        .PositeR(0.5f, 0.5f)
         .Sequence(true);
 
     animation->ConfigureAt(0)
         .Anchor(AnchorPoint::Center)
-        .Scale(1.0f, 1.0f)
-        .Posite(0.5f, 0.34f)
+        .ScaleR(1.0f, 1.0f)
+        .PositeR(0.5f, 0.34f)
         .Sequence(true);
     animation->AnimateAt(0).Frame(5, 5, true).Commit();
 
     animation->ConfigureAt(1)
         .Anchor(AnchorPoint::Center)
-        .Scale(1.0f, 1.0f)
-        .Posite(0.5f, 0.5f)
+        .ScaleR(1.0f, 1.0f)
+        .PositeR(0.5f, 0.5f)
         .Sequence(true);
     animation->AnimateAt(1).Frame(5, 5, true).Commit();
 
@@ -199,9 +199,9 @@ void PreloadStage::buildTitle()
     // Gameplay/Sprite/Waterrect）
     auto startTitle = UI<ImageBoard>("startTitle", 2, "icon_opencore", 1, 1);
     startTitle->Configure()
-        .Scale(0.52f, 0.46f)
+        .ScaleR(0.52f, 0.46f)
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
+        .PositeR(0.5f, 0.5f)
         .Sequence(false)
         .Alpha(0.0f);
     startTitle->Animate()

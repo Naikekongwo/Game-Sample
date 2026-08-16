@@ -57,8 +57,8 @@ void ContinueStage::initializeComponents()
 
     Container->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(0.6f, 0.8f)
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(0.6f, 0.8f)
         .Sequence(true)
         .Follow(0)
         .Parent(nullptr);
@@ -72,8 +72,8 @@ void ContinueStage::initializeComponents()
     MapInfoDiv->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopRight)
-        .Scale(0.3f, 0.75f)
-        .Posite(0.35f, 0.15f);
+        .ScaleR(0.3f, 0.75f)
+        .PositeR(0.35f, 0.15f);
 
     Elements->PushElement(std::move(MapInfoDiv));
 
@@ -86,8 +86,8 @@ void ContinueStage::initializeComponents()
     InfoDiv->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Scale(0.58f, 0.75f)
-        .Posite(0.37f, 0.15f);
+        .ScaleR(0.58f, 0.75f)
+        .PositeR(0.37f, 0.15f);
 
     Elements->PushElement(std::move(InfoDiv));
 
@@ -97,8 +97,8 @@ void ContinueStage::initializeComponents()
         .Parent(nullptr)
         .Anchor(AnchorPoint::Center)
         .Alpha(1.0f)
-        .Scale(1.0f, 0.2f)
-        .Posite(0.5f, 0.5f);
+        .ScaleR(1.0f, 0.2f)
+        .PositeR(0.5f, 0.5f);
 
     textDemo->setText("Super Huge Dick");
     textDemo->setShadow(true, 20);
@@ -111,8 +111,8 @@ void ContinueStage::initializeComponents()
     title->Configure()
         .Anchor(AnchorPoint::TopCenter)
         .Parent(Container.get())
-        .Scale(0.226f, 0.0717f)
-        .Posite(0.5f, 0.05f);
+        .ScaleR(0.226f, 0.0717f)
+        .PositeR(0.5f, 0.05f);
 
     title->setText("本地存档");
     title->setFontSize(62);
@@ -124,8 +124,8 @@ void ContinueStage::initializeComponents()
         UI<ImageBoard>("buttonBorders", 3, "button_border", 1, 1);
     buttonBorder->Configure()
         .Parent(Container.get())
-        .Scale(0.06f, 0.0f)
-        .Posite(0.92f, 0.08f)
+        .ScaleR(0.06f, 0.0f)
+        .PositeR(0.92f, 0.08f)
         .Anchor(AnchorPoint::Center)
         .Sequence(false);
 
@@ -135,8 +135,8 @@ void ContinueStage::initializeComponents()
     auto backButton = UI<Button>("backButton", 3, "img_BackButton", 1, 3);
     backButton->Configure()
         .Parent(Container.get())
-        .Scale(0.05f, 0.0f)
-        .Posite(0.92f, 0.08f)
+        .ScaleR(0.05f, 0.0f)
+        .PositeR(0.92f, 0.08f)
         .Anchor(AnchorPoint::Center)
         .Sequence(false);
 

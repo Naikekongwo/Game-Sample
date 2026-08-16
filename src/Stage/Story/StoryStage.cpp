@@ -102,9 +102,9 @@ void StoryStage::func_intro() {
       .Sequence(true)
       .Parent(nullptr)
       .Anchor(AnchorPoint::Center)
-      .Posite(0.5f, 0.5f)
+      .PositeR(0.5f, 0.5f)
       .Alpha(0.0f)
-      .Scale(1.0f, 0.0f);
+      .ScaleR(1.0f, 0.0f);
 
   background->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 5.0f).Commit();
 
@@ -116,9 +116,9 @@ void StoryStage::func_intro() {
       .Sequence(true)
       .Parent(nullptr)
       .Anchor(AnchorPoint::BottomCenter)
-      .Posite(0.5f, 2.0f)
+      .PositeR(0.5f, 2.0f)
       .Alpha(1.0f)
-      .Scale(1.0f, 0.0f);
+      .ScaleR(1.0f, 0.0f);
 
   frontpage->Animate().Timer(15.0f).Move(960, 2160, 960, 1080, 10.0f).Commit();
 
@@ -131,8 +131,8 @@ void StoryStage::func_intro() {
       .Parent(nullptr)
       .Alpha(1.0f)
       .Anchor(AnchorPoint::TopLeft)
-      .Posite(2.5f, 0.55f)
-      .Scale(0.6f, 0.5f);
+      .PositeR(2.5f, 0.55f)
+      .ScaleR(0.6f, 0.5f);
 
   tpwt->Animate().Timer(27.0f).Move(1920, 560, -1152, 560, 20.0f).Commit();
 
@@ -214,9 +214,9 @@ void StoryStage::handleIntroVisualScene(TypeWriter *typeWriter) {
       .Parent(nullptr)
       .Sequence(true)
       .Anchor(AnchorPoint::Center)
-      .Posite(0.5f, 0.5f)
+      .PositeR(0.5f, 0.5f)
       .Alpha(0.0f)
-      .Scale(1.0f, 1.0f);
+      .ScaleR(1.0f, 1.0f);
 
   house->Animate().Timer(5.0f).Fade(0.0f, 1.0f, 8.0f).Commit();
 
@@ -226,7 +226,7 @@ void StoryStage::handleIntroVisualScene(TypeWriter *typeWriter) {
   if (ele) {
     auto eleI = dynamic_cast<ImageBoard *>(ele);
 
-    eleI->Configure().Anchor(AnchorPoint::TopCenter).Posite(0.5f, 0.2f);
+    eleI->Configure().Anchor(AnchorPoint::TopCenter).PositeR(0.5f, 0.2f);
     eleI->Animate()
         .SubStart(true)
         ->Fade(1.0f, 0.0f, 10.0f)
@@ -240,8 +240,8 @@ void StoryStage::handleIntroVisualScene(TypeWriter *typeWriter) {
   rocket->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::BottomCenter)
-      .Posite(0.46f, 0.47f)
-      .Scale(0.0f, 0.2f)
+      .PositeR(0.46f, 0.47f)
+      .ScaleR(0.0f, 0.2f)
       .Alpha(0.0f)
       .Sequence(true);
 
@@ -267,8 +267,8 @@ void StoryStage::handleIntroLaunch(TypeWriter *typeWriter) {
   explosion->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::Center)
-      .Posite(0.46f, 0.47f)
-      .Scale(0.2f, 0.0f);
+      .PositeR(0.46f, 0.47f)
+      .ScaleR(0.2f, 0.0f);
 
   explosion->Animate().Frame(121, 15, true).Commit();
 
@@ -314,8 +314,8 @@ void StoryStage::handleLaunchUpdate() {
       centerText->Configure()
           .Parent(nullptr)
           .Anchor(AnchorPoint::Center)
-          .Posite(0.5f, 0.5f)
-          .Scale(0.8f, 0.2f)
+          .PositeR(0.5f, 0.5f)
+          .ScaleR(0.8f, 0.2f)
           .Alpha(0.0f);
       centerText->alignCenter(true);
       centerText->setText("两年后....");
@@ -347,11 +347,11 @@ void StoryStage::handleLaunchMove(TypeWriter *typeWriter) {
     if (rocket) {
       rocket->Configure()
           .Anchor(AnchorPoint::BottomCenter)
-          .Posite(0.46f, 0.47f);
+          .PositeR(0.46f, 0.47f);
       rocket->Animate().Move(884, 507, 884, -800, 12.0f, false).Commit();
     }
     if (flames) {
-      flames->Configure().Anchor(AnchorPoint::Center).Posite(0.46f, 0.47f);
+      flames->Configure().Anchor(AnchorPoint::Center).PositeR(0.46f, 0.47f);
       flames->Animate().Move(884, 507, 884, -800, 12.0f, false).Commit();
     }
   }
@@ -364,8 +364,8 @@ void StoryStage::handleExplosion(TypeWriter *typeWriter) {
   explosion->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::Center)
-      .Posite(0.5f, 0.5f)
-      .Scale(0.5f, 0.5f)
+      .PositeR(0.5f, 0.5f)
+      .ScaleR(0.5f, 0.5f)
       .Alpha(0.0f);
 
   explosion->Animate()

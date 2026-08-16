@@ -61,9 +61,9 @@ void ContainerStage::initializeComponents()
     stageBg->setNativeScale(120);
     stageBg->Configure()
         .Parent(nullptr)
-        .Scale(0.82f, 0.95f)
+        .ScaleR(0.82f, 0.95f)
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
+        .PositeR(0.5f, 0.5f)
         .Sequence(true);
     Elements->PushElement(std::move(stageBg));
 
@@ -72,8 +72,8 @@ void ContainerStage::initializeComponents()
     backButton->Configure()
         .Parent(nullptr)
         .Anchor(AnchorPoint::Center)
-        .Scale(0.03f, 0.0f)
-        .Posite(0.87f, 0.1f)
+        .ScaleR(0.03f, 0.0f)
+        .PositeR(0.87f, 0.1f)
         .Sequence(false);
 
     // 点击回调
@@ -103,9 +103,9 @@ void ContainerStage::initializeComponents()
 
     purifierbody->Configure()
         .Parent(nullptr)
-        .Scale(0.146f, 0.323f)
+        .ScaleR(0.146f, 0.323f)
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.2f, 0.08f)
+        .PositeR(0.2f, 0.08f)
         .Sequence(false);
 
     Elements->PushElement(std::move(purifierbody));
@@ -115,9 +115,9 @@ void ContainerStage::initializeComponents()
 
     effect->Configure()
         .Parent(nullptr)
-        .Scale(0.146f, 0.0f)
+        .ScaleR(0.146f, 0.0f)
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.2f, 0.08f)
+        .PositeR(0.2f, 0.08f)
         .Sequence(false);
 
     effect->Animate().Frame(45, 15, true).Commit();

@@ -25,8 +25,8 @@ void WorldEditorStage::Init()
 
     background->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(1.0f, 1.0f);
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(1.0f, 1.0f);
 
     Elements->PushElement(std::move(background));
 
@@ -38,8 +38,8 @@ void WorldEditorStage::Init()
 
     mapexp->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(0.9f, 0.9f)
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(0.9f, 0.9f)
         .Alpha(1.0f);
 
     mapexp->setWorldController(&getServerWorldController());

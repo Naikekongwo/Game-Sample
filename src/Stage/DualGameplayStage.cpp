@@ -27,8 +27,8 @@ void DualGameplayStage::Init()
 
     background->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(1.0f, 1.0f);
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(1.0f, 1.0f);
 
     Elements->PushElement(std::move(background));
 
@@ -40,8 +40,8 @@ void DualGameplayStage::Init()
 
     mapexp->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.25f, 0.5f)
-        .Scale(0.5f, 1.0f)
+        .PositeR(0.25f, 0.5f)
+        .ScaleR(0.5f, 1.0f)
         .Alpha(1.0f);
 
     mapexp->setWorldController(&getServerWorldController());
@@ -52,8 +52,8 @@ void DualGameplayStage::Init()
 
     mapexp2->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.75f, 0.5f)
-        .Scale(0.5f, 1.0f)
+        .PositeR(0.75f, 0.5f)
+        .ScaleR(0.5f, 1.0f)
         .Alpha(1.0f);
 
     mapexp2->setWorldController(&getServerWorldController());

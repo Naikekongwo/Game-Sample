@@ -41,7 +41,7 @@ void Entity::createRenderer() {
 
     renderer->setTileSize(pProperties.getTileWidth(),
                           pProperties.getTileHeight());
-    renderer->Configure().Scale(info.widthFactor * widthRelative, 0.0f);
+    renderer->Configure().ScaleR(info.widthFactor * widthRelative, 0.0f);
 
     m_baseFrame =
         static_cast<uint16_t>(info.texture.originRow * info.texture.meta.cols +
@@ -56,7 +56,8 @@ void Entity::Draw(const Vec3 &absPos) {
   if (!renderer)
     createRenderer();
 
-  renderer->setPosition(absPos.x, absPos.y);
+  // absPos 由 MapExplorer 以归一化坐标传入（widthFactor = 1/renderRange）
+  renderer->setPositeRelative(absPos.x, absPos.y);
   renderer->setTransparency(1.0f);
   renderer->getVisualState()->frameIndex = getCurrentFrameIndex();
   renderer->Draw();
@@ -80,8 +81,8 @@ void Entity::Draw(float cameraX, float cameraY) {
         (cameraY - Position.y > renderHeight))
       return;
 
-    renderer->setPosition(0.5f + (Position.x - cameraX) * widthRelative,
-                          0.5f + (Position.y - cameraY) * heightRelative);
+    renderer->setPositeRelative(0.5f + (Position.x - cameraX) * widthRelative,
+                                0.5f + (Position.y - cameraY) * heightRelative);
     renderer->setTransparency(1.0f);
     renderer->getVisualState()->frameIndex = getCurrentFrameIndex();
     renderer->Draw();

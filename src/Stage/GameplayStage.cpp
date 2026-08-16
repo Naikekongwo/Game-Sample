@@ -32,8 +32,6 @@ bool GameplayStage::parseEvents(Event *event)
 {
     const SDL_Event &sdlEvent = event->GetSDLEvent();
     if (sdlEvent.type == SDL_EVENT_KEY_DOWN)
-        LOG("[diag] GameplayStage 收到 KEY_DOWN key={}", (int)sdlEvent.key.key);
-    if (sdlEvent.type == SDL_EVENT_KEY_DOWN)
     {
         switch (sdlEvent.key.key)
         {
@@ -67,8 +65,8 @@ void GameplayStage::initializeComponents()
 
     background->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(1.0f, 1.0f);
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(1.0f, 1.0f);
 
     Elements->PushElement(std::move(background));
 
@@ -80,8 +78,8 @@ void GameplayStage::initializeComponents()
 
     mapexp->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(1.0f, 1.0f)
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(1.0f, 1.0f)
         .Alpha(1.0f);
 
     mapexp->setWorldController(&getServerWorldController());

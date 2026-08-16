@@ -33,7 +33,7 @@ void MainStage::setupBackground()
     auto bg = UI<ImageBoard>("base_sky", 0, "base_sky", 1, 1);
     bg->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
+        .PositeR(0.5f, 0.5f)
         .ScaleR(1.1f, 0.0f)
         .Follow(30);
     Elements->PushElement(std::move(bg));
@@ -41,7 +41,7 @@ void MainStage::setupBackground()
     auto bg1 = UI<ImageBoard>("dessert_top", 1, "cities_top", 1, 1);
     bg1->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
+        .PositeR(0.5f, 0.5f)
         .ScaleR(1.2f, 0.0f)
         .Follow(40);
     bg1->Animate()
@@ -62,8 +62,8 @@ void MainStage::setupBackground()
     auto connector = UI<ImageBoard>("connector", 99, "img_connector", 1, 1);
     connector->Configure()
         .Anchor(AnchorPoint::TopRight)
-        .Posite(0, 0)
-        .Scale(0.0f, 1.0f);
+        .PositeR(0, 0)
+        .ScaleR(0.0f, 1.0f);
     connector->Animate().Move(2700, 0, 6000, 0, 5.0f, false).Commit();
     Elements->PushElement(std::move(connector));
 }
@@ -74,8 +74,8 @@ void MainStage::setupTitle()
     title->Configure()
         .Anchor(AnchorPoint::TopLeft)
         .Parent(nullptr)
-        .Posite(0.08333f, 0.12f)
-        .Scale(0.365f, 0.13f * widthheight)
+        .PositeR(0.08333f, 0.12f)
+        .ScaleR(0.365f, 0.13f * widthheight)
         .Sequence(true)
         .Follow(20)
         .Alpha(0.0f);
@@ -86,8 +86,8 @@ void MainStage::setupTitle()
     copyright_icon->Configure()
         .Anchor(AnchorPoint::BottomLeft)
         .Parent(nullptr)
-        .Posite(0.0167f, 0.97f)
-        .Scale(0.258f, 0.0276f * widthheight)
+        .PositeR(0.0167f, 0.97f)
+        .ScaleR(0.258f, 0.0276f * widthheight)
         .Sequence(true)
         .Alpha(0.0f)
         .Follow(20);
@@ -111,8 +111,8 @@ void MainStage::setupButtons()
         worldbutton->Configure()
             .Anchor(AnchorPoint::TopLeft)
             .Parent(nullptr)
-            .Posite(0.72f, 0.58f)
-            .Scale(0.156f, 0.0416f * widthheight)
+            .PositeR(0.72f, 0.58f)
+            .ScaleR(0.156f, 0.0416f * widthheight)
             .Sequence(true);
 
         worldbutton->setOnClick(
@@ -130,22 +130,22 @@ void MainStage::setupButtons()
     startButton->Configure()
         .Anchor(AnchorPoint::TopLeft)
         .Parent(nullptr)
-        .Posite(0.755f, 0.68f)
-        .Scale(0.156f, 0.0416f * widthheight)
+        .PositeR(0.755f, 0.68f)
+        .ScaleR(0.156f, 0.0416f * widthheight)
         .Sequence(true);
 
     continueButton->Configure()
         .Anchor(AnchorPoint::TopLeft)
         .Parent(nullptr)
-        .Posite(0.79f, 0.78f)
-        .Scale(0.156f, 0.0416f * widthheight)
+        .PositeR(0.79f, 0.78f)
+        .ScaleR(0.156f, 0.0416f * widthheight)
         .Sequence(true);
 
     settingButton->Configure()
         .Anchor(AnchorPoint::TopLeft)
         .Parent(nullptr)
-        .Posite(0.825f, 0.88f)
-        .Scale(0.156f, 0.0416f * widthheight)
+        .PositeR(0.825f, 0.88f)
+        .ScaleR(0.156f, 0.0416f * widthheight)
         .Sequence(true);
 
     // 回调

@@ -167,13 +167,13 @@ void ItemContainer::Draw() {
           if (meta == std::nullopt)
             continue;
 
-          m_item->setScale((1.0f / m_columns) * 0.9f, 0.9f);
+          m_item->setScaleRelative((1.0f / m_columns) * 0.9f, 0.9f);
 
           m_item->changeTexture(MakeTexture(
               meta->texture_cols, meta->texture_rows, meta->textureName));
           m_item->setSubTexture(item.getItemInfo().texturePosID);
-          m_item->setPosition((j + 0.5f) * (1.0f / m_columns),
-                              (i + 0.5f) * (1.0f / rows));
+          m_item->setPositeRelative((j + 0.5f) * (1.0f / m_columns),
+                                    (i + 0.5f) * (1.0f / rows));
           m_item->Draw();
         }
       }
@@ -189,8 +189,8 @@ void ItemContainer::onEnter() {
       .Parent(this)
       .Anchor(AnchorPoint::Center)
       .Alpha(1.0f)
-      .Scale(0.0f, 0.9f)
-      .Posite(0.5f, 0.5f);
+      .ScaleR(0.0f, 0.9f)
+      .PositeR(0.5f, 0.5f);
 
   auto backpack = m_backpack.lock();
   if (!backpack) {

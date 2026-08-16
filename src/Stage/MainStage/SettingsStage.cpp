@@ -21,8 +21,8 @@ void SettingsStage::onEnter()
 
     Container->Configure()
         .Anchor(AnchorPoint::Center)
-        .Posite(0.5f, 0.5f)
-        .Scale(0.6f, 0.8f)
+        .PositeR(0.5f, 0.5f)
+        .ScaleR(0.6f, 0.8f)
         .Sequence(true)
         .Follow(0)
         .Parent(nullptr);
@@ -35,8 +35,8 @@ void SettingsStage::onEnter()
     background_large->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopCenter)
-        .Scale(0.9f, 0.7f)
-        .Posite(0.5f, 0.15f);
+        .ScaleR(0.9f, 0.7f)
+        .PositeR(0.5f, 0.15f);
 
     Elements->PushElement(std::move(background_large));
 
@@ -45,8 +45,8 @@ void SettingsStage::onEnter()
     title->Configure()
         .Anchor(AnchorPoint::TopCenter)
         .Parent(Container.get())
-        .Scale(0.113f, 0.0717f)
-        .Posite(0.5f, 0.05f);
+        .ScaleR(0.113f, 0.0717f)
+        .PositeR(0.5f, 0.05f);
 
     title->setText("设置");
     title->setFontSize(62);
@@ -61,8 +61,8 @@ void SettingsStage::onEnter()
     musicTitle->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.14f, 0.22f)
-        .Scale(0.5f, 0.0425f);
+        .PositeR(0.14f, 0.22f)
+        .ScaleR(0.5f, 0.0425f);
 
     musicTitle->setText("音乐音量");
     musicTitle->setFontSize(36);
@@ -71,8 +71,8 @@ void SettingsStage::onEnter()
     soundTitle->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.14f, 0.35f)
-        .Scale(0.5f, 0.0425f);
+        .PositeR(0.14f, 0.35f)
+        .ScaleR(0.5f, 0.0425f);
 
     soundTitle->setText("音效音量");
     soundTitle->setFontSize(36);
@@ -87,8 +87,8 @@ void SettingsStage::onEnter()
     renderTitle->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.14f, 0.48f)
-        .Scale(0.25f, 0.053f);
+        .PositeR(0.14f, 0.48f)
+        .ScaleR(0.25f, 0.053f);
 
     renderTitle->setText("渲染距离");
     renderTitle->setFontSize(36);
@@ -97,8 +97,8 @@ void SettingsStage::onEnter()
     Multi->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.14f, 0.61f)
-        .Scale(0.25f, 0.053f);
+        .PositeR(0.14f, 0.61f)
+        .ScaleR(0.25f, 0.053f);
 
     Multi->setText("本地主机");
     Multi->setFontSize(36);
@@ -114,8 +114,8 @@ void SettingsStage::onEnter()
     scroll_musicv->Configure()
         .Anchor(AnchorPoint::Center)
         .Parent(Container.get())
-        .Scale(0.7f, 0.033f)
-        .Posite(0.5f, 0.3f);
+        .ScaleR(0.7f, 0.033f)
+        .PositeR(0.5f, 0.3f);
 
     scroll_musicv->bindVariable(
         Eclipsea::GameSettings::getInstance().getMusicVolume());
@@ -128,8 +128,8 @@ void SettingsStage::onEnter()
     scroll_chunk->Configure()
         .Anchor(AnchorPoint::Center)
         .Parent(Container.get())
-        .Scale(0.7f, 0.033f)
-        .Posite(0.5f, 0.43f);
+        .ScaleR(0.7f, 0.033f)
+        .PositeR(0.5f, 0.43f);
 
     scroll_chunk->bindVariable(
         Eclipsea::GameSettings::getInstance().getChunkVolume());
@@ -142,8 +142,8 @@ void SettingsStage::onEnter()
     scroll_renderd->Configure()
         .Anchor(AnchorPoint::Center)
         .Parent(Container.get())
-        .Scale(0.7f, 0.033f)
-        .Posite(0.5f, 0.56f);
+        .ScaleR(0.7f, 0.033f)
+        .PositeR(0.5f, 0.56f);
 
     scroll_renderd->bindVariable(
         Eclipsea::GameSettings::getInstance().getRenderFactor());
@@ -155,8 +155,8 @@ void SettingsStage::onEnter()
     checkbox->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Scale(0.0f, 0.053f)
-        .Posite(0.27f, 0.61f);
+        .ScaleR(0.0f, 0.053f)
+        .PositeR(0.27f, 0.61f);
 
     checkbox->bindVariable(
         Eclipsea::GameSettings::getInstance().getMultiStatus());
@@ -166,8 +166,8 @@ void SettingsStage::onEnter()
         UI<ImageBoard>("buttonBorders", 3, "button_border", 1, 1);
     buttonBorder->Configure()
         .Parent(Container.get())
-        .Scale(0.06f, 0.0f)
-        .Posite(0.92f, 0.08f)
+        .ScaleR(0.06f, 0.0f)
+        .PositeR(0.92f, 0.08f)
         .Anchor(AnchorPoint::Center)
         .Sequence(false);
 
@@ -177,8 +177,8 @@ void SettingsStage::onEnter()
     auto backButton = UI<Button>("backButton", 3, "img_BackButton", 1, 3);
     backButton->Configure()
         .Parent(Container.get())
-        .Scale(0.05f, 0.0f)
-        .Posite(0.92f, 0.08f)
+        .ScaleR(0.05f, 0.0f)
+        .PositeR(0.92f, 0.08f)
         .Anchor(AnchorPoint::Center)
         .Sequence(false);
 
@@ -198,8 +198,8 @@ void SettingsStage::onEnter()
     writerTitle->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.14f, 0.74f)
-        .Scale(0.25f, 0.053f);
+        .PositeR(0.14f, 0.74f)
+        .ScaleR(0.25f, 0.053f);
 
     writerTitle->setText("鸣 谢");
     writerTitle->setFontSize(36);
@@ -210,8 +210,8 @@ void SettingsStage::onEnter()
     shaoyang->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.237f, 0.68f)
-        .Scale(0.25f, 0.12f);
+        .PositeR(0.237f, 0.68f)
+        .ScaleR(0.25f, 0.12f);
 
     shaoyang->setText("开发 刘绍阳");
     shaoyang->setFontSize(30);
@@ -222,8 +222,8 @@ void SettingsStage::onEnter()
     qiyuan->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.237f, 0.73f)
-        .Scale(0.25f, 0.12f);
+        .PositeR(0.237f, 0.73f)
+        .ScaleR(0.25f, 0.12f);
 
     qiyuan->setText("开发 刘骐源");
     qiyuan->setFontSize(30);
@@ -234,8 +234,8 @@ void SettingsStage::onEnter()
     huangteng->Configure()
         .Parent(Container.get())
         .Anchor(AnchorPoint::TopLeft)
-        .Posite(0.237f, 0.78f)
-        .Scale(0.25f, 0.12f);
+        .PositeR(0.237f, 0.78f)
+        .ScaleR(0.25f, 0.12f);
 
     huangteng->setText("艺术 黄腾");
     huangteng->setFontSize(30);
@@ -251,8 +251,8 @@ void SettingsStage::onEnter()
     copyr->Configure()
         .Anchor(AnchorPoint::BottomCenter)
         .Parent(Container.get())
-        .Scale(0.9f, 0.0717f)
-        .Posite(0.5f, 0.95f);
+        .ScaleR(0.9f, 0.0717f)
+        .PositeR(0.5f, 0.95f);
 
     copyr->setText("OpenCore 2026 & OpenGames Studio's Works");
     copyr->setFontSize(36);

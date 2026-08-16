@@ -128,9 +128,9 @@ void MapExplorer::Draw() {
       if (bInfo->Terrain == 2 && bInfo->STRuct == 2)
         continue;
 
-      tileRenderer->setPosition((x - offsetX) * widthFactor + 0.5f + viewportX,
-                                (y - offsetY + Position.z) * heightFactor +
-                                    0.5f);
+      tileRenderer->setPositeRelative(
+          (x - offsetX) * widthFactor + 0.5f + viewportX,
+          (y - offsetY + Position.z) * heightFactor + 0.5f);
 
       tileRenderer->setTransparency(1.0f);
       tileRenderer->getVisualState()->frameIndex = bInfo->Terrain;
@@ -169,8 +169,8 @@ void MapExplorer::Draw() {
     if (abs(ePos.x - Position.x) < 2.0f && abs(ePos.y - Position.y) < 2.0f &&
         ePos != cameraProp->getPosition()) {
       m_symbol->SetSymbolType(SYMBOL_QUESTION);
-      m_symbol->setPosition(0.5f + viewportX, 0.27f);
-      m_symbol->setScale(0.05f, 0.05f * widthheight);
+      m_symbol->setPositeRelative(0.5f + viewportX, 0.27f);
+      m_symbol->setScaleRelative(0.05f, 0.05f * widthheight);
       m_symbol->Draw();
 
       nearbyEntity = ptr;
@@ -192,8 +192,8 @@ void MapExplorer::Draw() {
         m_pickedUpItem->Configure()
             .Parent(nullptr)
             .Anchor(AnchorPoint::Center)
-            .Posite(0.5f, 0.5f)
-            .Scale(0.1f, 0.1f * widthheight);
+            .PositeR(0.5f, 0.5f)
+            .ScaleR(0.1f, 0.1f * widthheight);
       }
 
       auto meta = Gameplay::ItemMgr.getTextureMeta(homeless->textureMetaName);
@@ -396,11 +396,12 @@ void MapExplorer::initComponents() {
   LOG("地图单位渲染器创建成功");
   tileRenderer->onEnter();
 
-  // 初始化Tile的大小
+  // 初始化Tile的大小：归一化坐标（每格占屏幕的 1/renderRange），
+  // 用 setScaleRelative 强制相对语义，坐标 >1.0 也不会被误判为绝对像素
   widthFactor = 1.0f / renderRangeX;
   heightFactor = 1.0f / renderRangeY;
 
-  tileRenderer->setScale(widthFactor, heightFactor);
+  tileRenderer->setScaleRelative(widthFactor, heightFactor);
 
   m_itemContainer = std::make_unique<ItemContainer>(
       "itemContainer", 99, MakeTexture(1, 1, "img_itemcontain"), 8, 1);
@@ -409,8 +410,8 @@ void MapExplorer::initComponents() {
   m_itemContainer->Configure()
       .Parent(this)
       .Anchor(AnchorPoint::BottomCenter)
-      .Scale(0.533f, 0.1185f)
-      .Posite(0.5f, 0.95f)
+      .ScaleR(0.533f, 0.1185f)
+      .PositeR(0.5f, 0.95f)
       .Alpha(1.0f)
       .Follow(2);
 
@@ -428,16 +429,16 @@ void MapExplorer::initComponents() {
   m_healthbar->Configure()
       .Parent(this)
       .Anchor(AnchorPoint::TopRight)
-      .Scale(0.0f, 0.16f)
-      .Posite(0.95f, 0.055f);
+      .ScaleR(0.0f, 0.16f)
+      .PositeR(0.95f, 0.055f);
 
   m_symbol = std::make_unique<Symbol>("entity_symbol", 99, "symbols");
 
   m_symbol->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::Center)
-      .Posite(0.5f, 0.5f)
-      .Scale(0.06f, 0.06f);
+      .PositeR(0.5f, 0.5f)
+      .ScaleR(0.06f, 0.06f);
 
   LOG("物品栏创建成功");
 }

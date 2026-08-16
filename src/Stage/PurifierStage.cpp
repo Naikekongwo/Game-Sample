@@ -205,8 +205,8 @@ void PurifierStage::onRender() {
       ItemPickedUp->Configure()
           .Parent(nullptr)
           .Anchor(AnchorPoint::Center)
-          .Posite(0.5f, 0.5f)
-          .Scale(0.1f, 0.1f * widthheight);
+          .PositeR(0.5f, 0.5f)
+          .ScaleR(0.1f, 0.1f * widthheight);
     }
 
     auto meta = Gameplay::ItemMgr.getTextureMeta(item->textureMetaName);
@@ -242,9 +242,9 @@ void PurifierStage::initializeComponents() {
   stageBg->setNativeScale(120);
   stageBg->Configure()
       .Parent(nullptr)
-      .Scale(0.82f, 0.95f)
+      .ScaleR(0.82f, 0.95f)
       .Anchor(AnchorPoint::Center)
-      .Posite(0.5f, 0.5f)
+      .PositeR(0.5f, 0.5f)
       .Sequence(true);
   Elements->PushElement(std::move(stageBg));
 
@@ -253,8 +253,8 @@ void PurifierStage::initializeComponents() {
   backButton->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::Center)
-      .Scale(0.03f, 0.0f)
-      .Posite(0.87f, 0.1f)
+      .ScaleR(0.03f, 0.0f)
+      .PositeR(0.87f, 0.1f)
       .Sequence(false);
 
   // 点击回调
@@ -271,9 +271,9 @@ void PurifierStage::initializeComponents() {
 
   purifierbody->Configure()
       .Parent(nullptr)
-      .Scale(0.146f, 0.323f)
+      .ScaleR(0.146f, 0.323f)
       .Anchor(AnchorPoint::TopLeft)
-      .Posite(0.2f, 0.08f)
+      .PositeR(0.2f, 0.08f)
       .Sequence(false);
 
   Elements->PushElement(std::move(purifierbody));
@@ -283,9 +283,9 @@ void PurifierStage::initializeComponents() {
 
   effect->Configure()
       .Parent(nullptr)
-      .Scale(0.146f, 0.0f)
+      .ScaleR(0.146f, 0.0f)
       .Anchor(AnchorPoint::TopLeft)
-      .Posite(0.2f, 0.08f)
+      .PositeR(0.2f, 0.08f)
       .Sequence(false);
 
   effect->Animate().Frame(45, 15, true).Commit();
@@ -299,9 +299,9 @@ void PurifierStage::initializeComponents() {
 
   nuclear_text->Configure()
       .Parent(nullptr)
-      .Scale(0.1f, 0.04f)
+      .ScaleR(0.1f, 0.04f)
       .Anchor(AnchorPoint::TopLeft)
-      .Posite(0.617f, 0.124f)
+      .PositeR(0.617f, 0.124f)
       .Sequence(true);
 
   nuclear_text->setText("反应堆");
@@ -310,9 +310,9 @@ void PurifierStage::initializeComponents() {
 
   storage_text->Configure()
       .Parent(nullptr)
-      .Scale(0.1f, 0.04f)
+      .ScaleR(0.1f, 0.04f)
       .Anchor(AnchorPoint::TopLeft)
-      .Posite(0.617f, 0.36f)
+      .PositeR(0.617f, 0.36f)
       .Sequence(true);
 
   storage_text->setText("储水罐");
@@ -321,9 +321,9 @@ void PurifierStage::initializeComponents() {
 
   control_text->Configure()
       .Parent(nullptr)
-      .Scale(0.1f, 0.04f)
+      .ScaleR(0.1f, 0.04f)
       .Anchor(AnchorPoint::TopLeft)
-      .Posite(0.521f, 0.237f)
+      .PositeR(0.521f, 0.237f)
       .Sequence(true);
   control_text->setText("控制单元");
   control_text->setFontSize(45);
@@ -331,9 +331,9 @@ void PurifierStage::initializeComponents() {
 
   filter_text->Configure()
       .Parent(nullptr)
-      .Scale(0.1f, 0.04f)
+      .ScaleR(0.1f, 0.04f)
       .Anchor(AnchorPoint::TopLeft)
-      .Posite(0.71f, 0.237f)
+      .PositeR(0.71f, 0.237f)
       .Sequence(true);
   filter_text->setText("出水口");
   filter_text->setFontSize(45);
@@ -356,26 +356,26 @@ void PurifierStage::initializeComponents() {
   nuclear_item->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::TopLeft)
-      .Scale(0.07f, 0.0f)
-      .Posite(0.617f, 0.17f);
+      .ScaleR(0.07f, 0.0f)
+      .PositeR(0.617f, 0.17f);
 
   control_item->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::TopLeft)
-      .Scale(0.07f, 0.0f)
-      .Posite(0.521f, 0.285f);
+      .ScaleR(0.07f, 0.0f)
+      .PositeR(0.521f, 0.285f);
 
   storage_item->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::TopLeft)
-      .Scale(0.07f, 0.0f)
-      .Posite(0.617f, 0.4f);
+      .ScaleR(0.07f, 0.0f)
+      .PositeR(0.617f, 0.4f);
 
   filter_item->Configure()
       .Parent(nullptr)
       .Anchor(AnchorPoint::TopLeft)
-      .Scale(0.07f, 0.0f)
-      .Posite(0.71f, 0.285f);
+      .ScaleR(0.07f, 0.0f)
+      .PositeR(0.71f, 0.285f);
 
   Elements->PushElement(std::move(nuclear_item));
   Elements->PushElement(std::move(control_item));
