@@ -253,23 +253,27 @@ void MapExplorer::onUpdate(float totalTime)
     }
 }
 
-void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
+void MapExplorer::parseEvents(Event *event, float totalTime)
 {
     if (m_wrdController == nullptr)
         return;
 
-    m_itemContainer->handlEvents(event, totalTime);
+    UIElement::parseEvents(event, totalTime);
+
+    SDL_Event &sdlEvent = event->GetSDLEvent();
+
+    m_itemContainer->parseEvents(event, totalTime);
 
     // --- 鼠标追踪: 更新拖动物品的位置 ---
-    if (event.type == SDL_EVENT_MOUSE_MOTION)
+    if (sdlEvent.type == SDL_EVENT_MOUSE_MOTION)
     {
-        m_mouseX = static_cast<float>(event.motion.x);
-        m_mouseY = static_cast<float>(event.motion.y);
+        m_mouseX = static_cast<float>(sdlEvent.motion.x);
+        m_mouseY = static_cast<float>(sdlEvent.motion.y);
     }
 
     // --- 鼠标点击: 喝水 ---
-    if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN &&
-        event.button.button == SDL_BUTTON_LEFT)
+    if (sdlEvent.type == SDL_EVENT_MOUSE_BUTTON_DOWN &&
+        sdlEvent.button.button == SDL_BUTTON_LEFT)
     {
         auto homeless = m_wrdController->queryHomelessItemInfo();
         if (homeless.has_value() && homeless->typeID == 2) // 满瓶
@@ -294,19 +298,19 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
         }
     }
 
-    bool isKeyDown = (event.type == SDL_EVENT_KEY_DOWN);
-    bool isCtrlDown = (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN);
+    bool isKeyDown = (sdlEvent.type == SDL_EVENT_KEY_DOWN);
+    bool isCtrlDown = (sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN);
 
     // --- 键盘输入 ---
-    if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP)
+    if (sdlEvent.type == SDL_EVENT_KEY_DOWN || sdlEvent.type == SDL_EVENT_KEY_UP)
     {
-        if (event.key.repeat)
+        if (sdlEvent.key.repeat)
             return;
 
         if (vType == ViewportType::Fullscreen ||
             vType == ViewportType::LeftHalf)
         {
-            switch (event.key.key)
+            switch (sdlEvent.key.key)
             {
             case SDLK_W:
                 m_moveUp = isKeyDown;
@@ -347,7 +351,7 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
         }
         else
         {
-            switch (event.key.key)
+            switch (sdlEvent.key.key)
             {
             case SDLK_UP:
                 m_moveUp = isKeyDown;
@@ -367,10 +371,10 @@ void MapExplorer::handlEvents(SDL_Event &event, float totalTime)
         }
     }
     // --- 手柄十字键输入 ---
-    else if (event.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
-             event.type == SDL_EVENT_GAMEPAD_BUTTON_UP)
+    else if (sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN ||
+             sdlEvent.type == SDL_EVENT_GAMEPAD_BUTTON_UP)
     {
-        switch (event.gbutton.button)
+        switch (sdlEvent.gbutton.button)
         {
         case SDL_GAMEPAD_BUTTON_DPAD_UP:
             m_moveUp = isCtrlDown;

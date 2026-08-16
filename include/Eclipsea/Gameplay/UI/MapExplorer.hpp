@@ -61,7 +61,7 @@ class MapExplorer : public UIElement
     void Draw() override;
     void onUpdate(float totalTime) override;
     void onExit() override;
-    void handlEvents(SDL_Event &event, float totalTime);
+    void parseEvents(Event *event, float totalTime) override;
 
     /**
      * @brief 设置地图窗口的世界绑定

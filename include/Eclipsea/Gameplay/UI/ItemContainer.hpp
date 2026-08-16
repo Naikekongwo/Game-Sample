@@ -32,7 +32,7 @@ class ItemContainer : public UIElement
     ItemContainer(string_view id, uint8_t layer, unique_ptr<Texture> texture,
                   short col, short row);
 
-    void handlEvents(SDL_Event &event, float totalTime);
+    void parseEvents(Event *event, float totalTime) override;
     void onUpdate(float totalTime) override {};
     void onEnter() override;
     void onExit() override {};
