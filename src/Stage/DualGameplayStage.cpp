@@ -65,6 +65,7 @@ void DualGameplayStage::Init() {
 }
 
 void DualGameplayStage::onUpdate() {
+  getServerWorldController().onUpdate(timer->getTotalTime());
   Elements->onUpdate(timer->getTotalTime());
 }
 

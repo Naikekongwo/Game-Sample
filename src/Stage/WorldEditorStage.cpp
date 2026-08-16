@@ -51,7 +51,10 @@ void WorldEditorStage::Init() {
   sController->changeStage(std::move(gameplay));
 }
 
-void WorldEditorStage::onUpdate() { Elements->onUpdate(timer->getTotalTime()); }
+void WorldEditorStage::onUpdate() {
+  getServerWorldController().onUpdate(timer->getTotalTime());
+  Elements->onUpdate(timer->getTotalTime());
+}
 
 void WorldEditorStage::initializeComponents() { Init(); }
 
