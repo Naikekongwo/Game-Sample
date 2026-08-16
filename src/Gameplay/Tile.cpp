@@ -27,12 +27,11 @@ void Tile::Draw() {
                   static_cast<float>(info->_graphicsInfo.resolutionHeight)};
 
   if (visible(dstRect, windowRect) && VState->getAlpha() > 0.0f) {
-    auto GFX = OpenCoreManagers::GFXManager;
     // 可见才绘制
     switch (type) {
     case TileType::Terrain: {
       Rect srcRect = TerrainTiles->getSubRect(TileID);
-      GFX.Draw(TerrainTiles->get(), &srcRect, &dstRect, 0.0f, nullptr);
+      TerrainTiles->Draw(&srcRect, &dstRect, 0.0, nullptr);
       break;
     }
     default:

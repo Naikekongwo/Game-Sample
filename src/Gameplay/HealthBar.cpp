@@ -31,8 +31,6 @@ void HealthBar::Draw()
     Rect wellRect = texture->getSubRect(2);
     Rect goodRect = texture->getSubRect(3);
 
-    auto GFX = OpenCoreManagers::GFXManager;
-
     // 渲染血量
     Rect cutRect = dstRect;
     // auto health = *m_healthPercent.lock();
@@ -46,22 +44,22 @@ void HealthBar::Draw()
     cutRect.w = (*m_healthPercent) * dstRect.w;
     // w缩小
 
-    // 渲染血量
+    // 渲染血量（OpenCore 26.2：绘制收归 Texture::Draw）
     if (*m_healthPercent < 0.5)
     {
-        GFX.Draw(texture->get(), &valueRect, &cutRect, 0.0f, nullptr);
+        texture->Draw(&valueRect, &cutRect, 0.0, nullptr);
     }
     else if (*m_healthPercent < 0.7)
     {
-        GFX.Draw(texture->get(), &wellRect, &cutRect, 0.0f, nullptr);
+        texture->Draw(&wellRect, &cutRect, 0.0, nullptr);
     }
     else
     {
-        GFX.Draw(texture->get(), &goodRect, &cutRect, 0.0f, nullptr);
+        texture->Draw(&goodRect, &cutRect, 0.0, nullptr);
     }
 
     // 渲染框架
-    GFX.Draw(texture->get(), &frameRect, &dstRect, 0.0f, nullptr);
+    texture->Draw(&frameRect, &dstRect, 0.0, nullptr);
 }
 
 HealthBar::HealthBar(string_view id, short layer, unique_ptr<Texture> texture)

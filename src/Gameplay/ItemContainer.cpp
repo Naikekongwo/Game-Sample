@@ -129,8 +129,6 @@ void ItemContainer::Draw() {
 
   // 以上是检查绘制状态，避免进行不必要的绘制
 
-  auto GFX = OpenCoreManagers::GFXManager;
-
   Rect bounds = getLogicalBounds();
 
   float offsetX = 0.0f;
@@ -157,7 +155,7 @@ void ItemContainer::Draw() {
 
       Rect dstRect = {bounds.x + offsetX, bounds.y + offsetY, width, height};
 
-      GFX.Draw(texture->get(), nullptr, &dstRect, 0.0f, nullptr);
+      texture->Draw(nullptr, &dstRect, 0.0, nullptr);
 
       if (backpack) {
         auto slotOpt = backpack->getItem(slotIndex);

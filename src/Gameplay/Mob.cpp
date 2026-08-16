@@ -29,8 +29,6 @@ void Mob::Draw() {
                     static_cast<float>(info->_graphicsInfo.resolutionHeight)};
 
     if (visible(dstRect, windowRect) && VState->getAlpha() > 0.0f) {
-      auto GFX = OpenCoreManagers::GFXManager;
-
       // 渲染影子
       if (!shadow) {
         auto *package = OpenEngine::getInstance().getPackageManager();
@@ -39,15 +37,25 @@ void Mob::Draw() {
             package ? package->getTextureAsync("entity_shadow") : nullptr);
       }
 
-      GFX.Draw(shadow->get(), nullptr, &shadowRect, 0.0f, nullptr);
+      shadow->Draw(nullptr, &shadowRect, 0.0, nullptr);
 
       // 渲染实体
-
-      Rect srcRect = (tileWidth > 1 || tileHeight > 1)
-                         ? texture->getSubRect(VState->getFrameIndex(),
-                                               tileWidth, tileHeight)
-                         : Rect{texture->getSubRect(VState->getFrameIndex())};
-      GFX.Draw(texture->get(), &srcRect, &dstRect, 0.0f, nullptr);
+      Rect srcRect;
+      if (tileWidth > 1 || tileHeight > 1) {
+        // 多瓦片精灵：以当前帧为左上角，截取 tileWidth×tileHeight 瓦片的子矩形
+        const size_t frame = static_cast<size_t>(VState->getFrameIndex());
+        const uint16_t frameW = texture->width;
+        const uint16_t frameH = texture->height;
+        const size_t col = frame % texture->xCount;
+        const size_t row = frame / texture->xCount;
+        srcRect = Rect{static_cast<float>(col * frameW),
+                       static_cast<float>(row * frameH),
+                       static_cast<float>(frameW * tileWidth),
+                       static_cast<float>(frameH * tileHeight)};
+      } else {
+        srcRect = texture->getSubRect(VState->getFrameIndex());
+      }
+      texture->Draw(&srcRect, &dstRect, 0.0, nullptr);
     }
   }
 }

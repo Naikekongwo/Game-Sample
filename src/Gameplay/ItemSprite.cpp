@@ -36,12 +36,10 @@ void ItemSprite::onEnter() {
 void ItemSprite::Draw() {
   // <TODO>
 
-  auto GFX = OpenCoreManagers::GFXManager;
-
   Rect rect = getLogicalBounds();
   Rect srcRect = texture->getSubRect(VState->getFrameIndex());
 
-  GFX.Draw(texture->get(), &srcRect, &rect, 0.0f, nullptr);
+  texture->Draw(&srcRect, &rect, 0.0, nullptr);
 }
 
 bool ItemSprite::setSubTexture(short index) {

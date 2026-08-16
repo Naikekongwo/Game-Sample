@@ -54,10 +54,14 @@ void Waterrect::setWave(unique_ptr<Wave> newWave)
 
 void Waterrect::Draw()
 {
-    auto &GFX = OpenCoreManagers::GFXManager;
+    auto *renderer = OpenCoreManagers::GFXManager.getRenderer();
+    if (!renderer || !texture)
+        return;
 
-    GFX.DrawSDLGeometry(texture->get(), Vertices.data(), Vertices.size(),
-                        indices.data(), indices.size());
+    // OpenCore 26.2：几何绘制回退到 SDL3 原生接口
+    SDL_RenderGeometry(renderer, texture->get(), Vertices.data(),
+                       static_cast<int>(Vertices.size()), indices.data(),
+                       static_cast<int>(indices.size()));
 }
 
 bool Waterrect::onDestroy()
