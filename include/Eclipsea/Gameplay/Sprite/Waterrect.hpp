@@ -36,7 +36,7 @@ class Waterrect : public Sprite
     void setWave(unique_ptr<Wave> newWave);
 
     void setDetail(uint8_t detail);
-    int FreshVertex(SDL_Vertex &vertex, float totalTime);
+    int  FreshVertex(SDL_Vertex &vertex, float totalTime);
 
     void SpecialDraw(bool special, vector<float> &rSets)
     {
@@ -49,7 +49,7 @@ class Waterrect : public Sprite
             if (special)
             {
                 specialDraw = special;
-                rectSets = rSets;
+                rectSets    = rSets;
             }
         }
     }
@@ -64,12 +64,12 @@ class Waterrect : public Sprite
     uint8_t detail = 5;
 
     vector<SDL_Vertex> Vertices;
-    vector<int> indices;
+    vector<int>        indices;
 
     // 四个绘制角的屏幕相对坐标
     vector<float> rectSets;
-    bool specialDraw = false;
-    float waveFactor = 32.0f;
+    bool          specialDraw = false;
+    float         waveFactor  = 32.0f;
 
     // =========== 预计算的常量 ===========
     // 光照向量（归一化）
@@ -77,9 +77,9 @@ class Waterrect : public Sprite
     float halfX = 0.0f, halfY = 0.0f, halfZ = 0.0f; // 半程向量
 
     // 光照参数
-    float ambient = 0.4f;
+    float ambient       = 0.4f;
     float specIntensity = 0.8f;
-    float specPower = 32.0f;
+    float specPower     = 32.0f;
 
     // 颜色常量（归一化到0-1）
     float bgR = 6.0f / 255.0f;
@@ -91,12 +91,15 @@ class Waterrect : public Sprite
     float waterB = 0.8f;
 
     // 高度和透明度参数
-    float heightBase = 0.6f;
-    float heightRange = 0.4f;
+    float heightBase    = 0.6f;
+    float heightRange   = 0.4f;
     float minBrightness = 0.1f;
     float foamThreshold = 0.7f;
-    float foamRange = 0.3f;
-    float borderFade = 0.10f;
+    float foamRange     = 0.3f;
+    float borderFade    = 0.10f;
+
+    // 纯色渲染用 1x1 白色纹理（与原版空纹理效果一致，避免贴图造成异常高亮）
+    SDL_Texture *solidWhiteTexture = nullptr;
 };
 
 #endif //_WATERECT_HPP_

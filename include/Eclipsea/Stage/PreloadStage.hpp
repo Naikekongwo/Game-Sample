@@ -26,5 +26,5 @@ class PreloadStage : public OverlayStage
 
   protected:
     void buildLoadingUI();
-    void buildTitleAndWater();
+    void buildTitle();
 };
