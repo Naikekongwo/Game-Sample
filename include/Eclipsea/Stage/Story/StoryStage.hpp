@@ -33,7 +33,7 @@ class StoryStage : public OverlayStage
   private:
     short stageIndex = 0;
 
-    StoryStatus sStatus   = StoryStatus::Loading;
+    StoryStatus sStatus      = StoryStatus::Loading;
     StoryStatus targetStatus = StoryStatus::Intro;
 
     void func_intro();

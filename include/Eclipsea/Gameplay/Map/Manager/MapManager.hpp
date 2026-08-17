@@ -35,7 +35,7 @@ class MapManager final
     }
 
     short getCurrentID() const noexcept { return currentID; }
-    void setCurrentID(short id) { currentID = id; }
+    void  setCurrentID(short id) { currentID = id; }
 
     bool contains(short mapID) const noexcept
     {
@@ -59,6 +59,6 @@ class MapManager final
     }
 
   private:
-    short currentID = 0;
+    short                                              currentID = 0;
     std::unordered_map<short, unique_ptr<OpenCoreMap>> MapPool_;
 };
