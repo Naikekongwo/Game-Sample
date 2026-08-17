@@ -145,6 +145,7 @@ void MapExplorer::Draw()
             if (bInfo->Terrain == 2 && bInfo->STRuct == 2)
                 continue;
 
+            tileRenderer->setDebugOutline(debug);
             tileRenderer->setPositeRelative(
                 (x - offsetX) * widthFactor + 0.5f + viewportX,
                 (y - offsetY + Position.z) * heightFactor + 0.5f);

@@ -137,7 +137,8 @@ bool EclipseaApp::StartUp()
 
     auto eclipseaInfo = std::make_unique<GameInfo>();
 
-    eclipseaInfo->gameName      = "Eclipsea";
+    eclipseaInfo->gameName      = "Eclipsea 无水之境";
+    eclipseaInfo->gameCode      = "ECLIPSEA";
     eclipseaInfo->beta          = true;
     eclipseaInfo->version_major = 1;
     eclipseaInfo->version_minor = 0;

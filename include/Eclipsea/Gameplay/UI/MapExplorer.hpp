@@ -19,17 +19,23 @@
 #include "Runtime/Graphics/UI/Symbol.hpp"
 #include <memory>
 
-
 /**
  * @enum MapExpStatus
  * @brief 地图探索器的内部状态。
  */
-enum class MapExpStatus {
-  Creating, ///< 创建中，尚未完成初始化
-  Ready     ///< 就绪，可正常绘制与交互
+enum class MapExpStatus
+{
+    Creating, ///< 创建中，尚未完成初始化
+    Ready     ///< 就绪，可正常绘制与交互
 };
 
-enum class ViewportType { Fullscreen, LeftHalf, RightHalf, Free };
+enum class ViewportType
+{
+    Fullscreen,
+    LeftHalf,
+    RightHalf,
+    Free
+};
 
 class ClassicMap;
 class Symbol;
@@ -42,73 +48,80 @@ class ImageBoard;
  * 继承自 UIElement，在就绪后显示由 WorldController 管理的地图，
  * 并响应键盘输入以移动观察点（通过修改物理属性中的速度）。
  */
-class MapExplorer : public UIElement {
-public:
-  /**
-   * @brief 构造地图探索器对象。
-   * @param id    唯一标识符。
-   * @param layer 渲染图层。
-   */
-  MapExplorer(const string &id, short layer);
-  void onEnter() override;
-  void Draw() override;
-  void onUpdate(float totalTime) override;
-  void onExit() override;
-  void parseEvents(Event *event, float totalTime) override;
+class MapExplorer : public UIElement
+{
+  public:
+    /**
+     * @brief 构造地图探索器对象。
+     * @param id    唯一标识符。
+     * @param layer 渲染图层。
+     */
+    MapExplorer(const string &id, short layer);
+    void onEnter() override;
+    void Draw() override;
+    void onUpdate(float totalTime) override;
+    void onExit() override;
+    void parseEvents(Event *event, float totalTime) override;
 
-  /**
-   * @brief 设置地图窗口的世界绑定
-   *
-   * @param wrdController
-   * @return true
-   * @return false
-   */
-  bool setWorldController(WorldController *wrdController);
+    /**
+     * @brief 设置地图窗口的世界绑定
+     *
+     * @param wrdController
+     * @return true
+     * @return false
+     */
+    bool setWorldController(WorldController *wrdController);
 
-  /**
-   * @brief 设置地图管理器的视口
-   *
-   * @param vType
-   */
-  void setExplorerViewPort(ViewportType vType);
+    /**
+     * @brief 设置地图管理器的视口
+     *
+     * @param vType
+     */
+    void setExplorerViewPort(ViewportType vType);
 
-  bool setIndex(short ID) {
-    m_focusEntityIndex = ID;
-    m_itemContainer->setBackpack(
-        m_wrdController->getBackpackByEntityID(m_focusEntityIndex));
-    return true;
-  }
+    bool setIndex(short ID)
+    {
+        m_focusEntityIndex = ID;
+        m_itemContainer->setBackpack(
+            m_wrdController->getBackpackByEntityID(m_focusEntityIndex));
+        return true;
+    }
 
-private:
-  float widthFactor = 1.0f;                     ///< 宽度缩放因子（当前未使用）
-  float heightFactor = 1.0f;                    ///< 高度缩放因子（当前未使用）
-  MapExpStatus status = MapExpStatus::Creating; ///< 当前状态
+    // 调试模式开关（默认开启：为每个 Tile 绘制 1px 白色描边）
+    void setDebug(bool enable) { debug = enable; }
 
-  WorldController *m_wrdController = nullptr;  // 世界控制器
-  short m_focusEntityIndex = ENTITY_PLAYER_ID; // 焦点角色ID
+  private:
+    float        widthFactor  = 1.0f; ///< 宽度缩放因子（当前未使用）
+    float        heightFactor = 1.0f; ///< 高度缩放因子（当前未使用）
+    MapExpStatus status       = MapExpStatus::Creating; ///< 当前状态
 
-  ViewportType vType = ViewportType::Fullscreen; // 视口类型
+    WorldController *m_wrdController    = nullptr;          // 世界控制器
+    short            m_focusEntityIndex = ENTITY_PLAYER_ID; // 焦点角色ID
 
-  uint8_t renderRangeX = RENDER_RANGE_X; // 渲染范围X
-  uint8_t renderRangeY = RENDER_RANGE_Y; // 渲染范围Y
+    ViewportType vType = ViewportType::Fullscreen; // 视口类型
 
-  unique_ptr<Tile> tileRenderer;
-  unique_ptr<ItemContainer> m_itemContainer;
-  unique_ptr<HealthBar> m_healthbar;
-  unique_ptr<Symbol> m_symbol;
+    uint8_t renderRangeX = RENDER_RANGE_X; // 渲染范围X
+    uint8_t renderRangeY = RENDER_RANGE_Y; // 渲染范围Y
 
-  bool m_moveUp = false;
-  bool m_moveDown = false;
-  bool m_moveLeft = false;
-  bool m_moveRight = false;
+    unique_ptr<Tile>          tileRenderer;
+    unique_ptr<ItemContainer> m_itemContainer;
+    unique_ptr<HealthBar>     m_healthbar;
+    unique_ptr<Symbol>        m_symbol;
 
-  Entity *nearbyEntity = nullptr; // 当前附近的实体（用于显示交互提示）
+    bool m_moveUp    = false;
+    bool m_moveDown  = false;
+    bool m_moveLeft  = false;
+    bool m_moveRight = false;
 
-  unique_ptr<ItemSprite> m_pickedUpItem;
-  float m_mouseX = 0.0f;
-  float m_mouseY = 0.0f;
+    Entity *nearbyEntity = nullptr; // 当前附近的实体（用于显示交互提示）
 
-  void initComponents();
+    bool debug = true; ///< 调试模式：为每个 Tile 绘制 1px 白色描边
+
+    unique_ptr<ItemSprite> m_pickedUpItem;
+    float                  m_mouseX = 0.0f;
+    float                  m_mouseY = 0.0f;
+
+    void initComponents();
 };
 
 #endif //_MAP_EXPLORER_HPP_
