@@ -31,7 +31,7 @@ void MultiImageBoard::Draw()
     }
 }
 
-MultiImageBoard::MultiImageBoard(const std::string &id, uint8_t layer,
+MultiImageBoard::MultiImageBoard(std::string_view id, uint8_t layer,
                                  uint8_t size)
     : UIElement(id, layer, nullptr)
 {

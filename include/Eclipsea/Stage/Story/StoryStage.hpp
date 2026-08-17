@@ -40,8 +40,7 @@ class StoryStage : public OverlayStage
 
     // Intro 子阶段处理函数
     void handleIntroUpdate();
-    void handleIntroScrollText(TypeWriter *typeWriter,
-                               const std::string &text);
+    void handleIntroScrollText(TypeWriter *typeWriter, std::string_view text);
     void handleIntroCenterText(TypeWriter *typeWriter);
     void handleIntroVisualScene(TypeWriter *typeWriter);
     void handleIntroFadeAudio(TypeWriter *typeWriter);

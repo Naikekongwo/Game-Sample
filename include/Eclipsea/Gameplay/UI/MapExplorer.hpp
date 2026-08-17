@@ -56,7 +56,7 @@ class MapExplorer : public UIElement
      * @param id    唯一标识符。
      * @param layer 渲染图层。
      */
-    MapExplorer(const string &id, short layer);
+    MapExplorer(std::string_view id, short layer);
     void onEnter() override;
     void Draw() override;
     void onUpdate(float totalTime) override;

@@ -36,7 +36,7 @@ public:
      * @param layer 渲染图层（作为容器的基础层，子图层在此基础上递增）。
      * @param size  预期包含的子图层数量（需与后续 pushImageBoard 的纹理数量匹配）。
      */
-    MultiImageBoard(const std::string &id, uint8_t layer, uint8_t size);
+    MultiImageBoard(std::string_view id, uint8_t layer, uint8_t size);
     bool onDestroy() override;
     void onUpdate(float totalTime) override;
     void Draw() override;

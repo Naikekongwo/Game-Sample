@@ -225,7 +225,7 @@ void StoryStage::handleIntroUpdate()
 }
 
 void StoryStage::handleIntroScrollText(TypeWriter        *typeWriter,
-                                       const std::string &text)
+                                       std::string_view text)
 {
     typeWriter->setText(text);
     typeWriter->Animate()

@@ -17,7 +17,7 @@
 #include "Eclipsea/Eclipsea.hpp"
 #include "Runtime/Graphics/UI/Symbol.hpp"
 
-MapExplorer::MapExplorer(const string &id, short layer)
+MapExplorer::MapExplorer(std::string_view id, short layer)
     : UIElement(id, layer, nullptr)
 {
     renderRangeX = *Eclipsea::GameSettings::getInstance().getRenderWidth();
