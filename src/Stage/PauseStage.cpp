@@ -1,3 +1,4 @@
+#include "Eclipsea/Core/GameSettings.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "Eclipsea/Stage/MainStage.hpp"
 #include "OpenCore.hpp"
@@ -43,7 +44,8 @@ void PauseStage::initializeComponents()
         .PositeR(0.5f, 0.12f);
 
     title->setText("游戏暂停");
-    title->setFontSize(50);
+    title->setFontSize(
+        Eclipsea::GameSettings::getInstance().designFontSize(50));
     title->setShadow(true, 2);
     title->alignCenter(true);
 

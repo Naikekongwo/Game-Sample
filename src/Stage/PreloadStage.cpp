@@ -1,5 +1,6 @@
 #include "Eclipsea/Core/AudioManager.hpp"
 #include "Eclipsea/Core/EclipseaTextures.hpp"
+#include "Eclipsea/Core/GameSettings.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "Eclipsea/Gameplay/UI/MultiImageBoard.hpp"
 #include "Eclipsea/Stage/MainStage.hpp"
@@ -131,7 +132,11 @@ void PreloadStage::initializeComponents()
                     .ScaleR(0.0f, 1.0f)
                     .Anchor(AnchorPoint::TopRight)
                     .PositeR(0.0f, 0.0f);
-                connector->Animate().Move(0, 0, 2700, 0, 5.0f, false).Commit();
+                connector->Animate()
+                    .Move(0, 0,
+                          Eclipsea::GameSettings::getInstance().designX(2700),
+                          0, 5.0f, false)
+                    .Commit();
                 Elements->PushElement(std::move(connector));
                 return true;
             })
@@ -158,7 +163,8 @@ void PreloadStage::buildLoadingUI()
     frameCounter->Configure().Sequence(true);
     frameCounter->Animate().Timer(6.0f).Commit();
     frameCounter->setFontName("9001");
-    frameCounter->setFontSize(36);
+    frameCounter->setFontSize(
+        Eclipsea::GameSettings::getInstance().designFontSize(36));
     Elements->PushElement(std::move(frameCounter));
 
     // 水波动画（两帧纹理，多图层）

@@ -1,5 +1,6 @@
 #include "Eclipsea/Stage/Story/StoryStage.hpp"
 #include "Eclipsea/Core/AudioManager.hpp"
+#include "Eclipsea/Core/GameSettings.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore.hpp"
 #include "Runtime/Animation/IAnimation.hpp"
@@ -29,6 +30,24 @@
 #define fourthLine                                                             \
     "今晚将要发射的，则是这个"                                                 \
     "逃离航班的第13次发射\n——诺亚13号飞船。"
+
+// 过场动画坐标按设计基准 1920×1080 编写，经 designX/designY 换算到当前
+// 逻辑分辨率（如 4K），避免高分辨率下画面只占左上角。
+namespace
+{
+inline int dx(int x)
+{
+    return Eclipsea::GameSettings::getInstance().designX(x);
+}
+inline int dy(int y)
+{
+    return Eclipsea::GameSettings::getInstance().designY(y);
+}
+inline short fs(int size)
+{
+    return Eclipsea::GameSettings::getInstance().designFontSize(size);
+}
+} // namespace
 
 // StoryStage（新 OpenCore）：timer / sController 由 StageManager 自动注入
 StoryStage::StoryStage(StoryStatus sStatus)
@@ -134,7 +153,7 @@ void StoryStage::func_intro()
 
     frontpage->Animate()
         .Timer(15.0f)
-        .Move(960, 2160, 960, 1080, 10.0f)
+        .Move(dx(960), dy(2160), dx(960), dy(1080), 10.0f)
         .Commit();
 
     Elements->PushElement(std::move(frontpage));
@@ -149,9 +168,12 @@ void StoryStage::func_intro()
         .PositeR(2.5f, 0.55f)
         .ScaleR(0.6f, 0.5f);
 
-    tpwt->Animate().Timer(27.0f).Move(1920, 560, -1152, 560, 20.0f).Commit();
+    tpwt->Animate()
+        .Timer(27.0f)
+        .Move(dx(1920), dy(560), dx(-1152), dy(560), 20.0f)
+        .Commit();
 
-    tpwt->setFontSize(48);
+    tpwt->setFontSize(fs(48));
     tpwt->setText(firstLine);
     tpwt->alignCenter(false);
 
@@ -208,7 +230,7 @@ void StoryStage::handleIntroScrollText(TypeWriter        *typeWriter,
     typeWriter->setText(text);
     typeWriter->Animate()
         .Timer(0.5f)
-        .Move(1920, 560, -1152, 560, 20.0f)
+        .Move(dx(1920), dy(560), dx(-1152), dy(560), 20.0f)
         .Commit();
     ++stageIndex;
 }
@@ -218,7 +240,7 @@ void StoryStage::handleIntroCenterText(TypeWriter *typeWriter)
     typeWriter->setText(fourthLine);
     typeWriter->Animate()
         .Timer(0.5f)
-        .Move(1920, 560, 384, 560, 10.0f)
+        .Move(dx(1920), dy(560), dx(384), dy(560), 10.0f)
         .Timer(10.0f)
         .Commit();
     ++stageIndex;
@@ -228,7 +250,7 @@ void StoryStage::handleIntroVisualScene(TypeWriter *typeWriter)
 {
     typeWriter->Animate()
         .Timer(5.0f)
-        .Move(384, 560, 384, 1080, 8.0f)
+        .Move(dx(384), dy(560), dx(384), dy(1080), 8.0f)
         .Timer(6.0f)
         .Commit();
 
@@ -356,7 +378,7 @@ void StoryStage::handleLaunchUpdate()
                 .Alpha(0.0f);
             centerText->alignCenter(true);
             centerText->setText("两年后....");
-            centerText->setFontSize(50);
+            centerText->setFontSize(fs(50));
 
             centerText->Animate().Fade(0.0f, 1.0f, 4.0f).Commit();
 
@@ -388,14 +410,18 @@ void StoryStage::handleLaunchMove(TypeWriter *typeWriter)
             rocket->Configure()
                 .Anchor(AnchorPoint::BottomCenter)
                 .PositeR(0.46f, 0.47f);
-            rocket->Animate().Move(884, 507, 884, -800, 12.0f, false).Commit();
+            rocket->Animate()
+                .Move(dx(884), dy(507), dx(884), dy(-800), 12.0f, false)
+                .Commit();
         }
         if (flames)
         {
             flames->Configure()
                 .Anchor(AnchorPoint::Center)
                 .PositeR(0.46f, 0.47f);
-            flames->Animate().Move(884, 507, 884, -800, 12.0f, false).Commit();
+            flames->Animate()
+                .Move(dx(884), dy(507), dx(884), dy(-800), 12.0f, false)
+                .Commit();
         }
     }
 }

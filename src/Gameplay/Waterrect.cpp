@@ -136,7 +136,11 @@ int Waterrect::FreshVertex(SDL_Vertex &vertex, float totalTime)
 
         if (!scaleComputed)
         {
-            scaleFactor   = 1920.0f;
+            // 3D 变形缩放因子跟随当前逻辑宽度（原硬编码 1920）
+            scaleFactor =
+                static_cast<float>(OpenEngine::getInstance()
+                                       .getGameInfo()
+                                       ->_graphicsInfo.resolutionWidth);
             scaleComputed = true;
         }
 

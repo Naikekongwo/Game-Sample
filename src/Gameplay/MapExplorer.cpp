@@ -90,7 +90,12 @@ void MapExplorer::Draw()
 
     auto *renderer = OpenCoreManagers::GFXManager.getRenderer();
 
-    SDL_Rect rect{0, 0, 1920, 1080};
+    // 裁剪区跟随当前逻辑分辨率（原硬编码 1920×1080，高分辨率下会只显示左上角）
+    auto *gInfo = OpenEngine::getInstance().getGameInfo();
+    int   logW  = static_cast<int>(gInfo->_graphicsInfo.resolutionWidth);
+    int   logH  = static_cast<int>(gInfo->_graphicsInfo.resolutionHeight);
+
+    SDL_Rect rect{0, 0, logW, logH};
     float    viewportX = 0.0f;
 
     switch (vType)
@@ -99,15 +104,15 @@ void MapExplorer::Draw()
         viewportX -= 0.25f;
         rect.x = 0;
         rect.y = 0;
-        rect.w = 960;
-        rect.h = 1080;
+        rect.w = logW / 2;
+        rect.h = logH;
         break;
     case ViewportType::RightHalf:
         viewportX += 0.25f;
-        rect.x = 960;
+        rect.x = logW / 2;
         rect.y = 0;
-        rect.w = 960;
-        rect.h = 1080;
+        rect.w = logW / 2;
+        rect.h = logH;
         break;
     default:
         break;
@@ -275,9 +280,12 @@ void MapExplorer::parseEvents(Event *event, float totalTime)
         auto homeless = m_wrdController->queryHomelessItemInfo();
         if (homeless.has_value() && homeless->typeID == 2) // 满瓶
         {
-            // 检查点击位置是否在屏幕中央区域 (±30%)
-            float cx = m_mouseX / 1920.0f;
-            float cy = m_mouseY / 1080.0f;
+            // 检查点击位置是否在屏幕中央区域 (±30%)。
+            // 鼠标事件坐标为逻辑坐标，按当前逻辑分辨率归一化（原硬编码
+            // 1920×1080）
+            auto &gs = Eclipsea::GameSettings::getInstance();
+            float cx = m_mouseX / static_cast<float>(gs.getTargetWidth());
+            float cy = m_mouseY / static_cast<float>(gs.getTargetHeight());
             if (cx >= 0.35f && cx <= 0.65f && cy >= 0.35f && cy <= 0.65f)
             {
                 auto player =

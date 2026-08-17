@@ -2,6 +2,7 @@
 #include "Core/Info/ResourceInfo.hpp"
 #include "Eclipsea/Core/AudioManager.hpp"
 #include "Eclipsea/Core/EclipseaTextures.hpp"
+#include "Eclipsea/Core/GameSettings.hpp"
 #include "Eclipsea/Gameplay/Backpack/ItemManager.hpp"
 #include "Eclipsea/Gameplay/Backpack/Iteminfo.hpp"
 #include "Eclipsea/Gameplay/Entity/EntityRegister.hpp"
@@ -125,8 +126,8 @@ bool EclipseaApp::StartUp()
     gInfo.nearestScaling   = true;
     gInfo.resizable        = false;
     gInfo.targetFrameRate  = 144;
-    gInfo.resolutionWidth  = 1920;
-    gInfo.resolutionHeight = 1080;
+    gInfo.resolutionWidth  = 3840;
+    gInfo.resolutionHeight = 2160;
 
     // ── 资源信息 ─────────────────────────────────────────────
     ResourceInfo rInfo;
@@ -144,6 +145,11 @@ bool EclipseaApp::StartUp()
 
     eclipseaInfo->_graphicsInfo = gInfo;
     eclipseaInfo->_resourceInfo = rInfo;
+
+    // 同步逻辑分辨率到 GameSettings：设计基准坐标换算（designX/designY）
+    // 与 MainStage 等场景的相对布局均依赖该尺寸。
+    Eclipsea::GameSettings::getInstance().setTargetSize(gInfo.resolutionWidth,
+                                                        gInfo.resolutionHeight);
 
     engine.GameRegistry(std::move(eclipseaInfo));
 

@@ -344,7 +344,8 @@ void PurifierStage::initializeComponents()
         .Sequence(true);
 
     nuclear_text->setText("反应堆");
-    nuclear_text->setFontSize(45);
+    nuclear_text->setFontSize(
+        Eclipsea::GameSettings::getInstance().designFontSize(45));
     nuclear_text->alignCenter(false);
 
     storage_text->Configure()
@@ -355,7 +356,8 @@ void PurifierStage::initializeComponents()
         .Sequence(true);
 
     storage_text->setText("储水罐");
-    storage_text->setFontSize(45);
+    storage_text->setFontSize(
+        Eclipsea::GameSettings::getInstance().designFontSize(45));
     storage_text->alignCenter(false);
 
     control_text->Configure()
@@ -365,7 +367,8 @@ void PurifierStage::initializeComponents()
         .PositeR(0.521f, 0.237f)
         .Sequence(true);
     control_text->setText("控制单元");
-    control_text->setFontSize(45);
+    control_text->setFontSize(
+        Eclipsea::GameSettings::getInstance().designFontSize(45));
     control_text->alignCenter(false);
 
     filter_text->Configure()
@@ -375,7 +378,8 @@ void PurifierStage::initializeComponents()
         .PositeR(0.71f, 0.237f)
         .Sequence(true);
     filter_text->setText("出水口");
-    filter_text->setFontSize(45);
+    filter_text->setFontSize(
+        Eclipsea::GameSettings::getInstance().designFontSize(45));
     filter_text->alignCenter(false);
 
     Elements->PushElement(std::move(nuclear_text));

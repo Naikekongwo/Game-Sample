@@ -1,3 +1,4 @@
+#include "Eclipsea/Core/GameSettings.hpp"
 #include "Eclipsea/Eclipsea.hpp"
 #include "OpenCore.hpp"
 #include "Runtime/Animation/IAnimation.hpp"
@@ -114,7 +115,8 @@ void ContinueStage::initializeComponents()
         .PositeR(0.5f, 0.05f);
 
     title->setText("本地存档");
-    title->setFontSize(62);
+    title->setFontSize(
+        Eclipsea::GameSettings::getInstance().designFontSize(62));
     title->setShadow(true, 2);
 
     Elements->PushElement(std::move(title));

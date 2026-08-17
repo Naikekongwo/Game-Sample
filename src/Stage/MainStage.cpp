@@ -64,7 +64,11 @@ void MainStage::setupBackground()
         .Anchor(AnchorPoint::TopRight)
         .PositeR(0, 0)
         .ScaleR(0.0f, 1.0f);
-    connector->Animate().Move(2700, 0, 6000, 0, 5.0f, false).Commit();
+    connector->Animate()
+        .Move(Eclipsea::GameSettings::getInstance().designX(2700), 0,
+              Eclipsea::GameSettings::getInstance().designX(6000), 0, 5.0f,
+              false)
+        .Commit();
     Elements->PushElement(std::move(connector));
 }
 
