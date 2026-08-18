@@ -51,6 +51,12 @@ void PreloadStage::initializeComponents()
     Eclipsea::AudioManager::getInstance().playBGM();
     Eclipsea::AudioManager::getInstance().setVolume(30);
 
+#ifdef ECLIPSEA_BYPASS_PRELOAD
+    auto mainStage = std::make_unique<MainStage>();
+    transferElementTo(mainStage.get(), "frameCounter");
+    sController->changeStage(std::move(mainStage));
+#endif
+
     // 3. 顺序执行标题动画序列
     pipeline
         .next(
@@ -163,8 +169,7 @@ void PreloadStage::buildLoadingUI()
     frameCounter->Configure().Sequence(true);
     frameCounter->Animate().Timer(6.0f).Commit();
     frameCounter->setFontName("9001");
-    frameCounter->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(36));
+    frameCounter->setFontSize(36);
     Elements->PushElement(std::move(frameCounter));
 
     // 水波动画（两帧纹理，多图层）

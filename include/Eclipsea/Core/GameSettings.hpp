@@ -76,14 +76,6 @@ class GameSettings
                                            targetRenderHeight / kDesignHeight));
     }
 
-    // 设计基准字号 → 当前逻辑分辨率字号（按宽度方向缩放，与 designX 一致）。
-    // 16:9 下与高度缩放等价；返回 short 匹配 setFontSize 参数类型。
-    short designFontSize(int designSize) const noexcept
-    {
-        return static_cast<short>(std::round(static_cast<float>(designSize) *
-                                             targetRenderWidth / kDesignWidth));
-    }
-
     // 净水器玩法状态
     std::shared_ptr<float> getWaterStorage() const noexcept
     {

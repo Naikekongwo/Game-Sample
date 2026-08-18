@@ -37,39 +37,27 @@ static void RegisterAllResources(PackageManager *package)
         {"icon_opencore", "assets/ui/icon_opencore.png", 1, 1},
         {"icon_studio", "assets/ui/icon_studio.png", 1, 1},
         {"img_connector", "assets/ui/preload_menu_connector.png", 1, 1},
-        {"background_main", "assets/backgrounds/main_background.png", 1, 1},
         {"background_gameplay", "assets/backgrounds/gameplay_background.png", 1,
          1},
         {"background_purifier", "assets/ui/purifier_background.png", 3, 3},
         {"main_title", "assets/ui/Title_Main.png", 1, 1},
         {"copyright", "assets/ui/icon_copyright.png", 1, 1},
         {"item_purifier", "assets/ui/purifier/purifier.png", 1, 1},
-        {"desset_top", "assets/backgrounds/dessert_top.png", 1, 1},
         {"base_sky", "assets/backgrounds/base_sky.png", 1, 1},
         {"cities_top", "assets/backgrounds/cities_top.png", 1, 1},
         {"button_border", "assets/ui/rect_border.png", 1, 1},
         {"stone_background", "assets/ui/stone_background.png", 3, 3},
-        {"img_createworld", "assets/ui/main/Button_Create.png", 1, 1},
         {"img_scrollbutton", "assets/ui/scrollbutton.png", 1, 1},
         {"img_itemcontain", "assets/ui/item_container.png", 3, 3},
-        {"pad_copyright", "assets/ui/pad_copyright.png", 1, 1},
         {"effects_explosion", "assets/effects/explosion.png", 1, 1},
         {"story_plane", "assets/story/img_plane.png", 1, 1},
         {"story_ruinedcity", "assets/story/img_ruinedcity.png", 1, 1},
         {"story_starsky", "assets/story/img_starsky.png", 1, 1},
-        {"background_typewriter", "assets/ui/background_typewriter.png", 3, 3},
         {"img_insidehouse", "assets/story/img_insidehouse.png", 1, 1},
         {"entity_shadow", "assets/entity/entity_shadow.png", 1, 1},
-        {"ui_bg_purifier", "assets/ui/purifier/purifier_background.png", 1, 1},
-        {"water", "assets/terrain/water.png", 1, 1},
 
         // ── 3 帧按钮（normal / pressed / …）──
-        {"img_StartButton", "assets/ui/main/Button_Start.png", 1, 3},
-        {"img_ContButton", "assets/ui/main/Button_Continue.png", 1, 3},
-        {"img_SettButton", "assets/ui/main/Button_Settings.png", 1, 3},
         {"img_BackButton", "assets/ui/settings/Button_Back.png", 1, 3},
-        {"btn_backmain", "assets/ui/pause/btn_backmain.png", 1, 3},
-        {"btn_pause_settings", "assets/ui/pause/btn_settings.png", 1, 3},
 
         // ── 两态复选框（未勾选 / 勾选，竖排）──
         {"img_checkbox", "assets/ui/checkbox_classic.png", 1, 2},
@@ -100,6 +88,7 @@ static void RegisterAllResources(PackageManager *package)
         {RscFont, "9001", "assets/ui/font/OpenCoreFont.ttf"},
         {RscFont, "9002", "assets/ui/font/OpenCoreCHFont.ttf"},
         {RscFont, "OpenCoreFont", "assets/ui/font/OpenCoreFont.ttf"},
+        {RscFont, "ChineseFont", "assets/ui/font/ChineseFont.otf"},
     });
 }
 
@@ -108,7 +97,6 @@ static void RegisterAllAudio()
 {
     auto &audio = Eclipsea::AudioManager::getInstance();
     audio.registerMusic("music_oceanwaves", "assets/audio/bgm_oceanwaves.mp3");
-    audio.registerSound("se_waterdrops", "assets/audio/fx_waterdrops.mp3");
     audio.registerMusic("music_lostworld", "assets/audio/bgm_lostworld.mp3");
     audio.registerMusic("music_someoneinthedark",
                         "assets/audio/bgm_someoneinthedark.mp3");

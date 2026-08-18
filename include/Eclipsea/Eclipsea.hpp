@@ -8,9 +8,8 @@
 // 宏已全部移除。
 
 // 调试开关：世界编辑器按钮（原 DEBUG_MAP 模式）
-#ifndef ECLIPSEA_DEBUG_WORLD
-#define ECLIPSEA_DEBUG_WORLD 0
-#endif
+#define ECLIPSEA_DEBUG_WORLD
+#define ECLIPSEA_BYPASS_PRELOAD
 
 #include "OpenCore.hpp"
 
@@ -28,10 +27,11 @@
 #include "Stage/MainStage/ContinueStage.hpp"
 #include "Stage/MainStage/SettingsStage.hpp"
 
-class EclipseaApp {
-public:
-  bool StartUp();
-  bool CleanUp();
+class EclipseaApp
+{
+  public:
+    bool StartUp();
+    bool CleanUp();
 
-private:
+  private:
 };

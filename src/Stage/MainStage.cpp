@@ -4,9 +4,46 @@
 #include "Eclipsea/Stage/MainStage/ContinueStage.hpp"
 #include "Eclipsea/Stage/WorldEditorStage.hpp"
 #include "OpenCore.hpp"
+#include "Runtime/Animation/IAnimation.hpp"
+#include "Runtime/Graphics/IDrawableObject/Text.hpp"
+#include "Runtime/Graphics/UI/TextButton.hpp"
 #include <SDL3/SDL.h>
 #include <functional>
 #include <memory>
+
+namespace
+{
+// 主菜单文字按钮渲染选项：字体本身白色、无描边、有阴影、无渐变（三态共用）
+inline constexpr TextRenderOption kMainMenuTextOption =
+    static_cast<TextRenderOption>(RENDER_TEXT | RENDER_SHADOW);
+
+// 主菜单文字按钮三态属性：渲染选项一致，仅文字颜色区分状态反馈。
+// 字号不在此硬编码——TextButton 会按按钮实际高度自适应（0.9 × 高度）。
+inline const TextAttribute kMainMenuTextNormal{
+    .option         = kMainMenuTextOption,
+    .color          = White, // 字体本身白色
+    .fontName       = "ChineseFont",
+    .borderSize     = 0,
+    .shadowGradient = true,
+    .shadowOffset   = {2, 2},
+};
+inline const TextAttribute kMainMenuTextHovered{
+    .option         = kMainMenuTextOption,
+    .color          = Color(0.75f, 0.75f, 0.75f, 1.0f), // 悬浮：整体变灰
+    .fontName       = "ChineseFont",
+    .borderSize     = 0,
+    .shadowGradient = true,
+    .shadowOffset   = {2, 2},
+};
+inline const TextAttribute kMainMenuTextPressed{
+    .option         = kMainMenuTextOption,
+    .color          = Color(0.45f, 0.45f, 0.45f, 1.0f), // 按下：颜色加深
+    .fontName       = "ChineseFont",
+    .borderSize     = 0,
+    .shadowGradient = true,
+    .shadowOffset   = {2, 2},
+};
+} // namespace
 
 // MainStage（新 OpenCore）：timer / sController 由 StageManager 自动注入
 MainStage::MainStage()
@@ -102,16 +139,18 @@ void MainStage::setupTitle()
 
 void MainStage::setupButtons()
 {
-    // 创建按钮
-    auto startButton = UI<Button>("startButton", 2, "img_StartButton", 1, 3);
-    auto continueButton =
-        UI<Button>("continueButton", 2, "img_ContButton", 1, 3);
-    auto settingButton = UI<Button>("settingButton", 2, "img_SettButton", 1, 3);
+    // 创建文字按钮（TextButton 实时渲染文字，不依赖图片资源）
+    auto startButton    = UI<TextButton>("startButton", 2, "开始游戏", 0, 0);
+    auto continueButton = UI<TextButton>("continueButton", 2, "继续游戏", 0, 0);
+    auto settingButton  = UI<TextButton>("settingButton", 2, "游戏设置", 0, 0);
 
-#if ECLIPSEA_DEBUG_WORLD
+#ifdef ECLIPSEA_DEBUG_WORLD
     {
-        auto worldbutton =
-            UI<Button>("worldbutton", 2, "img_createworld", 1, 3);
+        auto worldbutton = UI<TextButton>("worldbutton", 2, "创建世界", 0, 0);
+        worldbutton->setNormalAttribute(kMainMenuTextNormal);
+        worldbutton->setHoveredAttribute(kMainMenuTextHovered);
+        worldbutton->setPressedAttribute(kMainMenuTextPressed);
+
         worldbutton->Configure()
             .Anchor(AnchorPoint::TopLeft)
             .Parent(nullptr)
@@ -126,11 +165,26 @@ void MainStage::setupButtons()
                 sController->changeStage(std::move(worlde));
             });
 
+        worldbutton->align(AnchorPoint::MiddleLeft);
+
         Elements->PushElement(std::move(worldbutton));
     }
 #endif
 
-    // 配置位置与缩放
+    // 三态文字属性：渲染选项一致，颜色区分悬浮/按下反馈
+    startButton->setNormalAttribute(kMainMenuTextNormal);
+    startButton->setHoveredAttribute(kMainMenuTextHovered);
+    startButton->setPressedAttribute(kMainMenuTextPressed);
+
+    continueButton->setNormalAttribute(kMainMenuTextNormal);
+    continueButton->setHoveredAttribute(kMainMenuTextHovered);
+    continueButton->setPressedAttribute(kMainMenuTextPressed);
+
+    settingButton->setNormalAttribute(kMainMenuTextNormal);
+    settingButton->setHoveredAttribute(kMainMenuTextHovered);
+    settingButton->setPressedAttribute(kMainMenuTextPressed);
+
+    // 配置位置与缩放（高度与位置与原来一致）
     startButton->Configure()
         .Anchor(AnchorPoint::TopLeft)
         .Parent(nullptr)
@@ -174,6 +228,10 @@ void MainStage::setupButtons()
             auto settings = std::make_unique<SettingsStage>();
             sController->changeStage(std::move(settings));
         });
+
+    startButton->align(AnchorPoint::MiddleLeft);
+    continueButton->align(AnchorPoint::MiddleLeft);
+    settingButton->align(AnchorPoint::MiddleLeft);
 
     // 推入元素管理器
     Elements->PushElement(std::move(startButton));

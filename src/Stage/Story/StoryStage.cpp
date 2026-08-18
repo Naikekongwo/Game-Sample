@@ -33,6 +33,7 @@
 
 // 过场动画坐标按设计基准 1920×1080 编写，经 designX/designY 换算到当前
 // 逻辑分辨率（如 4K），避免高分辨率下画面只占左上角。
+// 字号由引擎 setFontSize 自动换算（设计基准字号），无需项目层换算。
 namespace
 {
 inline int dx(int x)
@@ -42,10 +43,6 @@ inline int dx(int x)
 inline int dy(int y)
 {
     return Eclipsea::GameSettings::getInstance().designY(y);
-}
-inline short fs(int size)
-{
-    return Eclipsea::GameSettings::getInstance().designFontSize(size);
 }
 } // namespace
 
@@ -173,7 +170,7 @@ void StoryStage::func_intro()
         .Move(dx(1920), dy(560), dx(-1152), dy(560), 20.0f)
         .Commit();
 
-    tpwt->setFontSize(fs(48));
+    tpwt->setFontSize(48);
     tpwt->setText(firstLine);
     tpwt->alignCenter(false);
 
@@ -378,7 +375,7 @@ void StoryStage::handleLaunchUpdate()
                 .Alpha(0.0f);
             centerText->alignCenter(true);
             centerText->setText("两年后....");
-            centerText->setFontSize(fs(50));
+            centerText->setFontSize(50);
 
             centerText->Animate().Fade(0.0f, 1.0f, 4.0f).Commit();
 

@@ -49,8 +49,7 @@ void SettingsStage::onEnter()
         .PositeR(0.5f, 0.05f);
 
     title->setText("设置");
-    title->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(62));
+    title->setFontSize(62);
     title->setShadow(true, 2);
 
     Elements->PushElement(std::move(title));
@@ -66,8 +65,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.5f, 0.0425f);
 
     musicTitle->setText("音乐音量");
-    musicTitle->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(36));
+    musicTitle->setFontSize(36);
     musicTitle->setShadow(true, 2);
 
     soundTitle->Configure()
@@ -77,8 +75,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.5f, 0.0425f);
 
     soundTitle->setText("音效音量");
-    soundTitle->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(36));
+    soundTitle->setFontSize(36);
     soundTitle->setShadow(true, 2);
 
     Elements->PushElement(std::move(musicTitle));
@@ -94,8 +91,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.25f, 0.053f);
 
     renderTitle->setText("渲染距离");
-    renderTitle->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(36));
+    renderTitle->setFontSize(36);
     renderTitle->setShadow(true, 2);
 
     Multi->Configure()
@@ -105,8 +101,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.25f, 0.053f);
 
     Multi->setText("本地主机");
-    Multi->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(36));
+    Multi->setFontSize(36);
     Multi->setShadow(true, 2);
 
     Elements->PushElement(std::move(renderTitle));
@@ -207,8 +202,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.25f, 0.053f);
 
     writerTitle->setText("鸣 谢");
-    writerTitle->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(36));
+    writerTitle->setFontSize(36);
     writerTitle->setShadow(true, 2);
 
     auto shaoyang = UI<TextArea>("shaoyang", 3, "9002", 0, 0);
@@ -220,8 +214,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.25f, 0.12f);
 
     shaoyang->setText("开发 刘绍阳");
-    shaoyang->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(30));
+    shaoyang->setFontSize(30);
     shaoyang->setShadow(true, 2);
 
     auto qiyuan = UI<TextArea>("qiyuan", 3, "9002", 0, 0);
@@ -233,8 +226,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.25f, 0.12f);
 
     qiyuan->setText("开发 刘骐源");
-    qiyuan->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(30));
+    qiyuan->setFontSize(30);
     qiyuan->setShadow(true, 2);
 
     auto huangteng = UI<TextArea>("huangteng", 3, "9002", 0, 0);
@@ -246,8 +238,7 @@ void SettingsStage::onEnter()
         .ScaleR(0.25f, 0.12f);
 
     huangteng->setText("艺术 黄腾");
-    huangteng->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(30));
+    huangteng->setFontSize(30);
     huangteng->setShadow(true, 2);
 
     Elements->PushElement(std::move(writerTitle));
@@ -264,8 +255,7 @@ void SettingsStage::onEnter()
         .PositeR(0.5f, 0.95f);
 
     copyr->setText("OpenCore 2026 & OpenGames Studio's Works");
-    copyr->setFontSize(
-        Eclipsea::GameSettings::getInstance().designFontSize(36));
+    copyr->setFontSize(36);
     copyr->setShadow(true, 2);
     copyr->alignCenter(true);
 
